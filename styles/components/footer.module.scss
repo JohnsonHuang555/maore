@@ -1,0 +1,25 @@
+@import "../color";
+
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  .slogan {
+    padding: 10px;
+    text-align: center;
+    background-color: $grey-5;
+    width: 100%;
+    color: $grey-1;
+    font-size: 16px;
+  }
+  .copyright {
+    text-align: center;
+    color: $grey-2;
+    font-size: 13px;
+    padding: 5px;
+    width: 100%;
+    background-color: $grey-6;
+  }
+}

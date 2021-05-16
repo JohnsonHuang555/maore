@@ -1,0 +1,49 @@
+@import "../color";
+
+.title {
+  width: 100%;
+  border-bottom: 4px double white;
+  padding-bottom: 10px;
+}
+
+.games {
+  width: 100%;
+}
+
+.game {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transition: all .3s;
+  .name {
+    font-size: 28px;
+    letter-spacing: 2px;
+    transition: all 0.5s;
+    margin-bottom: 10px;
+    opacity: 0;
+  }
+  .play {
+    width: 120px;
+    opacity: 0;
+    transition: all .5s;
+    border: 1.5px solid $white;
+    margin-bottom: 10px;
+  }
+  .icons {
+    opacity: 0;
+    display: flex;
+    transition: all .5s;
+  }
+  &:hover {
+    background-color: rgba($black, .7);
+    .name, .play, .icons {
+      opacity: 1;
+    }
+  }
+}
