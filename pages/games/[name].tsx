@@ -1,4 +1,5 @@
 import Layout from 'components/Layout';
+import { Game } from 'domain/models/Game';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
@@ -12,21 +13,22 @@ const fetcher = async (url: string) => {
   return data;
 };
 
-const Game = () => {
+const Games = () => {
   const { query } = useRouter();
-  const { data, error } = useSWR(
+
+  const { data: game, error } = useSWR<Game, Error>(
     () => query.name && `/api/game/${query.name}`,
     fetcher
   );
 
   if (error) return <div>{error.message}</div>;
-  if (!data) return <div>Loading...</div>;
+  if (!game) return <div>Loading...</div>;
 
   return (
     <Layout>
-      <h2 className="title">推薦遊戲</h2>
+      <h2 className="title">{game.name}</h2>
     </Layout>
   );
 };
 
-export default Game;
+export default Games;

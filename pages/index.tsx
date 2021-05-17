@@ -10,7 +10,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Home() {
   const router = useRouter();
-  const { data: games, error } = useSWR<Game[]>('/api/game', fetcher);
+  const { data: games, error } = useSWR<Game[], Error>('/api/game', fetcher);
 
   if (error) {
     return <div>Failed to load</div>;
