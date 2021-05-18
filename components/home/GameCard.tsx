@@ -4,7 +4,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { CardActionArea, CardMedia } from '@material-ui/core';
-import { Game } from 'domain/models/Game';
+import { Game } from 'models/Game';
 
 const useStyles = makeStyles({
   root: {

@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 import GameCard from 'components/home/GameCard';
 import Layout from 'components/Layout';
-import { Game } from 'domain/models/Game';
+import { Game } from 'models/Game';
 import Grid from '@material-ui/core/Grid';
 import { useRouter } from 'next/router';
 import styles from 'styles/pages/home.module.scss';
