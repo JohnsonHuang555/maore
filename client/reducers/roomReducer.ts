@@ -28,7 +28,7 @@ type Action = InitialClientAction | LoadedSelectedRoomAction;
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
     case ActionType.INITIAL_CLIENT: {
-      const client = new Client('ws://localhost:2567');
+      const client = new Client('ws://localhost:3000');
       return {
         ...state,
         client,
