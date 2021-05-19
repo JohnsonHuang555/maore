@@ -1,0 +1,10 @@
+.gameDetail {
+  display: flex;
+  flex-direction: column;
+  .description {
+    flex: 1;
+  }
+  .createRoom {
+    margin-bottom: 12px;
+  }
+}

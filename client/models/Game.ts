@@ -1,0 +1,16 @@
+export type Game = {
+  id: number;
+  name: string;
+  minPlayers: number;
+  maxPlayers: number;
+  breif: string;
+  description: string;
+  homeImg: string;
+  estimateTime: number;
+  gamePack: GameList;
+};
+
+// 遊戲列表
+export enum GameList {
+  TicTacToe = 'tic-tac-toe',
+}
