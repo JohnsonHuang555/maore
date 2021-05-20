@@ -1,6 +1,6 @@
 import { Schema, ArraySchema, type } from '@colyseus/schema';
-import { GameState } from '../models/Room';
-import { TicTacToe } from '../models/tic_tac_toe/TicTacToe';
+import { GameState } from '../../models/Room';
+import { TicTacToe } from '../../models/tic_tac_toe/TicTacToe';
 
 export default class TicTacToeState extends Schema implements TicTacToe {
   @type('number')

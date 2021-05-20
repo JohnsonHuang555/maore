@@ -1,4 +1,9 @@
 import { Schema } from '@colyseus/schema';
+import { Room as ClientRoom } from 'colyseus.js';
+
+export interface RoomType extends ClientRoom<Room> {
+  metadata: Metadata;
+}
 
 export enum GameState {
   WaitingForPlayers,
@@ -15,5 +20,3 @@ export interface Room extends Schema {
 export type Metadata = {
   roomTitle: string;
 };
-
-export default Room;

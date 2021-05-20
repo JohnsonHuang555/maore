@@ -8,8 +8,7 @@ import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 import { initialClient, loadRoom } from 'actions/RoomAction';
 import { clientSelector, roomSelector } from 'selectors/roomSelector';
-import { Room as ClientRoom } from 'colyseus.js';
-import Room, { Metadata } from 'models/Room';
+import { Room, Metadata, RoomType } from 'models/Room';
 import { Button } from '@material-ui/core';
 import CreateRoom from 'components/games/CreateRoom';
 import styles from 'styles/pages/game.module.scss';
@@ -30,7 +29,7 @@ const Games = () => {
   const dispatch = useDispatch();
   const client = useSelector(clientSelector);
   const room = useSelector(roomSelector);
-  const [rooms, setRooms] = useState<ClientRoom<Room>[]>([]);
+  const [rooms, setRooms] = useState<RoomType[]>([]);
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
 
   // get current game
@@ -48,6 +47,7 @@ const Games = () => {
       client
         .getAvailableRooms()
         .then((rooms: any) => {
+          console.log(rooms);
           setRooms(rooms);
         })
         .catch((e) => {
@@ -96,7 +96,7 @@ const Games = () => {
       />
       <h2 className="title">{game.name}</h2>
       <Grid container spacing={3} style={{ height: '100%' }}>
-        <Grid item xs={4} className={styles.gameDetail}>
+        <Grid item lg={3} xs={4} className={styles.gameDetail}>
           <Image
             src={game.homeImg}
             alt={game.name}
@@ -115,9 +115,9 @@ const Games = () => {
             建立房間
           </Button>
         </Grid>
-        <Grid item xs={8}>
+        <Grid item lg={9} xs={8}>
           {rooms.map((room) => (
-            <div>{room.name}</div>
+            <div>{room.metadata.roomTitle}</div>
           ))}
         </Grid>
       </Grid>

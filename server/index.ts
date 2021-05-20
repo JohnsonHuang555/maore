@@ -3,6 +3,8 @@ import next from 'next';
 import http from 'http';
 import { Server } from 'colyseus';
 import { monitor } from '@colyseus/monitor';
+import TicTacToe from './tictactoe/TicTacToe';
+import { GameList } from '../models/Game';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev = process.env.NODE_ENV !== 'production';
@@ -20,5 +22,6 @@ nextApp.prepare().then(() => {
     return handle(req, res);
   });
 
+  gameServer.define(GameList.TicTacToe, TicTacToe);
   gameServer.listen(port);
 });

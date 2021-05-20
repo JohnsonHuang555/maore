@@ -1,8 +1,8 @@
 import { Client, Room as ServerRoom } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
-import { GameState, Metadata } from '../models/Room';
+import { GameState, Metadata } from '../../models/Room';
 import TicTacToeState from './TicTacToeState';
-import { Message } from '../models/Message';
+import { Message } from '../../models/Message';
 import PlayerSelectionCommand from './commands/PlayerSelectionCommand';
 
 export default class TicTacToe extends ServerRoom<TicTacToeState> {
