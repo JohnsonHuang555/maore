@@ -1,22 +1,24 @@
-import http from 'http';
 import express from 'express';
-import cors from 'cors';
+import next from 'next';
+import http from 'http';
 import { Server } from 'colyseus';
 import { monitor } from '@colyseus/monitor';
-import TicTacToe from './tictactoe/TicTacToe';
 
-const port = Number(process.env.PORT || 2567);
-const app = express();
+const port = parseInt(process.env.PORT || '3000', 10);
+const dev = process.env.NODE_ENV !== 'production';
+const nextApp = next({ dev });
+const handle = nextApp.getRequestHandler();
 
-app.use(cors());
-app.use(express.json());
+nextApp.prepare().then(() => {
+  const app = express();
+  const server = http.createServer(app);
+  const gameServer = new Server({ server });
 
-const server = http.createServer(app);
-const gameServer = new Server({ server });
+  app.use('/colyseus', monitor());
 
-// register your room handlers
-gameServer.define('tic-tac-toe', TicTacToe);
-app.use('/colyseus', monitor());
+  app.all('*', (req, res) => {
+    return handle(req, res);
+  });
 
-gameServer.listen(port);
-console.log(`Listening on ws://localhost:${port}`);
+  gameServer.listen(port);
+});
