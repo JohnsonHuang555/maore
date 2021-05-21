@@ -25,7 +25,9 @@ export default class TicTacToe extends ServerRoom<TicTacToeState> {
 
   onJoin(client: Client) {
     const idx = this.clients.findIndex((c) => c.sessionId === client.sessionId);
-    client.send(Message.PlayerIndex, { playerIndex: idx });
+    client.send(Message.PlayerIndex, {
+      playerIndex: idx,
+    });
 
     if (this.clients.length >= 2) {
       this.state.gameState = GameState.Playing;

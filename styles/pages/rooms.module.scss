@@ -1,0 +1,38 @@
+@import "../color";
+
+.leftArea {
+  display: flex;
+  flex-direction: column;
+  .playerList {
+    flex: 1;
+    overflow-y: auto;
+    .playerContent {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+    }
+  }
+  .messages {
+    flex: 0.4;
+  }
+}
+
+.rightArea {
+  height: calc(100% - 15px);
+  display: flex;
+  flex-direction: column;
+  .settings {
+    margin-bottom: 10px;
+  }
+}
+
+.block {
+  background: $primary;
+  margin-bottom: 15px;
+  padding: 15px;
+}
+
+.content {
+  background-color: $grey-6;
+  border-radius: 5px;
+}

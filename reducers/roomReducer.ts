@@ -1,29 +1,30 @@
 import { ActionType } from 'actions/RoomAction';
-import { Client, Room as ClientRoom } from 'colyseus.js';
-import Room from 'models/Room';
+import { Client } from 'colyseus.js';
+import { Room } from 'models/Room';
 import Phaser from 'phaser';
 
 export type State = {
   client?: Client;
   events?: Phaser.Events.EventEmitter;
   rooms: Room[];
-  selectedRoom?: ClientRoom<Room>;
+  createdRoomId: string;
 };
 
 const initialState: State = {
   rooms: [],
+  createdRoomId: '',
 };
 
 type InitialClientAction = {
   type: ActionType.INITIAL_CLIENT;
 };
 
-type LoadedSelectedRoomAction = {
-  type: ActionType.LOAD_ROOM;
-  room: ClientRoom<Room>;
+type CreatedRoomAction = {
+  type: ActionType.CREATE_ROOM;
+  roomId: string;
 };
 
-type Action = InitialClientAction | LoadedSelectedRoomAction;
+type Action = InitialClientAction | CreatedRoomAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -34,10 +35,10 @@ const reducer = (state = initialState, action: Action): State => {
         client,
       };
     }
-    case ActionType.LOAD_ROOM: {
+    case ActionType.CREATE_ROOM: {
       return {
         ...state,
-        selectedRoom: action.room,
+        createdRoomId: action.roomId,
       };
     }
     default: {

@@ -1,0 +1,104 @@
+@import "../color";
+
+.playerList {
+  flex: 1;
+  margin-bottom: 15px;
+  position: relative;
+  .content {
+    margin: 10px;
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    background: $grey-6;
+    width: 100%;
+
+  }
+  .header {
+    display: flex;
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    width: calc(100% - 20px);
+    justify-content: space-between;
+    .roomInfo {
+      display: flex;
+      align-items: center;
+      .roomNumber {
+        font-size: 16px;
+        background: $dark-green;
+        margin-right: 10px;
+        border-radius: 5px;
+        padding: 3px 5px;
+      }
+      .roomTitle {
+        font-size: 18px;
+      }
+    }
+  }
+}
+
+.player {
+  // height: calc(100% / 4 - 8px);
+  margin-bottom: 10px;
+  padding: 10px;
+  display: flex;
+  background: $grey-4;
+  &:nth-of-type(odd) {
+    margin-right: 10px;
+    width: calc(100% / 2 - 10px);
+  }
+  &:nth-of-type(even) {
+    width: calc(100% / 2);
+  }
+  &:nth-child(7),
+  &:nth-child(8) {
+    margin-bottom: 0;
+  }
+  .picture {
+    border-radius: 50%;
+    flex: 0 0 calc(100% / 4 - 40px);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin-right: 10px;
+  }
+  .info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1;
+    justify-content: space-between;
+    margin-left: 10px;
+    .playerName {
+      background: $grey-5;
+      font-size: 24px;
+      padding: 8px 10px;
+      border-radius: 5px;
+    }
+    .nowPlayerName {
+      background: $dark-brown;
+    }
+    .notReady {
+      font-size: 26px;
+      color: $grey-0;
+    }
+    .ready {
+      font-size: 26px;
+      color: $warning;
+    }
+    .master {
+      font-size: 28px;
+      display: flex;
+      span {
+        margin-left: 5px;
+      }
+    }
+  }
+  .delete {
+    margin-left: 10px;
+  }
+}
+.nowPlayer {
+  background: $brown;
+}

@@ -1,9 +1,6 @@
-import { Room as ClientRoom } from 'colyseus.js';
-import { Room } from 'models/Room';
-
 export enum ActionType {
   INITIAL_CLIENT = 'INITIAL_CLIENT',
-  LOAD_ROOM = 'LOAD_ROOM',
+  CREATE_ROOM = 'CREATE_ROOM',
 }
 
 export const initialClient = () => {
@@ -12,9 +9,9 @@ export const initialClient = () => {
   };
 };
 
-export const loadRoom = (room: ClientRoom<Room>) => {
+export const createRoom = (roomId: string) => {
   return {
-    type: ActionType.LOAD_ROOM,
-    room,
+    type: ActionType.CREATE_ROOM,
+    roomId,
   };
 };
