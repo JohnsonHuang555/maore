@@ -1,4 +1,0 @@
-{
-  "exec": "ts-node --project tsconfig.json index.ts",
-  "ext": "js ts"
-}
