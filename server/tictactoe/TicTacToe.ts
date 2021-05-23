@@ -5,13 +5,16 @@ import TicTacToeState from './TicTacToeState';
 import { Message } from '../../models/Message';
 import PlayerSelectionCommand from './commands/PlayerSelectionCommand';
 
-export default class TicTacToe extends ServerRoom<TicTacToeState> {
+export default class TicTacToe extends ServerRoom<TicTacToeState, Metadata> {
   private dispatcher = new Dispatcher(this);
 
   onCreate(option: Metadata) {
-    this.setMetadata(option);
     this.maxClients = 2;
+
+    this.setMetadata(option);
     this.setState(new TicTacToeState());
+
+    // 監聽前端的選擇事件
     this.onMessage(
       Message.PlayerSelection,
       (client, message: { index: number }) => {
@@ -25,7 +28,9 @@ export default class TicTacToe extends ServerRoom<TicTacToeState> {
 
   onJoin(client: Client) {
     const idx = this.clients.findIndex((c) => c.sessionId === client.sessionId);
-    client.send(Message.PlayerIndex, {
+
+    // this.dispatcher.dispatch()
+    client.send(Message.JoinRoom, {
       playerIndex: idx,
     });
 

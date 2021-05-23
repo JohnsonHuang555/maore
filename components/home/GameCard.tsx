@@ -36,7 +36,7 @@ const GameCard = (props: GameCardProp) => {
             {game.name}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            {game.breif}
+            {game.brief}
           </Typography>
         </CardContent>
       </CardActionArea>

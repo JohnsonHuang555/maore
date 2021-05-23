@@ -1,5 +1,6 @@
 import { Schema, ArraySchema } from '@colyseus/schema';
 import { GameState } from 'models/Room';
+import { PlayerState } from 'models/Player';
 
 export enum Cell {
   Empty,
@@ -8,6 +9,7 @@ export enum Cell {
 }
 
 export interface TicTacToe extends Schema {
+  players: ArraySchema<PlayerState>;
   board: ArraySchema<Cell>;
   gameState: GameState;
   activePlayer: number;

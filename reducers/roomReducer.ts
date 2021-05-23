@@ -5,14 +5,18 @@ import Phaser from 'phaser';
 
 export type State = {
   client?: Client;
-  events?: Phaser.Events.EventEmitter;
+  events?: Phaser.Events.EventEmitter; // FIXME: 要留？
   rooms: Room[];
   createdRoomId: string;
+  roomPlayers: any[];
+  playerIndex: number;
 };
 
 const initialState: State = {
   rooms: [],
   createdRoomId: '',
+  roomPlayers: [],
+  playerIndex: -1,
 };
 
 type InitialClientAction = {
@@ -24,7 +28,21 @@ type CreatedRoomAction = {
   roomId: string;
 };
 
-type Action = InitialClientAction | CreatedRoomAction;
+type LoadedRoomPlayers = {
+  type: ActionType.LOADED_PLAYERS;
+  roomPlayers: any[];
+};
+
+type SetPlayerIndex = {
+  type: ActionType.SET_PLAYER_INDEX;
+  playerIndex: number;
+};
+
+type Action =
+  | InitialClientAction
+  | CreatedRoomAction
+  | LoadedRoomPlayers
+  | SetPlayerIndex;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -39,6 +57,18 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         createdRoomId: action.roomId,
+      };
+    }
+    case ActionType.LOADED_PLAYERS: {
+      return {
+        ...state,
+        roomPlayers: action.roomPlayers,
+      };
+    }
+    case ActionType.SET_PLAYER_INDEX: {
+      return {
+        ...state,
+        playerIndex: action.playerIndex,
       };
     }
     default: {

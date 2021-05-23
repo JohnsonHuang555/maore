@@ -27,6 +27,7 @@ const fetcher = async (url: string) => {
 const Games = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const { name } = router.query;
   const client = useSelector(clientSelector);
   const createdRoomId = useSelector(createdRoomIdSelector);
   const [rooms, setRooms] = useState<RoomType[]>([]);
@@ -34,7 +35,7 @@ const Games = () => {
 
   // get current game
   const { data: game, error } = useSWR<Game, Error>(
-    () => router.query.name && `/api/game/${router.query.name}`,
+    name ? `/api/game/${router.query.name}` : null,
     fetcher
   );
 
@@ -74,7 +75,7 @@ const Games = () => {
       const metaData: Metadata = {
         roomTitle,
       };
-      const room = await client.joinOrCreate<Room>(game.gamePack, metaData);
+      const room = await client.create<Room>(game.gamePack, metaData);
       dispatch(createRoom(room.id));
     } catch (err) {
       const error = new Error(err);

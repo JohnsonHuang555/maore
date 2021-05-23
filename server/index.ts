@@ -18,7 +18,7 @@ nextApp.prepare().then(() => {
 
   app.use('/colyseus', monitor());
 
-  app.all('*', (req, res) => {
+  app.all('*', (req: any, res: any) => {
     return handle(req, res);
   });
 

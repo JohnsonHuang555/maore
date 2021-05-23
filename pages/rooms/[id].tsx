@@ -8,13 +8,13 @@ import { Message } from 'models/Message';
 import { useRouter } from 'next/router';
 import { Room as ClientRoom } from 'colyseus.js';
 import { Room } from 'models/Room';
-import { initialClient } from 'actions/RoomAction';
+import { initialClient, setPlayerIndex } from 'actions/RoomAction';
 import { Button } from '@material-ui/core';
 import PlayerList from 'components/rooms/PlayerCard';
 
 const Rooms = () => {
-  const router = useRouter();
   const dispatch = useDispatch();
+  const router = useRouter();
   const roomId = router.query.id;
   const createdRoomId = useSelector(createdRoomIdSelector);
   const client = useSelector(clientSelector);
@@ -40,11 +40,29 @@ const Rooms = () => {
   useEffect(() => {
     if (currentRoom) {
       currentRoom.onMessage(
-        Message.PlayerIndex,
-        (message: { playerIndex: number; roomTitle: string }) => {
-          console.log(message);
+        Message.JoinRoom,
+        (message: { playerIndex: number }) => {
+          dispatch(setPlayerIndex(message.playerIndex));
         }
       );
+
+      currentRoom.state.players.onAdd = (player, key) => {
+        console.log(player, key);
+      };
+
+      // currentRoom.state.onChange = (changes) => {
+      //   changes.forEach((change) => {
+      //     const { field, value } = change;
+      //     console.log(change);
+      //     switch (
+      //       field
+      //       // case 'board':
+      //       //   this.events.emit('board-changed', value);
+      //       //   break;
+      //     ) {
+      //     }
+      //   });
+      // };
     }
   }, [currentRoom]);
 

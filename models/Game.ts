@@ -3,7 +3,7 @@ export type Game = {
   name: string;
   minPlayers: number;
   maxPlayers: number;
-  breif: string;
+  brief: string;
   description: string;
   homeImg: string;
   estimateTime: number;
