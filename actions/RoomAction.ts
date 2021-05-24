@@ -3,7 +3,7 @@ import { Metadata, Room } from 'models/Room';
 
 export enum ActionType {
   LOADED_ROOMS = 'LOADED_ROOMS',
-  CREATED_ROOM = 'CREATED_ROOM',
+  LOADED_CURRENT_ROOM = 'LOADED_CURRENT_ROOM',
   LOADED_PLAYERS = 'LOADED_PLAYERS',
   SET_PLAYER_INDEX = 'SET_PLAYER_INDEX',
 }
@@ -15,9 +15,9 @@ export const loadedRooms = (rooms: RoomAvailable<Metadata>[]) => {
   };
 };
 
-export const createdRoom = (room: ClientRoom<Room>) => {
+export const loadedCurrentRoom = (room: ClientRoom<Room>) => {
   return {
-    type: ActionType.CREATED_ROOM,
+    type: ActionType.LOADED_CURRENT_ROOM,
     room,
   };
 };

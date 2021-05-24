@@ -20,6 +20,10 @@ const ServerMiddleware: Middleware<Dispatch> =
           });
           break;
         }
+        case ActionType.JOIN_ROOM: {
+          server.joinRoom(action.roomId);
+          break;
+        }
       }
     }
     return next(action);

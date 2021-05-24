@@ -44,8 +44,7 @@ const Games = () => {
   useEffect(() => {
     if (currentRoom) {
       // 建立完房間跳轉到房間頁
-      console.log(currentRoom);
-      // router.push(`/rooms/${currentRoom.id}`);
+      router.push(`/rooms/${currentRoom.id}`);
     }
   }, [currentRoom]);
 

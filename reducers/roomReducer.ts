@@ -19,7 +19,7 @@ type LoadedRoomAction = {
 };
 
 type CreatedRoomAction = {
-  type: ActionType.CREATED_ROOM;
+  type: ActionType.LOADED_CURRENT_ROOM;
   room: ClientRoom<Room>;
 };
 
@@ -38,7 +38,7 @@ const reducer = (state = initialState, action: Action): State => {
         rooms: action.rooms,
       };
     }
-    case ActionType.CREATED_ROOM: {
+    case ActionType.LOADED_CURRENT_ROOM: {
       return {
         ...state,
         currentRoom: action.room,

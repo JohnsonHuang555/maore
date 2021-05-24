@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Layout from 'components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
-import { createdRoomIdSelector } from 'selectors/roomSelector';
+import { currentRoomIdSelector } from 'selectors/roomSelector';
 import Grid from '@material-ui/core/Grid';
 import styles from 'styles/pages/rooms.module.scss';
 import { Message } from 'models/Message';
@@ -11,58 +11,59 @@ import { Room } from 'models/Room';
 import { setPlayerIndex } from 'actions/RoomAction';
 import { Button } from '@material-ui/core';
 import PlayerList from 'components/rooms/PlayerCard';
-import { initialClient } from 'actions/ServerAction';
+import { initialClient, joinRoom } from 'actions/ServerAction';
 
 const Rooms = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const roomId = router.query.id;
-  const createdRoomId = useSelector(createdRoomIdSelector);
-
-  const [currentRoom, setCurrentRoom] = useState<ClientRoom<Room>>();
+  const currentRoom = useSelector(currentRoomIdSelector);
 
   useEffect(() => {
     dispatch(initialClient());
   }, [dispatch]);
 
   useEffect(() => {
-    const joinRoom = async () => {
-      const room = await client?.joinById<Room>(String(roomId));
-      setCurrentRoom(room);
-    };
-    if (roomId && !createdRoomId) {
-      joinRoom();
+    if (roomId && !currentRoom) {
+      dispatch(joinRoom(String(roomId)));
     }
-  }, [roomId, createdRoomId]);
+    // const joinRoom = async () => {
+    //   const room = await client?.joinById<Room>(String(roomId));
+    //   setCurrentRoom(room);
+    // };
+    // if (roomId && !createdRoomId) {
+    //   joinRoom();
+    // }
+  }, [roomId, currentRoom]);
 
-  useEffect(() => {
-    if (currentRoom) {
-      currentRoom.onMessage(
-        Message.JoinRoom,
-        (message: { playerIndex: number }) => {
-          dispatch(setPlayerIndex(message.playerIndex));
-        }
-      );
+  // useEffect(() => {
+  //   if (currentRoom) {
+  //     currentRoom.onMessage(
+  //       Message.JoinRoom,
+  //       (message: { playerIndex: number }) => {
+  //         dispatch(setPlayerIndex(message.playerIndex));
+  //       }
+  //     );
 
-      currentRoom.state.players.onAdd = (player, key) => {
-        console.log(player, key);
-      };
+  //     currentRoom.state.players.onAdd = (player, key) => {
+  //       console.log(player, key);
+  //     };
 
-      // currentRoom.state.onChange = (changes) => {
-      //   changes.forEach((change) => {
-      //     const { field, value } = change;
-      //     console.log(change);
-      //     switch (
-      //       field
-      //       // case 'board':
-      //       //   this.events.emit('board-changed', value);
-      //       //   break;
-      //     ) {
-      //     }
-      //   });
-      // };
-    }
-  }, [currentRoom]);
+  //     // currentRoom.state.onChange = (changes) => {
+  //     //   changes.forEach((change) => {
+  //     //     const { field, value } = change;
+  //     //     console.log(change);
+  //     //     switch (
+  //     //       field
+  //     //       // case 'board':
+  //     //       //   this.events.emit('board-changed', value);
+  //     //       //   break;
+  //     //     ) {
+  //     //     }
+  //     //   });
+  //     // };
+  //   }
+  // }, [currentRoom]);
 
   return (
     <Layout>
