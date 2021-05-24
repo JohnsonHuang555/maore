@@ -1,30 +1,28 @@
 import { useEffect, useState } from 'react';
 import Layout from 'components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
-import { clientSelector, createdRoomIdSelector } from 'selectors/roomSelector';
+import { createdRoomIdSelector } from 'selectors/roomSelector';
 import Grid from '@material-ui/core/Grid';
 import styles from 'styles/pages/rooms.module.scss';
 import { Message } from 'models/Message';
 import { useRouter } from 'next/router';
 import { Room as ClientRoom } from 'colyseus.js';
 import { Room } from 'models/Room';
-import { initialClient, setPlayerIndex } from 'actions/RoomAction';
+import { setPlayerIndex } from 'actions/RoomAction';
 import { Button } from '@material-ui/core';
 import PlayerList from 'components/rooms/PlayerCard';
+import { initialClient } from 'actions/ServerAction';
 
 const Rooms = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const roomId = router.query.id;
   const createdRoomId = useSelector(createdRoomIdSelector);
-  const client = useSelector(clientSelector);
 
   const [currentRoom, setCurrentRoom] = useState<ClientRoom<Room>>();
 
   useEffect(() => {
-    if (!client) {
-      dispatch(initialClient());
-    }
+    dispatch(initialClient());
   }, [dispatch]);
 
   useEffect(() => {
@@ -32,10 +30,10 @@ const Rooms = () => {
       const room = await client?.joinById<Room>(String(roomId));
       setCurrentRoom(room);
     };
-    if (client && roomId && !createdRoomId) {
+    if (roomId && !createdRoomId) {
       joinRoom();
     }
-  }, [client, roomId, createdRoomId]);
+  }, [roomId, createdRoomId]);
 
   useEffect(() => {
     if (currentRoom) {

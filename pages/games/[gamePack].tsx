@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react';
 import Layout from 'components/Layout';
-import { Game } from 'models/Game';
+import { Game, GameList } from 'models/Game';
 import { useRouter } from 'next/router';
 import Grid from '@material-ui/core/Grid';
 import useSWR from 'swr';
 import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
-import { createRoom } from 'actions/RoomAction';
-import { clientSelector, createdRoomIdSelector } from 'selectors/roomSelector';
-import { Room, Metadata, RoomType } from 'models/Room';
+import { currentRoomIdSelector, roomsSelector } from 'selectors/roomSelector';
 import { Button } from '@material-ui/core';
 import CreateRoom from 'components/games/CreateRoom';
 import { setSnackbar } from 'actions/AppAction';
 import styles from 'styles/pages/game.module.scss';
-import { initialClient } from 'actions/ServerAction';
+import { initialClient, createRoom } from 'actions/ServerAction';
 
 const fetcher = async (url: string) => {
   const res = await fetch(url);
@@ -28,13 +26,14 @@ const fetcher = async (url: string) => {
 const Games = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { name } = router.query;
-  const createdRoomId = useSelector(createdRoomIdSelector);
+  const { gamePack } = router.query;
+  const currentRoom = useSelector(currentRoomIdSelector);
+  const rooms = useSelector(roomsSelector);
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
 
   // get current game
   const { data: game, error } = useSWR<Game, Error>(
-    name ? `/api/game/${router.query.name}` : null,
+    gamePack ? `/api/game/${gamePack}` : null,
     fetcher
   );
 
@@ -42,57 +41,43 @@ const Games = () => {
     dispatch(initialClient());
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   if (client) {
-  //     client
-  //       .getAvailableRooms()
-  //       .then((rooms: any) => {
-  //         console.log(rooms);
-  //         setRooms(rooms);
-  //       })
-  //       .catch((e) => {
-  //         console.error(e);
-  //       });
-  //   }
-  // }, [client]);
-
   useEffect(() => {
-    if (createdRoomId) {
+    if (currentRoom) {
       // 建立完房間跳轉到房間頁
-      router.push(`/rooms/${createdRoomId}`);
+      console.log(currentRoom);
+      // router.push(`/rooms/${currentRoom.id}`);
     }
-  }, [createdRoomId]);
+  }, [currentRoom]);
 
   if (error) return <div>{error.message}</div>;
   if (!game) return <div>Loading...</div>;
 
-  // const onCreateRoom = async (roomTitle: string) => {
-  //   if (!client) {
-  //     return;
-  //   }
-  //   try {
-  //     const metaData: Metadata = {
-  //       roomTitle,
-  //     };
-  //     const room = await client.create<Room>(game.gamePack, metaData);
-  //     dispatch(createRoom(room.id));
-  //   } catch (err) {
-  //     const error = new Error(err);
-  //     dispatch(
-  //       setSnackbar({
-  //         show: true,
-  //         message: error.message,
-  //       })
-  //     );
-  //   }
-  // };
+  const onCreateRoom = async (roomTitle: string) => {
+    try {
+      // const room = await client.create<Room>(game.gamePack, metaData);
+      dispatch(
+        createRoom({
+          gamePack: gamePack as GameList,
+          roomTitle,
+        })
+      );
+    } catch (err) {
+      const error = new Error(err);
+      dispatch(
+        setSnackbar({
+          show: true,
+          message: error.message,
+        })
+      );
+    }
+  };
 
   return (
     <Layout>
       <CreateRoom
         show={showCreateRoomModal}
         onClose={() => setShowCreateRoomModal(false)}
-        onCreateRoom={() => {}}
+        onCreateRoom={onCreateRoom}
       />
       <h2 className="title">{game.name}</h2>
       <Grid container spacing={3} style={{ height: '100%' }}>
@@ -115,9 +100,9 @@ const Games = () => {
           </Button>
         </Grid>
         <Grid item lg={9} xs={8}>
-          {/* {rooms.map((room) => (
-            <div>{room.metadata.roomTitle}</div>
-          ))} */}
+          {rooms.map((room) => (
+            <div>{room.metadata?.roomTitle}</div>
+          ))}
         </Grid>
       </Grid>
     </Layout>

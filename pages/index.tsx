@@ -37,7 +37,7 @@ export default function Home() {
             key={game.id}
             item
             xs={3}
-            onClick={() => router.push(`/games/${game.name}`)}
+            onClick={() => router.push(`/games/${game.gamePack}`)}
           >
             <GameCard game={game} />
           </Grid>

@@ -2,7 +2,7 @@ import { GameList } from 'models/Game';
 
 export enum ActionType {
   INITIAL_CLIENT = 'INITIAL_CLIENT',
-  GET_ROOMS = 'GET_ROOMS',
+  CREATE_ROOM = 'CREATE_ROOM',
 }
 
 export const initialClient = () => {
@@ -11,9 +11,15 @@ export const initialClient = () => {
   };
 };
 
-export const getRooms = (gamePack: GameList) => {
+export type createRoomParams = {
+  gamePack: GameList;
+  roomTitle: string;
+};
+
+export const createRoom = ({ gamePack, roomTitle }: createRoomParams) => {
   return {
-    type: ActionType.GET_ROOMS,
+    type: ActionType.CREATE_ROOM,
     gamePack,
+    roomTitle,
   };
 };
