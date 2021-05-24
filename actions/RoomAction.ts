@@ -1,13 +1,17 @@
+import { RoomAvailable } from 'colyseus.js';
+import { Metadata } from 'models/Room';
+
 export enum ActionType {
-  INITIAL_CLIENT = 'INITIAL_CLIENT',
+  LOADED_ROOMS = 'LOADED_ROOMS',
   CREATE_ROOM = 'CREATE_ROOM',
   LOADED_PLAYERS = 'LOADED_PLAYERS',
   SET_PLAYER_INDEX = 'SET_PLAYER_INDEX',
 }
 
-export const initialClient = () => {
+export const loadedRoom = (rooms: RoomAvailable<Metadata>[]) => {
   return {
-    type: ActionType.INITIAL_CLIENT,
+    type: ActionType.LOADED_ROOMS,
+    rooms,
   };
 };
 

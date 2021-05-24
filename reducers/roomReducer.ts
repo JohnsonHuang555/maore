@@ -1,12 +1,10 @@
 import { ActionType } from 'actions/RoomAction';
-import { Client } from 'colyseus.js';
-import { Room } from 'models/Room';
+import { Client, RoomAvailable } from 'colyseus.js';
+import { Metadata } from 'models/Room';
 import Phaser from 'phaser';
 
 export type State = {
-  client?: Client;
-  events?: Phaser.Events.EventEmitter; // FIXME: 要留？
-  rooms: Room[];
+  rooms: RoomAvailable<Metadata>[];
   createdRoomId: string;
   roomPlayers: any[];
   playerIndex: number;
@@ -19,8 +17,9 @@ const initialState: State = {
   playerIndex: -1,
 };
 
-type InitialClientAction = {
-  type: ActionType.INITIAL_CLIENT;
+type LoadedRoomAction = {
+  type: ActionType.LOADED_ROOMS;
+  rooms: RoomAvailable<Metadata>[];
 };
 
 type CreatedRoomAction = {
@@ -39,18 +38,17 @@ type SetPlayerIndex = {
 };
 
 type Action =
-  | InitialClientAction
+  | LoadedRoomAction
   | CreatedRoomAction
   | LoadedRoomPlayers
   | SetPlayerIndex;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
-    case ActionType.INITIAL_CLIENT: {
-      const client = new Client('ws://localhost:3000');
+    case ActionType.LOADED_ROOMS: {
       return {
         ...state,
-        client,
+        rooms: action.rooms,
       };
     }
     case ActionType.CREATE_ROOM: {

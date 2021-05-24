@@ -13,10 +13,9 @@ export enum GameState {
 }
 
 export interface Room extends Schema {
-  players: ArraySchema<PlayerState>;
-  gameState: GameState;
-  activePlayer: number;
-  winningPlayer: number;
+  gameState: GameState; // 遊戲狀態
+  activePlayer: number; // 當前玩家
+  winningPlayer: number; // 勝利玩家
 }
 
 export type Metadata = {
