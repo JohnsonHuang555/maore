@@ -1,4 +1,9 @@
-import { createdRoom, initialRoom, loadedRooms } from 'actions/RoomAction';
+import {
+  createdRoom,
+  initialRoom,
+  loadedRooms,
+  updatePlayerIndex,
+} from 'actions/RoomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
 import { Message } from 'models/Message';
@@ -34,21 +39,17 @@ export default class RoomServer {
   }
 
   private handleRoomChange(room: ClientRoom<Room>) {
+    room.onMessage(Message.PlayerIndex, (message: { playerIndex: number }) => {
+      this.dispatch(updatePlayerIndex(message.playerIndex));
+    });
+
     const players: Player[] = [];
     room.state.players.onAdd = (item) => {
-      const { id, isMaster, isReady, name, playerIndex } = item;
-      players.push({
-        id,
-        isMaster,
-        isReady,
-        name,
-        playerIndex,
-      });
+      players.push(item);
     };
     room.state.onChange = (changes) => {
       changes.forEach((change) => {
         const { field, value } = change;
-        console.log(change);
         switch (field) {
           case 'roomTitle': {
             this.dispatch(

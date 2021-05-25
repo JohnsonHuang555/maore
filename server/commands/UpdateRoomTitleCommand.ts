@@ -1,5 +1,5 @@
 import { Command } from '@colyseus/command';
-import { TicTacToe } from '../TicTacToeState';
+import { TicTacToe } from '../tictactoe/TicTacToeState';
 
 type Payload = {
   roomTitle: string;

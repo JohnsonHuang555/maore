@@ -1,6 +1,6 @@
 import { Command } from '@colyseus/command';
-import { PlayerState } from '../../types/PlayerState';
-import { TicTacToe } from '../TicTacToeState';
+import { PlayerState } from '../types/PlayerState';
+import { TicTacToe } from '../tictactoe/TicTacToeState';
 
 export type Payload = {
   id: string;

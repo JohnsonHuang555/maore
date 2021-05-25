@@ -35,7 +35,16 @@ type InitailRoom = {
   roomTitle: string;
 };
 
-type Action = LoadedRoomsAction | CreatedRoomAction | InitailRoom;
+type UpdatePlayerIndex = {
+  type: ActionType.UPDATE_PLAYER_INDEX;
+  playerIndex: number;
+};
+
+type Action =
+  | LoadedRoomsAction
+  | CreatedRoomAction
+  | InitailRoom
+  | UpdatePlayerIndex;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -56,6 +65,12 @@ const reducer = (state = initialState, action: Action): State => {
         ...state,
         players: action.players,
         roomTitle: action.roomTitle,
+      };
+    }
+    case ActionType.UPDATE_PLAYER_INDEX: {
+      return {
+        ...state,
+        playerIndex: action.playerIndex,
       };
     }
     default: {

@@ -15,6 +15,7 @@ export interface TicTacToe extends Schema {
   gameState: GameState;
   activePlayer: number;
   winningPlayer: number;
+  playerIndex: number;
 }
 
 export default class TicTacToeState extends Schema implements TicTacToe {
@@ -35,6 +36,10 @@ export default class TicTacToeState extends Schema implements TicTacToe {
 
   @type('number')
   winningPlayer = -1;
+
+  // 玩家順序號
+  @type('number')
+  playerIndex = -1;
 
   constructor() {
     super();

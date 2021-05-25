@@ -1,5 +1,5 @@
 import { Schema, type } from '@colyseus/schema';
-import { Payload } from '../tictactoe/commands/PlayerJoinedCommand';
+import { Payload } from '../commands/PlayerJoinedCommand';
 
 // An abstract player object, demonstrating a potential 2D world position
 export class PlayerState extends Schema {
