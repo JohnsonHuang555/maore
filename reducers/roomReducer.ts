@@ -1,34 +1,41 @@
 import { ActionType } from 'actions/RoomAction';
 import { Room as ClientRoom, RoomAvailable } from 'colyseus.js';
+import { Player } from 'models/Player';
 import { Metadata, Room } from 'models/Room';
 
 export type State = {
   rooms: RoomAvailable<Metadata>[];
-  currentRoom?: ClientRoom<Room>;
+  createdRoomId: string;
+  players: Player[];
   playerIndex: number;
+  roomTitle: string;
 };
 
 const initialState: State = {
   rooms: [],
   playerIndex: -1,
+  createdRoomId: '',
+  players: [],
+  roomTitle: '',
 };
 
-type LoadedRoomAction = {
+type LoadedRoomsAction = {
   type: ActionType.LOADED_ROOMS;
   rooms: RoomAvailable<Metadata>[];
 };
 
 type CreatedRoomAction = {
-  type: ActionType.LOADED_CURRENT_ROOM;
-  room: ClientRoom<Room>;
+  type: ActionType.CREATED_ROOM;
+  roomId: string;
 };
 
-type SetPlayerIndex = {
-  type: ActionType.SET_PLAYER_INDEX;
-  playerIndex: number;
+type InitailRoom = {
+  type: ActionType.INITIAL_ROOM;
+  players: Player[];
+  roomTitle: string;
 };
 
-type Action = LoadedRoomAction | CreatedRoomAction | SetPlayerIndex;
+type Action = LoadedRoomsAction | CreatedRoomAction | InitailRoom;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -38,16 +45,17 @@ const reducer = (state = initialState, action: Action): State => {
         rooms: action.rooms,
       };
     }
-    case ActionType.LOADED_CURRENT_ROOM: {
+    case ActionType.CREATED_ROOM: {
       return {
         ...state,
-        currentRoom: action.room,
+        createdRoomId: action.roomId,
       };
     }
-    case ActionType.SET_PLAYER_INDEX: {
+    case ActionType.INITIAL_ROOM: {
       return {
         ...state,
-        playerIndex: action.playerIndex,
+        players: action.players,
+        roomTitle: action.roomTitle,
       };
     }
     default: {

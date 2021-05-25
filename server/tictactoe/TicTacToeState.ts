@@ -1,11 +1,28 @@
 import { Schema, ArraySchema, type } from '@colyseus/schema';
-import { PlayerState } from '../../models/Player';
+import { PlayerState } from '../types/PlayerState';
 import { GameState } from '../../models/Room';
-import { TicTacToe } from '../../models/tic_tac_toe/TicTacToe';
+
+export enum Cell {
+  Empty,
+  X,
+  O,
+}
+
+export interface TicTacToe extends Schema {
+  players: ArraySchema<PlayerState>;
+  roomTitle: string;
+  board: ArraySchema<Cell>;
+  gameState: GameState;
+  activePlayer: number;
+  winningPlayer: number;
+}
 
 export default class TicTacToeState extends Schema implements TicTacToe {
   @type([PlayerState])
   players = new ArraySchema<PlayerState>();
+
+  @type('string')
+  roomTitle = '';
 
   @type('number')
   gameState = GameState.WaitingForPlayers;

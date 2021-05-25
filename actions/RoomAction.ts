@@ -1,11 +1,11 @@
 import { Room as ClientRoom, RoomAvailable } from 'colyseus.js';
+import { Player } from 'models/Player';
 import { Metadata, Room } from 'models/Room';
 
 export enum ActionType {
   LOADED_ROOMS = 'LOADED_ROOMS',
-  LOADED_CURRENT_ROOM = 'LOADED_CURRENT_ROOM',
-  LOADED_PLAYERS = 'LOADED_PLAYERS',
-  SET_PLAYER_INDEX = 'SET_PLAYER_INDEX',
+  CREATED_ROOM = 'CREATED_ROOM',
+  INITIAL_ROOM = 'INITIAL_ROOM',
 }
 
 export const loadedRooms = (rooms: RoomAvailable<Metadata>[]) => {
@@ -15,23 +15,22 @@ export const loadedRooms = (rooms: RoomAvailable<Metadata>[]) => {
   };
 };
 
-export const loadedCurrentRoom = (room: ClientRoom<Room>) => {
+export const createdRoom = (roomId: string) => {
   return {
-    type: ActionType.LOADED_CURRENT_ROOM,
-    room,
+    type: ActionType.CREATED_ROOM,
+    roomId,
   };
 };
 
-export const loadRoomPlayers = (roomPlayers: any[]) => {
-  return {
-    type: ActionType.LOADED_PLAYERS,
-    roomPlayers,
-  };
+export type initialRoomParams = {
+  players: Player[];
+  roomTitle: string;
 };
 
-export const setPlayerIndex = (playerIndex: number) => {
+export const initialRoom = ({ players, roomTitle }: initialRoomParams) => {
   return {
-    type: ActionType.SET_PLAYER_INDEX,
-    playerIndex,
+    type: ActionType.INITIAL_ROOM,
+    players,
+    roomTitle,
   };
 };

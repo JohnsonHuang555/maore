@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import useSWR from 'swr';
 import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
-import { currentRoomIdSelector, roomsSelector } from 'selectors/roomSelector';
+import { createdRoomIdSelector, roomsSelector } from 'selectors/roomSelector';
 import { Button } from '@material-ui/core';
 import CreateRoom from 'components/games/CreateRoom';
 import { setSnackbar } from 'actions/AppAction';
@@ -27,7 +27,7 @@ const Games = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { gamePack } = router.query;
-  const currentRoom = useSelector(currentRoomIdSelector);
+  const createdRoomId = useSelector(createdRoomIdSelector);
   const rooms = useSelector(roomsSelector);
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
 
@@ -38,26 +38,28 @@ const Games = () => {
   );
 
   useEffect(() => {
-    dispatch(initialClient());
-  }, [dispatch]);
+    if (gamePack) {
+      dispatch(initialClient(gamePack as GameList));
+    }
+  }, [dispatch, gamePack]);
 
   useEffect(() => {
-    if (currentRoom) {
+    if (createdRoomId) {
       // 建立完房間跳轉到房間頁
-      router.push(`/rooms/${currentRoom.id}`);
+      router.push(`/rooms/${createdRoomId}`);
     }
-  }, [currentRoom]);
+  }, [createdRoomId]);
 
   if (error) return <div>{error.message}</div>;
   if (!game) return <div>Loading...</div>;
 
   const onCreateRoom = async (roomTitle: string) => {
     try {
-      // const room = await client.create<Room>(game.gamePack, metaData);
       dispatch(
         createRoom({
           gamePack: gamePack as GameList,
           roomTitle,
+          playerName: 'Johnson', // TODO: name
         })
       );
     } catch (err) {

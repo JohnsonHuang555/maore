@@ -1,16 +1,16 @@
 import { Command } from '@colyseus/command';
-import { TicTacToe } from '../../../models/tic_tac_toe/TicTacToe';
-import { Client } from 'colyseus';
+import { PlayerState } from '../../types/PlayerState';
+import { TicTacToe } from '../TicTacToeState';
 
-type Payload = {
-  client: Client;
-  index: number;
+export type Payload = {
+  id: string;
+  name: string;
+  playerIndex: number;
+  isMaster: boolean;
 };
 
 export default class PlayerJoinedCommand extends Command<TicTacToe> {
   execute(data: Payload) {
-    const { client } = data;
-    const players = this.room.state.players;
-    // players.push({ })
+    this.room.state.players.push(new PlayerState(data));
   }
 }

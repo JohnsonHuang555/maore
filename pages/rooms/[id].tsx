@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 import Layout from 'components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
-import { currentRoomIdSelector } from 'selectors/roomSelector';
+import { createdRoomIdSelector } from 'selectors/roomSelector';
 import Grid from '@material-ui/core/Grid';
 import styles from 'styles/pages/rooms.module.scss';
 import { Message } from 'models/Message';
 import { useRouter } from 'next/router';
 import { Room as ClientRoom } from 'colyseus.js';
 import { Room } from 'models/Room';
-import { setPlayerIndex } from 'actions/RoomAction';
 import { Button } from '@material-ui/core';
 import PlayerList from 'components/rooms/PlayerCard';
 import { initialClient, joinRoom } from 'actions/ServerAction';
@@ -17,53 +16,17 @@ const Rooms = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const roomId = router.query.id;
-  const currentRoom = useSelector(currentRoomIdSelector);
+  const createdRoomId = useSelector(createdRoomIdSelector);
 
   useEffect(() => {
     dispatch(initialClient());
   }, [dispatch]);
 
   useEffect(() => {
-    if (roomId && !currentRoom) {
-      dispatch(joinRoom(String(roomId)));
+    if (roomId && !createdRoomId) {
+      dispatch(joinRoom(String(roomId), 'Alice'));
     }
-    // const joinRoom = async () => {
-    //   const room = await client?.joinById<Room>(String(roomId));
-    //   setCurrentRoom(room);
-    // };
-    // if (roomId && !createdRoomId) {
-    //   joinRoom();
-    // }
-  }, [roomId, currentRoom]);
-
-  // useEffect(() => {
-  //   if (currentRoom) {
-  //     currentRoom.onMessage(
-  //       Message.JoinRoom,
-  //       (message: { playerIndex: number }) => {
-  //         dispatch(setPlayerIndex(message.playerIndex));
-  //       }
-  //     );
-
-  //     currentRoom.state.players.onAdd = (player, key) => {
-  //       console.log(player, key);
-  //     };
-
-  //     // currentRoom.state.onChange = (changes) => {
-  //     //   changes.forEach((change) => {
-  //     //     const { field, value } = change;
-  //     //     console.log(change);
-  //     //     switch (
-  //     //       field
-  //     //       // case 'board':
-  //     //       //   this.events.emit('board-changed', value);
-  //     //       //   break;
-  //     //     ) {
-  //     //     }
-  //     //   });
-  //     // };
-  //   }
-  // }, [currentRoom]);
+  }, [roomId, createdRoomId]);
 
   return (
     <Layout>
