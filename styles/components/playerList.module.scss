@@ -12,38 +12,15 @@
     align-content: flex-start;
     background: $grey-6;
     width: 100%;
-
-  }
-  .header {
-    display: flex;
-    position: absolute;
-    top: 5px;
-    left: 10px;
-    width: calc(100% - 20px);
-    justify-content: space-between;
-    .roomInfo {
-      display: flex;
-      align-items: center;
-      .roomNumber {
-        font-size: 16px;
-        background: $dark-green;
-        margin-right: 10px;
-        border-radius: 5px;
-        padding: 3px 5px;
-      }
-      .roomTitle {
-        font-size: 18px;
-      }
-    }
   }
 }
 
 .player {
-  // height: calc(100% / 4 - 8px);
   margin-bottom: 10px;
   padding: 10px;
   display: flex;
   background: $grey-4;
+  border-radius: 5px;
   &:nth-of-type(odd) {
     margin-right: 10px;
     width: calc(100% / 2 - 10px);
@@ -75,6 +52,7 @@
       font-size: 24px;
       padding: 8px 10px;
       border-radius: 5px;
+      margin-bottom: 6px;
     }
     .nowPlayerName {
       background: $dark-brown;

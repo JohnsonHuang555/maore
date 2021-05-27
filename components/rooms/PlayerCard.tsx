@@ -1,25 +1,19 @@
 import { Stars, AccountCircle } from '@material-ui/icons';
 import Icon from 'components/Icon';
+import { Player } from 'models/Player';
 import styles from 'styles/components/playerList.module.scss';
 
 type PlayerListProps = {
-  // roomInfo: Room;
+  players: Player[];
   isNowPlayer: (playerId: string) => boolean;
 };
 
 const PlayerList = (props: PlayerListProps) => {
-  const { isNowPlayer } = props;
+  const { players, isNowPlayer } = props;
 
   return (
     <>
-      {[
-        { id: 1, name: 'test', isMaster: true, isReady: true },
-        { id: 2, name: 'test1', isMaster: false, isReady: true },
-        { id: 3, name: 'test1', isMaster: false, isReady: false },
-        { id: 4, name: 'test1', isMaster: false, isReady: false },
-        { id: 5, name: 'test1', isMaster: false, isReady: false },
-        { id: 6, name: 'test1', isMaster: false, isReady: false },
-      ].map((player: any) => (
+      {players.map((player: any) => (
         <div
           key={player.id}
           className={`${styles.player} ${

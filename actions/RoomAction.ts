@@ -7,6 +7,7 @@ export enum ActionType {
   CREATED_ROOM = 'CREATED_ROOM',
   INITIAL_ROOM = 'INITIAL_ROOM',
   UPDATE_PLAYER_INDEX = 'UPDATE_PLAYER_INDEX',
+  ADD_PLAYER = 'ADD_PLAYER',
 }
 
 export const loadedRooms = (rooms: RoomAvailable<Metadata>[]) => {
@@ -24,15 +25,20 @@ export const createdRoom = (roomId: string) => {
 };
 
 export type initialRoomParams = {
-  players: Player[];
   roomTitle: string;
 };
 
-export const initialRoom = ({ players, roomTitle }: initialRoomParams) => {
+export const initialRoom = ({ roomTitle }: initialRoomParams) => {
   return {
     type: ActionType.INITIAL_ROOM,
-    players,
     roomTitle,
+  };
+};
+
+export const addPlayer = (player: Player) => {
+  return {
+    type: ActionType.ADD_PLAYER,
+    player,
   };
 };
 

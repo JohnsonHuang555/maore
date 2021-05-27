@@ -10,10 +10,30 @@
       display: flex;
       flex-wrap: wrap;
       align-content: flex-start;
+      height: 100%;
+      width: 100%;
+      background-color: $grey-6;
+      border-radius: 5px;
     }
   }
   .messages {
     flex: 0.4;
+    display: flex;
+    flex-direction: column;
+    .messageContent {
+      background-color: $grey-6;
+      border-radius: 5px;
+      height: 100%;
+      width: 100%;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      .message {
+        margin-bottom: 5px;
+        letter-spacing: 2px;
+        font-size: 16px;
+      }
+    }
   }
 }
 
@@ -24,6 +44,10 @@
   .settings {
     height: 100%;
     margin-bottom: 10px;
+    overflow-x: auto;
+  }
+  .readyGame {
+    color: white;
   }
 }
 

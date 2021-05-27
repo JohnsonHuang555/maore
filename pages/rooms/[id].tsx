@@ -1,22 +1,25 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Layout from 'components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
-import { createdRoomIdSelector } from 'selectors/roomSelector';
+import {
+  createdRoomIdSelector,
+  playersSelector,
+  roomInfoSelector,
+} from 'selectors/roomSelector';
 import Grid from '@material-ui/core/Grid';
-import styles from 'styles/pages/rooms.module.scss';
-import { Message } from 'models/Message';
 import { useRouter } from 'next/router';
-import { Room as ClientRoom } from 'colyseus.js';
-import { Room } from 'models/Room';
-import { Button } from '@material-ui/core';
+import { Button, TextField } from '@material-ui/core';
 import PlayerList from 'components/rooms/PlayerCard';
 import { initialClient, joinRoom } from 'actions/ServerAction';
+import styles from 'styles/pages/rooms.module.scss';
 
 const Rooms = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const roomId = router.query.id;
   const createdRoomId = useSelector(createdRoomIdSelector);
+  const players = useSelector(playersSelector);
+  const roomInfo = useSelector(roomInfoSelector);
 
   useEffect(() => {
     dispatch(initialClient());
@@ -30,20 +33,40 @@ const Rooms = () => {
 
   return (
     <Layout>
-      <h2 className="title">測試</h2>
+      <h2 className="title">{roomInfo.title}</h2>
       <Grid container spacing={3} style={{ height: '100%' }}>
-        <Grid item lg={9} className={styles.leftArea}>
+        <Grid item lg={9} xs={9} className={styles.leftArea}>
           <div className={`${styles.playerList} ${styles.block}`}>
             <div className={styles.playerContent}>
-              <PlayerList isNowPlayer={(pid) => true} />
+              <PlayerList players={players} isNowPlayer={(pid) => true} />
             </div>
           </div>
-          <div className={`${styles.messages} ${styles.block}`}>message</div>
+          <div className={`${styles.messages} ${styles.block}`}>
+            <div className={styles.messageContent}>
+              <span className={styles.message}>笑死</span>
+              <span className={styles.message}>快開始阿</span>
+              <span className={styles.message}>單挑</span>
+              <span className={styles.message}>sp4</span>
+            </div>
+            <TextField
+              id="outlined-basic"
+              label="寫點什麼吧..."
+              variant="outlined"
+              size="small"
+            />
+          </div>
         </Grid>
-        <Grid item lg={3}>
+        <Grid item lg={3} xs={3}>
           <div className={`${styles.block} ${styles.rightArea}`}>
             <div className={`${styles.content} ${styles.settings}`}>123</div>
-            <Button variant="outlined" size="large" onClick={() => {}}>
+            <Button
+              style={{ marginBottom: '10px' }}
+              variant="contained"
+              color="secondary"
+              size="large"
+              className={styles.readyGame}
+              onClick={() => {}}
+            >
               準備遊戲
             </Button>
             <Button variant="outlined" size="large" onClick={() => {}}>

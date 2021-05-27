@@ -10,8 +10,9 @@ import { createdRoomIdSelector, roomsSelector } from 'selectors/roomSelector';
 import { Button } from '@material-ui/core';
 import CreateRoom from 'components/games/CreateRoom';
 import { setSnackbar } from 'actions/AppAction';
-import styles from 'styles/pages/game.module.scss';
 import { initialClient, createRoom } from 'actions/ServerAction';
+import RoomCard from 'components/games/RoomCard';
+import styles from 'styles/pages/game.module.scss';
 
 const fetcher = async (url: string) => {
   const res = await fetch(url);
@@ -92,17 +93,31 @@ const Games = () => {
           />
           <p className={styles.description}>{game.description}</p>
           <Button
-            variant="outlined"
             size="large"
             className={styles.createRoom}
+            variant="contained"
+            color="secondary"
             onClick={() => setShowCreateRoomModal(true)}
           >
             建立房間
           </Button>
         </Grid>
-        <Grid item lg={9} xs={8}>
+        <Grid
+          item
+          lg={9}
+          xs={8}
+          container
+          spacing={3}
+          style={{ alignContent: 'flex-start' }}
+        >
           {rooms.map((room) => (
-            <div>{room.metadata?.roomTitle}</div>
+            <RoomCard
+              key={room.roomId}
+              title={room.metadata?.roomTitle as string}
+              maxPlayers={room.maxClients}
+              nowPlayers={room.clients}
+              joinRoom={() => router.push(`/rooms/${room.roomId}`)}
+            />
           ))}
         </Grid>
       </Grid>

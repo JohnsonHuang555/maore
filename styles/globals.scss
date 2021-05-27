@@ -7,3 +7,11 @@ html, body {
   border-bottom: 4px double white;
   padding-bottom: 10px;
 }
+
+.MuiFormLabel-root.Mui-focused {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border-color: rgba(255, 255, 255, 0.23) !important;
+}

@@ -1,4 +1,5 @@
 import {
+  addPlayer,
   createdRoom,
   initialRoom,
   loadedRooms,
@@ -43,18 +44,17 @@ export default class RoomServer {
       this.dispatch(updatePlayerIndex(message.playerIndex));
     });
 
-    const players: Player[] = [];
     room.state.players.onAdd = (item) => {
-      players.push(item);
+      this.dispatch(addPlayer(item));
     };
     room.state.onChange = (changes) => {
       changes.forEach((change) => {
         const { field, value } = change;
         switch (field) {
+          // initial room
           case 'roomTitle': {
             this.dispatch(
               initialRoom({
-                players,
                 roomTitle: value,
               })
             );

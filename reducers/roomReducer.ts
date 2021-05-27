@@ -1,7 +1,7 @@
 import { ActionType } from 'actions/RoomAction';
-import { Room as ClientRoom, RoomAvailable } from 'colyseus.js';
+import { RoomAvailable } from 'colyseus.js';
 import { Player } from 'models/Player';
-import { Metadata, Room } from 'models/Room';
+import { Metadata } from 'models/Room';
 
 export type State = {
   rooms: RoomAvailable<Metadata>[];
@@ -29,22 +29,27 @@ type CreatedRoomAction = {
   roomId: string;
 };
 
-type InitailRoom = {
+type InitailRoomAction = {
   type: ActionType.INITIAL_ROOM;
-  players: Player[];
   roomTitle: string;
 };
 
-type UpdatePlayerIndex = {
+type UpdatePlayerIndexAction = {
   type: ActionType.UPDATE_PLAYER_INDEX;
   playerIndex: number;
+};
+
+type AddPlayerAction = {
+  type: ActionType.ADD_PLAYER;
+  player: Player;
 };
 
 type Action =
   | LoadedRoomsAction
   | CreatedRoomAction
-  | InitailRoom
-  | UpdatePlayerIndex;
+  | InitailRoomAction
+  | UpdatePlayerIndexAction
+  | AddPlayerAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -63,7 +68,6 @@ const reducer = (state = initialState, action: Action): State => {
     case ActionType.INITIAL_ROOM: {
       return {
         ...state,
-        players: action.players,
         roomTitle: action.roomTitle,
       };
     }
@@ -71,6 +75,12 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         playerIndex: action.playerIndex,
+      };
+    }
+    case ActionType.ADD_PLAYER: {
+      return {
+        ...state,
+        players: [...state.players, action.player],
       };
     }
     default: {
