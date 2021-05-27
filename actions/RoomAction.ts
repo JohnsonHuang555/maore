@@ -1,6 +1,6 @@
-import { Room as ClientRoom, RoomAvailable } from 'colyseus.js';
+import { RoomAvailable } from 'colyseus.js';
 import { Player } from 'models/Player';
-import { Metadata, Room } from 'models/Room';
+import { Metadata } from 'models/Room';
 
 export enum ActionType {
   LOADED_ROOMS = 'LOADED_ROOMS',
@@ -8,6 +8,7 @@ export enum ActionType {
   INITIAL_ROOM = 'INITIAL_ROOM',
   UPDATE_PLAYER_INDEX = 'UPDATE_PLAYER_INDEX',
   ADD_PLAYER = 'ADD_PLAYER',
+  REMOVE_PLAYER = 'REMOVE_PLAYER',
 }
 
 export const loadedRooms = (rooms: RoomAvailable<Metadata>[]) => {
@@ -39,6 +40,13 @@ export const addPlayer = (player: Player) => {
   return {
     type: ActionType.ADD_PLAYER,
     player,
+  };
+};
+
+export const removePlayer = (id: string) => {
+  return {
+    type: ActionType.REMOVE_PLAYER,
+    id,
   };
 };
 

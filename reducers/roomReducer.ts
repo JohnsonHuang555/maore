@@ -44,12 +44,18 @@ type AddPlayerAction = {
   player: Player;
 };
 
+type RemovePlayerAction = {
+  type: ActionType.REMOVE_PLAYER;
+  id: string;
+};
+
 type Action =
   | LoadedRoomsAction
   | CreatedRoomAction
   | InitailRoomAction
   | UpdatePlayerIndexAction
-  | AddPlayerAction;
+  | AddPlayerAction
+  | RemovePlayerAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -81,6 +87,14 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         players: [...state.players, action.player],
+      };
+    }
+    case ActionType.REMOVE_PLAYER: {
+      const newPlayers = state.players.filter((p) => p.id !== action.id);
+      return {
+        ...state,
+        players: newPlayers,
+        createdRoomId: '',
       };
     }
     default: {

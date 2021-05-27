@@ -29,6 +29,10 @@ const ServerMiddleware: Middleware<Dispatch> =
           });
           break;
         }
+        case ActionType.LEAVE_ROOM: {
+          server.leaveRoom();
+          break;
+        }
       }
     }
     return next(action);

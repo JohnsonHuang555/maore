@@ -1,23 +1,32 @@
 import { Stars, AccountCircle } from '@material-ui/icons';
 import Icon from 'components/Icon';
 import { Player } from 'models/Player';
+import { useSelector } from 'react-redux';
+import { playerIndexSelector } from 'selectors/roomSelector';
 import styles from 'styles/components/playerList.module.scss';
 
 type PlayerListProps = {
   players: Player[];
-  isNowPlayer: (playerId: string) => boolean;
 };
 
 const PlayerList = (props: PlayerListProps) => {
-  const { players, isNowPlayer } = props;
+  const { players } = props;
+  const playerIndex = useSelector(playerIndexSelector);
+
+  const isNowPlayer = (idx: number) => {
+    if (idx === playerIndex) {
+      return true;
+    }
+    return false;
+  };
 
   return (
     <>
-      {players.map((player: any) => (
+      {players.map((player: Player) => (
         <div
           key={player.id}
           className={`${styles.player} ${
-            isNowPlayer(player.id) ? styles.nowPlayer : ''
+            isNowPlayer(player.playerIndex) ? styles.nowPlayer : ''
           }`}
         >
           <Icon customStyles={{ width: '50px', height: '50px' }}>
@@ -29,7 +38,7 @@ const PlayerList = (props: PlayerListProps) => {
           <div className={styles.info}>
             <div
               className={`${styles.playerName} ${
-                isNowPlayer(player.id) ? styles.nowPlayerName : ''
+                isNowPlayer(player.playerIndex) ? styles.nowPlayerName : ''
               }`}
             >
               {player.name}

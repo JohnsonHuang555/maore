@@ -1,11 +1,12 @@
 import { Client, Room } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
-import { GameState, Metadata } from '../../models/Room';
+import { Metadata } from '../../models/Room';
 import TicTacToeState from './TicTacToeState';
 import { Message } from '../../models/Message';
 import PlayerSelectionCommand from './commands/PlayerSelectionCommand';
 import PlayerJoinedCommand from '../commands/PlayerJoinedCommand';
 import UpdateRoomTitleCommand from '../commands/UpdateRoomTitleCommand';
+import PlayerLeftCommand from '../commands/PlayerLeftCommand';
 
 export default class TicTacToe extends Room<TicTacToeState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -38,17 +39,23 @@ export default class TicTacToe extends Room<TicTacToeState, Metadata> {
       roomTitle: this.metadata.roomTitle,
     });
 
+    const isMaster = this.clients.length === 1;
     // update players
     this.dispatcher.dispatch(new PlayerJoinedCommand(), {
       id: client.id,
       name: option.playerName,
-      isMaster: true,
+      isMaster,
       playerIndex: idx,
     });
 
-    // if (this.clients.length >= 2) {
-    //   this.state.gameState = GameState.Playing;
-    //   this.lock();
-    // }
+    if (this.clients.length === 2) {
+      this.lock();
+    }
+  }
+
+  onLeave(client: Client) {
+    // update players
+    this.dispatcher.dispatch(new PlayerLeftCommand(), { playerId: client.id });
+    this.unlock();
   }
 }

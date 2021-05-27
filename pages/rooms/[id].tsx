@@ -3,6 +3,7 @@ import Layout from 'components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createdRoomIdSelector,
+  playerIndexSelector,
   playersSelector,
   roomInfoSelector,
 } from 'selectors/roomSelector';
@@ -10,7 +11,7 @@ import Grid from '@material-ui/core/Grid';
 import { useRouter } from 'next/router';
 import { Button, TextField } from '@material-ui/core';
 import PlayerList from 'components/rooms/PlayerCard';
-import { initialClient, joinRoom } from 'actions/ServerAction';
+import { initialClient, joinRoom, leaveRoom } from 'actions/ServerAction';
 import styles from 'styles/pages/rooms.module.scss';
 
 const Rooms = () => {
@@ -20,6 +21,24 @@ const Rooms = () => {
   const createdRoomId = useSelector(createdRoomIdSelector);
   const players = useSelector(playersSelector);
   const roomInfo = useSelector(roomInfoSelector);
+  const playerIndex = useSelector(playerIndexSelector);
+
+  // component did mount
+  useEffect(() => {
+    const leaveRoomHandler = () => {
+      dispatch(leaveRoom());
+    };
+    const beforeLeaveRoom = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('unload', leaveRoomHandler);
+    window.addEventListener('beforeunload', beforeLeaveRoom);
+    return () => {
+      window.removeEventListener('unload', leaveRoomHandler);
+      window.removeEventListener('beforeunload', beforeLeaveRoom);
+    };
+  }, []);
 
   useEffect(() => {
     dispatch(initialClient());
@@ -38,7 +57,7 @@ const Rooms = () => {
         <Grid item lg={9} xs={9} className={styles.leftArea}>
           <div className={`${styles.playerList} ${styles.block}`}>
             <div className={styles.playerContent}>
-              <PlayerList players={players} isNowPlayer={(pid) => true} />
+              <PlayerList players={players} />
             </div>
           </div>
           <div className={`${styles.messages} ${styles.block}`}>

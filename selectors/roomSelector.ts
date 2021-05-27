@@ -10,3 +10,6 @@ export const roomInfoSelector = (store: StoreState) => {
     title,
   };
 };
+
+export const playerIndexSelector = (store: StoreState) =>
+  store.room.playerIndex;

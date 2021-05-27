@@ -4,6 +4,7 @@ export enum ActionType {
   INITIAL_CLIENT = 'INITIAL_CLIENT',
   JOIN_ROOM = 'JOIN_ROOM',
   CREATE_ROOM = 'CREATE_ROOM',
+  LEAVE_ROOM = 'LEAVE_ROOM',
 }
 
 export const initialClient = (gamePack?: GameList) => {
@@ -37,5 +38,11 @@ export const joinRoom = (roomId: string, playerName: string) => {
     type: ActionType.JOIN_ROOM,
     roomId,
     playerName,
+  };
+};
+
+export const leaveRoom = () => {
+  return {
+    type: ActionType.LEAVE_ROOM,
   };
 };
