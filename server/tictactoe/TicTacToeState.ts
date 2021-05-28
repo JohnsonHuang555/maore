@@ -16,15 +16,14 @@ export interface TicTacToe extends Schema {
   gameState: GameState;
   activePlayer: number;
   winningPlayer: number;
-  playerIndex: number;
 }
 
 export default class TicTacToeState extends Schema implements TicTacToe {
   @type([PlayerState])
-  players = new ArraySchema<PlayerState>();
+  players: ArraySchema<PlayerState>;
 
   @type(RoomInfoState)
-  roomInfo = new RoomInfoState({ roomTitle: '', maxPlayers: 0 });
+  roomInfo: RoomInfoState;
 
   @type('number')
   gameState = GameState.WaitingForPlayers;
@@ -38,12 +37,10 @@ export default class TicTacToeState extends Schema implements TicTacToe {
   @type('number')
   winningPlayer = -1;
 
-  // 玩家順序號
-  @type('number')
-  playerIndex = -1;
-
   constructor() {
     super();
     this.board = new ArraySchema(0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this.players = new ArraySchema<PlayerState>();
+    this.roomInfo = new RoomInfoState({ roomTitle: '', maxPlayers: 0 });
   }
 }

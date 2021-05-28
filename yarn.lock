@@ -794,7 +794,7 @@ colorette@^1.2.1:
   resolved "https://registry.yarnpkg.com/colorette/-/colorette-1.2.2.tgz#cbcc79d5e99caea2dbf10eb3a26fd8b3e6acfa94"
   integrity sha512-MKGMzyfeuutC/ZJ1cba9NqcNpfeqMUcYmyF1ZFY6/Cn7CNSAKx6a+s48sqLqyAiZuaP2TcqMhoo+dlwFnVxT9w==
 
-colyseus.js@^0.14.12:
+colyseus.js@^0.14.1:
   version "0.14.12"
   resolved "https://registry.yarnpkg.com/colyseus.js/-/colyseus.js-0.14.12.tgz#9d446c51ee3a2cab34390706af4a71b16cc14e3d"
   integrity sha512-rkbgbOgN7eUD8a2XgWPXUJ64Fz8pgdv6jxd2Gh4BFmBFsIqgrjv2vr8ozROr5y7MxCf7Gw04MNn94bBNKxxygA==
@@ -805,10 +805,10 @@ colyseus.js@^0.14.12:
     notepack.io "^2.1.3"
     tslib "^2.1.0"
 
-colyseus@^0.14.13:
-  version "0.14.13"
-  resolved "https://registry.yarnpkg.com/colyseus/-/colyseus-0.14.13.tgz#33a1698f01afcb448c5943887be7679dda0acde5"
-  integrity sha512-XVorIKF494xmG2VgIPevpZ1wQNX1MauiXrHRL/S2UhQO1v5guQF9jdMjAarsaX7VAk/GrCHLYYDglXu7yqrxKg==
+colyseus@^0.14.7:
+  version "0.14.14"
+  resolved "https://registry.yarnpkg.com/colyseus/-/colyseus-0.14.14.tgz#6d5fa124eda8dad94cf7df28bf7646f1b5bda6c8"
+  integrity sha512-OR19LufrHMI1MDg+FKwLR6aicbNNxo4oWEmfqpViAC83w2buwz4awqGwc2iF1MmzM3cHwJcBOCe8Z3UKrKjFFA==
   dependencies:
     "@colyseus/schema" "^1.0.15"
     "@gamestdio/timer" "^1.3.0"

@@ -45,6 +45,13 @@ export default class RoomServer {
     this.room?.removeAllListeners();
   }
 
+  async readyGame() {
+    if (!this.room) {
+      throw new Error('something wrong... QQ');
+    }
+    this.room?.send(Message.ReadyGame);
+  }
+
   private handleRoomChange() {
     if (!this.room) {
       throw new Error('something wrong... QQ');
@@ -56,8 +63,11 @@ export default class RoomServer {
       }
     );
 
-    this.room.state.players.onAdd = (item) => {
-      this.dispatch(addPlayer(item));
+    this.room.state.players.onAdd = (player) => {
+      this.dispatch(addPlayer(player));
+      player.onChange = (item) => {
+        console.log(item);
+      };
     };
 
     this.room.state.players.onRemove = (item) => {
@@ -69,7 +79,6 @@ export default class RoomServer {
         const { field, value } = change;
         switch (field) {
           case 'roomInfo': {
-            console.log(value);
             this.dispatch(
               setRoomInfo({
                 roomTilte: value.roomTitle,

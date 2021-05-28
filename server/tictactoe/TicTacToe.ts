@@ -7,6 +7,7 @@ import PlayerSelectionCommand from './commands/PlayerSelectionCommand';
 import PlayerJoinedCommand from '../commands/PlayerJoinedCommand';
 import UpdateRoomInfoCommand from '../commands/UpdateRoomInfoCommand';
 import PlayerLeftCommand from '../commands/PlayerLeftCommand';
+import ReadyGameCommand from '../commands/ReadyGameCommand';
 
 export default class TicTacToe extends Room<TicTacToeState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -27,6 +28,13 @@ export default class TicTacToe extends Room<TicTacToeState, Metadata> {
         });
       }
     );
+
+    this.onMessage(Message.ReadyGame, (client) => {
+      console.log('ready from client');
+      this.dispatcher.dispatch(new ReadyGameCommand(), {
+        client,
+      });
+    });
   }
 
   onJoin(client: Client, option: Metadata) {

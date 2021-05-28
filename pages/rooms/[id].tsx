@@ -10,7 +10,12 @@ import Grid from '@material-ui/core/Grid';
 import { useRouter } from 'next/router';
 import { Button, TextField } from '@material-ui/core';
 import PlayerList from 'components/rooms/PlayerCard';
-import { initialClient, joinRoom, leaveRoom } from 'actions/ServerAction';
+import {
+  initialClient,
+  joinRoom,
+  leaveRoom,
+  readyGame,
+} from 'actions/ServerAction';
 import { reset } from 'actions/RoomAction';
 import { playerIdSelector } from 'selectors/roomSelector';
 import styles from 'styles/pages/rooms.module.scss';
@@ -118,7 +123,7 @@ const Rooms = () => {
                 color="secondary"
                 size="large"
                 className={styles.readyGame}
-                onClick={() => {}}
+                onClick={() => dispatch(readyGame())}
               >
                 準備遊戲
               </Button>

@@ -33,6 +33,10 @@ const ServerMiddleware: Middleware<Dispatch> =
           server.leaveRoom();
           break;
         }
+        case ActionType.READY_GAME: {
+          server.readyGame();
+          break;
+        }
       }
     }
     return next(action);
