@@ -46,8 +46,8 @@
     margin-bottom: 10px;
     overflow-x: auto;
   }
-  .readyGame {
-    color: white;
+  .readyGame, .startGame {
+    color: $white;
   }
 }
 

@@ -1,10 +1,5 @@
 import { Schema, ArraySchema } from '@colyseus/schema';
-import { Room as ClientRoom } from 'colyseus.js';
 import { Player } from './Player';
-
-export interface RoomType extends ClientRoom<Room> {
-  metadata: Metadata;
-}
 
 export enum GameState {
   WaitingForPlayers,
@@ -23,4 +18,9 @@ export interface Room extends Schema {
 export type Metadata = {
   roomTitle?: string;
   playerName: string;
+};
+
+export type RoomInfo = {
+  roomTilte: string;
+  maxPlayers: number;
 };

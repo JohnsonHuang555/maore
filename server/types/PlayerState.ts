@@ -1,22 +1,22 @@
 import { Schema, type } from '@colyseus/schema';
 import { Payload } from '../commands/PlayerJoinedCommand';
 
-// An abstract player object, demonstrating a potential 2D world position
+// An abstract player object
 export class PlayerState extends Schema {
   @type('string')
-  id: string = '';
+  id: string;
 
   @type('string')
-  name: string = '';
+  name: string;
 
   @type('boolean')
-  isMaster: boolean = false;
+  isMaster: boolean;
 
   @type('boolean')
-  isReady: boolean = false;
+  isReady: boolean;
 
   @type('number')
-  playerIndex: number = -1;
+  playerIndex: number;
 
   constructor(data: Payload) {
     super();
@@ -25,6 +25,6 @@ export class PlayerState extends Schema {
     this.name = name;
     this.isMaster = isMaster;
     this.playerIndex = playerIndex;
-    this.isReady = false;
+    this.isReady = isMaster ? true : false;
   }
 }

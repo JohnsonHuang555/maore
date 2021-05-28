@@ -1,10 +1,10 @@
 import {
   addPlayer,
   createdRoom,
-  initialRoom,
+  setRoomInfo,
   loadedRooms,
   removePlayer,
-  updatePlayerIndex,
+  setYourPlayerId,
 } from 'actions/RoomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
@@ -50,9 +50,9 @@ export default class RoomServer {
       throw new Error('something wrong... QQ');
     }
     this.room.onMessage(
-      Message.PlayerIndex,
-      (message: { playerIndex: number }) => {
-        this.dispatch(updatePlayerIndex(message.playerIndex));
+      Message.YourPlayerId,
+      (message: { yourPlayerId: string }) => {
+        this.dispatch(setYourPlayerId(message.yourPlayerId));
       }
     );
 
@@ -63,15 +63,17 @@ export default class RoomServer {
     this.room.state.players.onRemove = (item) => {
       this.dispatch(removePlayer(item.id));
     };
+
     this.room.state.onChange = (changes) => {
       changes.forEach((change) => {
         const { field, value } = change;
         switch (field) {
-          // initial room
-          case 'roomTitle': {
+          case 'roomInfo': {
+            console.log(value);
             this.dispatch(
-              initialRoom({
-                roomTitle: value,
+              setRoomInfo({
+                roomTilte: value.roomTitle,
+                maxPlayers: value.maxPlayers,
               })
             );
             break;

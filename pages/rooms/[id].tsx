@@ -3,7 +3,6 @@ import Layout from 'components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createdRoomIdSelector,
-  playerIndexSelector,
   playersSelector,
   roomInfoSelector,
 } from 'selectors/roomSelector';
@@ -12,6 +11,8 @@ import { useRouter } from 'next/router';
 import { Button, TextField } from '@material-ui/core';
 import PlayerList from 'components/rooms/PlayerCard';
 import { initialClient, joinRoom, leaveRoom } from 'actions/ServerAction';
+import { reset } from 'actions/RoomAction';
+import { playerIdSelector } from 'selectors/roomSelector';
 import styles from 'styles/pages/rooms.module.scss';
 
 const Rooms = () => {
@@ -21,12 +22,16 @@ const Rooms = () => {
   const createdRoomId = useSelector(createdRoomIdSelector);
   const players = useSelector(playersSelector);
   const roomInfo = useSelector(roomInfoSelector);
-  const playerIndex = useSelector(playerIndexSelector);
+  const yourPlayerId = useSelector(playerIdSelector);
 
   // component did mount
   useEffect(() => {
     const leaveRoomHandler = () => {
       dispatch(leaveRoom());
+      // 房主要reset
+      if (createdRoomId) {
+        dispatch(reset());
+      }
     };
     const beforeLeaveRoom = (event: BeforeUnloadEvent) => {
       event.preventDefault();
@@ -50,14 +55,30 @@ const Rooms = () => {
     }
   }, [roomId, createdRoomId]);
 
+  const isMaster = (): boolean => {
+    const player = players.find((p) => p.isMaster && p.id === yourPlayerId);
+    if (player) {
+      return true;
+    }
+    return false;
+  };
+
+  const disabledStartGame = () => {
+    const isAnyPlayerNotReady = players.filter((p) => !p.isReady);
+    if (roomInfo.maxPlayers > players.length || isAnyPlayerNotReady.length) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <Layout>
-      <h2 className="title">{roomInfo.title}</h2>
+      <h2 className="title">{roomInfo.roomTilte}</h2>
       <Grid container spacing={3} style={{ height: '100%' }}>
         <Grid item lg={9} xs={9} className={styles.leftArea}>
           <div className={`${styles.playerList} ${styles.block}`}>
             <div className={styles.playerContent}>
-              <PlayerList players={players} />
+              <PlayerList players={players} yourPlayerId={yourPlayerId} />
             </div>
           </div>
           <div className={`${styles.messages} ${styles.block}`}>
@@ -78,16 +99,30 @@ const Rooms = () => {
         <Grid item lg={3} xs={3}>
           <div className={`${styles.block} ${styles.rightArea}`}>
             <div className={`${styles.content} ${styles.settings}`}>123</div>
-            <Button
-              style={{ marginBottom: '10px' }}
-              variant="contained"
-              color="secondary"
-              size="large"
-              className={styles.readyGame}
-              onClick={() => {}}
-            >
-              準備遊戲
-            </Button>
+            {isMaster() ? (
+              <Button
+                style={{ marginBottom: '10px' }}
+                variant="contained"
+                color="secondary"
+                size="large"
+                disabled={disabledStartGame()}
+                className={styles.startGame}
+                onClick={() => {}}
+              >
+                開始遊戲
+              </Button>
+            ) : (
+              <Button
+                style={{ marginBottom: '10px' }}
+                variant="contained"
+                color="secondary"
+                size="large"
+                className={styles.readyGame}
+                onClick={() => {}}
+              >
+                準備遊戲
+              </Button>
+            )}
             <Button variant="outlined" size="large" onClick={() => {}}>
               離開房間
             </Button>

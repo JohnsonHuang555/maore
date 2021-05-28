@@ -1,22 +1,25 @@
 import { ActionType } from 'actions/RoomAction';
 import { RoomAvailable } from 'colyseus.js';
 import { Player } from 'models/Player';
-import { Metadata } from 'models/Room';
+import { Metadata, RoomInfo } from 'models/Room';
 
 export type State = {
   rooms: RoomAvailable<Metadata>[];
   createdRoomId: string;
   players: Player[];
-  playerIndex: number;
-  roomTitle: string;
+  roomInfo: RoomInfo;
+  yourPlayerId: string;
 };
 
 const initialState: State = {
   rooms: [],
-  playerIndex: -1,
   createdRoomId: '',
   players: [],
-  roomTitle: '',
+  yourPlayerId: '',
+  roomInfo: {
+    roomTilte: '',
+    maxPlayers: 0,
+  },
 };
 
 type LoadedRoomsAction = {
@@ -29,14 +32,14 @@ type CreatedRoomAction = {
   roomId: string;
 };
 
-type InitailRoomAction = {
-  type: ActionType.INITIAL_ROOM;
-  roomTitle: string;
+type SetRoomInfo = {
+  type: ActionType.SET_ROOM_INFO;
+  roomInfo: Partial<RoomInfo>;
 };
 
-type UpdatePlayerIndexAction = {
-  type: ActionType.UPDATE_PLAYER_INDEX;
-  playerIndex: number;
+type SetYourPlayerIdAction = {
+  type: ActionType.SET_YOUR_PLAYERID;
+  yourPlayerId: string;
 };
 
 type AddPlayerAction = {
@@ -49,13 +52,18 @@ type RemovePlayerAction = {
   id: string;
 };
 
+type ResetAction = {
+  type: ActionType.RESET;
+};
+
 type Action =
   | LoadedRoomsAction
   | CreatedRoomAction
-  | InitailRoomAction
-  | UpdatePlayerIndexAction
+  | SetRoomInfo
+  | SetYourPlayerIdAction
   | AddPlayerAction
-  | RemovePlayerAction;
+  | RemovePlayerAction
+  | ResetAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -71,16 +79,19 @@ const reducer = (state = initialState, action: Action): State => {
         createdRoomId: action.roomId,
       };
     }
-    case ActionType.INITIAL_ROOM: {
+    case ActionType.SET_ROOM_INFO: {
       return {
         ...state,
-        roomTitle: action.roomTitle,
+        roomInfo: {
+          ...state.roomInfo,
+          ...action.roomInfo,
+        },
       };
     }
-    case ActionType.UPDATE_PLAYER_INDEX: {
+    case ActionType.SET_YOUR_PLAYERID: {
       return {
         ...state,
-        playerIndex: action.playerIndex,
+        yourPlayerId: action.yourPlayerId,
       };
     }
     case ActionType.ADD_PLAYER: {
@@ -94,6 +105,11 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         players: newPlayers,
+      };
+    }
+    case ActionType.RESET: {
+      return {
+        ...state,
         createdRoomId: '',
       };
     }

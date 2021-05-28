@@ -1,14 +1,15 @@
 import { RoomAvailable } from 'colyseus.js';
 import { Player } from 'models/Player';
-import { Metadata } from 'models/Room';
+import { Metadata, RoomInfo } from 'models/Room';
 
 export enum ActionType {
   LOADED_ROOMS = 'LOADED_ROOMS',
   CREATED_ROOM = 'CREATED_ROOM',
-  INITIAL_ROOM = 'INITIAL_ROOM',
-  UPDATE_PLAYER_INDEX = 'UPDATE_PLAYER_INDEX',
+  SET_ROOM_INFO = 'SET_ROOM_INFO',
+  SET_YOUR_PLAYERID = 'SET_YOUR_PLAYERID',
   ADD_PLAYER = 'ADD_PLAYER',
   REMOVE_PLAYER = 'REMOVE_PLAYER',
+  RESET = 'RESET',
 }
 
 export const loadedRooms = (rooms: RoomAvailable<Metadata>[]) => {
@@ -25,14 +26,10 @@ export const createdRoom = (roomId: string) => {
   };
 };
 
-export type initialRoomParams = {
-  roomTitle: string;
-};
-
-export const initialRoom = ({ roomTitle }: initialRoomParams) => {
+export const setRoomInfo = (roomInfo: Partial<RoomInfo>) => {
   return {
-    type: ActionType.INITIAL_ROOM,
-    roomTitle,
+    type: ActionType.SET_ROOM_INFO,
+    roomInfo,
   };
 };
 
@@ -50,9 +47,15 @@ export const removePlayer = (id: string) => {
   };
 };
 
-export const updatePlayerIndex = (playerIndex: number) => {
+export const setYourPlayerId = (yourPlayerId: string) => {
   return {
-    type: ActionType.UPDATE_PLAYER_INDEX,
-    playerIndex,
+    type: ActionType.SET_YOUR_PLAYERID,
+    yourPlayerId,
+  };
+};
+
+export const reset = () => {
+  return {
+    type: ActionType.RESET,
   };
 };

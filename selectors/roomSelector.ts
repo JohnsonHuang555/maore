@@ -5,11 +5,11 @@ export const createdRoomIdSelector = (store: StoreState) =>
   store.room.createdRoomId;
 export const playersSelector = (store: StoreState) => store.room.players;
 export const roomInfoSelector = (store: StoreState) => {
-  const title = store.room.roomTitle;
+  const { roomTilte, maxPlayers } = store.room.roomInfo;
   return {
-    title,
+    roomTilte,
+    maxPlayers,
   };
 };
 
-export const playerIndexSelector = (store: StoreState) =>
-  store.room.playerIndex;
+export const playerIdSelector = (store: StoreState) => store.room.yourPlayerId;

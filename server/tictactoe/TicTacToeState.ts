@@ -1,6 +1,7 @@
 import { Schema, ArraySchema, type } from '@colyseus/schema';
 import { PlayerState } from '../types/PlayerState';
 import { GameState } from '../../models/Room';
+import { RoomInfoState } from '../types/RoomInfoState';
 
 export enum Cell {
   Empty,
@@ -10,7 +11,7 @@ export enum Cell {
 
 export interface TicTacToe extends Schema {
   players: ArraySchema<PlayerState>;
-  roomTitle: string;
+  roomInfo: RoomInfoState;
   board: ArraySchema<Cell>;
   gameState: GameState;
   activePlayer: number;
@@ -22,8 +23,8 @@ export default class TicTacToeState extends Schema implements TicTacToe {
   @type([PlayerState])
   players = new ArraySchema<PlayerState>();
 
-  @type('string')
-  roomTitle = '';
+  @type(RoomInfoState)
+  roomInfo = new RoomInfoState({ roomTitle: '', maxPlayers: 0 });
 
   @type('number')
   gameState = GameState.WaitingForPlayers;

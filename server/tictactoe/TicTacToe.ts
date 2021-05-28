@@ -5,7 +5,7 @@ import TicTacToeState from './TicTacToeState';
 import { Message } from '../../models/Message';
 import PlayerSelectionCommand from './commands/PlayerSelectionCommand';
 import PlayerJoinedCommand from '../commands/PlayerJoinedCommand';
-import UpdateRoomTitleCommand from '../commands/UpdateRoomTitleCommand';
+import UpdateRoomInfoCommand from '../commands/UpdateRoomInfoCommand';
 import PlayerLeftCommand from '../commands/PlayerLeftCommand';
 
 export default class TicTacToe extends Room<TicTacToeState, Metadata> {
@@ -32,10 +32,11 @@ export default class TicTacToe extends Room<TicTacToeState, Metadata> {
   onJoin(client: Client, option: Metadata) {
     const idx = this.clients.findIndex((c) => c.sessionId === client.sessionId);
 
-    client.send(Message.PlayerIndex, { playerIndex: idx });
+    client.send(Message.YourPlayerId, { yourPlayerId: client.id });
 
     // update room title
-    this.dispatcher.dispatch(new UpdateRoomTitleCommand(), {
+    this.dispatcher.dispatch(new UpdateRoomInfoCommand(), {
+      maxPlayers: this.maxClients,
       roomTitle: this.metadata.roomTitle,
     });
 
