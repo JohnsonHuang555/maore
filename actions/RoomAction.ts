@@ -9,6 +9,7 @@ export enum ActionType {
   SET_YOUR_PLAYERID = 'SET_YOUR_PLAYERID',
   ADD_PLAYER = 'ADD_PLAYER',
   REMOVE_PLAYER = 'REMOVE_PLAYER',
+  SET_PLAYER_READY = 'SET_PLAYER_READY',
   RESET = 'RESET',
 }
 
@@ -51,6 +52,14 @@ export const setYourPlayerId = (yourPlayerId: string) => {
   return {
     type: ActionType.SET_YOUR_PLAYERID,
     yourPlayerId,
+  };
+};
+
+export const setPlayerReady = (id: string, isReady: boolean) => {
+  return {
+    type: ActionType.SET_PLAYER_READY,
+    id,
+    isReady,
   };
 };
 

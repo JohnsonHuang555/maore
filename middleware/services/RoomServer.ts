@@ -5,12 +5,23 @@ import {
   loadedRooms,
   removePlayer,
   setYourPlayerId,
+  setPlayerReady,
 } from 'actions/RoomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
 import { Message } from 'models/Message';
-import { Metadata, Room } from 'models/Room';
+import { GameState, Metadata } from 'models/Room';
 import { AnyAction, Dispatch } from 'redux';
+import { Schema, ArraySchema } from '@colyseus/schema';
+import { PlayerState } from 'server/types/PlayerState';
+
+interface Room extends Schema {
+  players: ArraySchema<PlayerState>;
+  gameState: GameState; // 遊戲狀態
+  activePlayer: number; // 當前玩家
+  winningPlayer: number; // 勝利玩家
+  playerIndex: number; // 玩家順序號
+}
 
 export default class RoomServer {
   private client: Client;
@@ -63,10 +74,19 @@ export default class RoomServer {
       }
     );
 
+    // room players changes...
     this.room.state.players.onAdd = (player) => {
       this.dispatch(addPlayer(player));
-      player.onChange = (item) => {
-        console.log(item);
+      player.onChange = (changes) => {
+        changes.forEach((change) => {
+          const { field, value } = change;
+          switch (field) {
+            case 'isReady': {
+              this.dispatch(setPlayerReady(player.id, value));
+              break;
+            }
+          }
+        });
       };
     };
 
@@ -74,6 +94,7 @@ export default class RoomServer {
       this.dispatch(removePlayer(item.id));
     };
 
+    // room state changes...
     this.room.state.onChange = (changes) => {
       changes.forEach((change) => {
         const { field, value } = change;

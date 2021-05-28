@@ -10,6 +10,7 @@ export default class ReadyGameCommand extends Command<TicTacToe> {
   execute(data: Payload) {
     const { client } = data;
     const clientIndex = this.room.clients.findIndex((c) => c.id === client.id);
-    this.room.state.players[clientIndex].isReady = true;
+    const isReady = this.room.state.players[clientIndex].isReady;
+    this.room.state.players[clientIndex].isReady = !isReady;
   }
 }

@@ -30,7 +30,6 @@ export default class TicTacToe extends Room<TicTacToeState, Metadata> {
     );
 
     this.onMessage(Message.ReadyGame, (client) => {
-      console.log('ready from client');
       this.dispatcher.dispatch(new ReadyGameCommand(), {
         client,
       });

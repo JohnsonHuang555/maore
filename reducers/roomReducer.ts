@@ -52,6 +52,12 @@ type RemovePlayerAction = {
   id: string;
 };
 
+type SetPlayerReadyAction = {
+  type: ActionType.SET_PLAYER_READY;
+  id: string;
+  isReady: boolean;
+};
+
 type ResetAction = {
   type: ActionType.RESET;
 };
@@ -63,6 +69,7 @@ type Action =
   | SetYourPlayerIdAction
   | AddPlayerAction
   | RemovePlayerAction
+  | SetPlayerReadyAction
   | ResetAction;
 
 const reducer = (state = initialState, action: Action): State => {
@@ -102,6 +109,25 @@ const reducer = (state = initialState, action: Action): State => {
     }
     case ActionType.REMOVE_PLAYER: {
       const newPlayers = state.players.filter((p) => p.id !== action.id);
+      return {
+        ...state,
+        players: newPlayers,
+      };
+    }
+    case ActionType.SET_PLAYER_READY: {
+      const player = state.players.find((p) => p.id !== action.id);
+      if (!player) {
+        throw new Error('not found player');
+      }
+      const newPlayers = state.players.map((p) => {
+        if (p.id === action.id) {
+          return {
+            ...p,
+            isReady: action.isReady,
+          };
+        }
+        return p;
+      });
       return {
         ...state,
         players: newPlayers,
