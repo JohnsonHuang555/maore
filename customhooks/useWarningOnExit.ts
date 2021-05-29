@@ -23,6 +23,9 @@ export const useWarningOnExit = ({
     let isWarned = false;
 
     const routeChangeStart = (url: string) => {
+      if (url.substr(0, 6) === '/rooms') {
+        return;
+      }
       if (Router.asPath !== url && shouldWarn && !isWarned) {
         isWarned = true;
         if (window.confirm(message)) {
@@ -67,7 +70,6 @@ export const useWarningOnExit = ({
       window.removeEventListener('beforeunload', beforeUnload);
 
       if (leaveRoom) {
-        console.log(123456);
         dispatch(leaveRoom());
       }
 

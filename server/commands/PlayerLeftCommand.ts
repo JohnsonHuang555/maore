@@ -21,10 +21,5 @@ export default class PlayerLeftCommand extends Command<TicTacToe> {
     for (let i = 0; i < this.room.state.players.length; i++) {
       this.room.state.players[i].playerIndex = i;
     }
-
-    // 離開的是房主要重新指派
-    // if (isMaster) {
-    //   this.room.state.players[0].isMaster = true;
-    // }
   }
 }

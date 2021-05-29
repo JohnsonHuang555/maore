@@ -19,7 +19,7 @@ import {
 import { reset } from 'actions/RoomAction';
 import { playerIdSelector } from 'selectors/roomSelector';
 import styles from 'styles/pages/rooms.module.scss';
-import { Player } from 'models/Player';
+import { useWarningOnExit } from 'customhooks/useWarningOnExit';
 
 const Rooms = () => {
   const dispatch = useDispatch();
@@ -30,26 +30,31 @@ const Rooms = () => {
   const roomInfo = useSelector(roomInfoSelector);
   const yourPlayerId = useSelector(playerIdSelector);
 
+  useWarningOnExit({
+    shouldWarn: true,
+    createdRoomId,
+    leaveRoom,
+  });
   // component did mount
-  useEffect(() => {
-    const leaveRoomHandler = () => {
-      dispatch(leaveRoom());
-      // 房主要reset
-      if (createdRoomId) {
-        dispatch(reset());
-      }
-    };
-    const beforeLeaveRoom = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-      event.returnValue = '';
-    };
-    window.addEventListener('unload', leaveRoomHandler);
-    window.addEventListener('beforeunload', beforeLeaveRoom);
-    return () => {
-      window.removeEventListener('unload', leaveRoomHandler);
-      window.removeEventListener('beforeunload', beforeLeaveRoom);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const leaveRoomHandler = () => {
+  //     dispatch(leaveRoom());
+  //     // 房主要reset
+  //     if (createdRoomId) {
+  //       dispatch(reset());
+  //     }
+  //   };
+  //   const beforeLeaveRoom = (event: BeforeUnloadEvent) => {
+  //     event.preventDefault();
+  //     event.returnValue = '';
+  //   };
+  //   window.addEventListener('unload', leaveRoomHandler);
+  //   window.addEventListener('beforeunload', beforeLeaveRoom);
+  //   return () => {
+  //     window.removeEventListener('unload', leaveRoomHandler);
+  //     window.removeEventListener('beforeunload', beforeLeaveRoom);
+  //   };
+  // }, []);
 
   useEffect(() => {
     dispatch(initialClient());
