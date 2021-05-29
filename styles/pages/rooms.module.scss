@@ -48,6 +48,12 @@
   }
   .readyGame, .startGame {
     color: $white;
+    height: 100px;
+    font-size: 22px;
+    background-color: $orange;
+    &:hover {
+      background-color: #7b2e1a;
+    }
   }
 }
 

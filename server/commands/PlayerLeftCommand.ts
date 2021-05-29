@@ -10,11 +10,10 @@ export default class PlayerLeftCommand extends Command<TicTacToe> {
     const idx = this.room.state.players.findIndex(
       (player) => player.id === data.playerId
     );
-    const isMaster = this.room.state.players[idx].isMaster;
     this.room.state.players.splice(idx, 1);
+    const hasMaster = this.room.state.players.find((p) => p.isMaster);
 
-    // 離開的是房主要重新指派
-    if (isMaster) {
+    if (!hasMaster) {
       this.room.state.players[0].isMaster = true;
     }
 
@@ -22,5 +21,10 @@ export default class PlayerLeftCommand extends Command<TicTacToe> {
     for (let i = 0; i < this.room.state.players.length; i++) {
       this.room.state.players[i].playerIndex = i;
     }
+
+    // 離開的是房主要重新指派
+    // if (isMaster) {
+    //   this.room.state.players[0].isMaster = true;
+    // }
   }
 }

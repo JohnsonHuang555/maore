@@ -19,6 +19,7 @@ import {
 import { reset } from 'actions/RoomAction';
 import { playerIdSelector } from 'selectors/roomSelector';
 import styles from 'styles/pages/rooms.module.scss';
+import { Player } from 'models/Player';
 
 const Rooms = () => {
   const dispatch = useDispatch();
@@ -68,6 +69,14 @@ const Rooms = () => {
     return false;
   };
 
+  const isReadyGame = () => {
+    const isReady = players.find((p) => p.isReady && p.id === yourPlayerId);
+    if (isReady) {
+      return '取消準備';
+    }
+    return '準備遊戲';
+  };
+
   const disabledStartGame = () => {
     const isAnyPlayerNotReady = players.filter((p) => !p.isReady);
     if (roomInfo.maxPlayers > players.length || isAnyPlayerNotReady.length) {
@@ -95,7 +104,7 @@ const Rooms = () => {
             </div>
             <TextField
               id="outlined-basic"
-              label="寫點什麼吧..."
+              label="說點什麼吧..."
               variant="outlined"
               size="small"
             />
@@ -106,7 +115,6 @@ const Rooms = () => {
             <div className={`${styles.content} ${styles.settings}`}>123</div>
             {isMaster() ? (
               <Button
-                style={{ marginBottom: '10px' }}
                 variant="contained"
                 color="secondary"
                 size="large"
@@ -118,19 +126,14 @@ const Rooms = () => {
               </Button>
             ) : (
               <Button
-                style={{ marginBottom: '10px' }}
                 variant="contained"
-                color="secondary"
                 size="large"
                 className={styles.readyGame}
                 onClick={() => dispatch(readyGame())}
               >
-                準備遊戲
+                {isReadyGame()}
               </Button>
             )}
-            <Button variant="outlined" size="large" onClick={() => {}}>
-              離開房間
-            </Button>
           </div>
         </Grid>
       </Grid>

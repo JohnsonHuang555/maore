@@ -6,6 +6,8 @@ import {
   removePlayer,
   setYourPlayerId,
   setPlayerReady,
+  setPlayerMaster,
+  setPlayerIndex,
 } from 'actions/RoomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
@@ -84,6 +86,13 @@ export default class RoomServer {
             case 'isReady': {
               this.dispatch(setPlayerReady(player.id, value));
               break;
+            }
+            case 'isMaster': {
+              this.dispatch(setPlayerMaster(player.id, value));
+              break;
+            }
+            case 'playerIndex': {
+              this.dispatch(setPlayerIndex(player.id, value));
             }
           }
         });

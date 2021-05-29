@@ -58,6 +58,18 @@ type SetPlayerReadyAction = {
   isReady: boolean;
 };
 
+type SetPlayerMasterAction = {
+  type: ActionType.SET_PLAYER_MASTER;
+  id: string;
+  isMaster: boolean;
+};
+
+type SetPlayerIndexAction = {
+  type: ActionType.SET_PLAYER_INDEX;
+  id: string;
+  playerIndex: number;
+};
+
 type ResetAction = {
   type: ActionType.RESET;
 };
@@ -70,6 +82,8 @@ type Action =
   | AddPlayerAction
   | RemovePlayerAction
   | SetPlayerReadyAction
+  | SetPlayerMasterAction
+  | SetPlayerIndexAction
   | ResetAction;
 
 const reducer = (state = initialState, action: Action): State => {
@@ -115,10 +129,6 @@ const reducer = (state = initialState, action: Action): State => {
       };
     }
     case ActionType.SET_PLAYER_READY: {
-      const player = state.players.find((p) => p.id !== action.id);
-      if (!player) {
-        throw new Error('not found player');
-      }
       const newPlayers = state.players.map((p) => {
         if (p.id === action.id) {
           return {
@@ -133,10 +143,44 @@ const reducer = (state = initialState, action: Action): State => {
         players: newPlayers,
       };
     }
+    case ActionType.SET_PLAYER_MASTER: {
+      const newPlayers = state.players.map((p) => {
+        if (p.id === action.id) {
+          return {
+            ...p,
+            isMaster: action.isMaster,
+          };
+        }
+        return p;
+      });
+      return {
+        ...state,
+        players: newPlayers,
+      };
+    }
+    case ActionType.SET_PLAYER_INDEX: {
+      const newPlayers = state.players.map((p) => {
+        if (p.id === action.id) {
+          return {
+            ...p,
+            playerIndex: action.playerIndex,
+          };
+        }
+        return p;
+      });
+      return {
+        ...state,
+        players: newPlayers,
+      };
+    }
     case ActionType.RESET: {
       return {
         ...state,
         createdRoomId: '',
+        roomInfo: {
+          roomTilte: '',
+          maxPlayers: 0,
+        },
       };
     }
     default: {

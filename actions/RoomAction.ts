@@ -10,6 +10,8 @@ export enum ActionType {
   ADD_PLAYER = 'ADD_PLAYER',
   REMOVE_PLAYER = 'REMOVE_PLAYER',
   SET_PLAYER_READY = 'SET_PLAYER_READY',
+  SET_PLAYER_MASTER = 'SET_PLAYER_MASTER',
+  SET_PLAYER_INDEX = 'SET_PLAYER_INDEX',
   RESET = 'RESET',
 }
 
@@ -60,6 +62,22 @@ export const setPlayerReady = (id: string, isReady: boolean) => {
     type: ActionType.SET_PLAYER_READY,
     id,
     isReady,
+  };
+};
+
+export const setPlayerMaster = (id: string, isMaster: boolean) => {
+  return {
+    type: ActionType.SET_PLAYER_MASTER,
+    id,
+    isMaster,
+  };
+};
+
+export const setPlayerIndex = (id: string, playerIndex: number) => {
+  return {
+    type: ActionType.SET_PLAYER_INDEX,
+    id,
+    playerIndex,
   };
 };
 
