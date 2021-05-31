@@ -63,7 +63,6 @@ export default class TicTacToe extends Room<TicTacToeState, Metadata> {
   }
 
   onLeave(client: Client) {
-    console.log('leave');
     // update players
     this.dispatcher.dispatch(new PlayerLeftCommand(), { playerId: client.id });
     this.unlock();

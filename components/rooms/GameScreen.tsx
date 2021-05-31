@@ -3,7 +3,7 @@ import TicTacToe from 'features/tictactoe/TicTacToe';
 import styles from 'stylescomponents/playerList.module.scss';
 
 type GameSreenProps = {
-  gamePack: GameList;
+  gamePack: GameList | '';
 };
 
 /** 決定要使用的遊戲 */

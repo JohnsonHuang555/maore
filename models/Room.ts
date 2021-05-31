@@ -15,5 +15,5 @@ export type Metadata = {
 export type RoomInfo = {
   roomTilte: string;
   maxPlayers: number;
-  gamePack?: GameList;
+  gamePack: GameList | '';
 };

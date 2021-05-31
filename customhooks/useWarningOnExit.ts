@@ -1,7 +1,7 @@
 import { reset } from 'actions/RoomAction';
 import Router from 'next/router';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 type UseWarningOnExitProps = {
   shouldWarn: boolean;

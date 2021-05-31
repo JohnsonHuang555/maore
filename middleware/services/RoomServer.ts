@@ -8,6 +8,7 @@ import {
   setPlayerReady,
   setPlayerMaster,
   setPlayerIndex,
+  updateGameStatus,
 } from 'actions/RoomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
@@ -54,23 +55,15 @@ export default class RoomServer {
   }
 
   async leaveRoom() {
-    console.log('leave rooooom');
-    console.log(room);
-    room?.leave();
-    room?.removeAllListeners();
+    room.leave();
+    room.removeAllListeners();
   }
 
   async readyGame() {
-    if (!room) {
-      throw new Error('something wrong... QQ');
-    }
-    room?.send(Message.ReadyGame);
+    room.send(Message.ReadyGame);
   }
 
   private handleRoomChange() {
-    if (!room) {
-      throw new Error('something wrong... QQ');
-    }
     room.onMessage(
       Message.YourPlayerId,
       (message: { yourPlayerId: string }) => {
@@ -119,6 +112,9 @@ export default class RoomServer {
               })
             );
             break;
+          }
+          case 'gameState': {
+            this.dispatch(updateGameStatus(value));
           }
         }
       });

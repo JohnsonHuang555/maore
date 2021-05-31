@@ -1,8 +1,7 @@
-import { ActionType as ServerActionType } from 'actions/ServerAction';
 import { ActionType } from 'actions/RoomAction';
 import { RoomAvailable } from 'colyseus.js';
 import { Player } from 'models/Player';
-import { Metadata, RoomInfo } from 'models/Room';
+import { GameState, Metadata, RoomInfo } from 'models/Room';
 
 export type State = {
   isConnected: boolean;
@@ -11,6 +10,7 @@ export type State = {
   players: Player[];
   roomInfo: RoomInfo;
   yourPlayerId: string;
+  gameStatus: GameState;
 };
 
 const initialState: State = {
@@ -22,7 +22,9 @@ const initialState: State = {
   roomInfo: {
     roomTilte: '',
     maxPlayers: 0,
+    gamePack: '',
   },
+  gameStatus: GameState.WaitingForPlayers,
 };
 
 type LoadedRoomsAction = {
@@ -71,6 +73,10 @@ type SetPlayerIndexAction = {
   type: ActionType.SET_PLAYER_INDEX;
   id: string;
   playerIndex: number;
+};
+
+type UpdateGameStatus = {
+  type: ActionType;
 };
 
 type ResetAction = {
@@ -183,7 +189,7 @@ const reducer = (state = initialState, action: Action): State => {
         roomInfo: {
           roomTilte: '',
           maxPlayers: 0,
-          gamePack: undefined,
+          gamePack: '',
         },
         players: [],
       };

@@ -3,7 +3,6 @@ import Layout from 'components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createdRoomIdSelector,
-  isConnectedSelector,
   playersSelector,
   roomInfoSelector,
 } from 'selectors/roomSelector';
@@ -130,7 +129,7 @@ const Rooms = () => {
           </div>
         </Grid>
       </Grid>
-      {/* <GameScreen gamePack={} /> */}
+      <GameScreen gamePack={roomInfo.gamePack} />
     </Layout>
   );
 };
