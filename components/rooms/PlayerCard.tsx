@@ -49,7 +49,7 @@ const PlayerList = (props: PlayerListProps) => {
               </div>
             ) : (
               <div className={styles.master}>
-                <Icon title="房主" customStyles={{ fontSize: '28px' }}>
+                <Icon title="房主" fontSize="26px">
                   <Stars htmlColor="#e2c138" />
                 </Icon>
               </div>

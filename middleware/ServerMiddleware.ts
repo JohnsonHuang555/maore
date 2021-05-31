@@ -20,6 +20,7 @@ const ServerMiddleware: Middleware<Dispatch> =
           server.createRoom(action.gamePack, {
             roomTitle: action.roomTitle,
             playerName: action.playerName,
+            gamePack: action.gamePack,
           });
           break;
         }

@@ -48,12 +48,16 @@
   }
   .readyGame, .startGame {
     color: $white;
-    height: 100px;
+    height: 70px;
     font-size: 22px;
     background-color: $orange;
+    margin-bottom: 10px;
     &:hover {
       background-color: #7b2e1a;
     }
+  }
+  .leaveRoom {
+    color: $white;
   }
 }
 

@@ -1,9 +1,11 @@
+import { ActionType as ServerActionType } from 'actions/ServerAction';
 import { ActionType } from 'actions/RoomAction';
 import { RoomAvailable } from 'colyseus.js';
 import { Player } from 'models/Player';
 import { Metadata, RoomInfo } from 'models/Room';
 
 export type State = {
+  isConnected: boolean;
   rooms: RoomAvailable<Metadata>[];
   createdRoomId: string;
   players: Player[];
@@ -12,6 +14,7 @@ export type State = {
 };
 
 const initialState: State = {
+  isConnected: false,
   rooms: [],
   createdRoomId: '',
   players: [],
@@ -180,7 +183,9 @@ const reducer = (state = initialState, action: Action): State => {
         roomInfo: {
           roomTilte: '',
           maxPlayers: 0,
+          gamePack: undefined,
         },
+        players: [],
       };
     }
     default: {

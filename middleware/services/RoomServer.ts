@@ -25,11 +25,11 @@ interface Room extends Schema {
   playerIndex: number; // 玩家順序號
 }
 
+let room: ClientRoom<Room>;
 export default class RoomServer {
   private client: Client;
   private dispatch: Dispatch<AnyAction>;
 
-  private room?: ClientRoom<Room>;
   constructor(dispatch: Dispatch<AnyAction>) {
     this.client = new Client('ws://localhost:3000');
     this.dispatch = dispatch;
@@ -42,34 +42,36 @@ export default class RoomServer {
 
   // 房主觸發 createOrJoinRoom 只會觸發一次
   async createRoom(gamePack: GameList, metaData: Metadata) {
-    this.room = await this.client.create<Room>(gamePack, metaData);
-    this.dispatch(createdRoom(this.room.id));
+    room = await this.client.create<Room>(gamePack, metaData);
+    this.dispatch(createdRoom(room.id));
     this.handleRoomChange();
   }
 
   // 加入房間玩家觸發
   async joinRoom(roomId: string, metaData: Metadata) {
-    this.room = await this.client.joinById<Room>(roomId, metaData);
+    room = await this.client.joinById<Room>(roomId, metaData);
     this.handleRoomChange();
   }
 
   async leaveRoom() {
-    this.room?.leave();
-    this.room?.removeAllListeners();
+    console.log('leave rooooom');
+    console.log(room);
+    room?.leave();
+    room?.removeAllListeners();
   }
 
   async readyGame() {
-    if (!this.room) {
+    if (!room) {
       throw new Error('something wrong... QQ');
     }
-    this.room?.send(Message.ReadyGame);
+    room?.send(Message.ReadyGame);
   }
 
   private handleRoomChange() {
-    if (!this.room) {
+    if (!room) {
       throw new Error('something wrong... QQ');
     }
-    this.room.onMessage(
+    room.onMessage(
       Message.YourPlayerId,
       (message: { yourPlayerId: string }) => {
         this.dispatch(setYourPlayerId(message.yourPlayerId));
@@ -77,7 +79,7 @@ export default class RoomServer {
     );
 
     // room players changes...
-    this.room.state.players.onAdd = (player) => {
+    room.state.players.onAdd = (player) => {
       this.dispatch(addPlayer(player));
       player.onChange = (changes) => {
         changes.forEach((change) => {
@@ -99,12 +101,12 @@ export default class RoomServer {
       };
     };
 
-    this.room.state.players.onRemove = (item) => {
+    room.state.players.onRemove = (item) => {
       this.dispatch(removePlayer(item.id));
     };
 
     // room state changes...
-    this.room.state.onChange = (changes) => {
+    room.state.onChange = (changes) => {
       changes.forEach((change) => {
         const { field, value } = change;
         switch (field) {
@@ -113,6 +115,7 @@ export default class RoomServer {
               setRoomInfo({
                 roomTilte: value.roomTitle,
                 maxPlayers: value.maxPlayers,
+                gamePack: value.gamePack,
               })
             );
             break;

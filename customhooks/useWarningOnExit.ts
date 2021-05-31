@@ -1,19 +1,17 @@
 import { reset } from 'actions/RoomAction';
 import Router from 'next/router';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 type UseWarningOnExitProps = {
   shouldWarn: boolean;
   warningText?: string;
-  createdRoomId?: string;
   leaveRoom?: () => void;
 };
 
 export const useWarningOnExit = ({
   shouldWarn,
   warningText,
-  createdRoomId,
   leaveRoom,
 }: UseWarningOnExitProps) => {
   const message = warningText || 'Are you sure that you want to leave?';
@@ -73,9 +71,7 @@ export const useWarningOnExit = ({
         dispatch(leaveRoom());
       }
 
-      if (createdRoomId) {
-        dispatch(reset());
-      }
+      dispatch(reset());
 
       Router.beforePopState(() => {
         return true;

@@ -1,3 +1,5 @@
+import { GameList } from './Game';
+
 export enum GameState {
   WaitingForPlayers,
   Playing,
@@ -7,9 +9,11 @@ export enum GameState {
 export type Metadata = {
   roomTitle?: string;
   playerName: string;
+  gamePack?: GameList;
 };
 
 export type RoomInfo = {
   roomTilte: string;
   maxPlayers: number;
+  gamePack?: GameList;
 };

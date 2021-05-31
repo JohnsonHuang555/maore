@@ -45,6 +45,7 @@ export default class TicTacToe extends Room<TicTacToeState, Metadata> {
     this.dispatcher.dispatch(new UpdateRoomInfoCommand(), {
       maxPlayers: this.maxClients,
       roomTitle: this.metadata.roomTitle,
+      gamePack: this.metadata.gamePack,
     });
 
     const isMaster = this.clients.length === 1;
@@ -62,6 +63,7 @@ export default class TicTacToe extends Room<TicTacToeState, Metadata> {
   }
 
   onLeave(client: Client) {
+    console.log('leave');
     // update players
     this.dispatcher.dispatch(new PlayerLeftCommand(), { playerId: client.id });
     this.unlock();

@@ -5,7 +5,7 @@ type IconProps = {
   title?: string | number;
   children: JSX.Element;
   customStyles?: CSSProperties;
-  fontSize?: '14px' | '16px' | '18px' | '22px';
+  fontSize?: '14px' | '16px' | '18px' | '22px' | '24px' | '26px';
 };
 
 const Icon = (props: IconProps) => {

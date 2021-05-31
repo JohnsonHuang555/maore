@@ -3,6 +3,7 @@ import Layout from 'components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createdRoomIdSelector,
+  isConnectedSelector,
   playersSelector,
   roomInfoSelector,
 } from 'selectors/roomSelector';
@@ -16,10 +17,10 @@ import {
   leaveRoom,
   readyGame,
 } from 'actions/ServerAction';
-import { reset } from 'actions/RoomAction';
 import { playerIdSelector } from 'selectors/roomSelector';
 import styles from 'styles/pages/rooms.module.scss';
 import { useWarningOnExit } from 'customhooks/useWarningOnExit';
+import GameScreen from 'components/rooms/GameScreen';
 
 const Rooms = () => {
   const dispatch = useDispatch();
@@ -32,29 +33,8 @@ const Rooms = () => {
 
   useWarningOnExit({
     shouldWarn: true,
-    createdRoomId,
     leaveRoom,
   });
-  // component did mount
-  // useEffect(() => {
-  //   const leaveRoomHandler = () => {
-  //     dispatch(leaveRoom());
-  //     // 房主要reset
-  //     if (createdRoomId) {
-  //       dispatch(reset());
-  //     }
-  //   };
-  //   const beforeLeaveRoom = (event: BeforeUnloadEvent) => {
-  //     event.preventDefault();
-  //     event.returnValue = '';
-  //   };
-  //   window.addEventListener('unload', leaveRoomHandler);
-  //   window.addEventListener('beforeunload', beforeLeaveRoom);
-  //   return () => {
-  //     window.removeEventListener('unload', leaveRoomHandler);
-  //     window.removeEventListener('beforeunload', beforeLeaveRoom);
-  //   };
-  // }, []);
 
   useEffect(() => {
     dispatch(initialClient());
@@ -139,9 +119,18 @@ const Rooms = () => {
                 {isReadyGame()}
               </Button>
             )}
+            <Button
+              variant="outlined"
+              size="large"
+              className={styles.leaveRoom}
+              onClick={() => router.push('/')}
+            >
+              離開房間
+            </Button>
           </div>
         </Grid>
       </Grid>
+      {/* <GameScreen gamePack={} /> */}
     </Layout>
   );
 };

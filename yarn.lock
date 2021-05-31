@@ -103,6 +103,20 @@
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.2.0.tgz#f3933a44e365864f4dad5db94158106d511e8131"
   integrity sha512-sqKVVVOe5ivCaXDWivIJYVSaEgdQK9ul7a4Kity5Iw7u9+wBAPbX1RMSnLLmp7O4Vzj0WOWwMAJsTL00xwaNug==
 
+"@ion-phaser/core@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@ion-phaser/core/-/core-1.3.0.tgz#380e8df0ac0c1ef9b0f84fe494b2be1d82c25971"
+  integrity sha512-wJJq2bireC0FaUDR8kBMhmNlmyrGi/fX3g8AhuWi7LIIvZuA4dk33ui/TWt3xM5Ax2Uqhr2Z4NtBsQUFpHheiA==
+  dependencies:
+    "@stencil/core" "^2.4.0"
+
+"@ion-phaser/react@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@ion-phaser/react/-/react-1.3.0.tgz#2fc2e3e213b6e1ad939869881f4f20119d200a21"
+  integrity sha512-AchfH2CpEd9P0LkoWfCaunMTIA7dOtWv/+LgnItswr/rJV34FwI3MC7jarF5j1jvXZBArs0qWkKRWUtxuT9EPA==
+  dependencies:
+    "@ion-phaser/core" "^1.3.0"
+
 "@material-ui/core@^4.11.4":
   version "4.11.4"
   resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.11.4.tgz#4fb9fe5dec5dcf780b687e3a40cff78b2b9640a4"
@@ -222,6 +236,11 @@
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
   integrity sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ==
+
+"@stencil/core@^2.4.0":
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/@stencil/core/-/core-2.5.2.tgz#ad00d495ee37bbed4044524d59c7f22de15ab4a7"
+  integrity sha512-bgjPXkSzzg1WnTgVUm6m5ZzpKt602WmA/QljODAW1xVN40OHJdbGblzF/F6MFzqv2c5Cy30CB41arc8qADIdcQ==
 
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"

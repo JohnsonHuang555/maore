@@ -11,6 +11,12 @@ export default class PlayerLeftCommand extends Command<TicTacToe> {
       (player) => player.id === data.playerId
     );
     this.room.state.players.splice(idx, 1);
+
+    // 房間沒人
+    if (!this.room.state.players.length) {
+      return;
+    }
+
     const hasMaster = this.room.state.players.find((p) => p.isMaster);
 
     if (!hasMaster) {
