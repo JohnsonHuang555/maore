@@ -1,4 +1,5 @@
 import { Command } from '@colyseus/command';
+import { GameState } from '../../models/Room';
 import { TicTacToe } from '../tictactoe/TicTacToeState';
 
 type Payload = {
@@ -11,6 +12,7 @@ export default class PlayerLeftCommand extends Command<TicTacToe> {
       (player) => player.id === data.playerId
     );
     this.room.state.players.splice(idx, 1);
+    this.state.gameState = GameState.WaitingForPlayers;
 
     // 房間沒人
     if (!this.room.state.players.length) {

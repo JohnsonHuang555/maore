@@ -1,26 +1,39 @@
-import { Component } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Phaser from 'phaser';
-import { IonPhaser } from '@ion-phaser/react';
+import { IonPhaser, GameInstance } from '@ion-phaser/react';
 
-class TicTacToe extends Component {
-  state = {
-    initialize: true,
-    game: {
-      type: Phaser.AUTO,
-      width: 700,
-      height: 600,
-      physics: {
-        default: 'arcade',
-        arcade: {
-          gravity: { y: 200 },
-        },
-      },
-      scene: [],
+const gameConfig: GameInstance = {
+  width: 700,
+  height: 600,
+  type: Phaser.AUTO,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 200 },
     },
+  },
+  scene: [],
+};
+
+const TicTacToe = () => {
+  const gameRef = useRef<HTMLIonPhaserElement>();
+  const [game, setGame] = useState<GameInstance>();
+  const [initialize, setInitialize] = useState(false);
+
+  const destroy = () => {
+    gameRef.current?.destroy();
+    setInitialize(false);
+    setGame(undefined);
   };
-  render() {
-    const { initialize, game } = this.state;
-    return <IonPhaser game={game} initialize={initialize} />;
-  }
-}
+
+  useEffect(() => {
+    setInitialize(true);
+    setGame(Object.assign({}, gameConfig));
+    return () => {
+      destroy();
+    };
+  }, []);
+
+  return <IonPhaser initialize={initialize} game={game} />;
+};
 export default TicTacToe;

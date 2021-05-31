@@ -54,3 +54,9 @@ export const readyGame = () => {
     type: ActionType.READY_GAME,
   };
 };
+
+export const startGame = () => {
+  return {
+    type: ActionType.START_GAME,
+  };
+};

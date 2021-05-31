@@ -3,6 +3,7 @@ import Layout from 'components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createdRoomIdSelector,
+  gameStatusSelector,
   playersSelector,
   roomInfoSelector,
 } from 'selectors/roomSelector';
@@ -15,11 +16,13 @@ import {
   joinRoom,
   leaveRoom,
   readyGame,
+  startGame,
 } from 'actions/ServerAction';
 import { playerIdSelector } from 'selectors/roomSelector';
 import styles from 'styles/pages/rooms.module.scss';
 import { useWarningOnExit } from 'customhooks/useWarningOnExit';
 import GameScreen from 'components/rooms/GameScreen';
+import { GameState } from 'models/Room';
 
 const Rooms = () => {
   const dispatch = useDispatch();
@@ -29,6 +32,7 @@ const Rooms = () => {
   const players = useSelector(playersSelector);
   const roomInfo = useSelector(roomInfoSelector);
   const yourPlayerId = useSelector(playerIdSelector);
+  const gameStatus = useSelector(gameStatusSelector);
 
   useWarningOnExit({
     shouldWarn: true,
@@ -104,7 +108,7 @@ const Rooms = () => {
                 size="large"
                 disabled={disabledStartGame()}
                 className={styles.startGame}
-                onClick={() => {}}
+                onClick={() => dispatch(startGame())}
               >
                 開始遊戲
               </Button>
@@ -129,7 +133,7 @@ const Rooms = () => {
           </div>
         </Grid>
       </Grid>
-      <GameScreen gamePack={roomInfo.gamePack} />
+      <GameScreen gamePack={roomInfo.gamePack} gameStatus={gameStatus} />
     </Layout>
   );
 };

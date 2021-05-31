@@ -76,7 +76,8 @@ type SetPlayerIndexAction = {
 };
 
 type UpdateGameStatus = {
-  type: ActionType;
+  type: ActionType.UPDATE_GAME_STATUS;
+  gameStatus: GameState;
 };
 
 type ResetAction = {
@@ -93,6 +94,7 @@ type Action =
   | SetPlayerReadyAction
   | SetPlayerMasterAction
   | SetPlayerIndexAction
+  | UpdateGameStatus
   | ResetAction;
 
 const reducer = (state = initialState, action: Action): State => {
@@ -180,6 +182,12 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         players: newPlayers,
+      };
+    }
+    case ActionType.UPDATE_GAME_STATUS: {
+      return {
+        ...state,
+        gameStatus: action.gameStatus,
       };
     }
     case ActionType.RESET: {

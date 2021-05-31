@@ -38,6 +38,10 @@ const ServerMiddleware: Middleware<Dispatch> =
           server.readyGame();
           break;
         }
+        case ActionType.START_GAME: {
+          server.startGame();
+          break;
+        }
       }
     }
     return next(action);

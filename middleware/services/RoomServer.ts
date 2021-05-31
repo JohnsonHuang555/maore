@@ -63,6 +63,10 @@ export default class RoomServer {
     room.send(Message.ReadyGame);
   }
 
+  async startGame() {
+    room.send(Message.StartGame);
+  }
+
   private handleRoomChange() {
     room.onMessage(
       Message.YourPlayerId,
