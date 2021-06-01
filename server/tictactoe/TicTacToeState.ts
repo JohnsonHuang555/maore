@@ -2,12 +2,7 @@ import { Schema, ArraySchema, type } from '@colyseus/schema';
 import { PlayerState } from '../types/PlayerState';
 import { GameState } from '../../models/Room';
 import { RoomInfoState } from '../types/RoomInfoState';
-
-export enum Cell {
-  Empty,
-  X,
-  O,
-}
+import { Cell } from '../../features/tictactoe/models/Cell';
 
 export interface TicTacToe extends Schema {
   players: ArraySchema<PlayerState>;

@@ -1,7 +1,8 @@
 import { Command } from '@colyseus/command';
 import { Client } from 'colyseus';
+import { Cell } from '../../../features/tictactoe/models/Cell';
 import { GameState } from '../../../models/Room';
-import { TicTacToe, Cell } from '../TicTacToeState';
+import { TicTacToe } from '../TicTacToeState';
 import CheckWinnerCommand from './CheckWinnerCommand';
 
 type Payload = {
