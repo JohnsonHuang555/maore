@@ -21,8 +21,13 @@ import {
 import { playerIdSelector } from 'selectors/roomSelector';
 import styles from 'styles/pages/rooms.module.scss';
 import { useWarningOnExit } from 'customhooks/useWarningOnExit';
-import GameScreen from 'components/rooms/GameScreen';
 import { clientSelector } from 'selectors/serverSelector';
+import dynamic from 'next/dynamic';
+
+const DynamicGameScreenWithNoSSR = dynamic(
+  () => import('components/rooms/GameScreen'),
+  { ssr: false }
+);
 
 const Rooms = () => {
   const dispatch = useDispatch();
@@ -137,7 +142,11 @@ const Rooms = () => {
           </div>
         </Grid>
       </Grid>
-      <GameScreen gamePack={roomInfo.gamePack} gameStatus={gameStatus} />
+      <DynamicGameScreenWithNoSSR
+        gamePack={roomInfo.gamePack}
+        gameStatus={gameStatus}
+      />
+      {/* <GameScreen gamePack={roomInfo.gamePack} gameStatus={gameStatus} /> */}
     </Layout>
   );
 };
