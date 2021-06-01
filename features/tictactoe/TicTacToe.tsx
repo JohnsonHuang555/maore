@@ -34,6 +34,7 @@ const TicTacToe = () => {
     };
   }, []);
 
+  // return <div>123</div>;
   return <IonPhaser initialize={initialize} game={game} />;
 };
 export default TicTacToe;

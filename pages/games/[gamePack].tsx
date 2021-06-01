@@ -10,9 +10,10 @@ import { createdRoomIdSelector, roomsSelector } from 'selectors/roomSelector';
 import { Button } from '@material-ui/core';
 import CreateRoom from 'components/games/CreateRoom';
 import { setSnackbar } from 'actions/AppAction';
-import { initialClient, createRoom } from 'actions/ServerAction';
+import { initialClient, createRoom, getAllRooms } from 'actions/ServerAction';
 import RoomCard from 'components/games/RoomCard';
 import styles from 'styles/pages/game.module.scss';
+import { clientSelector } from 'selectors/serverSelector';
 
 const fetcher = async (url: string) => {
   const res = await fetch(url);
@@ -30,6 +31,7 @@ const Games = () => {
   const { gamePack } = router.query;
   const createdRoomId = useSelector(createdRoomIdSelector);
   const rooms = useSelector(roomsSelector);
+  const client = useSelector(clientSelector);
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
 
   // get current game
@@ -39,10 +41,17 @@ const Games = () => {
   );
 
   useEffect(() => {
-    if (gamePack) {
-      dispatch(initialClient(gamePack as GameList));
+    if (client) {
+      return;
     }
-  }, [dispatch, gamePack]);
+    dispatch(initialClient());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (client && gamePack) {
+      dispatch(getAllRooms(gamePack as GameList));
+    }
+  }, [client, gamePack]);
 
   useEffect(() => {
     if (createdRoomId) {

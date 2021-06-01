@@ -2,22 +2,24 @@ import { ActionType } from 'actions/ServerAction';
 import Server from './services/RoomServer';
 import { Dispatch, Middleware, MiddlewareAPI } from 'redux';
 
-let server: Server;
+let roomServer: Server;
 const ServerMiddleware: Middleware<Dispatch> =
-  ({ dispatch }: MiddlewareAPI) =>
+  ({ dispatch, getState }: MiddlewareAPI) =>
   (next) =>
   (action: any) => {
     if (action && action.type) {
+      const { server } = getState();
       switch (action.type) {
         case ActionType.INITIAL_CLIENT: {
-          server = new Server(dispatch);
-          if (action.gamePack) {
-            server.getAllRooms(action.gamePack);
-          }
+          roomServer = new Server(dispatch);
+          break;
+        }
+        case ActionType.GET_ALL_ROOMS: {
+          roomServer.getAllRooms(server.client, action.gamePack);
           break;
         }
         case ActionType.CREATE_ROOM: {
-          server.createRoom(action.gamePack, {
+          roomServer.createRoom(server.client, action.gamePack, {
             roomTitle: action.roomTitle,
             playerName: action.playerName,
             gamePack: action.gamePack,
@@ -25,21 +27,21 @@ const ServerMiddleware: Middleware<Dispatch> =
           break;
         }
         case ActionType.JOIN_ROOM: {
-          server.joinRoom(action.roomId, {
+          roomServer.joinRoom(server.client, action.roomId, {
             playerName: action.playerName,
           });
           break;
         }
         case ActionType.LEAVE_ROOM: {
-          server.leaveRoom();
+          roomServer.leaveRoom(server.room);
           break;
         }
         case ActionType.READY_GAME: {
-          server.readyGame();
+          roomServer.readyGame(server.room);
           break;
         }
         case ActionType.START_GAME: {
-          server.startGame();
+          roomServer.startGame(server.room);
           break;
         }
       }

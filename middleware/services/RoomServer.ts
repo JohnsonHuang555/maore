@@ -17,8 +17,9 @@ import { GameState, Metadata } from 'models/Room';
 import { AnyAction, Dispatch } from 'redux';
 import { Schema, ArraySchema } from '@colyseus/schema';
 import { PlayerState } from 'server/types/PlayerState';
+import { setClient, setRoom } from 'actions/ServerAction';
 
-interface Room extends Schema {
+export interface Room extends Schema {
   players: ArraySchema<PlayerState>;
   gameState: GameState; // 遊戲狀態
   activePlayer: number; // 當前玩家
@@ -26,48 +27,50 @@ interface Room extends Schema {
   playerIndex: number; // 玩家順序號
 }
 
-let room: ClientRoom<Room>;
+// let room: ClientRoom<Room>;
 export default class RoomServer {
-  private client: Client;
   private dispatch: Dispatch<AnyAction>;
 
   constructor(dispatch: Dispatch<AnyAction>) {
-    this.client = new Client('ws://localhost:3000');
+    const client = new Client('ws://localhost:3000');
+    dispatch(setClient(client));
     this.dispatch = dispatch;
   }
 
-  async getAllRooms(gamePack: GameList) {
-    const rooms = await this.client.getAvailableRooms(gamePack);
+  async getAllRooms(client: Client, gamePack: GameList) {
+    const rooms = await client.getAvailableRooms(gamePack);
     this.dispatch(loadedRooms(rooms));
   }
 
   // 房主觸發 createOrJoinRoom 只會觸發一次
-  async createRoom(gamePack: GameList, metaData: Metadata) {
-    room = await this.client.create<Room>(gamePack, metaData);
+  async createRoom(client: Client, gamePack: GameList, metaData: Metadata) {
+    const room = await client.create<Room>(gamePack, metaData);
     this.dispatch(createdRoom(room.id));
-    this.handleRoomChange();
+    this.dispatch(setRoom(room));
+    this.handleRoomChange(room);
   }
 
   // 加入房間玩家觸發
-  async joinRoom(roomId: string, metaData: Metadata) {
-    room = await this.client.joinById<Room>(roomId, metaData);
-    this.handleRoomChange();
+  async joinRoom(client: Client, roomId: string, metaData: Metadata) {
+    const room = await client.joinById<Room>(roomId, metaData);
+    this.dispatch(setRoom(room));
+    this.handleRoomChange(room);
   }
 
-  async leaveRoom() {
+  async leaveRoom(room: ClientRoom<Room>) {
     room.leave();
     room.removeAllListeners();
   }
 
-  async readyGame() {
+  async readyGame(room: ClientRoom<Room>) {
     room.send(Message.ReadyGame);
   }
 
-  async startGame() {
+  async startGame(room: ClientRoom<Room>) {
     room.send(Message.StartGame);
   }
 
-  private handleRoomChange() {
+  private handleRoomChange(room: ClientRoom<Room>) {
     room.onMessage(
       Message.YourPlayerId,
       (message: { yourPlayerId: string }) => {

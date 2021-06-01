@@ -4,9 +4,10 @@ import Layout from 'components/Layout';
 import { Game } from 'models/Game';
 import Grid from '@material-ui/core/Grid';
 import { useRouter } from 'next/router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { initialClient } from 'actions/ServerAction';
+import { clientSelector } from 'selectors/serverSelector';
 import styles from 'styles/pages/home.module.scss';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -14,9 +15,13 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function Home() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const client = useSelector(clientSelector);
   const { data: games, error } = useSWR<Game[], Error>('/api/game', fetcher);
 
   useEffect(() => {
+    if (client) {
+      return;
+    }
     dispatch(initialClient());
   }, [dispatch]);
 

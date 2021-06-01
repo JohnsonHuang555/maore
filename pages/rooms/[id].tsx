@@ -22,7 +22,7 @@ import { playerIdSelector } from 'selectors/roomSelector';
 import styles from 'styles/pages/rooms.module.scss';
 import { useWarningOnExit } from 'customhooks/useWarningOnExit';
 import GameScreen from 'components/rooms/GameScreen';
-import { GameState } from 'models/Room';
+import { clientSelector } from 'selectors/serverSelector';
 
 const Rooms = () => {
   const dispatch = useDispatch();
@@ -33,6 +33,7 @@ const Rooms = () => {
   const roomInfo = useSelector(roomInfoSelector);
   const yourPlayerId = useSelector(playerIdSelector);
   const gameStatus = useSelector(gameStatusSelector);
+  const client = useSelector(clientSelector);
 
   useWarningOnExit({
     shouldWarn: true,
@@ -40,6 +41,9 @@ const Rooms = () => {
   });
 
   useEffect(() => {
+    if (client) {
+      return;
+    }
     dispatch(initialClient());
   }, [dispatch]);
 
