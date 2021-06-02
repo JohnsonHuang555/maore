@@ -8,6 +8,7 @@ export type State = {
   };
   userInfo?: User;
   showLoginModal: boolean;
+  isLogin: boolean;
 };
 
 const initialState: State = {
@@ -16,6 +17,7 @@ const initialState: State = {
     message: '',
   },
   showLoginModal: false,
+  isLogin: false,
 };
 
 type SetSnackbarAction = {
@@ -59,12 +61,14 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         userInfo: action.userInfo,
+        isLogin: true,
       };
     }
     case ActionType.REMOVE_USER_INFO: {
       return {
         ...state,
         userInfo: undefined,
+        isLogin: false,
       };
     }
     case ActionType.SHOW_LOGIN_MODAL: {

@@ -83,15 +83,17 @@ const Header = () => {
                 <Typography className={styles.userName} variant="h6">
                   歡迎！{userInfo.name}
                 </Typography>
-                <Button
-                  variant="contained"
-                  size="large"
-                  color="secondary"
-                  onClick={() => logout()}
-                  style={{ color: '#fff' }}
-                >
-                  登出
-                </Button>
+                {router.pathname.substr(1, 5) !== 'rooms' && (
+                  <Button
+                    variant="contained"
+                    size="large"
+                    color="secondary"
+                    onClick={() => logout()}
+                    style={{ color: '#fff' }}
+                  >
+                    登出
+                  </Button>
+                )}
               </>
             ) : (
               <Button

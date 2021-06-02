@@ -23,6 +23,8 @@ import styles from 'styles/pages/rooms.module.scss';
 import { useWarningOnExit } from 'customhooks/useWarningOnExit';
 import { clientSelector } from 'selectors/serverSelector';
 import dynamic from 'next/dynamic';
+import { isLoginSelector, userInfoSelector } from 'selectors/appSelector';
+import { setShowLoginModal } from 'actions/AppAction';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('components/rooms/GameScreen'),
@@ -39,6 +41,8 @@ const Rooms = () => {
   const yourPlayerId = useSelector(playerIdSelector);
   const gameStatus = useSelector(gameStatusSelector);
   const client = useSelector(clientSelector);
+  const userInfo = useSelector(userInfoSelector);
+  const isLogin = useSelector(isLoginSelector);
 
   useWarningOnExit({
     shouldWarn: true,
@@ -53,10 +57,16 @@ const Rooms = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (roomId && !createdRoomId) {
-      dispatch(joinRoom(String(roomId), 'Alice'));
+    if (roomId && !createdRoomId && isLogin && userInfo) {
+      dispatch(joinRoom(String(roomId), userInfo.name));
     }
-  }, [roomId, createdRoomId]);
+  }, [roomId, createdRoomId, isLogin]);
+
+  useEffect(() => {
+    if (!userInfo) {
+      dispatch(setShowLoginModal(true));
+    }
+  }, [userInfo]);
 
   const isMaster = (): boolean => {
     const player = players.find((p) => p.isMaster && p.id === yourPlayerId);

@@ -9,11 +9,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createdRoomIdSelector, roomsSelector } from 'selectors/roomSelector';
 import { Button } from '@material-ui/core';
 import CreateRoom from 'components/games/CreateRoom';
-import { setSnackbar } from 'actions/AppAction';
+import { setShowLoginModal, setSnackbar } from 'actions/AppAction';
 import { initialClient, createRoom, getAllRooms } from 'actions/ServerAction';
 import RoomCard from 'components/games/RoomCard';
 import styles from 'styles/pages/game.module.scss';
 import { clientSelector } from 'selectors/serverSelector';
+import { userInfoSelector } from 'selectors/appSelector';
 
 const fetcher = async (url: string) => {
   const res = await fetch(url);
@@ -32,6 +33,7 @@ const Games = () => {
   const createdRoomId = useSelector(createdRoomIdSelector);
   const rooms = useSelector(roomsSelector);
   const client = useSelector(clientSelector);
+  const userInfo = useSelector(userInfoSelector);
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
 
   // get current game
@@ -64,12 +66,19 @@ const Games = () => {
   if (!game) return <div>Loading...</div>;
 
   const onCreateRoom = async (roomTitle: string) => {
+    if (!userInfo) {
+      setSnackbar({
+        show: true,
+        message: '請先登入',
+      });
+      return;
+    }
     try {
       dispatch(
         createRoom({
           gamePack: gamePack as GameList,
           roomTitle,
-          playerName: 'Johnson', // TODO: name
+          playerName: userInfo.name, // TODO: name
         })
       );
     } catch (err) {
@@ -81,6 +90,18 @@ const Games = () => {
         })
       );
     }
+  };
+
+  const onJoinRoom = (roomId: string) => {
+    if (!userInfo) {
+      dispatch(setShowLoginModal(true));
+      setSnackbar({
+        show: true,
+        message: '請先登入',
+      });
+      return;
+    }
+    router.push(`/rooms/${roomId}`);
   };
 
   return (
@@ -106,7 +127,19 @@ const Games = () => {
             className={styles.createRoom}
             variant="contained"
             color="secondary"
-            onClick={() => setShowCreateRoomModal(true)}
+            onClick={() => {
+              if (!userInfo) {
+                dispatch(setShowLoginModal(true));
+                dispatch(
+                  setSnackbar({
+                    show: true,
+                    message: '請先登入',
+                  })
+                );
+                return;
+              }
+              setShowCreateRoomModal(true);
+            }}
           >
             建立房間
           </Button>
@@ -125,7 +158,7 @@ const Games = () => {
               title={room.metadata?.roomTitle as string}
               maxPlayers={room.maxClients}
               nowPlayers={room.clients}
-              joinRoom={() => router.push(`/rooms/${room.roomId}`)}
+              joinRoom={() => onJoinRoom(room.roomId)}
             />
           ))}
         </Grid>
