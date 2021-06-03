@@ -25,6 +25,7 @@ import { clientSelector } from 'selectors/serverSelector';
 import dynamic from 'next/dynamic';
 import { isLoginSelector, userInfoSelector } from 'selectors/appSelector';
 import { setShowLoginModal } from 'actions/AppAction';
+import { GameState } from 'models/Room';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('components/rooms/GameScreen'),
@@ -50,6 +51,13 @@ const Rooms = () => {
   });
 
   useEffect(() => {
+    const userInfo = localStorage.getItem('userInfo');
+    if (!userInfo) {
+      dispatch(setShowLoginModal(true));
+    }
+  }, []);
+
+  useEffect(() => {
     if (client) {
       return;
     }
@@ -61,12 +69,6 @@ const Rooms = () => {
       dispatch(joinRoom(String(roomId), userInfo.name));
     }
   }, [roomId, createdRoomId, isLogin]);
-
-  useEffect(() => {
-    if (!userInfo) {
-      dispatch(setShowLoginModal(true));
-    }
-  }, [userInfo]);
 
   const isMaster = (): boolean => {
     const player = players.find((p) => p.isMaster && p.id === yourPlayerId);
@@ -152,11 +154,12 @@ const Rooms = () => {
           </div>
         </Grid>
       </Grid>
-      <DynamicGameScreenWithNoSSR
-        gamePack={roomInfo.gamePack}
-        gameStatus={gameStatus}
-      />
-      {/* <GameScreen gamePack={roomInfo.gamePack} gameStatus={gameStatus} /> */}
+      {gameStatus === GameState.Playing && (
+        <DynamicGameScreenWithNoSSR
+          gamePack={roomInfo.gamePack}
+          // gameStatus={gameStatus}
+        />
+      )}
     </Layout>
   );
 };
