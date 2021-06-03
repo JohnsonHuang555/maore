@@ -6,12 +6,12 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import theme from 'theme';
 import rootReducer from 'reducers/rootReducer';
-import serverMiddleware from 'middleware/ServerMiddleware';
+import ServerMiddleware from 'middleware/ServerMiddleware';
 import '../styles/globals.scss';
 
-const store = createStore(
+export const store = createStore(
   rootReducer,
-  composeWithDevTools(applyMiddleware(serverMiddleware)) // middleware
+  composeWithDevTools(applyMiddleware(ServerMiddleware)) // middleware
 );
 
 function MyApp({ Component, pageProps }: AppProps) {

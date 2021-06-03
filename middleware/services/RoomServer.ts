@@ -18,6 +18,7 @@ import { AnyAction, Dispatch } from 'redux';
 import { Schema, ArraySchema } from '@colyseus/schema';
 import { PlayerState } from 'server/types/PlayerState';
 import { setClient, setRoom } from 'actions/ServerAction';
+import { Cell } from 'features/tictactoe/models/Cell';
 
 export interface Room extends Schema {
   players: ArraySchema<PlayerState>;
@@ -25,9 +26,12 @@ export interface Room extends Schema {
   activePlayer: number; // 當前玩家
   winningPlayer: number; // 勝利玩家
   playerIndex: number; // 玩家順序號
+
+  // games data
+  // tictactoe
+  board: ArraySchema<Cell>;
 }
 
-// let room: ClientRoom<Room>;
 export default class RoomServer {
   private dispatch: Dispatch<AnyAction>;
 

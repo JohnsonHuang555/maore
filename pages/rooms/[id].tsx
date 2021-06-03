@@ -155,10 +155,7 @@ const Rooms = () => {
         </Grid>
       </Grid>
       {gameStatus === GameState.Playing && (
-        <DynamicGameScreenWithNoSSR
-          gamePack={roomInfo.gamePack}
-          // gameStatus={gameStatus}
-        />
+        <DynamicGameScreenWithNoSSR gamePack={roomInfo.gamePack} />
       )}
     </Layout>
   );
