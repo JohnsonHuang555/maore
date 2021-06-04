@@ -1,14 +1,14 @@
 import Phaser from 'phaser';
-import { store } from 'pages/_app';
-import { Room as ClientRoom } from 'colyseus.js';
-import { Room } from 'middleware/services/RoomServer';
+import Server from '../Server';
 
 export default class Bootstrap extends Phaser.Scene {
-  private room?: ClientRoom<Room>;
+  private server!: Server;
   constructor() {
     super('bootstrap');
-    const { server } = store.getState();
-    this.room = server.room;
+  }
+
+  init() {
+    this.server = new Server();
   }
 
   create() {
@@ -30,7 +30,7 @@ export default class Bootstrap extends Phaser.Scene {
 
   private createNewGame() {
     this.scene.launch('game', {
-      room: this.room,
+      server: this.server,
       onGameOver: this.handleGameOver,
     });
   }

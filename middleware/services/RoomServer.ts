@@ -27,6 +27,7 @@ export interface Room extends Schema {
   winningPlayer: number; // 勝利玩家
   playerIndex: number; // 玩家順序號
 
+  // FIXME: Refactor 現在都混在一起不好維護
   // games data
   // tictactoe
   board: ArraySchema<Cell>;
@@ -111,6 +112,7 @@ export default class RoomServer {
 
     // room state changes...
     room.state.onChange = (changes) => {
+      console.log('roomserver changed');
       changes.forEach((change) => {
         const { field, value } = change;
         switch (field) {

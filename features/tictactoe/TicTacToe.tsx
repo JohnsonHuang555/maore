@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Phaser from 'phaser';
 import { IonPhaser, GameInstance } from '@ion-phaser/react';
 import Bootstrap from './scenes/Bootstrap';
+import Game from './scenes/Game';
 
 const gameConfig: GameInstance = {
   width: 700,
@@ -13,7 +14,7 @@ const gameConfig: GameInstance = {
       gravity: { y: 200 },
     },
   },
-  scene: [Bootstrap],
+  scene: [Bootstrap, Game],
 };
 
 const TicTacToe = () => {
