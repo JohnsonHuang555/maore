@@ -9,6 +9,7 @@ import UpdateRoomInfoCommand from '../commands/UpdateRoomInfoCommand';
 import PlayerLeftCommand from '../commands/PlayerLeftCommand';
 import ReadyGameCommand from '../commands/ReadyGameCommand';
 import StartGameCommand from '../commands/StartGameCommand';
+import ResetCommand from './commands/ResetCommand';
 
 export default class TicTacToe extends Room<TicTacToeState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -38,6 +39,10 @@ export default class TicTacToe extends Room<TicTacToeState, Metadata> {
 
     this.onMessage(Message.StartGame, () => {
       this.dispatcher.dispatch(new StartGameCommand());
+    });
+
+    this.onMessage(Message.ResetGame, () => {
+      this.dispatcher.dispatch(new ResetCommand());
     });
   }
 

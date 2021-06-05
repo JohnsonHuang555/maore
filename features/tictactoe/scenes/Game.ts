@@ -1,7 +1,8 @@
 import { GameOverSceneData, GameSceneData } from 'models/Scenes';
 import Phaser from 'phaser';
-import { Cell } from '../models/Cell';
-import Server from '../Server';
+import { Cell } from 'features/tictactoe/models/Cell';
+import Server from 'features/tictactoe/Server';
+import { GameState } from 'models/Room';
 
 export default class Game extends Phaser.Scene {
   private server?: Server;
@@ -67,9 +68,45 @@ export default class Game extends Phaser.Scene {
       }
     });
 
-    // this.server?.onBoardChanged(this.handleBoardChanged, this);
-    // this.server?.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
-    // this.server?.onPlayerWon(this.handlePlayerWon, this);
-    // this.server?.onGameStateChanged(this.handleGameStateChanged, this);
+    this.server?.onBoardChanged(this.handleBoardChanged, this);
+    this.server?.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
+    this.server?.onPlayerWon(this.handlePlayerWon, this);
   };
+
+  private handleBoardChanged(newValue: Cell, idx: number) {
+    const cell = this.cells[idx];
+    if (cell.value !== newValue) {
+      switch (newValue) {
+        case Cell.X: {
+          this.add
+            .star(cell.display.x, cell.display.y, 4, 4, 60, 0xff0000)
+            .setAngle(45);
+          break;
+        }
+        case Cell.O: {
+          this.add.circle(cell.display.x, cell.display.y, 50, 0x0000ff);
+        }
+      }
+      cell.value = newValue;
+    }
+  }
+
+  private handlePlayerTurnChanged(playerIndex: number) {
+    // TODO: show a message letting the player know it is their turn
+  }
+
+  private handlePlayerWon(playerIndex: number) {
+    const gameState = this.server?.gameState;
+    this.time.delayedCall(1000, () => {
+      if (!this.onGameOver) {
+        return;
+      }
+      if (gameState === GameState.Finished) {
+        return;
+      }
+      console.log('handle player win');
+      this.onGameOver({ winner: this.server?.playerIndex === playerIndex });
+      this.server?.resetGame();
+    });
+  }
 }

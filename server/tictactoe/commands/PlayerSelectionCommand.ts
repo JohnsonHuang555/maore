@@ -22,6 +22,7 @@ export default class PlayerSelectionCommand extends Command<TicTacToe> {
     if (clientIndex !== this.room.state.activePlayer) {
       return;
     }
+
     const cellValue = clientIndex === 0 ? Cell.X : Cell.O;
     this.room.state.board[index] = cellValue;
 

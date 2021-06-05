@@ -1,4 +1,5 @@
 import { Command } from '@colyseus/command';
+import { GameState } from '../../../models/Room';
 import { Cell } from '../../../features/tictactoe/models/Cell';
 import { TicTacToe } from '../TicTacToeState';
 import NextTurnCommand from './NextTurnCommand';
@@ -88,6 +89,7 @@ export default class CheckWinnerCommand extends Command<TicTacToe, Payload> {
     const win = this.determinWin();
     if (win) {
       this.state.winningPlayer = this.state.activePlayer;
+      this.state.gameState = GameState.Finished;
     } else {
       return [new NextTurnCommand()];
     }
