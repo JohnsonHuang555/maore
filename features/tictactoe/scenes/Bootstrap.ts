@@ -23,6 +23,7 @@ export default class Bootstrap extends Phaser.Scene {
     this.scene.launch('game-over', {
       ...data,
       onRestart: this.handleRestart,
+      onClose: this.handleClose,
     });
   };
 
@@ -31,6 +32,14 @@ export default class Bootstrap extends Phaser.Scene {
     console.log('restart');
     this.scene.stop('game-over');
     this.createNewGame();
+  };
+
+  private handleClose = () => {
+    // FIXME: 重複玩幾次這個方法會不斷累積觸發
+    console.log('close');
+    this.scene.stop('game-over');
+    this.server.resetGame();
+    this.server.closeGame();
   };
 
   private createNewGame = () => {

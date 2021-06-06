@@ -46,7 +46,11 @@ export default class Server {
   }
 
   resetGame() {
-    this.room.send(Message.ResetGame);
+    this.room.send(Message.PlayAgain);
+  }
+
+  closeGame() {
+    this.room.send(Message.CloseGame);
   }
 
   onPlayerTurnChanged(cb: (playerIndex: number) => void, context?: any) {
