@@ -13,4 +13,5 @@ export type Game = {
 // 遊戲列表
 export enum GameList {
   TicTacToe = 'tic-tac-toe',
+  Chess = 'chess',
 }

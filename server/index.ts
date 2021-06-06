@@ -5,6 +5,7 @@ import { Server } from 'colyseus';
 import { monitor } from '@colyseus/monitor';
 import TicTacToe from './tictactoe/TicTacToe';
 import { GameList } from '../models/Game';
+import ChessGame from './chess/ChessGame';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev = process.env.NODE_ENV !== 'production';
@@ -24,5 +25,6 @@ nextApp.prepare().then(() => {
 
   // games
   gameServer.define(GameList.TicTacToe, TicTacToe).enableRealtimeListing();
+  gameServer.define(GameList.Chess, ChessGame).enableRealtimeListing();
   gameServer.listen(port);
 });
