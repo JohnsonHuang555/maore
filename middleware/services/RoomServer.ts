@@ -16,7 +16,7 @@ import { Message } from 'models/Message';
 import { GameState, Metadata } from 'models/Room';
 import { AnyAction, Dispatch } from 'redux';
 import { Schema, ArraySchema } from '@colyseus/schema';
-import { PlayerState } from 'server/types/PlayerState';
+import { PlayerState } from 'server/room/state/PlayerState';
 import { setClient, setRoom } from 'actions/ServerAction';
 import { Cell } from 'features/tictactoe/models/Cell';
 
