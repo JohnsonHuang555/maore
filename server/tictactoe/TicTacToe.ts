@@ -6,16 +6,20 @@ import { Message } from '../../models/Message';
 import PlayerSelectionCommand from './commands/PlayerSelectionCommand';
 import ResetCommand from './commands/ResetCommand';
 import BaseRoom from '../../server/room';
+import RoomState from '../room/state/RoomState';
 
 export default class TicTacToe extends Room<TicTacToeState, Metadata> {
   private dispatcher = new Dispatcher(this);
   private baseRoom = new BaseRoom(this);
 
   onCreate(option: Metadata) {
-    this.baseRoom.onCreate();
+    this.baseRoom.onCreate(option);
     this.maxClients = 2;
 
-    this.setMetadata(option);
+    const a = new TicTacToeState();
+    const r = new RoomState();
+
+    // this.setMetadata(option);
     this.setState(new TicTacToeState());
 
     // 監聽前端的選擇事件

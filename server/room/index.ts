@@ -12,13 +12,14 @@ import UpdateRoomInfoCommand from './commands/UpdateRoomInfoCommand';
 
 export default class BaseRoom {
   private dispatcher;
-  private room: Room<RoomState>;
-  constructor(room: Room<RoomState>) {
+  private room: Room<RoomState, Metadata>;
+  constructor(room: Room<RoomState, Metadata>) {
     this.room = room;
     this.dispatcher = new Dispatcher(room);
   }
 
-  onCreate() {
+  onCreate(option: Metadata) {
+    this.room.setMetadata(option);
     this.room.onMessage(Message.ReadyGame, (client) => {
       this.dispatcher.dispatch(new ReadyGameCommand(), {
         client,
