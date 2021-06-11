@@ -1,19 +1,18 @@
 import { Schema, ArraySchema, type } from '@colyseus/schema';
-import { PlayerState } from '../types/PlayerState';
-import { GameState } from '../../models/Room';
-import { RoomInfoState } from '../types/RoomInfoState';
-import { Cell } from '../../features/tictactoe/models/Cell';
+import { PlayerState } from '../../room/state/PlayerState';
+import { GameState } from '../../../models/Room';
+import { RoomInfoState } from '../../room/state/RoomInfoState';
+import { Cell } from '../../../features/tictactoe/models/Cell';
+import RoomState from '../../room/state/RoomState';
 
 export interface TicTacToe extends Schema {
-  players: ArraySchema<PlayerState>;
-  roomInfo: RoomInfoState;
   board: ArraySchema<Cell>;
-  gameState: GameState;
-  activePlayer: number;
-  winningPlayer: number;
 }
 
-export default class TicTacToeState extends Schema implements TicTacToe {
+export default class TicTacToeState
+  extends Schema
+  implements TicTacToe, RoomState
+{
   @type([PlayerState])
   players: ArraySchema<PlayerState>;
 

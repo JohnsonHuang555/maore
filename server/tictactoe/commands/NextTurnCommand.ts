@@ -1,5 +1,5 @@
 import { Command } from '@colyseus/command';
-import { TicTacToe } from '../TicTacToeState';
+import type TicTacToe from '../state/TicTacToeState';
 
 export default class NextTurnCommand extends Command<TicTacToe> {
   execute() {
