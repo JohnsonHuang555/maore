@@ -16,10 +16,7 @@ export default class TicTacToe extends Room<TicTacToeState, Metadata> {
     this.baseRoom.onCreate(option);
     this.maxClients = 2;
 
-    const a = new TicTacToeState();
-    const r = new RoomState();
-
-    // this.setMetadata(option);
+    this.setMetadata(option);
     this.setState(new TicTacToeState());
 
     // 監聽前端的選擇事件
