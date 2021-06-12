@@ -1,6 +1,6 @@
 import { Command } from '@colyseus/command';
 import { GameState } from '../../../models/Room';
-import type RoomState from '../state/RoomState';
+import RoomState from '../state/RoomState';
 
 type Payload = {
   playerId: string;

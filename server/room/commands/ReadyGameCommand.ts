@@ -1,6 +1,6 @@
 import { Command } from '@colyseus/command';
 import { Client } from 'colyseus';
-import type RoomState from '../state/RoomState';
+import RoomState from '../state/RoomState';
 
 export type Payload = {
   client: Client;

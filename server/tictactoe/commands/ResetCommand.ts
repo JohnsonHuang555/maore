@@ -1,9 +1,9 @@
 import { Command } from '@colyseus/command';
 import { Cell } from '../../../features/tictactoe/models/Cell';
 import { GameState } from '../../../models/Room';
-import type EnhanceTicTacToeState from '../state/TicTacToeState';
+import TicTacToeState from '../state/TicTacToeState';
 
-export default class ResetCommand extends Command<EnhanceTicTacToeState> {
+export default class ResetCommand extends Command<TicTacToeState> {
   execute() {
     // reset
     for (let i = 0; i < 9; i++) {

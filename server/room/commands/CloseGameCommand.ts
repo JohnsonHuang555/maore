@@ -1,5 +1,5 @@
 import { Command } from '@colyseus/command';
-import type RoomState from '../state/RoomState';
+import RoomState from '../state/RoomState';
 import { GameState } from '../../../models/Room';
 
 export default class CloseGameCommand extends Command<RoomState> {
