@@ -13,5 +13,15 @@ export const games: Game[] = [
     homeImg: '/tictactoe/home.png',
     estimateTime: 5,
     gamePack: GameList.TicTacToe,
+    modes: [
+      {
+        label: '一般模式',
+        value: 'standard',
+      },
+      {
+        label: '一般模式2',
+        value: 'standard',
+      },
+    ],
   },
 ];

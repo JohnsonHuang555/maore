@@ -78,7 +78,7 @@ const Games = () => {
         createRoom({
           gamePack: gamePack as GameList,
           roomTitle,
-          playerName: userInfo.name, // TODO: name
+          playerName: userInfo.name,
         })
       );
     } catch (err) {
@@ -108,6 +108,7 @@ const Games = () => {
     <Layout>
       <CreateRoom
         show={showCreateRoomModal}
+        selectedGame={game}
         onClose={() => setShowCreateRoomModal(false)}
         onCreateRoom={onCreateRoom}
       />

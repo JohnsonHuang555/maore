@@ -6,23 +6,37 @@ import {
   TextField,
   DialogActions,
   Button,
-  MenuItem,
 } from '@material-ui/core';
-import Select from '@material-ui/core/Select';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from 'actions/AppAction';
+import Card from '@material-ui/core/Card';
+import { CardActionArea, CardMedia } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { Game } from 'models/Game';
+import Grid from '@material-ui/core/Grid';
 
 type CreateRoomProps = {
   show: boolean;
+  selectedGame: Game;
   onCreateRoom: (roomTitle: string) => void;
   onClose: () => void;
 };
 
+const useStyles = makeStyles({
+  root: {
+    // maxWidth: 345,
+  },
+  media: {
+    height: 200,
+  },
+});
+
 const CreateRoom = (props: CreateRoomProps) => {
   const dispatch = useDispatch();
-  const { show, onCreateRoom, onClose } = props;
+  const { show, selectedGame, onCreateRoom, onClose } = props;
   const [roomTitle, setRoomTitle] = useState('');
   const [selectedMode, setSelectedMode] = useState('');
+  const classes = useStyles();
 
   const onConfirm = () => {
     if (!roomTitle) {
@@ -45,7 +59,7 @@ const CreateRoom = (props: CreateRoomProps) => {
       fullWidth
     >
       <DialogTitle id="create-room-dialog-title">Create Room</DialogTitle>
-      <DialogContent>
+      <DialogContent style={{ overflow: 'hidden' }}>
         <TextField
           autoFocus
           margin="dense"
@@ -57,6 +71,21 @@ const CreateRoom = (props: CreateRoomProps) => {
           onChange={(e) => setRoomTitle(e.target.value)}
           style={{ marginBottom: '20px' }}
         />
+        <Grid container spacing={3}>
+          {selectedGame.modes.map((mode) => (
+            <Grid key={selectedGame.id} item xs={6} onClick={() => {}}>
+              <Card className={classes.root}>
+                <CardActionArea>
+                  <CardMedia
+                    className={classes.media}
+                    image={selectedGame.homeImg}
+                    title={selectedGame.name}
+                  />
+                </CardActionArea>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>取消</Button>
