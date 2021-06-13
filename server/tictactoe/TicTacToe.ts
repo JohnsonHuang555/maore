@@ -6,7 +6,6 @@ import { Message } from '../../models/Message';
 import PlayerSelectionCommand from './commands/PlayerSelectionCommand';
 import ResetCommand from './commands/ResetCommand';
 import BaseRoom from '../../server/room';
-import RoomState from '../room/state/RoomState';
 
 export default class TicTacToe extends Room<TicTacToeState, Metadata> {
   private dispatcher = new Dispatcher(this);
