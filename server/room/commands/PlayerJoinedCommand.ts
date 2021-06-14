@@ -1,6 +1,6 @@
 import { Command } from '@colyseus/command';
-import { PlayerState } from '../types/PlayerState';
-import { TicTacToe } from '../tictactoe/TicTacToeState';
+import { PlayerState } from '../state/PlayerState';
+import RoomState from '../state/RoomState';
 
 export type Payload = {
   id: string;
@@ -9,7 +9,7 @@ export type Payload = {
   isMaster: boolean;
 };
 
-export default class PlayerJoinedCommand extends Command<TicTacToe> {
+export default class PlayerJoinedCommand extends Command<RoomState> {
   execute(data: Payload) {
     this.room.state.players.push(new PlayerState(data));
   }

@@ -2,7 +2,7 @@ import { Command } from '@colyseus/command';
 import { Client } from 'colyseus';
 import { Cell } from '../../../features/tictactoe/models/Cell';
 import { GameState } from '../../../models/Room';
-import { TicTacToe } from '../TicTacToeState';
+import TicTacToeState from '../state/TicTacToeState';
 import CheckWinnerCommand from './CheckWinnerCommand';
 
 type Payload = {
@@ -10,7 +10,7 @@ type Payload = {
   index: number;
 };
 
-export default class PlayerSelectionCommand extends Command<TicTacToe> {
+export default class PlayerSelectionCommand extends Command<TicTacToeState> {
   execute(data: Payload) {
     const { client, index } = data;
 

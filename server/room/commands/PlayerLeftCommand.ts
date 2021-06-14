@@ -1,12 +1,12 @@
 import { Command } from '@colyseus/command';
-import { GameState } from '../../models/Room';
-import { TicTacToe } from '../tictactoe/TicTacToeState';
+import { GameState } from '../../../models/Room';
+import RoomState from '../state/RoomState';
 
 type Payload = {
   playerId: string;
 };
 
-export default class PlayerLeftCommand extends Command<TicTacToe> {
+export default class PlayerLeftCommand extends Command<RoomState> {
   execute(data: Payload) {
     const idx = this.room.state.players.findIndex(
       (player) => player.id === data.playerId

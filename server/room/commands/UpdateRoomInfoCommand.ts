@@ -1,6 +1,6 @@
 import { Command } from '@colyseus/command';
 import { GameList } from 'models/Game';
-import { TicTacToe } from '../tictactoe/TicTacToeState';
+import RoomState from '../state/RoomState';
 
 export type Payload = {
   maxPlayers?: number;
@@ -8,7 +8,7 @@ export type Payload = {
   gamePack?: GameList;
 };
 
-export default class UpdateRoomInfoCommand extends Command<TicTacToe> {
+export default class UpdateRoomInfoCommand extends Command<RoomState> {
   execute(data: Payload) {
     // TODO: Refactor ??
     const { maxPlayers, roomTitle, gamePack } = data;

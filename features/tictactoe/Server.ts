@@ -4,6 +4,12 @@ import Phaser from 'phaser';
 import { store } from 'pages/_app';
 import { Message } from 'models/Message';
 import { updateGameStatus } from 'actions/RoomAction';
+import { Cell } from 'features/tictactoe/models/Cell';
+import { ArraySchema } from '@colyseus/schema';
+
+export interface Tictactoe {
+  board: ArraySchema<Cell>;
+}
 
 // 監聽與傳送給後端資料
 export default class Server {
@@ -46,7 +52,11 @@ export default class Server {
   }
 
   resetGame() {
-    this.room.send(Message.ResetGame);
+    this.room.send(Message.PlayAgain);
+  }
+
+  closeGame() {
+    this.room.send(Message.CloseGame);
   }
 
   onPlayerTurnChanged(cb: (playerIndex: number) => void, context?: any) {
