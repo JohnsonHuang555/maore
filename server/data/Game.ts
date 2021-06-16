@@ -1,4 +1,4 @@
-import { Game, GameList } from 'models/Game';
+import { Game, GameList } from '../../models/Game';
 
 // TODO: 假資料之後寫入資料庫
 export const games: Game[] = [

@@ -1,7 +1,7 @@
 import { Dispatcher } from '@colyseus/command';
 import { Client, Room } from 'colyseus';
 import RoomState from './state/RoomState';
-import { Message } from '../../models/Message';
+import { Message } from '../../models/messages/RoomMessage';
 import { Metadata } from '../../models/Room';
 import PlayerLeftCommand from './commands/PlayerLeftCommand';
 import ReadyGameCommand from './commands/ReadyGameCommand';
@@ -13,16 +13,17 @@ import UpdateRoomInfoCommand from './commands/UpdateRoomInfoCommand';
 export default class BaseRoom {
   private dispatcher;
   private room: Room<RoomState, Metadata>;
-  private maxClient: number;
-  constructor(room: Room<RoomState, Metadata>, maxClient: number) {
+  constructor(room: Room<RoomState, Metadata>) {
     this.room = room;
     this.dispatcher = new Dispatcher(room);
-    this.maxClient = maxClient;
+  }
+
+  setMaxClient(maxClients: number) {
+    this.room.maxClients = maxClients;
   }
 
   onCreate(option: Metadata) {
     this.room.setMetadata(option);
-    this.room.maxClients = this.maxClient;
     this.room.onMessage(Message.ReadyGame, (client) => {
       this.dispatcher.dispatch(new ReadyGameCommand(), {
         client,
@@ -62,7 +63,7 @@ export default class BaseRoom {
       playerIndex: idx,
     });
 
-    if (this.room.clients.length === this.maxClient) {
+    if (this.room.clients.length === this.room.maxClients) {
       this.room.lock();
     }
   }

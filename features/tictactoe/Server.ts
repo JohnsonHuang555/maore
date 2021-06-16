@@ -2,7 +2,7 @@ import { Room as ClientRoom } from 'colyseus.js';
 import { Room } from 'middleware/services/RoomServer';
 import Phaser from 'phaser';
 import { store } from 'pages/_app';
-import { Message } from 'models/Message';
+import { Message } from 'models/messages/RoomMessage';
 import { updateGameStatus } from 'actions/RoomAction';
 import { Cell } from 'features/tictactoe/models/Cell';
 import { ArraySchema } from '@colyseus/schema';

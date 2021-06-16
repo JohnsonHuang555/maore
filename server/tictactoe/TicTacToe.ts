@@ -2,7 +2,7 @@ import { Client, Room } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
 import { Metadata } from '../../models/Room';
 import TicTacToeState from './state/TicTacToeState';
-import { Message } from '../../models/Message';
+import { Message } from '../../models/messages/RoomMessage';
 import PlayerSelectionCommand from './commands/PlayerSelectionCommand';
 import ResetCommand from './commands/ResetCommand';
 import BaseRoom from '../../server/room';
@@ -10,11 +10,11 @@ import BaseRoom from '../../server/room';
 const MAX_CLIENTS = 2;
 export default class TicTacToe extends Room<TicTacToeState, Metadata> {
   private dispatcher = new Dispatcher(this);
-  private baseRoom = new BaseRoom(this, MAX_CLIENTS);
+  private baseRoom = new BaseRoom(this);
 
   onCreate(option: Metadata) {
     this.baseRoom.onCreate(option);
-    this.maxClients = 2;
+    this.baseRoom.setMaxClient(MAX_CLIENTS);
     this.setState(new TicTacToeState());
 
     // 監聽前端的選擇事件

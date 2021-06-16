@@ -10,8 +10,8 @@ export enum GameList {
 export type Game = {
   id: number;
   name: string;
-  minPlayers: number;
-  maxPlayers: number;
+  maxPlayers?: number; // 該遊戲沒有模式時有值
+  minPlayers?: number; // 該遊戲沒有模式時有值
   brief: string;
   description: string;
   homeImg: string;
@@ -24,6 +24,8 @@ export type GameMode = {
   label: string;
   value: string;
   image: string;
+  maxPlayers: number;
+  minPlayers: number;
 };
 
 export const EnhanceGame: {
