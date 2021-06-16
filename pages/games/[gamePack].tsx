@@ -65,7 +65,7 @@ const Games = () => {
   if (error) return <div>{error.message}</div>;
   if (!game) return <div>Loading...</div>;
 
-  const onCreateRoom = async (roomTitle: string, gameMode: string) => {
+  const onCreateRoom = async (roomTitle: string, gameMode?: string) => {
     if (!userInfo) {
       setSnackbar({
         show: true,

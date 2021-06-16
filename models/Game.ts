@@ -17,7 +17,7 @@ export type Game = {
   homeImg: string;
   estimateTime: number;
   gamePack: GameList;
-  modes: GameMode[];
+  modes?: GameMode[];
 };
 
 export type GameMode = {

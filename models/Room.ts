@@ -17,5 +17,5 @@ export type RoomInfo = {
   roomTilte: string;
   maxPlayers: number;
   gamePack: GameList | '';
-  gameMode: string;
+  gameMode?: string;
 };

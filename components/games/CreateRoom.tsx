@@ -14,11 +14,10 @@ import Grid from '@material-ui/core/Grid';
 import styles from 'styles/components/createRoom.module.scss';
 import { CheckCircleOutline } from '@material-ui/icons';
 
-const MIN_MODE_COUNT = 1;
 type CreateRoomProps = {
   show: boolean;
   selectedGame: Game;
-  onCreateRoom: (roomTitle: string, gameMode: string) => void;
+  onCreateRoom: (roomTitle: string, gameMode?: string) => void;
   onClose: () => void;
 };
 
@@ -27,7 +26,7 @@ const CreateRoom = (props: CreateRoomProps) => {
   const { show, selectedGame, onCreateRoom, onClose } = props;
   const [roomTitle, setRoomTitle] = useState('');
   // 預設選第一個
-  const [selectedMode, setSelectedMode] = useState(selectedGame.modes[0].value);
+  const [selectedMode, setSelectedMode] = useState('');
 
   const onConfirm = () => {
     if (!roomTitle) {
@@ -50,20 +49,20 @@ const CreateRoom = (props: CreateRoomProps) => {
       fullWidth
       maxWidth="md"
     >
-      <DialogTitle id="create-room-dialog-title">Create Room</DialogTitle>
+      <DialogTitle id="create-room-dialog-title">建立房間</DialogTitle>
       <DialogContent style={{ overflow: 'hidden' }}>
         <TextField
           autoFocus
           margin="dense"
           id="room-name"
-          label="Room name"
+          label="房間名稱"
           type="text"
           fullWidth
           variant="outlined"
           onChange={(e) => setRoomTitle(e.target.value)}
           style={{ marginBottom: '20px' }}
         />
-        {selectedGame.modes.length > MIN_MODE_COUNT && (
+        {selectedGame.modes && (
           <Grid container spacing={3}>
             {selectedGame.modes.map((mode) => (
               <Grid
