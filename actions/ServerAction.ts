@@ -45,18 +45,21 @@ export type createRoomParams = {
   gamePack: GameList;
   roomTitle: string;
   playerName: string;
+  gameMode: string;
 };
 
 export const createRoom = ({
   gamePack,
   roomTitle,
   playerName,
+  gameMode,
 }: createRoomParams) => {
   return {
     type: ActionType.CREATE_ROOM,
     gamePack,
     roomTitle,
     playerName,
+    gameMode,
   };
 };
 

@@ -1,5 +1,5 @@
-import { GameMode as TicTacToeMode } from 'features/tictactoe/models/Mode';
-import { GameMode as ChineseChessMode } from 'features/chinese_chess/models/Mode';
+import { GameMode as TicTacToeMode } from '../features/tictactoe/models/Mode';
+import { GameMode as ChineseChessMode } from '../features/chinese_chess/models/Mode';
 
 // 遊戲列表
 export enum GameList {
@@ -23,6 +23,7 @@ export type Game = {
 export type GameMode = {
   label: string;
   value: string;
+  image: string;
 };
 
 export const EnhanceGame: {

@@ -9,34 +9,25 @@ import {
 } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from 'actions/AppAction';
-import Card from '@material-ui/core/Card';
-import { CardActionArea, CardMedia } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { Game } from 'models/Game';
 import Grid from '@material-ui/core/Grid';
+import styles from 'styles/components/createRoom.module.scss';
+import { CheckCircleOutline } from '@material-ui/icons';
 
+const MIN_MODE_COUNT = 1;
 type CreateRoomProps = {
   show: boolean;
   selectedGame: Game;
-  onCreateRoom: (roomTitle: string) => void;
+  onCreateRoom: (roomTitle: string, gameMode: string) => void;
   onClose: () => void;
 };
-
-const useStyles = makeStyles({
-  root: {
-    // maxWidth: 345,
-  },
-  media: {
-    height: 200,
-  },
-});
 
 const CreateRoom = (props: CreateRoomProps) => {
   const dispatch = useDispatch();
   const { show, selectedGame, onCreateRoom, onClose } = props;
   const [roomTitle, setRoomTitle] = useState('');
-  const [selectedMode, setSelectedMode] = useState('');
-  const classes = useStyles();
+  // 預設選第一個
+  const [selectedMode, setSelectedMode] = useState(selectedGame.modes[0].value);
 
   const onConfirm = () => {
     if (!roomTitle) {
@@ -48,7 +39,7 @@ const CreateRoom = (props: CreateRoomProps) => {
       );
       return;
     }
-    onCreateRoom(roomTitle);
+    onCreateRoom(roomTitle, selectedMode);
   };
 
   return (
@@ -57,6 +48,7 @@ const CreateRoom = (props: CreateRoomProps) => {
       onClose={onClose}
       aria-labelledby="create-room-dialog-title"
       fullWidth
+      maxWidth="md"
     >
       <DialogTitle id="create-room-dialog-title">Create Room</DialogTitle>
       <DialogContent style={{ overflow: 'hidden' }}>
@@ -71,21 +63,36 @@ const CreateRoom = (props: CreateRoomProps) => {
           onChange={(e) => setRoomTitle(e.target.value)}
           style={{ marginBottom: '20px' }}
         />
-        <Grid container spacing={3}>
-          {selectedGame.modes.map((mode) => (
-            <Grid key={selectedGame.id} item xs={6} onClick={() => {}}>
-              <Card className={classes.root}>
-                <CardActionArea>
-                  <CardMedia
-                    className={classes.media}
-                    image={selectedGame.homeImg}
-                    title={selectedGame.name}
-                  />
-                </CardActionArea>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+        {selectedGame.modes.length > MIN_MODE_COUNT && (
+          <Grid container spacing={3}>
+            {selectedGame.modes.map((mode) => (
+              <Grid
+                key={mode.value}
+                item
+                xs={4}
+                onClick={() => setSelectedMode(mode.value)}
+              >
+                <div className={styles.content}>
+                  <img src={mode.image} className={styles.image} />
+                  <div
+                    className={`${styles.background} ${
+                      selectedMode === mode.value ? styles.selectedMode : ''
+                    }`}
+                  ></div>
+                  <div className={styles.modeName}>{mode.label}</div>
+                  {mode.value === selectedMode && (
+                    <div className={styles.checkIcon}>
+                      <CheckCircleOutline
+                        style={{ fontSize: '44px' }}
+                        htmlColor="#72be52"
+                      />
+                    </div>
+                  )}
+                </div>
+              </Grid>
+            ))}
+          </Grid>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>取消</Button>

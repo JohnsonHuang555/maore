@@ -13,13 +13,16 @@ import UpdateRoomInfoCommand from './commands/UpdateRoomInfoCommand';
 export default class BaseRoom {
   private dispatcher;
   private room: Room<RoomState, Metadata>;
-  constructor(room: Room<RoomState, Metadata>) {
+  private maxClient: number;
+  constructor(room: Room<RoomState, Metadata>, maxClient: number) {
     this.room = room;
     this.dispatcher = new Dispatcher(room);
+    this.maxClient = maxClient;
   }
 
   onCreate(option: Metadata) {
     this.room.setMetadata(option);
+    this.room.maxClients = this.maxClient;
     this.room.onMessage(Message.ReadyGame, (client) => {
       this.dispatcher.dispatch(new ReadyGameCommand(), {
         client,
@@ -47,6 +50,7 @@ export default class BaseRoom {
       maxPlayers: this.room.maxClients,
       roomTitle: this.room.metadata.roomTitle,
       gamePack: this.room.metadata.gamePack,
+      gameMode: this.room.metadata.gameMode,
     });
 
     const isMaster = this.room.clients.length === 1;
@@ -57,6 +61,10 @@ export default class BaseRoom {
       isMaster,
       playerIndex: idx,
     });
+
+    if (this.room.clients.length === this.maxClient) {
+      this.room.lock();
+    }
   }
 
   onLeave(client: Client) {

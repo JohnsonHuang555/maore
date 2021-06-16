@@ -23,6 +23,7 @@ const initialState: State = {
     roomTilte: '',
     maxPlayers: 0,
     gamePack: '',
+    gameMode: '',
   },
   gameStatus: GameState.WaitingForPlayers,
 };
@@ -198,6 +199,7 @@ const reducer = (state = initialState, action: Action): State => {
           roomTilte: '',
           maxPlayers: 0,
           gamePack: '',
+          gameMode: '',
         },
         players: [],
       };

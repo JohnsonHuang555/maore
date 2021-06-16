@@ -16,11 +16,13 @@ export const games: Game[] = [
     modes: [
       {
         label: '一般模式',
-        value: 'standard',
+        value: 'standard1',
+        image: '/tictactoe/home.png',
       },
       {
-        label: '一般模式2',
-        value: 'standard',
+        label: '哈哈哈',
+        value: 'standard2',
+        image: '/tictactoe/home.png',
       },
     ],
   },
