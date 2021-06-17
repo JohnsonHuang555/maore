@@ -6,15 +6,17 @@ import { Message } from '../../models/messages/RoomMessage';
 import PlayerSelectionCommand from './commands/PlayerSelectionCommand';
 import ResetCommand from './commands/ResetCommand';
 import BaseRoom from '../../server/room';
+import GameUseCase from '../usecases/GameUseCase';
+import { Game, GameList } from '../../models/Game';
 
-const MAX_CLIENTS = 2;
 export default class TicTacToe extends Room<TicTacToeState, Metadata> {
   private dispatcher = new Dispatcher(this);
   private baseRoom = new BaseRoom(this);
+  private game: Game = GameUseCase.getGameByGamePack(GameList.TicTacToe);
 
   onCreate(option: Metadata) {
     this.baseRoom.onCreate(option);
-    this.baseRoom.setMaxClient(MAX_CLIENTS);
+    this.baseRoom.setMaxClient(this.game.maxPlayers as number);
     this.setState(new TicTacToeState());
 
     // 監聽前端的選擇事件

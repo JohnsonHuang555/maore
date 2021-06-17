@@ -1,4 +1,3 @@
-import { GameMode as TicTacToeMode } from '../features/tictactoe/models/Mode';
 import { GameMode as ChineseChessMode } from '../features/chinese_chess/models/Mode';
 
 // 遊戲列表
@@ -28,11 +27,11 @@ export type GameMode = {
   minPlayers: number;
 };
 
+//遊戲有多個模式
 export const EnhanceGame: {
-  [key in GameList.TicTacToe | GameList.ChineseChess]: {
+  [key in GameList.ChineseChess]: {
     [key: string]: string;
   };
 } = {
-  [GameList.TicTacToe]: TicTacToeMode,
   [GameList.ChineseChess]: ChineseChessMode,
 };
