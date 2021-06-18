@@ -1,5 +1,3 @@
-import { GameMode as ChineseChessMode } from '../features/chinese_chess/models/Mode';
-
 // 遊戲列表
 export enum GameList {
   TicTacToe = 'tic-tac-toe',
@@ -25,13 +23,4 @@ export type GameMode = {
   image: string;
   maxPlayers: number;
   minPlayers: number;
-};
-
-//遊戲有多個模式
-export const EnhanceGame: {
-  [key in GameList.ChineseChess]: {
-    [key: string]: string;
-  };
-} = {
-  [GameList.ChineseChess]: ChineseChessMode,
 };

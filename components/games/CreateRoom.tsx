@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -27,6 +27,12 @@ const CreateRoom = (props: CreateRoomProps) => {
   const [roomTitle, setRoomTitle] = useState('');
   // 預設選第一個
   const [selectedMode, setSelectedMode] = useState('');
+
+  useEffect(() => {
+    if (selectedGame.modes) {
+      setSelectedMode(selectedGame.modes[0].value);
+    }
+  }, []);
 
   const onConfirm = () => {
     if (!roomTitle) {
