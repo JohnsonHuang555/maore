@@ -1,6 +1,6 @@
 import { Command } from '@colyseus/command';
-import { Cell } from '../../../features/tictactoe/models/Cell';
-import { GameState } from '../../../models/Room';
+import { Cell } from '../../../../features/tictactoe/models/Cell';
+import { GameState } from '../../../../models/Room';
 import TicTacToeState from '../state/TicTacToeState';
 
 export default class ResetCommand extends Command<TicTacToeState> {

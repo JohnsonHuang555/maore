@@ -1,13 +1,13 @@
 import { Client, Room } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
-import { Metadata } from '../../models/Room';
+import { Metadata } from '../../../models/Room';
 import TicTacToeState from './state/TicTacToeState';
-import { Message } from '../../models/messages/RoomMessage';
+import { Message } from '../../../models/messages/RoomMessage';
 import PlayerSelectionCommand from './commands/PlayerSelectionCommand';
 import ResetCommand from './commands/ResetCommand';
-import BaseRoom from '../../server/room';
-import GameUseCase from '../usecases/GameUseCase';
-import { Game, GameList } from '../../models/Game';
+import BaseRoom from '../../room';
+import GameUseCase from '../../usecases/GameUseCase';
+import { Game, GameList } from '../../../models/Game';
 
 export default class TicTacToe extends Room<TicTacToeState, Metadata> {
   private dispatcher = new Dispatcher(this);

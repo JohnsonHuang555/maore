@@ -3,7 +3,7 @@ import next from 'next';
 import http from 'http';
 import { Server } from 'colyseus';
 import { monitor } from '@colyseus/monitor';
-import TicTacToe from './tictactoe/TicTacToe';
+import TicTacToe from './games/tictactoe/TicTacToe';
 import { GameList } from '../models/Game';
 
 const port = parseInt(process.env.PORT || '3000', 10);
