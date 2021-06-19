@@ -35,7 +35,6 @@ export default class Server {
     const playerIndex = room.players.findIndex(
       (p) => p.id === room.yourPlayerId
     );
-    console.log(playerIndex, 'pi');
     this._playerIndex = playerIndex;
     this.room = server.room;
     this.handleStateChange();

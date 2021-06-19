@@ -112,7 +112,6 @@ export default class RoomServer {
         const { field, value } = change;
         switch (field) {
           case 'roomInfo': {
-            console.log(value);
             this.dispatch(
               setRoomInfo({
                 roomTilte: value.roomTitle,

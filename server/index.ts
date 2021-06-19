@@ -3,8 +3,9 @@ import next from 'next';
 import http from 'http';
 import { Server } from 'colyseus';
 import { monitor } from '@colyseus/monitor';
-import TicTacToe from './games/tictactoe/TicTacToe';
 import { GameList } from '../models/Game';
+import TicTacToe from './games/tictactoe/TicTacToe';
+import ChineseChess from './games/chinese_chess/ChineseChess';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev = process.env.NODE_ENV !== 'production';
@@ -24,5 +25,8 @@ nextApp.prepare().then(() => {
 
   // games
   gameServer.define(GameList.TicTacToe, TicTacToe).enableRealtimeListing();
+  gameServer
+    .define(GameList.ChineseChess, ChineseChess)
+    .enableRealtimeListing();
   gameServer.listen(port);
 });
