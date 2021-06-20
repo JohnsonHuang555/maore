@@ -1,10 +1,10 @@
 import { Schema, type } from '@colyseus/schema';
-import { Side, ChessName } from '../../features/chess/model/Chess';
+import { Side, ChessRowName, ChessColumnName } from '../../features/chess/model/Chess';
 
 export type Payload = {
   id: number;
-  x: number;
-  y: number;
+  x: ChessColumnName;
+  y: ChessRowName;
   side: Side;
   name: string;
 };
@@ -14,10 +14,10 @@ export class ChessState extends Schema {
   id: number;
 
   @type('number')
-  x: number;
+  x: ChessColumnName;
 
   @type('number')
-  y: number;
+  y: ChessRowName;
 
   @type('string')
   name: string;

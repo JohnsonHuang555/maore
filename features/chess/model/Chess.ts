@@ -1,7 +1,7 @@
 export type Chess = {
   id: number;
-  x: number;
-  y: number;
+  x: ChessColumnName;
+  y: ChessRowName;
   side: Side;
   name: ChessName;
 }
@@ -19,3 +19,25 @@ export enum ChessName {
   Queen = 'Queen',
   King = 'King',
 }
+
+export enum ChessColumnName {
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+  H,
+};
+
+export enum ChessRowName {
+  One,
+  Two,
+  Three,
+  Four,
+  Five,
+  Six,
+  Seven,
+  Eight,
+};
