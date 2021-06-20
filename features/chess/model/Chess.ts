@@ -7,8 +7,8 @@ export type Chess = {
 }
 
 export enum Side {
-  Black,
-  White,
+  Black = 'black',
+  White = 'white',
 };
 
 export enum ChessName {

@@ -20,9 +20,10 @@ import { PlayerState } from 'server/room/state/PlayerState';
 import { setClient, setRoom } from 'actions/ServerAction';
 import { TicTacToeState } from 'features/tictactoe/models/State';
 import { ChineseChessState } from 'features/chinese_chess/models/State';
+import { ChessState } from 'features/chess/model/ChessState';
 import { loadedInitalState } from 'actions/gameStateAction';
 
-export interface Room extends Schema, TicTacToeState, ChineseChessState {
+export interface Room extends Schema, TicTacToeState, ChineseChessState, ChessState {
   players: ArraySchema<PlayerState>;
   gameState: GameState; // 遊戲狀態
   activePlayer: number; // 當前玩家
@@ -86,6 +87,7 @@ export default class RoomServer {
         loadedInitalState({
           board: state.board,
           chineseChesses: state.chineseChesses,
+          chesses: state.chesses,
         })
       );
     });

@@ -7,6 +7,6 @@ export type GameOverSceneData = {
 };
 
 export type GameSceneData = {
-  server: Server;
+  server: any;
   onGameOver: (data: GameOverSceneData) => void;
 };

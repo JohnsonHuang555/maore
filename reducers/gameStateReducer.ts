@@ -2,12 +2,14 @@ import { ChineseChessState } from 'features/chinese_chess/models/State';
 import { TicTacToeState } from 'features/tictactoe/models/State';
 import { ArraySchema } from '@colyseus/schema';
 import { ActionType } from 'actions/gameStateAction';
+import { ChessState } from 'features/chess/model/ChessState';
 
-export interface State extends TicTacToeState, ChineseChessState {}
+export interface State extends TicTacToeState, ChineseChessState, ChessState {}
 
 const initialState: State = {
   board: new ArraySchema(),
   chineseChesses: new ArraySchema(),
+  chesses: new ArraySchema(),
 };
 
 type LoadedInitalStateAction = {

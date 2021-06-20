@@ -17,7 +17,7 @@ export default class ChessGameState extends RoomState implements ChessGame {
   }
 
   private initialChessState(): ArraySchema<ChessState> {
-    const initialArray = new Array(32);
+    const initialArray = Array.from(Array(32).keys());
     const initialData: ArraySchema<ChessState> = new ArraySchema<ChessState>();
 
     initialArray.forEach((_item, index) => {
@@ -62,6 +62,7 @@ export default class ChessGameState extends RoomState implements ChessGame {
       }));
 
     });
+    
     return initialData;
   }
 }
