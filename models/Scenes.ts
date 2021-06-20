@@ -1,4 +1,4 @@
-import type Server from 'features/tictactoe/Server';
+import type Server from 'features/tictactoe/TicTacToeServer';
 
 export type GameOverSceneData = {
   winner: boolean;

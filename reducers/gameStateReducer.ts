@@ -1,5 +1,5 @@
-import { ChineseChessState } from 'features/chinese_chess/models/State';
-import { TicTacToeState } from 'features/tictactoe/models/State';
+import { ChineseChessState } from 'features/chinese_chess/models/ChineseChessState';
+import { TicTacToeState } from 'features/tictactoe/models/TicTacToeState';
 import { ArraySchema } from '@colyseus/schema';
 import { ActionType } from 'actions/gameStateAction';
 

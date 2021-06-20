@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import Server from 'features/chinese_chess/Server';
+import Server from 'features/chinese_chess/ChineseChessServer';
 import { GameOverSceneData } from 'models/Scenes';
 
 export default class Bootstrap extends Phaser.Scene {

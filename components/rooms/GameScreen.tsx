@@ -1,6 +1,6 @@
 import { GameList } from 'models/Game';
-import { TicTacToeConfig } from 'features/tictactoe/TicTacToe';
-import { ChineseChessConfig } from 'features/chinese_chess/ChineseChess';
+import { TicTacToeConfig } from 'features/tictactoe/TicTacToeConfig';
+import { ChineseChessConfig } from 'features/chinese_chess/ChineseChessConfig';
 import { IonPhaser, GameInstance } from '@ion-phaser/react';
 import React, { useEffect, useRef, useState } from 'react';
 import styles from 'styles/components/gameScreen.module.scss';
