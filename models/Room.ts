@@ -1,9 +1,9 @@
 import { GameList } from './Game';
 
-export enum GameState {
+export enum GameStatus {
   WaitingForPlayers,
   Playing,
-  Finished,
+  // Finished
 }
 
 export type Metadata = {

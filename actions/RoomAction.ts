@@ -1,6 +1,6 @@
 import { RoomAvailable } from 'colyseus.js';
 import { Player } from 'models/Player';
-import { GameState, Metadata, RoomInfo } from 'models/Room';
+import { GameStatus, Metadata, RoomInfo } from 'models/Room';
 
 export enum ActionType {
   LOADED_ROOMS = 'LOADED_ROOMS',
@@ -83,7 +83,7 @@ export const setPlayerIndex = (id: string, playerIndex: number) => {
   };
 };
 
-export const updateGameStatus = (gameStatus: GameState) => {
+export const updateGameStatus = (gameStatus: GameStatus) => {
   return {
     type: ActionType.UPDATE_GAME_STATUS,
     gameStatus,

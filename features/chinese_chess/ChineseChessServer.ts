@@ -25,7 +25,7 @@ export default class Server extends BaseServer {
             this.events.emit('player-win', value);
             break;
           }
-          case 'gameState': {
+          case 'gameStatus': {
             store.dispatch(updateGameStatus(value));
             break;
           }

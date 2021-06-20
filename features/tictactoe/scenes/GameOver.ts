@@ -19,14 +19,9 @@ export default class GameOver extends Phaser.Scene {
       .text(title.x, title.y + 100, 'Press space to play again')
       .setOrigin(0.5);
     this.add.text(title.x, title.y + 200, 'Press ESC to close').setOrigin(0.5);
-    this.input.keyboard.once('keyup-SPACE', () => {
-      if (data.onRestart) {
-        data.onRestart();
-      }
-    });
     this.input.keyboard.once('keyup-ESC', () => {
-      if (data.onClose) {
-        data.onClose();
+      if (data.onFinish) {
+        data.onFinish();
       }
     });
   }

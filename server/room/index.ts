@@ -34,9 +34,9 @@ export default class BaseRoom {
       this.dispatcher.dispatch(new StartGameCommand());
     });
 
-    this.room.onMessage(Message.CloseGame, () => {
-      this.dispatcher.dispatch(new CloseGameCommand());
-    });
+    // this.room.onMessage(Message.FinishGame, () => {
+    //   this.dispatcher.dispatch(new CloseGameCommand());
+    // });
   }
 
   onJoin(client: Client, option: Metadata) {

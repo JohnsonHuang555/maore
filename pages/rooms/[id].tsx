@@ -25,7 +25,7 @@ import { clientSelector } from 'selectors/serverSelector';
 import dynamic from 'next/dynamic';
 import { isLoginSelector, userInfoSelector } from 'selectors/appSelector';
 import { setShowLoginModal } from 'actions/AppAction';
-import { GameState } from 'models/Room';
+import { GameStatus } from 'models/Room';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('components/rooms/GameScreen'),
@@ -154,8 +154,7 @@ const Rooms = () => {
           </div>
         </Grid>
       </Grid>
-      {(gameStatus === GameState.Playing ||
-        gameStatus === GameState.Finished) && (
+      {gameStatus === GameStatus.Playing && (
         <DynamicGameScreenWithNoSSR gamePack={roomInfo.gamePack} />
       )}
     </Layout>

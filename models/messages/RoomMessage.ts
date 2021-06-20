@@ -3,7 +3,6 @@ export enum Message {
   YourPlayerId,
   ReadyGame,
   StartGame,
-  PlayAgain,
-  CloseGame,
+  FinishGame,
   UpdateGameMode,
 }

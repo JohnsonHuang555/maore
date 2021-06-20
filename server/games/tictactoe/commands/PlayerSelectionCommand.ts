@@ -1,7 +1,7 @@
 import { Command } from '@colyseus/command';
 import { Client } from 'colyseus';
 import { Cell } from '../../../../features/tictactoe/models/Cell';
-import { GameState } from '../../../../models/Room';
+import { GameStatus } from '../../../../models/Room';
 import TicTacToeState from '../state/TicTacToeState';
 import CheckWinnerCommand from './CheckWinnerCommand';
 
@@ -14,7 +14,7 @@ export default class PlayerSelectionCommand extends Command<TicTacToeState> {
   execute(data: Payload) {
     const { client, index } = data;
 
-    if (this.room.state.gameState !== GameState.Playing) {
+    if (this.room.state.gameStatus !== GameStatus.Playing) {
       return;
     }
 

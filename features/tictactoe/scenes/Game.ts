@@ -1,12 +1,13 @@
-import { GameOverSceneData, GameSceneData } from 'models/Scenes';
+import { GameOverSceneData } from 'models/Scenes';
 import Phaser from 'phaser';
 import { Cell } from 'features/tictactoe/models/Cell';
 import Server from 'features/tictactoe/TicTacToeServer';
-import { GameState } from 'models/Room';
+import { GameStatus } from 'models/Room';
+import { GameSceneData } from '../models/TicTacToeScene';
 
 export default class Game extends Phaser.Scene {
-  private server?: Server;
-  private onGameOver?: (data: GameOverSceneData) => void;
+  private server!: Server;
+  private onGameOver!: (data: GameOverSceneData) => void;
 
   private cells: { display: Phaser.GameObjects.Rectangle; value: Cell }[] = [];
 
@@ -33,7 +34,7 @@ export default class Game extends Phaser.Scene {
   private createBoard = () => {
     const { width, height } = this.scale;
     const size = 128;
-    const board: Cell[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const { board } = this.server.gameState;
 
     let x = width * 0.5 - size;
     let y = height * 0.5 - size;
@@ -96,17 +97,11 @@ export default class Game extends Phaser.Scene {
   }
 
   private handlePlayerWon(playerIndex: number) {
-    const gameState = this.server?.gameState;
     this.time.delayedCall(1000, () => {
       if (!this.onGameOver) {
         return;
       }
-      if (gameState === GameState.Finished) {
-        return;
-      }
-      console.log('handle player win');
       this.onGameOver({ winner: this.server?.playerIndex === playerIndex });
-      this.server?.resetGame();
     });
   }
 }

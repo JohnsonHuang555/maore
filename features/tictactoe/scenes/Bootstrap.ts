@@ -17,30 +17,20 @@ export default class Bootstrap extends Phaser.Scene {
   }
 
   private handleGameOver = (data: GameOverSceneData) => {
-    // FIXME: 重複玩幾次這個方法會不斷累積觸發
     this.scene.stop('game');
     this.scene.launch('game-over', {
       ...data,
-      onRestart: this.handleRestart,
-      onClose: this.handleClose,
+      onFinish: this.handleFinish,
     });
   };
 
-  private handleRestart = () => {
-    // FIXME: 重複玩幾次這個方法會不斷累積觸發
+  private handleFinish = () => {
     this.scene.stop('game-over');
-    this.createNewGame();
-  };
-
-  private handleClose = () => {
-    // FIXME: 重複玩幾次這個方法會不斷累積觸發
-    this.scene.stop('game-over');
-    this.server.resetGame();
-    this.server.closeGame();
+    this.server.finishGame();
   };
 
   private createNewGame = () => {
-    // FIXME: 重複玩幾次這個方法會不斷累積觸發
+    console.log('createNewGame');
     this.scene.launch('game', {
       server: this.server,
       onGameOver: this.handleGameOver,

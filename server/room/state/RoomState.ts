@@ -1,12 +1,12 @@
 import { Schema, ArraySchema, type } from '@colyseus/schema';
 import { PlayerState } from './PlayerState';
 import { RoomInfoState } from './RoomInfoState';
-import { GameState } from '../../../models/Room';
+import { GameStatus } from '../../../models/Room';
 
 export interface Room extends Schema {
   players: ArraySchema<PlayerState>;
   roomInfo: RoomInfoState;
-  gameState: GameState;
+  gameStatus: GameStatus;
   activePlayer: number;
   winningPlayer: number;
 }
@@ -19,7 +19,7 @@ export default class RoomState extends Schema implements Room {
   roomInfo: RoomInfoState;
 
   @type('number')
-  gameState = GameState.WaitingForPlayers;
+  gameStatus = GameStatus.WaitingForPlayers;
 
   @type('number')
   activePlayer = 0;

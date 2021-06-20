@@ -13,7 +13,7 @@ import {
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
 import { Message } from 'models/messages/RoomMessage';
-import { GameState, Metadata } from 'models/Room';
+import { GameStatus, Metadata } from 'models/Room';
 import { AnyAction, Dispatch } from 'redux';
 import { Schema, ArraySchema } from '@colyseus/schema';
 import { PlayerState } from 'server/room/state/PlayerState';
@@ -24,7 +24,7 @@ import { loadedInitalState } from 'actions/gameStateAction';
 
 export interface Room extends Schema, TicTacToeState, ChineseChessState {
   players: ArraySchema<PlayerState>;
-  gameState: GameState; // 遊戲狀態
+  gameStatus: GameStatus; // 遊戲狀態
   activePlayer: number; // 當前玩家
   winningPlayer: number; // 勝利玩家
   playerIndex: number; // 玩家順序號
@@ -134,7 +134,7 @@ export default class RoomServer {
             );
             break;
           }
-          case 'gameState': {
+          case 'gameStatus': {
             this.dispatch(updateGameStatus(value));
           }
         }

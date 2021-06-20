@@ -30,7 +30,7 @@ export default class TicTacToe extends Room<TicTacToeState, Metadata> {
       }
     );
 
-    this.onMessage(Message.PlayAgain, () => {
+    this.onMessage(Message.FinishGame, () => {
       this.dispatcher.dispatch(new ResetCommand());
     });
   }
