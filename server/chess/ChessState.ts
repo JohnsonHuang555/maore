@@ -1,5 +1,13 @@
 import { Schema, type } from '@colyseus/schema';
-import { Payload } from './commands/ChessInitialCommand';
+import { Side, ChessName } from '../../features/chess/model/Chess';
+
+export type Payload = {
+  id: number;
+  x: number;
+  y: number;
+  side: Side;
+  name: string;
+};
 
 export class ChessState extends Schema {
   @type('number')

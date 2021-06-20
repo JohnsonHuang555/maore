@@ -1,6 +1,7 @@
 import { GameList } from 'models/Game';
 import { TicTacToeConfig } from 'features/tictactoe/TicTacToe';
 import { ChineseChessConfig } from 'features/chinese_chess/ChineseChess';
+import { ChessConfig } from 'features/chess/ChessConfig';
 import { IonPhaser, GameInstance } from '@ion-phaser/react';
 import React, { useEffect, useRef, useState } from 'react';
 import styles from 'styles/components/gameScreen.module.scss';
@@ -19,6 +20,7 @@ const GameScreen = (props: GameSreenProps) => {
   const playingGame: { [key: string]: GameInstance } = {
     [GameList.TicTacToe]: TicTacToeConfig,
     [GameList.ChineseChess]: ChineseChessConfig,
+    [GameList.Chess]: ChessConfig,
   };
 
   const destroy = () => {
