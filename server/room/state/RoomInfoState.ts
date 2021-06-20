@@ -13,11 +13,15 @@ export class RoomInfoState extends Schema {
   @type('string')
   gamePack: GameList | string;
 
+  @type('string')
+  gameMode?: string;
+
   constructor(data: Payload) {
     super();
-    const { roomTitle, maxPlayers, gamePack } = data;
-    this.roomTitle = roomTitle || '';
-    this.maxPlayers = maxPlayers || 0;
-    this.gamePack = gamePack || '';
+    const { roomTitle, maxPlayers, gamePack, gameMode } = data;
+    this.roomTitle = roomTitle;
+    this.maxPlayers = maxPlayers;
+    this.gamePack = gamePack;
+    this.gameMode = gameMode;
   }
 }

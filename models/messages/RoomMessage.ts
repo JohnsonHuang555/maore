@@ -5,4 +5,5 @@ export enum Message {
   StartGame,
   PlayAgain,
   CloseGame,
+  UpdateGameMode,
 }

@@ -1,6 +1,6 @@
 import { Schema, ArraySchema, type } from '@colyseus/schema';
-import { Cell } from '../../../features/tictactoe/models/Cell';
-import RoomState from '../../room/state/RoomState';
+import { Cell } from '../../../../features/tictactoe/models/Cell';
+import RoomState from '../../../room/state/RoomState';
 
 interface TicTacToe extends Schema {
   board: ArraySchema<Cell>;
