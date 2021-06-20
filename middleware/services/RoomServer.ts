@@ -18,9 +18,11 @@ import { AnyAction, Dispatch } from 'redux';
 import { Schema, ArraySchema } from '@colyseus/schema';
 import { PlayerState } from 'server/room/state/PlayerState';
 import { setClient, setRoom } from 'actions/ServerAction';
-import { TicTacToe } from 'features/tictactoe/models/State';
+import { TicTacToeState } from 'features/tictactoe/models/State';
+import { ChineseChessState } from 'features/chinese_chess/models/State';
+import { loadedInitalState } from 'actions/gameStateAction';
 
-export interface Room extends Schema, TicTacToe {
+export interface Room extends Schema, TicTacToeState, ChineseChessState {
   players: ArraySchema<PlayerState>;
   gameState: GameState; // 遊戲狀態
   activePlayer: number; // 當前玩家
@@ -77,6 +79,16 @@ export default class RoomServer {
         this.dispatch(setYourPlayerId(message.yourPlayerId));
       }
     );
+
+    room.onStateChange.once((state) => {
+      console.log(state, 'dddd');
+      this.dispatch(
+        loadedInitalState({
+          board: state.board,
+          chineseChesses: state.chineseChesses,
+        })
+      );
+    });
 
     // room players changes...
     room.state.players.onAdd = (player) => {

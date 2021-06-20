@@ -20,7 +20,8 @@ export default class BaseServer {
 
   constructor() {
     this.events = new Phaser.Events.EventEmitter();
-    const { server, room } = store.getState();
+    const { server, room, gameState } = store.getState();
+    console.log(gameState);
     if (!server.room) {
       throw new Error('no room found...');
     }

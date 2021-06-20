@@ -1,4 +1,5 @@
 import { GameInstance } from '@ion-phaser/react';
+import Bootstrap from './scenes/Bootstrap';
 
 export const ChineseChessConfig: GameInstance = {
   width: 700,
@@ -10,5 +11,5 @@ export const ChineseChessConfig: GameInstance = {
       gravity: { y: 200 },
     },
   },
-  scene: [],
+  scene: [Bootstrap],
 };
