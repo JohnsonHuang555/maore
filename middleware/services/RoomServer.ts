@@ -12,15 +12,15 @@ import {
 } from 'actions/RoomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
-import { Message } from 'models/Message';
+import { Message } from 'models/messages/RoomMessage';
 import { GameState, Metadata } from 'models/Room';
 import { AnyAction, Dispatch } from 'redux';
 import { Schema, ArraySchema } from '@colyseus/schema';
 import { PlayerState } from 'server/room/state/PlayerState';
 import { setClient, setRoom } from 'actions/ServerAction';
-import { Tictactoe } from 'features/tictactoe/Server';
+import { TicTacToe } from 'features/tictactoe/models/State';
 
-export interface Room extends Schema, Tictactoe {
+export interface Room extends Schema, TicTacToe {
   players: ArraySchema<PlayerState>;
   gameState: GameState; // 遊戲狀態
   activePlayer: number; // 當前玩家
@@ -117,6 +117,7 @@ export default class RoomServer {
                 roomTilte: value.roomTitle,
                 maxPlayers: value.maxPlayers,
                 gamePack: value.gamePack,
+                gameMode: value.gameMode,
               })
             );
             break;

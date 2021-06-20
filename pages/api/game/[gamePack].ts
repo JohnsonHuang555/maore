@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { games } from '../data';
+import { games } from '../../../server/data/Game';
 
 export default function gameHandler(
   { query: { gamePack } }: NextApiRequest,

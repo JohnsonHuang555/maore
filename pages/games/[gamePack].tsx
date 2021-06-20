@@ -65,7 +65,7 @@ const Games = () => {
   if (error) return <div>{error.message}</div>;
   if (!game) return <div>Loading...</div>;
 
-  const onCreateRoom = async (roomTitle: string) => {
+  const onCreateRoom = async (roomTitle: string, gameMode?: string) => {
     if (!userInfo) {
       setSnackbar({
         show: true,
@@ -76,9 +76,10 @@ const Games = () => {
     try {
       dispatch(
         createRoom({
-          gamePack: gamePack as GameList,
+          gameMode,
           roomTitle,
-          playerName: userInfo.name, // TODO: name
+          playerName: userInfo.name,
+          gamePack: gamePack as GameList,
         })
       );
     } catch (err) {
@@ -108,6 +109,7 @@ const Games = () => {
     <Layout>
       <CreateRoom
         show={showCreateRoomModal}
+        selectedGame={game}
         onClose={() => setShowCreateRoomModal(false)}
         onCreateRoom={onCreateRoom}
       />

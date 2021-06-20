@@ -31,6 +31,7 @@ export const createdRoom = (roomId: string) => {
 };
 
 export const setRoomInfo = (roomInfo: Partial<RoomInfo>) => {
+  console.log(roomInfo);
   return {
     type: ActionType.SET_ROOM_INFO,
     roomInfo,
