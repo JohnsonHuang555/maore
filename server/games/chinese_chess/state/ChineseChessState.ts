@@ -11,7 +11,7 @@ import Random from '../../../utils/Random';
 import { ChessHiddenMap } from './ChessHiddenMap';
 
 interface ChineseChess extends Schema {
-  chesses: ArraySchema<ChessInfoState>;
+  chineseChesses: ArraySchema<ChessInfoState>;
 }
 
 export default class ChineseChessState
@@ -19,18 +19,19 @@ export default class ChineseChessState
   implements ChineseChess
 {
   @type([ChessInfoState])
-  chesses = new ArraySchema<ChessInfoState>();
+  chineseChesses = new ArraySchema<ChessInfoState>();
 
   constructor(mode: GameMode) {
     super();
     switch (mode) {
       case GameMode.Standard: {
-        const chesses = this.createStandard();
-        this.chesses = chesses;
+        const chineseChesses = this.createStandard();
+        this.chineseChesses = chineseChesses;
         break;
       }
       case GameMode.Hidden: {
-        this.createHidden();
+        const chineseChesses = this.createHidden();
+        this.chineseChesses = chineseChesses;
         break;
       }
     }

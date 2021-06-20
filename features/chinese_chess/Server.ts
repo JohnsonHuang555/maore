@@ -33,7 +33,7 @@ export default class Server extends BaseServer {
       });
     };
 
-    this.room.state.board.onChange = (item, idx) => {
+    this.room.state.chineseChesses.onChange = (item, idx) => {
       this.events.emit('board-changed', item, idx);
     };
   }
