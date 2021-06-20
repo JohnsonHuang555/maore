@@ -1,69 +1,22 @@
-import { Room as ClientRoom } from 'colyseus.js';
-import { Room } from 'middleware/services/RoomServer';
-import Phaser from 'phaser';
 import { store } from 'pages/_app';
 import { Message } from 'models/messages/RoomMessage';
 import { updateGameStatus } from 'actions/RoomAction';
-import { Cell } from 'features/tictactoe/models/Cell';
-import { ArraySchema } from '@colyseus/schema';
-
-export interface Tictactoe {
-  board: ArraySchema<Cell>;
-}
+import BaseServer from 'features/base/BaseServer';
 
 // 監聽與傳送給後端資料
-export default class Server {
-  private events: Phaser.Events.EventEmitter;
-  private room: ClientRoom<Room>;
-  private _playerIndex = -1;
-
-  get playerIndex() {
-    return this._playerIndex;
-  }
-
-  get gameState() {
-    const { room } = store.getState();
-    return room.gameStatus;
-  }
-
+export default class Server extends BaseServer {
   constructor() {
-    this.events = new Phaser.Events.EventEmitter();
-    const { server, room } = store.getState();
-    if (!server.room) {
-      throw new Error('no room found...');
-    }
-    const playerIndex = room.players.findIndex(
-      (p) => p.id === room.yourPlayerId
-    );
-    this._playerIndex = playerIndex;
-    this.room = server.room;
+    super();
     this.handleStateChange();
   }
 
   makeSelection(idx: number) {
-    console.log(this.playerIndex, this.room.state.activePlayer);
     if (this.playerIndex !== this.room.state.activePlayer) {
       console.warn("not this player's turn");
       return;
     }
 
     this.room.send(Message.PlayerSelection, { index: idx });
-  }
-
-  resetGame() {
-    this.room.send(Message.PlayAgain);
-  }
-
-  closeGame() {
-    this.room.send(Message.CloseGame);
-  }
-
-  onPlayerTurnChanged(cb: (playerIndex: number) => void, context?: any) {
-    this.events.on('player-turn-changed', cb, context);
-  }
-
-  onPlayerWon(cb: (playerIndex: number) => void, context?: any) {
-    this.events.on('player-win', cb, context);
   }
 
   onBoardChanged(cb: (cell: number, index: number) => void, context?: any) {

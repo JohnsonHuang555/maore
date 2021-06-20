@@ -1,43 +1,11 @@
-import Phaser from 'phaser';
-import { Room } from 'middleware/services/RoomServer';
-import { Room as ClientRoom } from 'colyseus.js';
 import { store } from 'pages/_app';
 import { updateGameStatus } from 'actions/RoomAction';
+import BaseServer from 'features/base/BaseServer';
 
-export default class Server {
-  private events: Phaser.Events.EventEmitter;
-  private room: ClientRoom<Room>;
-  private _playerIndex = -1;
-
-  get playerIndex() {
-    return this._playerIndex;
-  }
-
-  get gameState() {
-    const { room } = store.getState();
-    return room.gameStatus;
-  }
-
+export default class Server extends BaseServer {
   constructor() {
-    this.events = new Phaser.Events.EventEmitter();
-    const { server, room } = store.getState();
-    if (!server.room) {
-      throw new Error('no room found...');
-    }
-    const playerIndex = room.players.findIndex(
-      (p) => p.id === room.yourPlayerId
-    );
-    this._playerIndex = playerIndex;
-    this.room = server.room;
+    super();
     this.handleStateChange();
-  }
-
-  onPlayerTurnChanged(cb: (playerIndex: number) => void, context?: any) {
-    this.events.on('player-turn-changed', cb, context);
-  }
-
-  onPlayerWon(cb: (playerIndex: number) => void, context?: any) {
-    this.events.on('player-win', cb, context);
   }
 
   onBoardChanged(cb: (cell: number, index: number) => void, context?: any) {
