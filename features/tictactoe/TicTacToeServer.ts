@@ -1,6 +1,5 @@
 import { store } from 'pages/_app';
 import { Message } from 'models/messages/RoomMessage';
-import { updateGameStatus } from 'actions/RoomAction';
 import BaseServer from 'features/base/BaseServer';
 
 // 監聽與傳送給後端資料
@@ -24,27 +23,6 @@ export default class Server extends BaseServer {
   }
 
   private handleStateChange() {
-    console.log('game page changed');
-    this.room.state.onChange = (changes) => {
-      changes.forEach((change) => {
-        const { field, value } = change;
-        switch (field) {
-          case 'activePlayer': {
-            this.events.emit('player-turn-changed', value);
-            break;
-          }
-          case 'winningPlayer': {
-            this.events.emit('player-win', value);
-            break;
-          }
-          case 'gameStatus': {
-            store.dispatch(updateGameStatus(value));
-            break;
-          }
-        }
-      });
-    };
-
     this.room.state.board.onChange = (item, idx) => {
       this.events.emit('board-changed', item, idx);
     };

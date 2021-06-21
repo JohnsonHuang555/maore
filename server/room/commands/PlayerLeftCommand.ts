@@ -28,6 +28,7 @@ export default class PlayerLeftCommand extends Command<RoomState> {
     // 重新指派所有玩家 playerIndex
     for (let i = 0; i < this.room.state.players.length; i++) {
       this.room.state.players[i].playerIndex = i;
+      this.room.state.players[i].playerOrder = -1;
     }
   }
 }

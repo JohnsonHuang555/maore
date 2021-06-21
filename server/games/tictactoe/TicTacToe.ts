@@ -41,5 +41,6 @@ export default class TicTacToe extends Room<TicTacToeState, Metadata> {
 
   onLeave(client: Client) {
     this.baseRoom.onLeave(client);
+    this.dispatcher.dispatch(new ResetCommand());
   }
 }

@@ -18,6 +18,7 @@ export default class Bootstrap extends Phaser.Scene {
 
   private handleGameOver = (data: GameOverSceneData) => {
     this.scene.stop('game');
+    this.server.finishGame();
     this.scene.launch('game-over', {
       ...data,
       onFinish: this.handleFinish,
@@ -26,7 +27,7 @@ export default class Bootstrap extends Phaser.Scene {
 
   private handleFinish = () => {
     this.scene.stop('game-over');
-    this.server.finishGame();
+    // this.server.finishGame();
   };
 
   private createNewGame = () => {

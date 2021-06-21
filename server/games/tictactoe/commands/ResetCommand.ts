@@ -1,6 +1,5 @@
 import { Command } from '@colyseus/command';
 import { Cell } from '../../../../features/tictactoe/models/Cell';
-import { GameStatus } from '../../../../models/Room';
 import TicTacToeState from '../state/TicTacToeState';
 
 export default class ResetCommand extends Command<TicTacToeState> {
@@ -12,7 +11,6 @@ export default class ResetCommand extends Command<TicTacToeState> {
     // FIXME: 抽個 command
     this.state.winningPlayer = -1;
     // TODO: 改隨機
-    this.state.activePlayer = 0;
-    // this.state.gameStatus = GameStatus.;
+    this.state.activePlayer = -1;
   }
 }

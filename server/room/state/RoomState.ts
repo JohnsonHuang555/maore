@@ -12,18 +12,23 @@ export interface Room extends Schema {
 }
 
 export default class RoomState extends Schema implements Room {
+  // 當前玩家
   @type([PlayerState])
   players: ArraySchema<PlayerState>;
 
+  // 房間額外資訊
   @type(RoomInfoState)
   roomInfo: RoomInfoState;
 
+  // 房間狀態
   @type('number')
   gameStatus = GameStatus.WaitingForPlayers;
 
+  // 該玩家的回合
   @type('number')
-  activePlayer = 0;
+  activePlayer = -1;
 
+  // 勝利玩家
   @type('number')
   winningPlayer = -1;
 

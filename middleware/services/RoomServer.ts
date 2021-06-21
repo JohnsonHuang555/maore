@@ -10,6 +10,8 @@ import {
   setPlayerIndex,
   updateGameStatus,
   setShowGameScreen,
+  updateWinningPlayer,
+  updateActivePlayer,
 } from 'actions/RoomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
@@ -22,6 +24,13 @@ import { setClient, setRoom } from 'actions/ServerAction';
 import { TicTacToeState } from 'features/tictactoe/models/TicTacToeState';
 import { ChineseChessState } from 'features/chinese_chess/models/ChineseChessState';
 import { loadedInitalState } from 'actions/gameStateAction';
+
+enum StateChangeList {
+  RoomInfo = 'roomInfo',
+  GameStatus = 'gameStatus',
+  WinningPlayer = 'winningPlayer',
+  ActivePlayer = 'activePlayer',
+}
 
 export interface Room extends Schema, TicTacToeState, ChineseChessState {
   players: ArraySchema<PlayerState>;
@@ -123,7 +132,7 @@ export default class RoomServer {
       changes.forEach((change) => {
         const { field, value } = change;
         switch (field) {
-          case 'roomInfo': {
+          case StateChangeList.RoomInfo: {
             this.dispatch(
               setRoomInfo({
                 roomTilte: value.roomTitle,
@@ -134,9 +143,18 @@ export default class RoomServer {
             );
             break;
           }
-          case 'gameStatus': {
+          case StateChangeList.GameStatus: {
             this.dispatch(setShowGameScreen(true));
             this.dispatch(updateGameStatus(value));
+            break;
+          }
+          case StateChangeList.ActivePlayer: {
+            this.dispatch(updateActivePlayer(value));
+            break;
+          }
+          case StateChangeList.WinningPlayer: {
+            this.dispatch(updateWinningPlayer(value));
+            break;
           }
         }
       });

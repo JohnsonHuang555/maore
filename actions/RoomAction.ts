@@ -14,6 +14,8 @@ export enum ActionType {
   SET_PLAYER_INDEX = 'SET_PLAYER_INDEX',
   UPDATE_GAME_STATUS = 'UPDATE_GAME_STATUS',
   SET_SHOW_GAME_SCREEN = 'SET_SHOW_GAME_SCREEN',
+  UPDATE_WINNING_PLAYER = 'UPDATE_WINNING_PLAYER',
+  UPDATE_ACTIVIE_PLAYER = 'UPDATE_ACTIVIE_PLAYER',
   RESET = 'RESET',
 }
 
@@ -32,7 +34,6 @@ export const createdRoom = (roomId: string) => {
 };
 
 export const setRoomInfo = (roomInfo: Partial<RoomInfo>) => {
-  console.log(roomInfo);
   return {
     type: ActionType.SET_ROOM_INFO,
     roomInfo,
@@ -95,6 +96,20 @@ export const setShowGameScreen = (show: boolean) => {
   return {
     type: ActionType.SET_SHOW_GAME_SCREEN,
     show,
+  };
+};
+
+export const updateWinningPlayer = (playerIndex: number) => {
+  return {
+    type: ActionType.UPDATE_WINNING_PLAYER,
+    playerIndex,
+  };
+};
+
+export const updateActivePlayer = (playerIndex: number) => {
+  return {
+    type: ActionType.UPDATE_ACTIVIE_PLAYER,
+    playerIndex,
   };
 };
 

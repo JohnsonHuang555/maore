@@ -8,7 +8,7 @@ import { GameStatus } from 'models/Room';
 
 export default class BaseServer {
   public room: ClientRoom<Room>;
-  public events: Phaser.Events.EventEmitter;
+  public events = new Phaser.Events.EventEmitter();
   private _playerIndex = -1;
   private _gameStatus: GameStatus;
   private _gameState: State;
@@ -17,6 +17,7 @@ export default class BaseServer {
     return this._playerIndex;
   }
 
+  // 遊戲狀態
   get gameStatus() {
     return this._gameStatus;
   }
@@ -27,7 +28,6 @@ export default class BaseServer {
   }
 
   constructor() {
-    this.events = new Phaser.Events.EventEmitter();
     const { server, room, gameState } = store.getState();
     if (!server.room) {
       throw new Error('no room found...');
@@ -39,6 +39,8 @@ export default class BaseServer {
     this._gameStatus = room.gameStatus;
     this._gameState = gameState;
     this.room = server.room;
+    // 監聽 state 的變化
+    store.subscribe(this.handleRoomStateChange);
   }
 
   finishGame() {
@@ -52,4 +54,11 @@ export default class BaseServer {
   onPlayerWon(cb: (playerIndex: number) => void, context?: any) {
     this.events.on('player-win', cb, context);
   }
+
+  private handleRoomStateChange = () => {
+    const {
+      room: { winningPlayer },
+    } = store.getState();
+    this.events.emit('player-win', winningPlayer);
+  };
 }

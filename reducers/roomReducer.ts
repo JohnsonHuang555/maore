@@ -12,6 +12,8 @@ export type State = {
   yourPlayerId: string;
   gameStatus: GameStatus;
   showGameScreen: boolean;
+  winningPlayer: number;
+  activePlayer: number;
 };
 
 const initialState: State = {
@@ -27,6 +29,8 @@ const initialState: State = {
   },
   gameStatus: GameStatus.WaitingForPlayers,
   showGameScreen: false,
+  winningPlayer: -1,
+  activePlayer: -1,
 };
 
 type LoadedRoomsAction = {
@@ -87,6 +91,16 @@ type SetShowGameScreen = {
   show: boolean;
 };
 
+type UpdateWinningPlayer = {
+  type: ActionType.UPDATE_WINNING_PLAYER;
+  playerIndex: number;
+};
+
+type UpdateActivePlayer = {
+  type: ActionType.UPDATE_ACTIVIE_PLAYER;
+  playerIndex: number;
+};
+
 type ResetAction = {
   type: ActionType.RESET;
 };
@@ -103,6 +117,8 @@ type Action =
   | SetPlayerIndexAction
   | UpdateGameStatus
   | SetShowGameScreen
+  | UpdateWinningPlayer
+  | UpdateActivePlayer
   | ResetAction;
 
 const reducer = (state = initialState, action: Action): State => {
@@ -202,6 +218,18 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         showGameScreen: action.show,
+      };
+    }
+    case ActionType.UPDATE_WINNING_PLAYER: {
+      return {
+        ...state,
+        winningPlayer: action.playerIndex,
+      };
+    }
+    case ActionType.UPDATE_ACTIVIE_PLAYER: {
+      return {
+        ...state,
+        activePlayer: action.playerIndex,
       };
     }
     case ActionType.RESET: {

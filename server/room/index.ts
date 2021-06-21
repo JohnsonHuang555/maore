@@ -6,7 +6,7 @@ import { Metadata } from '../../models/Room';
 import PlayerLeftCommand from './commands/PlayerLeftCommand';
 import ReadyGameCommand from './commands/ReadyGameCommand';
 import StartGameCommand from './commands/StartGameCommand';
-import CloseGameCommand from './commands/CloseGameCommand';
+import ResetGameCommand from './commands/ResetGameCommand';
 import PlayerJoinedCommand from './commands/PlayerJoinedCommand';
 import UpdateRoomInfoCommand from './commands/UpdateRoomInfoCommand';
 
@@ -34,9 +34,9 @@ export default class BaseRoom {
       this.dispatcher.dispatch(new StartGameCommand());
     });
 
-    // this.room.onMessage(Message.FinishGame, () => {
-    //   this.dispatcher.dispatch(new CloseGameCommand());
-    // });
+    this.room.onMessage(Message.FinishGame, () => {
+      this.dispatcher.dispatch(new ResetGameCommand());
+    });
   }
 
   onJoin(client: Client, option: Metadata) {

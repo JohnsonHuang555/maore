@@ -2,7 +2,6 @@ import { GameOverSceneData } from 'models/Scenes';
 import Phaser from 'phaser';
 import { Cell } from 'features/tictactoe/models/Cell';
 import Server from 'features/tictactoe/TicTacToeServer';
-import { GameStatus } from 'models/Room';
 import { GameSceneData } from '../models/TicTacToeScene';
 
 export default class Game extends Phaser.Scene {
@@ -43,7 +42,7 @@ export default class Game extends Phaser.Scene {
         .rectangle(x, y, size, size, 0xffffff)
         .setInteractive()
         .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-          this.server?.makeSelection(idx);
+          this.server.makeSelection(idx);
         });
 
       switch (cellState) {
@@ -93,6 +92,7 @@ export default class Game extends Phaser.Scene {
   }
 
   private handlePlayerTurnChanged(playerIndex: number) {
+    console.log('changesssssss');
     // TODO: show a message letting the player know it is their turn
   }
 
