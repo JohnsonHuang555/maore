@@ -9,6 +9,7 @@ import StartGameCommand from './commands/StartGameCommand';
 import ResetGameCommand from './commands/ResetGameCommand';
 import PlayerJoinedCommand from './commands/PlayerJoinedCommand';
 import UpdateRoomInfoCommand from './commands/UpdateRoomInfoCommand';
+import CreatePlayerOrderCommand from './commands/CreatePlayerOrderCommand';
 
 export default class BaseRoom {
   private dispatcher;
@@ -32,6 +33,10 @@ export default class BaseRoom {
 
     this.room.onMessage(RoomMessage.StartGame, () => {
       this.dispatcher.dispatch(new StartGameCommand());
+    });
+
+    this.room.onMessage(RoomMessage.CreatePlyayerOrder, () => {
+      this.dispatcher.dispatch(new CreatePlayerOrderCommand());
     });
 
     this.room.onMessage(RoomMessage.FinishGame, () => {

@@ -5,13 +5,11 @@ import {
   loadedRooms,
   removePlayer,
   setYourPlayerId,
-  setPlayerReady,
-  setPlayerMaster,
-  setPlayerIndex,
   updateGameStatus,
   setShowGameScreen,
   updateWinningPlayer,
   updateActivePlayer,
+  setPlayerInfo,
 } from 'actions/RoomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
@@ -36,6 +34,7 @@ enum PlayerStateChangeList {
   IsReady = 'isReady',
   IsMaster = 'isMaster',
   PlayerIndex = 'playerIndex',
+  PlayerOrder = 'playerOrder',
 }
 
 export interface Room extends Schema, TicTacToeState, ChineseChessState {
@@ -113,15 +112,36 @@ export default class RoomServer {
           const { field, value } = change;
           switch (field) {
             case PlayerStateChangeList.IsReady: {
-              this.dispatch(setPlayerReady(player.id, value));
+              this.dispatch(
+                setPlayerInfo(player.id, {
+                  isReady: value,
+                })
+              );
               break;
             }
             case PlayerStateChangeList.IsMaster: {
-              this.dispatch(setPlayerMaster(player.id, value));
+              this.dispatch(
+                setPlayerInfo(player.id, {
+                  isMaster: value,
+                })
+              );
               break;
             }
             case PlayerStateChangeList.PlayerIndex: {
-              this.dispatch(setPlayerIndex(player.id, value));
+              this.dispatch(
+                setPlayerInfo(player.id, {
+                  playerIndex: value,
+                })
+              );
+              break;
+            }
+            case PlayerStateChangeList.PlayerOrder: {
+              this.dispatch(
+                setPlayerInfo(player.id, {
+                  playerOrder: value,
+                })
+              );
+              break;
             }
           }
         });

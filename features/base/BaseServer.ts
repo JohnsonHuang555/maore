@@ -43,7 +43,7 @@ export default class BaseServer {
     store.subscribe(this.handleRoomStateChange);
   }
 
-  setPlayerOrder() {
+  createPlayerOrder() {
     this.room.send(RoomMessage.CreatePlyayerOrder);
   }
 

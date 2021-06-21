@@ -9,9 +9,8 @@ export enum ActionType {
   SET_YOUR_PLAYERID = 'SET_YOUR_PLAYERID',
   ADD_PLAYER = 'ADD_PLAYER',
   REMOVE_PLAYER = 'REMOVE_PLAYER',
-  SET_PLAYER_READY = 'SET_PLAYER_READY',
-  SET_PLAYER_MASTER = 'SET_PLAYER_MASTER',
-  SET_PLAYER_INDEX = 'SET_PLAYER_INDEX',
+  SET_PLAYER_ORDER = 'SET_PLAYER_ORDER',
+  UPDATE_PLAYER_INFO = 'UPDATE_PLAYER_INFO',
   UPDATE_GAME_STATUS = 'UPDATE_GAME_STATUS',
   SET_SHOW_GAME_SCREEN = 'SET_SHOW_GAME_SCREEN',
   UPDATE_WINNING_PLAYER = 'UPDATE_WINNING_PLAYER',
@@ -61,27 +60,11 @@ export const setYourPlayerId = (yourPlayerId: string) => {
   };
 };
 
-export const setPlayerReady = (id: string, isReady: boolean) => {
+export const setPlayerInfo = (id: string, playerInfo: Partial<Player>) => {
   return {
-    type: ActionType.SET_PLAYER_READY,
+    type: ActionType.UPDATE_PLAYER_INFO,
     id,
-    isReady,
-  };
-};
-
-export const setPlayerMaster = (id: string, isMaster: boolean) => {
-  return {
-    type: ActionType.SET_PLAYER_MASTER,
-    id,
-    isMaster,
-  };
-};
-
-export const setPlayerIndex = (id: string, playerIndex: number) => {
-  return {
-    type: ActionType.SET_PLAYER_INDEX,
-    id,
-    playerIndex,
+    playerInfo,
   };
 };
 

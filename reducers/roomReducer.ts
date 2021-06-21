@@ -63,22 +63,10 @@ type RemovePlayerAction = {
   id: string;
 };
 
-type SetPlayerReadyAction = {
-  type: ActionType.SET_PLAYER_READY;
+type UpdatePlayerInfoAction = {
+  type: ActionType.UPDATE_PLAYER_INFO;
   id: string;
-  isReady: boolean;
-};
-
-type SetPlayerMasterAction = {
-  type: ActionType.SET_PLAYER_MASTER;
-  id: string;
-  isMaster: boolean;
-};
-
-type SetPlayerIndexAction = {
-  type: ActionType.SET_PLAYER_INDEX;
-  id: string;
-  playerIndex: number;
+  playerInfo: Partial<Player>;
 };
 
 type UpdateGameStatus = {
@@ -112,9 +100,10 @@ type Action =
   | SetYourPlayerIdAction
   | AddPlayerAction
   | RemovePlayerAction
-  | SetPlayerReadyAction
-  | SetPlayerMasterAction
-  | SetPlayerIndexAction
+  // | SetPlayerReadyAction
+  // | SetPlayerMasterAction
+  // | SetPlayerIndexAction
+  | UpdatePlayerInfoAction
   | UpdateGameStatus
   | SetShowGameScreen
   | UpdateWinningPlayer
@@ -163,42 +152,58 @@ const reducer = (state = initialState, action: Action): State => {
         players: newPlayers,
       };
     }
-    case ActionType.SET_PLAYER_READY: {
+    // case ActionType.SET_PLAYER_READY: {
+    //   const newPlayers = state.players.map((p) => {
+    //     if (p.id === action.id) {
+    //       return {
+    //         ...p,
+    //         isReady: action.isReady,
+    //       };
+    //     }
+    //     return p;
+    //   });
+    //   return {
+    //     ...state,
+    //     players: newPlayers,
+    //   };
+    // }
+    // case ActionType.SET_PLAYER_MASTER: {
+    //   const newPlayers = state.players.map((p) => {
+    //     if (p.id === action.id) {
+    //       return {
+    //         ...p,
+    //         isMaster: action.isMaster,
+    //       };
+    //     }
+    //     return p;
+    //   });
+    //   return {
+    //     ...state,
+    //     players: newPlayers,
+    //   };
+    // }
+    // case ActionType.SET_PLAYER_INDEX: {
+    //   const newPlayers = state.players.map((p) => {
+    //     if (p.id === action.id) {
+    //       return {
+    //         ...p,
+    //         playerIndex: action.playerIndex,
+    //       };
+    //     }
+    //     return p;
+    //   });
+    //   return {
+    //     ...state,
+    //     players: newPlayers,
+    //   };
+    // }
+    case ActionType.UPDATE_PLAYER_INFO: {
+      console.log(action);
       const newPlayers = state.players.map((p) => {
         if (p.id === action.id) {
           return {
             ...p,
-            isReady: action.isReady,
-          };
-        }
-        return p;
-      });
-      return {
-        ...state,
-        players: newPlayers,
-      };
-    }
-    case ActionType.SET_PLAYER_MASTER: {
-      const newPlayers = state.players.map((p) => {
-        if (p.id === action.id) {
-          return {
-            ...p,
-            isMaster: action.isMaster,
-          };
-        }
-        return p;
-      });
-      return {
-        ...state,
-        players: newPlayers,
-      };
-    }
-    case ActionType.SET_PLAYER_INDEX: {
-      const newPlayers = state.players.map((p) => {
-        if (p.id === action.id) {
-          return {
-            ...p,
-            playerIndex: action.playerIndex,
+            ...action.playerInfo,
           };
         }
         return p;
