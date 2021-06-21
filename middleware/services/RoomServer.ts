@@ -15,7 +15,7 @@ import {
 } from 'actions/RoomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
-import { Message } from 'models/messages/RoomMessage';
+import { RoomMessage } from 'models/messages/RoomMessage';
 import { GameStatus, Metadata } from 'models/Room';
 import { AnyAction, Dispatch } from 'redux';
 import { Schema, ArraySchema } from '@colyseus/schema';
@@ -25,11 +25,17 @@ import { TicTacToeState } from 'features/tictactoe/models/TicTacToeState';
 import { ChineseChessState } from 'features/chinese_chess/models/ChineseChessState';
 import { loadedInitalState } from 'actions/gameStateAction';
 
-enum StateChangeList {
+enum RoomStateChangeList {
   RoomInfo = 'roomInfo',
   GameStatus = 'gameStatus',
   WinningPlayer = 'winningPlayer',
   ActivePlayer = 'activePlayer',
+}
+
+enum PlayerStateChangeList {
+  IsReady = 'isReady',
+  IsMaster = 'isMaster',
+  PlayerIndex = 'playerIndex',
 }
 
 export interface Room extends Schema, TicTacToeState, ChineseChessState {
@@ -75,16 +81,16 @@ export default class RoomServer {
   }
 
   async readyGame(room: ClientRoom<Room>) {
-    room.send(Message.ReadyGame);
+    room.send(RoomMessage.ReadyGame);
   }
 
   async startGame(room: ClientRoom<Room>) {
-    room.send(Message.StartGame);
+    room.send(RoomMessage.StartGame);
   }
 
   private handleRoomChange(room: ClientRoom<Room>) {
     room.onMessage(
-      Message.YourPlayerId,
+      RoomMessage.GetYourPlayerId,
       (message: { yourPlayerId: string }) => {
         this.dispatch(setYourPlayerId(message.yourPlayerId));
       }
@@ -106,15 +112,15 @@ export default class RoomServer {
         changes.forEach((change) => {
           const { field, value } = change;
           switch (field) {
-            case 'isReady': {
+            case PlayerStateChangeList.IsReady: {
               this.dispatch(setPlayerReady(player.id, value));
               break;
             }
-            case 'isMaster': {
+            case PlayerStateChangeList.IsMaster: {
               this.dispatch(setPlayerMaster(player.id, value));
               break;
             }
-            case 'playerIndex': {
+            case PlayerStateChangeList.PlayerIndex: {
               this.dispatch(setPlayerIndex(player.id, value));
             }
           }
@@ -132,7 +138,7 @@ export default class RoomServer {
       changes.forEach((change) => {
         const { field, value } = change;
         switch (field) {
-          case StateChangeList.RoomInfo: {
+          case RoomStateChangeList.RoomInfo: {
             this.dispatch(
               setRoomInfo({
                 roomTilte: value.roomTitle,
@@ -143,16 +149,16 @@ export default class RoomServer {
             );
             break;
           }
-          case StateChangeList.GameStatus: {
+          case RoomStateChangeList.GameStatus: {
             this.dispatch(setShowGameScreen(true));
             this.dispatch(updateGameStatus(value));
             break;
           }
-          case StateChangeList.ActivePlayer: {
+          case RoomStateChangeList.ActivePlayer: {
             this.dispatch(updateActivePlayer(value));
             break;
           }
-          case StateChangeList.WinningPlayer: {
+          case RoomStateChangeList.WinningPlayer: {
             this.dispatch(updateWinningPlayer(value));
             break;
           }

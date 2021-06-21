@@ -1,5 +1,4 @@
-import { store } from 'pages/_app';
-import { Message } from 'models/messages/RoomMessage';
+import { TicTacToeMessage } from 'models/messages/TicTacToeMessage';
 import BaseServer from 'features/base/BaseServer';
 
 // 監聽與傳送給後端資料
@@ -15,7 +14,7 @@ export default class Server extends BaseServer {
       return;
     }
 
-    this.room.send(Message.PlayerSelection, { index: idx });
+    this.room.send(TicTacToeMessage.SelectCell, { index: idx });
   }
 
   onBoardChanged(cb: (cell: number, index: number) => void, context?: any) {

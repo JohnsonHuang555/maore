@@ -1,7 +1,7 @@
 import { Dispatcher } from '@colyseus/command';
 import { Client, Room } from 'colyseus';
 import RoomState from './state/RoomState';
-import { Message } from '../../models/messages/RoomMessage';
+import { RoomMessage } from '../../models/messages/RoomMessage';
 import { Metadata } from '../../models/Room';
 import PlayerLeftCommand from './commands/PlayerLeftCommand';
 import ReadyGameCommand from './commands/ReadyGameCommand';
@@ -24,17 +24,17 @@ export default class BaseRoom {
 
   onCreate(option: Metadata) {
     this.room.setMetadata(option);
-    this.room.onMessage(Message.ReadyGame, (client) => {
+    this.room.onMessage(RoomMessage.ReadyGame, (client) => {
       this.dispatcher.dispatch(new ReadyGameCommand(), {
         client,
       });
     });
 
-    this.room.onMessage(Message.StartGame, () => {
+    this.room.onMessage(RoomMessage.StartGame, () => {
       this.dispatcher.dispatch(new StartGameCommand());
     });
 
-    this.room.onMessage(Message.FinishGame, () => {
+    this.room.onMessage(RoomMessage.FinishGame, () => {
       this.dispatcher.dispatch(new ResetGameCommand());
     });
   }
@@ -44,7 +44,7 @@ export default class BaseRoom {
       (c) => c.sessionId === client.sessionId
     );
 
-    client.send(Message.YourPlayerId, { yourPlayerId: client.id });
+    client.send(RoomMessage.GetYourPlayerId, { yourPlayerId: client.id });
 
     // update room title
     this.dispatcher.dispatch(new UpdateRoomInfoCommand(), {

@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { store } from 'pages/_app';
 import { Room as ClientRoom } from 'colyseus.js';
 import { Room } from 'middleware/services/RoomServer';
-import { Message } from 'models/messages/RoomMessage';
+import { RoomMessage } from 'models/messages/RoomMessage';
 import { State } from 'reducers/gameStateReducer';
 import { GameStatus } from 'models/Room';
 
@@ -43,8 +43,12 @@ export default class BaseServer {
     store.subscribe(this.handleRoomStateChange);
   }
 
+  setPlayerOrder() {
+    this.room.send(RoomMessage.CreatePlyayerOrder);
+  }
+
   finishGame() {
-    this.room.send(Message.FinishGame);
+    this.room.send(RoomMessage.FinishGame);
   }
 
   onPlayerTurnChanged(cb: (playerIndex: number) => void, context?: any) {
