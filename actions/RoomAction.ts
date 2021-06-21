@@ -13,6 +13,7 @@ export enum ActionType {
   SET_PLAYER_MASTER = 'SET_PLAYER_MASTER',
   SET_PLAYER_INDEX = 'SET_PLAYER_INDEX',
   UPDATE_GAME_STATUS = 'UPDATE_GAME_STATUS',
+  SET_SHOW_GAME_SCREEN = 'SET_SHOW_GAME_SCREEN',
   RESET = 'RESET',
 }
 
@@ -87,6 +88,13 @@ export const updateGameStatus = (gameStatus: GameStatus) => {
   return {
     type: ActionType.UPDATE_GAME_STATUS,
     gameStatus,
+  };
+};
+
+export const setShowGameScreen = (show: boolean) => {
+  return {
+    type: ActionType.SET_SHOW_GAME_SCREEN,
+    show,
   };
 };
 

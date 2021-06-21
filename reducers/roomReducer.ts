@@ -11,6 +11,7 @@ export type State = {
   roomInfo: RoomInfo;
   yourPlayerId: string;
   gameStatus: GameStatus;
+  showGameScreen: boolean;
 };
 
 const initialState: State = {
@@ -25,6 +26,7 @@ const initialState: State = {
     gamePack: '',
   },
   gameStatus: GameStatus.WaitingForPlayers,
+  showGameScreen: false,
 };
 
 type LoadedRoomsAction = {
@@ -80,6 +82,11 @@ type UpdateGameStatus = {
   gameStatus: GameStatus;
 };
 
+type SetShowGameScreen = {
+  type: ActionType.SET_SHOW_GAME_SCREEN;
+  show: boolean;
+};
+
 type ResetAction = {
   type: ActionType.RESET;
 };
@@ -95,6 +102,7 @@ type Action =
   | SetPlayerMasterAction
   | SetPlayerIndexAction
   | UpdateGameStatus
+  | SetShowGameScreen
   | ResetAction;
 
 const reducer = (state = initialState, action: Action): State => {
@@ -190,6 +198,12 @@ const reducer = (state = initialState, action: Action): State => {
         gameStatus: action.gameStatus,
       };
     }
+    case ActionType.SET_SHOW_GAME_SCREEN: {
+      return {
+        ...state,
+        showGameScreen: action.show,
+      };
+    }
     case ActionType.RESET: {
       return {
         ...state,
@@ -200,6 +214,8 @@ const reducer = (state = initialState, action: Action): State => {
           gamePack: '',
         },
         players: [],
+        showGameScreen: false,
+        gameStatus: GameStatus.WaitingForPlayers,
       };
     }
     default: {

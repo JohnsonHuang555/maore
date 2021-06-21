@@ -9,6 +9,7 @@ import {
   setPlayerMaster,
   setPlayerIndex,
   updateGameStatus,
+  setShowGameScreen,
 } from 'actions/RoomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
@@ -81,7 +82,6 @@ export default class RoomServer {
     );
 
     room.onStateChange.once((state) => {
-      console.log(state, 'dddd');
       this.dispatch(
         loadedInitalState({
           board: state.board,
@@ -135,6 +135,7 @@ export default class RoomServer {
             break;
           }
           case 'gameStatus': {
+            this.dispatch(setShowGameScreen(true));
             this.dispatch(updateGameStatus(value));
           }
         }
