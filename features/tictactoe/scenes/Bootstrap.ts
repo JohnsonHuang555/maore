@@ -14,11 +14,21 @@ export default class Bootstrap extends Phaser.Scene {
 
   create() {
     this.createNewGame();
+    this.server.finishGame();
   }
+
+  private createNewGame = () => {
+    // 在開始遊戲時，決定遊玩順序
+    // this.server.finishGame();
+    this.scene.launch('game', {
+      server: this.server,
+      onGameOver: this.handleGameOver,
+    });
+  };
 
   private handleGameOver = (data: GameOverSceneData) => {
     this.scene.stop('game');
-    this.server.finishGame();
+    // this.server.finishGame();
     this.scene.launch('game-over', {
       ...data,
       onFinish: this.handleFinish,
@@ -28,13 +38,5 @@ export default class Bootstrap extends Phaser.Scene {
   private handleFinish = () => {
     this.scene.stop('game-over');
     // this.server.finishGame();
-  };
-
-  private createNewGame = () => {
-    console.log('createNewGame');
-    this.scene.launch('game', {
-      server: this.server,
-      onGameOver: this.handleGameOver,
-    });
   };
 }

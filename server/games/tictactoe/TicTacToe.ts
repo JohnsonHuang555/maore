@@ -32,7 +32,7 @@ export default class TicTacToe extends Room<TicTacToeState, Metadata> {
     );
 
     this.onMessage(RoomMessage.FinishGame, () => {
-      this.dispatcher.dispatch(new ResetCommand());
+      console.log('finishZZZZ');
     });
   }
 

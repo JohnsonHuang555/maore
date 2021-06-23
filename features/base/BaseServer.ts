@@ -2,10 +2,9 @@ import Phaser from 'phaser';
 import { store } from 'pages/_app';
 import { Room as ClientRoom } from 'colyseus.js';
 import { Room } from 'middleware/services/RoomServer';
-import { RoomMessage } from 'models/messages/RoomMessage';
 import { State } from 'reducers/gameStateReducer';
 import { GameStatus } from 'models/Room';
-
+import { RoomMessage } from 'models/messages/RoomMessage';
 export default class BaseServer {
   public room: ClientRoom<Room>;
   public events = new Phaser.Events.EventEmitter();
