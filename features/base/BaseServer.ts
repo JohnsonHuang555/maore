@@ -6,6 +6,8 @@ import { State } from 'reducers/gameStateReducer';
 import { GameStatus } from 'models/Room';
 import { RoomMessage } from 'models/messages/RoomMessage';
 import { Player } from 'models/Player';
+import { setSnackbar } from 'actions/AppAction';
+import { setShowGameScreen } from 'actions/RoomAction';
 export default class BaseServer {
   public room: ClientRoom<Room>;
   public events = new Phaser.Events.EventEmitter();
@@ -48,12 +50,25 @@ export default class BaseServer {
     store.subscribe(this.handleRoomStateChange);
   }
 
+  showAlert(message: string) {
+    store.dispatch(
+      setSnackbar({
+        show: true,
+        message,
+      })
+    );
+  }
+
   createPlayerOrder() {
     this.room.send(RoomMessage.CreatePlyayerOrder);
   }
 
   finishGame() {
     this.room.send(RoomMessage.FinishGame);
+  }
+
+  closeGameScreen() {
+    store.dispatch(setShowGameScreen(false));
   }
 
   onPlayerTurnChanged(cb: (playerIndex: number) => void, context?: any) {
@@ -66,8 +81,12 @@ export default class BaseServer {
 
   private handleRoomStateChange = () => {
     const {
-      room: { winningPlayer },
+      room: { winningPlayer, activePlayer, gameStatus },
     } = store.getState();
+    if (gameStatus === GameStatus.WaitingForPlayers) {
+      this.events.destroy();
+    }
     this.events.emit('player-win', winningPlayer);
+    this.events.emit('player-turn-changed', activePlayer);
   };
 }

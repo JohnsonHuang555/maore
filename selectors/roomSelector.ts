@@ -10,7 +10,7 @@ export const roomInfoSelector = (store: StoreState) => store.room.roomInfo;
 export const playerIdSelector = (store: StoreState) => store.room.yourPlayerId;
 export const showGameScreenSelector = (store: StoreState) => {
   const { gameStatus, showGameScreen } = store.room;
-  if (gameStatus === GameStatus.Playing && showGameScreen) {
+  if (gameStatus === GameStatus.Playing || showGameScreen) {
     return true;
   }
   return false;

@@ -150,11 +150,11 @@ export default class RoomServer {
 
     room.state.players.onRemove = (item) => {
       this.dispatch(removePlayer(item.id));
+      this.dispatch(setShowGameScreen(false));
     };
 
     // room state changes...
     room.state.onChange = (changes) => {
-      console.log('roomserver changed');
       changes.forEach((change) => {
         const { field, value } = change;
         switch (field) {
@@ -170,7 +170,10 @@ export default class RoomServer {
             break;
           }
           case RoomStateChangeList.GameStatus: {
-            this.dispatch(setShowGameScreen(true));
+            const isPlaying = value === GameStatus.Playing;
+            if (isPlaying) {
+              this.dispatch(setShowGameScreen(isPlaying));
+            }
             this.dispatch(updateGameStatus(value));
             break;
           }

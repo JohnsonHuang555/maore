@@ -36,14 +36,8 @@ export default class BaseRoom {
     });
 
     this.room.onMessage(RoomMessage.CreatePlyayerOrder, () => {
-      console.log('from client....');
       this.dispatcher.dispatch(new CreatePlayerOrderCommand());
     });
-
-    // this.room.onMessage(RoomMessage.FinishGame, () => {
-    //   console.log('finish');
-    //   this.dispatcher.dispatch(new ResetGameCommand());
-    // });
   }
 
   onJoin(client: Client, option: Metadata) {

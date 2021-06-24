@@ -100,9 +100,6 @@ type Action =
   | SetYourPlayerIdAction
   | AddPlayerAction
   | RemovePlayerAction
-  // | SetPlayerReadyAction
-  // | SetPlayerMasterAction
-  // | SetPlayerIndexAction
   | UpdatePlayerInfoAction
   | UpdateGameStatus
   | SetShowGameScreen
@@ -152,53 +149,7 @@ const reducer = (state = initialState, action: Action): State => {
         players: newPlayers,
       };
     }
-    // case ActionType.SET_PLAYER_READY: {
-    //   const newPlayers = state.players.map((p) => {
-    //     if (p.id === action.id) {
-    //       return {
-    //         ...p,
-    //         isReady: action.isReady,
-    //       };
-    //     }
-    //     return p;
-    //   });
-    //   return {
-    //     ...state,
-    //     players: newPlayers,
-    //   };
-    // }
-    // case ActionType.SET_PLAYER_MASTER: {
-    //   const newPlayers = state.players.map((p) => {
-    //     if (p.id === action.id) {
-    //       return {
-    //         ...p,
-    //         isMaster: action.isMaster,
-    //       };
-    //     }
-    //     return p;
-    //   });
-    //   return {
-    //     ...state,
-    //     players: newPlayers,
-    //   };
-    // }
-    // case ActionType.SET_PLAYER_INDEX: {
-    //   const newPlayers = state.players.map((p) => {
-    //     if (p.id === action.id) {
-    //       return {
-    //         ...p,
-    //         playerIndex: action.playerIndex,
-    //       };
-    //     }
-    //     return p;
-    //   });
-    //   return {
-    //     ...state,
-    //     players: newPlayers,
-    //   };
-    // }
     case ActionType.UPDATE_PLAYER_INFO: {
-      console.log(action);
       const newPlayers = state.players.map((p) => {
         if (p.id === action.id) {
           return {

@@ -10,7 +10,7 @@ export default class Server extends BaseServer {
 
   makeSelection(idx: number) {
     if (this.playerInfo.playerIndex !== this.room.state.activePlayer) {
-      console.warn("not this player's turn");
+      this.showAlert('不是你的回合！');
       return;
     }
 

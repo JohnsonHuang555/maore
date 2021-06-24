@@ -2,12 +2,22 @@ import { Command } from '@colyseus/command';
 import RoomState from '../state/RoomState';
 import { GameStatus } from '../../../models/Room';
 
-export default class CloseGameCommand extends Command<RoomState> {
+export default class ResetGameCommand extends Command<RoomState> {
   execute() {
-    // for (let i = 0; i < array.length; i++) {
-    //   const element = array[i];
+    const playerCount = this.state.players.length;
+    for (let i = 0; i < playerCount; i++) {
+      this.state.players[i].playerOrder = -1;
+      // 除了房主其餘玩家接重設準備狀態
+      if (!this.state.players[i].isMaster) {
+        this.state.players[i].isReady = false;
+      }
+    }
 
-    // }
-    this.room.state.gameStatus = GameStatus.WaitingForPlayers;
+    // 重設贏家
+    this.state.winningPlayer = -1;
+    // 重設該回合玩家
+    this.state.activePlayer = -1;
+    // 重設房間狀態
+    this.state.gameStatus = GameStatus.WaitingForPlayers;
   }
 }

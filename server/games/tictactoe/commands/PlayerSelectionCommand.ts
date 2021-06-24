@@ -14,7 +14,7 @@ export default class PlayerSelectionCommand extends Command<TicTacToeState> {
   execute(data: Payload) {
     const { client, index } = data;
 
-    if (this.room.state.gameStatus !== GameStatus.Playing) {
+    if (this.state.gameStatus !== GameStatus.Playing) {
       return;
     }
 

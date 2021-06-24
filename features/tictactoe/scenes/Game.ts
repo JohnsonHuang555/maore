@@ -3,11 +3,12 @@ import Phaser from 'phaser';
 import { Cell } from 'features/tictactoe/models/Cell';
 import Server from 'features/tictactoe/TicTacToeServer';
 import { GameSceneData } from '../models/TicTacToeScene';
+import { GameStatus } from 'models/Room';
 
 export default class Game extends Phaser.Scene {
   private server!: Server;
   private onGameOver!: (data: GameOverSceneData) => void;
-
+  private gameStateText?: Phaser.GameObjects.Text;
   private cells: { display: Phaser.GameObjects.Rectangle; value: Cell }[] = [];
 
   constructor() {
@@ -92,8 +93,18 @@ export default class Game extends Phaser.Scene {
   }
 
   private handlePlayerTurnChanged(playerIndex: number) {
-    console.log('changesssssss');
-    // TODO: show a message letting the player know it is their turn
+    if (
+      this.server.playerInfo.playerIndex === playerIndex &&
+      !this.gameStateText
+    ) {
+      const { width } = this.scale;
+      this.gameStateText = this.add
+        .text(width * 0.5, 50, '你的回合')
+        .setOrigin(0.5);
+    } else {
+      this.gameStateText?.destroy();
+      this.gameStateText = undefined;
+    }
   }
 
   private handlePlayerWon(playerIndex: number) {

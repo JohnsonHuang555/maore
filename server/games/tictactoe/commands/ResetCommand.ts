@@ -1,6 +1,7 @@
 import { Command } from '@colyseus/command';
 import { Cell } from '../../../../features/tictactoe/models/Cell';
 import TicTacToeState from '../state/TicTacToeState';
+import ResetGameCommand from '../../../room/commands/ResetGameCommand';
 
 export default class ResetCommand extends Command<TicTacToeState> {
   execute() {
@@ -8,9 +9,6 @@ export default class ResetCommand extends Command<TicTacToeState> {
     for (let i = 0; i < 9; i++) {
       this.room.state.board[i] = Cell.Empty;
     }
-    // FIXME: 抽個 command
-    this.state.winningPlayer = -1;
-    // TODO: 改隨機
-    this.state.activePlayer = -1;
+    return [new ResetGameCommand()];
   }
 }
