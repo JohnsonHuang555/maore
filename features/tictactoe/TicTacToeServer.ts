@@ -9,7 +9,7 @@ export default class Server extends BaseServer {
   }
 
   makeSelection(idx: number) {
-    if (this.playerIndex !== this.room.state.activePlayer) {
+    if (this.playerInfo.playerIndex !== this.room.state.activePlayer) {
       console.warn("not this player's turn");
       return;
     }

@@ -14,12 +14,13 @@ export default class Bootstrap extends Phaser.Scene {
 
   create() {
     this.createNewGame();
-    this.server.finishGame();
   }
 
   private createNewGame = () => {
-    // 在開始遊戲時，決定遊玩順序
-    // this.server.finishGame();
+    // 在開始遊戲時，決定遊玩順序，由房主決定
+    if (this.server.playerInfo.isMaster) {
+      this.server.createPlayerOrder();
+    }
     this.scene.launch('game', {
       server: this.server,
       onGameOver: this.handleGameOver,

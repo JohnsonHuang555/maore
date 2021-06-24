@@ -68,9 +68,9 @@ export default class Game extends Phaser.Scene {
       }
     });
 
-    this.server?.onBoardChanged(this.handleBoardChanged, this);
-    this.server?.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
-    this.server?.onPlayerWon(this.handlePlayerWon, this);
+    this.server.onBoardChanged(this.handleBoardChanged, this);
+    this.server.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
+    this.server.onPlayerWon(this.handlePlayerWon, this);
   };
 
   private handleBoardChanged(newValue: Cell, idx: number) {
@@ -97,11 +97,16 @@ export default class Game extends Phaser.Scene {
   }
 
   private handlePlayerWon(playerIndex: number) {
+    if (playerIndex === -1) {
+      return;
+    }
     this.time.delayedCall(1000, () => {
       if (!this.onGameOver) {
         return;
       }
-      this.onGameOver({ winner: this.server?.playerIndex === playerIndex });
+      this.onGameOver({
+        winner: this.server.playerInfo.playerIndex === playerIndex,
+      });
     });
   }
 }

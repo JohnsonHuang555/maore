@@ -1,7 +1,6 @@
 import { Command } from '@colyseus/command';
-import { GameStatus } from '../../../../models/Room';
 import { Cell } from '../../../../features/tictactoe/models/Cell';
-import NextTurnCommand from './NextTurnCommand';
+import NextTurnCommand from '../../../room/commands/NextTurnCommand';
 import TicTacToe from '../state/TicTacToeState';
 
 type Payload = {};

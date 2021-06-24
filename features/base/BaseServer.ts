@@ -5,15 +5,16 @@ import { Room } from 'middleware/services/RoomServer';
 import { State } from 'reducers/gameStateReducer';
 import { GameStatus } from 'models/Room';
 import { RoomMessage } from 'models/messages/RoomMessage';
+import { Player } from 'models/Player';
 export default class BaseServer {
   public room: ClientRoom<Room>;
   public events = new Phaser.Events.EventEmitter();
-  private _playerIndex = -1;
+  private _playerInfo: Player;
   private _gameStatus: GameStatus;
   private _gameState: State;
 
   get playerIndex() {
-    return this._playerIndex;
+    return this._playerInfo;
   }
 
   // 遊戲狀態
@@ -26,15 +27,20 @@ export default class BaseServer {
     return this._gameState;
   }
 
+  get playerInfo() {
+    return this._playerInfo;
+  }
+
   constructor() {
     const { server, room, gameState } = store.getState();
     if (!server.room) {
-      throw new Error('no room found...');
+      throw new Error('room not found...');
     }
-    const playerIndex = room.players.findIndex(
-      (p) => p.id === room.yourPlayerId
-    );
-    this._playerIndex = playerIndex;
+    const playerInfo = room.players.find((p) => p.id === room.yourPlayerId);
+    if (!playerInfo) {
+      throw new Error('player not found...');
+    }
+    this._playerInfo = playerInfo;
     this._gameStatus = room.gameStatus;
     this._gameState = gameState;
     this.room = server.room;
