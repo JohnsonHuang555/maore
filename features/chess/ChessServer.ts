@@ -1,5 +1,5 @@
 import { store } from 'pages/_app';
-import { Message } from 'models/messages/RoomMessage';
+// import { Message } from 'models/messages/RoomMessage';
 import { updateGameStatus } from 'actions/RoomAction';
 import BaseServer from 'features/base/BaseServer';
 
@@ -17,12 +17,12 @@ export default class Server extends BaseServer {
   }
 
   makeSelection(idx: number) {
-    if (this.playerIndex !== this.room.state.activePlayer) {
-      console.warn("not this player's turn");
-      return;
-    }
+    // if (this.playerIndex !== this.room.state.activePlayer) {
+    //   console.warn("not this player's turn");
+    //   return;
+    // }
 
-    this.room.send(Message.PlayerSelection, { index: idx });
+    // this.room.send(Message.PlayerSelection, { index: idx });
   }
 
   onBoardChanged(cb: (cell: number, index: number) => void, context?: any) {

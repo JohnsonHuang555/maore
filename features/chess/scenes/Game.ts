@@ -1,8 +1,9 @@
-import { GameOverSceneData, GameSceneData } from 'models/Scenes';
+import { GameOverSceneData } from 'models/Scenes';
+import { GameSceneData } from 'features/chess/model/ChessScene';
 import Phaser from 'phaser';
 import { CellColor, ChessCell } from 'features/chess/model/ChessCell';
-import Server from 'features/chess/Server';
-import { GameState } from 'models/Room';
+import Server from 'features/chess/ChessServer';
+import { GameStatus } from 'models/Room';
 import { ChessColumnName } from '../model/Chess';
 
 export default class Game extends Phaser.Scene {
@@ -97,22 +98,22 @@ export default class Game extends Phaser.Scene {
     // this.server?.onPlayerWon(this.handlePlayerWon, this);
   };
 
-  private handleBoardChanged(newValue: Cell, idx: number) {
-    const cell = this.cells[idx];
-    if (cell.value !== newValue) {
-      switch (newValue) {
-        case Cell.X: {
-          this.add
-            .star(cell.display.x, cell.display.y, 4, 4, 60, 0xff0000)
-            .setAngle(45);
-          break;
-        }
-        case Cell.O: {
-          this.add.circle(cell.display.x, cell.display.y, 50, 0x0000ff);
-        }
-      }
-      cell.value = newValue;
-    }
+  private handleBoardChanged() {
+    // const cell = this.cells[idx];
+    // if (cell.value !== newValue) {
+    //   switch (newValue) {
+    //     case Cell.X: {
+    //       this.add
+    //         .star(cell.display.x, cell.display.y, 4, 4, 60, 0xff0000)
+    //         .setAngle(45);
+    //       break;
+    //     }
+    //     case Cell.O: {
+    //       this.add.circle(cell.display.x, cell.display.y, 50, 0x0000ff);
+    //     }
+    //   }
+    //   cell.value = newValue;
+    // }
   }
 
   private handlePlayerTurnChanged(playerIndex: number) {
@@ -120,17 +121,17 @@ export default class Game extends Phaser.Scene {
   }
 
   private handlePlayerWon(playerIndex: number) {
-    const gameState = this.server?.gameState;
-    this.time.delayedCall(1000, () => {
-      if (!this.onGameOver) {
-        return;
-      }
-      if (gameState === GameState.Finished) {
-        return;
-      }
-      console.log('handle player win');
-      this.onGameOver({ winner: this.server?.playerIndex === playerIndex });
-      this.server?.resetGame();
-    });
+    // const gameState = this.server?.gameState;
+    // this.time.delayedCall(1000, () => {
+    //   if (!this.onGameOver) {
+    //     return;
+    //   }
+    //   if (gameState === GameStatus.Finished) {
+    //     return;
+    //   }
+    //   console.log('handle player win');
+    //   this.onGameOver({ winner: this.server?.playerIndex === playerIndex });
+    //   this.server?.resetGame();
+    // });
   }
 }

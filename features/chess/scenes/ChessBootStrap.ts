@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import Server from 'features/chess/Server';
+import Server from 'features/chess/ChessServer';
 import { GameOverSceneData } from 'models/Scenes';
 
 export default class ChessBootstrap extends Phaser.Scene {
@@ -38,8 +38,8 @@ export default class ChessBootstrap extends Phaser.Scene {
     // FIXME: 重複玩幾次這個方法會不斷累積觸發
     console.log('close');
     this.scene.stop('game-over');
-    this.server.resetGame();
-    this.server.closeGame();
+    // this.server.resetGame();
+    // this.server.closeGame();
   };
 
   private createNewGame = () => {
