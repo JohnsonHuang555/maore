@@ -3,8 +3,6 @@ import { GameSceneData } from 'features/chess/model/ChessScene';
 import Phaser from 'phaser';
 import { CellColor, ChessCell } from 'features/chess/model/ChessCell';
 import Server from 'features/chess/ChessServer';
-import { GameStatus } from 'models/Room';
-import { ChessColumnName } from '../model/Chess';
 
 export default class Game extends Phaser.Scene {
   private server!: Server;
@@ -33,35 +31,47 @@ export default class Game extends Phaser.Scene {
   }
 
   private createBoard = () => {
-    console.log(this.server.InitialChessInfo, 'InitialChessInfo');
+    const { initialChesses } = this.server;
+    console.log(initialChesses, 'InitialChessInfo');
     const { width, height } = this.scale;
     const size = width / 8; // 一格的大小
     const sixtyFourArray = Array.from(Array(64).keys());
 
     const emptyBoard: ChessCell[] = sixtyFourArray.map((_cell, index) => {
-      const color = index % 2 === 0 ? CellColor.Black : CellColor.White;
       const x = index % 8;
       const y = Math.floor(index / 8);
+      let color = CellColor.Black;
+      if (y % 2 === 0) {
+        color = index % 2 === 0 ? CellColor.Black : CellColor.White;
+      } else {
+        color = index % 2 !== 0 ? CellColor.Black : CellColor.White;
+      }
+      const currentChess = initialChesses.find(c => c.x === x && c.y === y);
+      const side = currentChess?.side;
+      const chessName = currentChess?.name;
 
       return {
         color,
         x,
         y,
+        side,
+        chessName,
       }
     });
 
-    const initialBoard: ChessCell[] = emptyBoard.map((cell, index) => {
-      // const side = 
+    emptyBoard.forEach((cellItem, index) => {
+      const { x: xIndex, y: yIndex, color } = cellItem;
+      const x = xIndex * size + size * 0.5;
+      const y = yIndex * size + size * 0.5;
+      const colorHex = color === CellColor.Black ? 0xaaaaaa : 0xffffff;
+      const cell = this.add.rectangle(x, y, size, size, colorHex);
+      
       // if (cell.x === ) {
 
       // }
-      return {
-        ...cell,
-      }
     });
 
-    let x = width * 0.5 - size;
-    let y = height * 0.5 - size;
+    
     // board.forEach((cellState, idx) => {
     //   const cell = this.add
     //     .rectangle(x, y, size, size, 0xffffff)
