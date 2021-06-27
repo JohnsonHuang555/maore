@@ -1,3 +1,8 @@
+.gameModeText {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
 .content {
   position: relative;
   display: flex;
@@ -21,10 +26,10 @@
     }
   }
   .selectedMode {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.1);
     cursor: initial;
     &:hover {
-      background-color: rgba(0, 0, 0, 0.3);
+      background-color: rgba(0, 0, 0, 0.1);
     }
   }
   .modeName {

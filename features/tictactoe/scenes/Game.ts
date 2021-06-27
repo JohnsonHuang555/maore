@@ -3,7 +3,6 @@ import Phaser from 'phaser';
 import { Cell } from 'features/tictactoe/models/Cell';
 import Server from 'features/tictactoe/TicTacToeServer';
 import { GameSceneData } from '../models/TicTacToeScene';
-import { GameStatus } from 'models/Room';
 
 export default class Game extends Phaser.Scene {
   private server!: Server;

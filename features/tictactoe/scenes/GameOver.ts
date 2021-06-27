@@ -7,7 +7,7 @@ export default class GameOver extends Phaser.Scene {
   }
 
   create(data: GameOverSceneData) {
-    const text = data.winner ? 'You win' : 'You Lost';
+    const text = data.winner ? '你贏了' : '你輸了';
     const { width, height } = this.scale;
     const title = this.add
       .text(width * 0.5, height * 0.5, text, {
@@ -15,6 +15,6 @@ export default class GameOver extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    this.add.text(title.x, title.y + 100, 'Press ESC to close').setOrigin(0.5);
+    this.add.text(title.x, title.y + 100, '輸入 ESC 關閉視窗').setOrigin(0.5);
   }
 }
