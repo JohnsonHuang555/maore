@@ -147,7 +147,7 @@ export default class ChineseChessState
 
   private createHidden(): ArraySchema<ChessInfoState> {
     const chesses = new ArraySchema<ChessInfoState>();
-    const randomLocation = Random.getShuffleNumbers(0, 32);
+    const randomLocation = Random.getShuffleNumbers(0, 31);
     for (let i = 0; i < 32; i++) {
       const x = randomLocation[i] % 8;
       const y = Math.floor(randomLocation[i] / 8);

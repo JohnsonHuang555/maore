@@ -6,6 +6,8 @@ import { Metadata } from '../../../models/Room';
 import GameUseCase from '../../usecases/GameUseCase';
 import { Game, GameList } from '../../../models/Game';
 import { GameMode } from '../../../features/chinese_chess/models/Mode';
+import { ChineseChessMessage } from '../../../models/messages/ChineseChessMessage';
+import FlipChessCommand from './commands/FlipChessCommand';
 
 export default class ChineseChess extends Room<ChineseChessState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -23,6 +25,16 @@ export default class ChineseChess extends Room<ChineseChessState, Metadata> {
     )?.maxPlayers;
     this.baseRoom.setMaxClient(maxPlayers as number);
     this.setState(new ChineseChessState(option.gameMode as GameMode));
+
+    this.onMessage(
+      ChineseChessMessage.FlipChess,
+      (client, message: { id: number }) => {
+        this.dispatcher.dispatch(new FlipChessCommand(), {
+          client,
+          id: message.id,
+        });
+      }
+    );
   }
 
   onJoin(client: Client, option: Metadata) {

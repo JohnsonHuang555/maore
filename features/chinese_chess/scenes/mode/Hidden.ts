@@ -8,11 +8,12 @@ export default class Hidden extends Phaser.Scene {
   private server!: Server;
   private onGameOver!: (data: GameOverSceneData) => void;
   private board: {
-    display: Phaser.GameObjects.Rectangle;
-    value: ChessInfo | undefined;
+    cell: Phaser.GameObjects.Rectangle;
+    chessImage: Phaser.GameObjects.Arc;
+    chessInfo: ChessInfo | undefined;
   }[] = [];
 
-  private chessesDictionary: { [key: number]: ChessInfo } = {};
+  private chessesDictionary: { [key: string]: ChessInfo } = {};
 
   constructor() {
     super('hidden');
@@ -36,9 +37,8 @@ export default class Hidden extends Phaser.Scene {
     map.setScale(2.5);
     const { chineseChesses } = this.server.gameState;
     chineseChesses.forEach((chess) => {
-      this.chessesDictionary[chess.id] = chess;
+      this.chessesDictionary[`${chess.locationX},${chess.locationY}`] = chess;
     });
-
     this.createBoard();
   }
 
@@ -49,25 +49,68 @@ export default class Hidden extends Phaser.Scene {
     const size = 125;
     let drawX = width * 0.5 - offsetX;
     let drawY = height * 0.5 - offsetY;
-    let id = 1;
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 8; x++) {
+        const chessInfo = this.chessesDictionary[`${x},${y}`];
+        const { alive, id, name, isFlipped } = chessInfo;
         const cell = this.add
-          .rectangle(drawX, drawY, size, size, 0xffffff)
+          .rectangle(drawX, drawY, size, size, 0xffffff, 0)
           .setInteractive()
           .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-            // this.server.makeSelection(idx);
+            // if () {
+            //   this.server.moveChess(id, x, y)
+            // }
           });
-        const chessInfo = this.chessesDictionary[id];
+        const chessImage = this.add
+          .circle(cell.x, cell.y, 50, 0x2a76b8)
+          .setInteractive()
+          .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+            this.server.flipChess(id);
+          });
+        // FIXME: 換成圖檔
+        // if (!isFlipped) {
+        //   this.add
+        //     .circle(cell.x, cell.y, 50, 0x2a76b8)
+        //     .setInteractive()
+        //     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+        //       this.server.flipChess(id);
+        //     });
+        // } else {
+        //   this.add.circle(cell.x, cell.y, 50, 0xffffff);
+        //   this.add.text(cell.x, cell.y, name);
+        // }
         this.board.push({
-          display: cell,
-          value: chessInfo.alive ? chessInfo : undefined,
+          cell,
+          chessImage,
+          chessInfo: alive ? chessInfo : undefined,
         });
         drawX += size;
-        id++;
       }
       drawY += size;
       drawX = width * 0.5 - offsetX;
     }
+
+    this.server.onBoardChanged(this.handleBoardChanged, this);
   };
+
+  private handleBoardChanged(chessInfo: ChessInfo) {
+    const chess = this.board.find(
+      (b) => b.chessInfo !== undefined && b.chessInfo.id === chessInfo.id
+    );
+    if (!chess) {
+      return;
+    }
+    chess.chessInfo = {
+      ...chess.chessInfo,
+      ...chessInfo,
+    };
+    if (chessInfo.isFlipped) {
+      chess.chessImage.setFillStyle(0xffffff);
+      this.add.text(
+        chess.chessInfo.locationX,
+        chess.chessInfo.locationY,
+        chess.chessInfo.name
+      );
+    }
+  }
 }
