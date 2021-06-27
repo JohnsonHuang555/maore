@@ -11,9 +11,8 @@ export default class Server extends BaseServer {
     // this.handleStateChange();
   }
 
-  get InitialChessInfo() {
-    const { gameState: { chesses } } = store.getState();
-    return chesses;
+  get initialChesses() {
+    return this.gameState.chesses;
   }
 
   makeSelection(idx: number) {
@@ -31,27 +30,9 @@ export default class Server extends BaseServer {
 
   private handleStateChange() {
     console.log('game page changed');
-    this.room.state.onChange = (changes) => {
-      changes.forEach((change) => {
-        const { field, value } = change;
-        switch (field) {
-          case 'activePlayer': {
-            this.events.emit('player-turn-changed', value);
-            break;
-          }
-          case 'winningPlayer': {
-            this.events.emit('player-win', value);
-            break;
-          }
-          case 'gameState': {
-            store.dispatch(updateGameStatus(value));
-            break;
-          }
-        }
-      });
-    };
+  
 
-    this.room.state.board.onChange = (item, idx) => {
+    this.room.state.chesses.onChange = (item, idx) => {
       this.events.emit('board-changed', item, idx);
     };
   }

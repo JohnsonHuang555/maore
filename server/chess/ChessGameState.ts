@@ -23,17 +23,17 @@ export default class ChessGameState extends RoomState implements ChessGame {
     initialArray.forEach((_item, index) => {
       const id = index + 1;
 
-      const x = (id % 8) - 1;
+      const x = index % 8;
       let y = 0;
       let name = ChessName.Minion;
 
       if (index < 8) {
         y = 0;
-      } else if (index > 7 || index < 16) {
+      } else if (index > 7 && index < 16) {
         y = 1;
-      } else if (index > 15 || index < 24) {
+      } else if (index > 15 && index < 24) {
         y = 6;
-      } else if (index > 23 || index < 32) {
+      } else if (index > 23 && index < 33) {
         y = 7;
       }
 
