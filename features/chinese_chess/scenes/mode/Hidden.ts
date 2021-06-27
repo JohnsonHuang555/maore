@@ -7,8 +7,10 @@ import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
 export default class Hidden extends Phaser.Scene {
   private server!: Server;
   private onGameOver!: (data: GameOverSceneData) => void;
-  private board: { display: Phaser.GameObjects.Rectangle; value: ChessInfo }[] =
-    [];
+  private board: {
+    display: Phaser.GameObjects.Rectangle;
+    value: ChessInfo | undefined;
+  }[] = [];
 
   private chessesDictionary: { [key: number]: ChessInfo } = {};
 
@@ -37,14 +39,16 @@ export default class Hidden extends Phaser.Scene {
       this.chessesDictionary[chess.id] = chess;
     });
 
-    // this.createBoard();
+    this.createBoard();
   }
 
   private createBoard = () => {
     const { width, height } = this.scale;
-    const size = 128;
-    let drawX = width * 0.2 - size;
-    let drawY = height * 0.2 - size;
+    const offsetX = 438;
+    const offsetY = 188;
+    const size = 125;
+    let drawX = width * 0.5 - offsetX;
+    let drawY = height * 0.5 - offsetY;
     let id = 1;
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 8; x++) {
@@ -57,13 +61,13 @@ export default class Hidden extends Phaser.Scene {
         const chessInfo = this.chessesDictionary[id];
         this.board.push({
           display: cell,
-          value: chessInfo,
+          value: chessInfo.alive ? chessInfo : undefined,
         });
-        drawX += size + 5;
+        drawX += size;
         id++;
       }
-      drawY += size + 5;
-      drawX = width * 0.5 - size;
+      drawY += size;
+      drawX = width * 0.5 - offsetX;
     }
   };
 }
