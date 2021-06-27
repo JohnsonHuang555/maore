@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import Server from 'features/chinese_chess/ChineseChessServer';
 import { GameOverSceneData } from 'models/Scenes';
 
+// 決定要使用哪個場景
 export default class Bootstrap extends Phaser.Scene {
   private server!: Server;
   constructor() {
@@ -16,34 +17,28 @@ export default class Bootstrap extends Phaser.Scene {
     this.createNewGame();
   }
 
+  private createNewGame = () => {
+    // 在開始遊戲時，決定遊玩順序，由房主決定
+    if (this.server.playerInfo.isMaster) {
+      this.server.createPlayerOrder();
+    }
+    this.scene.launch('hidden', {
+      server: this.server,
+      onGameOver: this.handleGameOver,
+    });
+  };
+
   private handleGameOver = (data: GameOverSceneData) => {
-    // FIXME: 重複玩幾次這個方法會不斷累積觸發
-    this.scene.stop('game');
+    this.scene.stop('hidden');
+    this.server.finishGame();
     this.scene.launch('game-over', {
       ...data,
-      onRestart: this.handleRestart,
       onClose: this.handleClose,
     });
   };
 
-  private handleRestart = () => {
-    // FIXME: 重複玩幾次這個方法會不斷累積觸發
-    this.scene.stop('game-over');
-    this.createNewGame();
-  };
-
   private handleClose = () => {
-    // FIXME: 重複玩幾次這個方法會不斷累積觸發
     this.scene.stop('game-over');
-    this.server.resetGame();
-    this.server.closeGame();
-  };
-
-  private createNewGame = () => {
-    // FIXME: 重複玩幾次這個方法會不斷累積觸發
-    this.scene.launch('game', {
-      server: this.server,
-      onGameOver: this.handleGameOver,
-    });
+    this.server.closeGameScreen();
   };
 }

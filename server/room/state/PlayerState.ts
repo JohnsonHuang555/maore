@@ -6,17 +6,25 @@ export class PlayerState extends Schema {
   @type('string')
   id: string;
 
+  // 玩家名稱
   @type('string')
   name: string;
 
+  // 是否為房主
   @type('boolean')
   isMaster: boolean;
 
+  // 是否已準備 房主永遠為 true
   @type('boolean')
   isReady: boolean;
 
+  // 加入房間流水號 from 0
   @type('number')
-  playerIndex: number;
+  playerIndex: number = -1;
+
+  // 玩家順序
+  @type('number')
+  playerOrder: number = -1;
 
   constructor(data: Payload) {
     super();

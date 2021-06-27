@@ -3,9 +3,9 @@ import Layout from 'components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createdRoomIdSelector,
-  gameStatusSelector,
   playersSelector,
   roomInfoSelector,
+  showGameScreenSelector,
 } from 'selectors/roomSelector';
 import Grid from '@material-ui/core/Grid';
 import { useRouter } from 'next/router';
@@ -25,7 +25,6 @@ import { clientSelector } from 'selectors/serverSelector';
 import dynamic from 'next/dynamic';
 import { isLoginSelector, userInfoSelector } from 'selectors/appSelector';
 import { setShowLoginModal } from 'actions/AppAction';
-import { GameState } from 'models/Room';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('components/rooms/GameScreen'),
@@ -40,10 +39,10 @@ const Rooms = () => {
   const players = useSelector(playersSelector);
   const roomInfo = useSelector(roomInfoSelector);
   const yourPlayerId = useSelector(playerIdSelector);
-  const gameStatus = useSelector(gameStatusSelector);
   const client = useSelector(clientSelector);
   const userInfo = useSelector(userInfoSelector);
   const isLogin = useSelector(isLoginSelector);
+  const showGameScreen = useSelector(showGameScreenSelector);
 
   useWarningOnExit({
     shouldWarn: true,
@@ -154,8 +153,7 @@ const Rooms = () => {
           </div>
         </Grid>
       </Grid>
-      {(gameStatus === GameState.Playing ||
-        gameStatus === GameState.Finished) && (
+      {showGameScreen && (
         <DynamicGameScreenWithNoSSR gamePack={roomInfo.gamePack} />
       )}
     </Layout>

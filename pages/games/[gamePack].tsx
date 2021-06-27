@@ -67,10 +67,12 @@ const Games = () => {
 
   const onCreateRoom = async (roomTitle: string, gameMode?: string) => {
     if (!userInfo) {
-      setSnackbar({
-        show: true,
-        message: '請先登入',
-      });
+      dispatch(
+        setSnackbar({
+          show: true,
+          message: '請先登入',
+        })
+      );
       return;
     }
     try {

@@ -1,5 +1,5 @@
 import { Command } from '@colyseus/command';
-import { GameState } from '../../../models/Room';
+import { GameStatus } from '../../../models/Room';
 import RoomState from '../state/RoomState';
 
 type Payload = {
@@ -12,7 +12,7 @@ export default class PlayerLeftCommand extends Command<RoomState> {
       (player) => player.id === data.playerId
     );
     this.room.state.players.splice(idx, 1);
-    this.state.gameState = GameState.WaitingForPlayers;
+    this.state.gameStatus = GameStatus.WaitingForPlayers;
 
     // 房間沒人
     if (!this.room.state.players.length) {
@@ -28,6 +28,7 @@ export default class PlayerLeftCommand extends Command<RoomState> {
     // 重新指派所有玩家 playerIndex
     for (let i = 0; i < this.room.state.players.length; i++) {
       this.room.state.players[i].playerIndex = i;
+      this.room.state.players[i].playerOrder = -1;
     }
   }
 }

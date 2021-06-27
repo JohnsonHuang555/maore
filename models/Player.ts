@@ -4,4 +4,5 @@ export type Player = {
   isMaster: boolean;
   isReady: boolean;
   playerIndex: number;
+  playerOrder: number;
 };

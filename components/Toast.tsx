@@ -44,6 +44,7 @@ const Toast = () => {
           </IconButton>
         </React.Fragment>
       }
+      style={{ zIndex: 1500 }}
     />
   );
 };
