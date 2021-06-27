@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import Server from 'features/tictactoe/Server';
+import Server from 'features/tictactoe/TicTacToeServer';
 import { GameOverSceneData } from 'models/Scenes';
 
 export default class Bootstrap extends Phaser.Scene {
@@ -16,34 +16,28 @@ export default class Bootstrap extends Phaser.Scene {
     this.createNewGame();
   }
 
-  private handleGameOver = (data: GameOverSceneData) => {
-    // FIXME: 重複玩幾次這個方法會不斷累積觸發
-    this.scene.stop('game');
-    this.scene.launch('game-over', {
-      ...data,
-      onRestart: this.handleRestart,
-      onClose: this.handleClose,
-    });
-  };
-
-  private handleRestart = () => {
-    // FIXME: 重複玩幾次這個方法會不斷累積觸發
-    this.scene.stop('game-over');
-    this.createNewGame();
-  };
-
-  private handleClose = () => {
-    // FIXME: 重複玩幾次這個方法會不斷累積觸發
-    this.scene.stop('game-over');
-    this.server.resetGame();
-    this.server.closeGame();
-  };
-
   private createNewGame = () => {
-    // FIXME: 重複玩幾次這個方法會不斷累積觸發
+    // 在開始遊戲時，決定遊玩順序，由房主決定
+    if (this.server.playerInfo.isMaster) {
+      this.server.createPlayerOrder();
+    }
     this.scene.launch('game', {
       server: this.server,
       onGameOver: this.handleGameOver,
     });
+  };
+
+  private handleGameOver = (data: GameOverSceneData) => {
+    this.scene.stop('game');
+    this.server.finishGame();
+    this.scene.launch('game-over', {
+      ...data,
+      onFinish: this.handleFinish,
+    });
+  };
+
+  private handleFinish = () => {
+    this.scene.stop('game-over');
+    this.server.closeGameScreen();
   };
 }

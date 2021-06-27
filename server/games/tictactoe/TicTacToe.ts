@@ -2,7 +2,8 @@ import { Client, Room } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
 import { Metadata } from '../../../models/Room';
 import TicTacToeState from './state/TicTacToeState';
-import { Message } from '../../../models/messages/RoomMessage';
+import { RoomMessage } from '../../../models/messages/RoomMessage';
+import { TicTacToeMessage } from '../../../models/messages/TicTacToeMessage';
 import PlayerSelectionCommand from './commands/PlayerSelectionCommand';
 import ResetCommand from './commands/ResetCommand';
 import BaseRoom from '../../room';
@@ -21,7 +22,7 @@ export default class TicTacToe extends Room<TicTacToeState, Metadata> {
 
     // 監聽前端的選擇事件
     this.onMessage(
-      Message.PlayerSelection,
+      TicTacToeMessage.SelectCell,
       (client, message: { index: number }) => {
         this.dispatcher.dispatch(new PlayerSelectionCommand(), {
           client,
@@ -30,7 +31,8 @@ export default class TicTacToe extends Room<TicTacToeState, Metadata> {
       }
     );
 
-    this.onMessage(Message.PlayAgain, () => {
+    // 結束遊戲
+    this.onMessage(RoomMessage.FinishGame, () => {
       this.dispatcher.dispatch(new ResetCommand());
     });
   }
@@ -41,5 +43,6 @@ export default class TicTacToe extends Room<TicTacToeState, Metadata> {
 
   onLeave(client: Client) {
     this.baseRoom.onLeave(client);
+    this.dispatcher.dispatch(new ResetCommand());
   }
 }

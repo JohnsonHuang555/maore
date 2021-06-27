@@ -1,7 +1,7 @@
 import { ArraySchema } from '@colyseus/schema';
 import { ChessNameBlack, ChessNameRed, ChessSide } from './Chess';
 
-export type ChessInfo = {
+export interface ChessInfo {
   id: number;
   chessSide: ChessSide;
   name: ChessNameBlack | ChessNameRed;
@@ -10,7 +10,7 @@ export type ChessInfo = {
   locationY: number;
   rank?: number;
   alive: boolean;
-};
+}
 
 export interface ChineseChessState {
   chineseChesses: ArraySchema<ChessInfo>;

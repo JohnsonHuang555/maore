@@ -5,27 +5,42 @@ import {
   loadedRooms,
   removePlayer,
   setYourPlayerId,
-  setPlayerReady,
-  setPlayerMaster,
-  setPlayerIndex,
   updateGameStatus,
+  setShowGameScreen,
+  updateWinningPlayer,
+  updateActivePlayer,
+  setPlayerInfo,
 } from 'actions/RoomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
-import { Message } from 'models/messages/RoomMessage';
-import { GameState, Metadata } from 'models/Room';
+import { RoomMessage } from 'models/messages/RoomMessage';
+import { GameStatus, Metadata } from 'models/Room';
 import { AnyAction, Dispatch } from 'redux';
 import { Schema, ArraySchema } from '@colyseus/schema';
 import { PlayerState } from 'server/room/state/PlayerState';
 import { setClient, setRoom } from 'actions/ServerAction';
-import { TicTacToeState } from 'features/tictactoe/models/State';
-import { ChineseChessState } from 'features/chinese_chess/models/State';
-import { ChessState } from 'features/chess/model/ChessState';
+import { TicTacToeState } from 'features/tictactoe/models/TicTacToeState';
+import { ChineseChessState } from 'features/chinese_chess/models/ChineseChessState';
 import { loadedInitalState } from 'actions/gameStateAction';
+import { ChessState } from 'features/chess/model/ChessState';
+
+enum RoomStateChangeList {
+  RoomInfo = 'roomInfo',
+  GameStatus = 'gameStatus',
+  WinningPlayer = 'winningPlayer',
+  ActivePlayer = 'activePlayer',
+}
+
+enum PlayerStateChangeList {
+  IsReady = 'isReady',
+  IsMaster = 'isMaster',
+  PlayerIndex = 'playerIndex',
+  PlayerOrder = 'playerOrder',
+}
 
 export interface Room extends Schema, TicTacToeState, ChineseChessState, ChessState {
   players: ArraySchema<PlayerState>;
-  gameState: GameState; // 遊戲狀態
+  gameStatus: GameStatus; // 遊戲狀態
   activePlayer: number; // 當前玩家
   winningPlayer: number; // 勝利玩家
   playerIndex: number; // 玩家順序號
@@ -66,23 +81,22 @@ export default class RoomServer {
   }
 
   async readyGame(room: ClientRoom<Room>) {
-    room.send(Message.ReadyGame);
+    room.send(RoomMessage.ReadyGame);
   }
 
   async startGame(room: ClientRoom<Room>) {
-    room.send(Message.StartGame);
+    room.send(RoomMessage.StartGame);
   }
 
   private handleRoomChange(room: ClientRoom<Room>) {
     room.onMessage(
-      Message.YourPlayerId,
+      RoomMessage.GetYourPlayerId,
       (message: { yourPlayerId: string }) => {
         this.dispatch(setYourPlayerId(message.yourPlayerId));
       }
     );
 
     room.onStateChange.once((state) => {
-      console.log(state, 'dddd');
       this.dispatch(
         loadedInitalState({
           board: state.board,
@@ -99,16 +113,37 @@ export default class RoomServer {
         changes.forEach((change) => {
           const { field, value } = change;
           switch (field) {
-            case 'isReady': {
-              this.dispatch(setPlayerReady(player.id, value));
+            case PlayerStateChangeList.IsReady: {
+              this.dispatch(
+                setPlayerInfo(player.id, {
+                  isReady: value,
+                })
+              );
               break;
             }
-            case 'isMaster': {
-              this.dispatch(setPlayerMaster(player.id, value));
+            case PlayerStateChangeList.IsMaster: {
+              this.dispatch(
+                setPlayerInfo(player.id, {
+                  isMaster: value,
+                })
+              );
               break;
             }
-            case 'playerIndex': {
-              this.dispatch(setPlayerIndex(player.id, value));
+            case PlayerStateChangeList.PlayerIndex: {
+              this.dispatch(
+                setPlayerInfo(player.id, {
+                  playerIndex: value,
+                })
+              );
+              break;
+            }
+            case PlayerStateChangeList.PlayerOrder: {
+              this.dispatch(
+                setPlayerInfo(player.id, {
+                  playerOrder: value,
+                })
+              );
+              break;
             }
           }
         });
@@ -117,15 +152,15 @@ export default class RoomServer {
 
     room.state.players.onRemove = (item) => {
       this.dispatch(removePlayer(item.id));
+      this.dispatch(setShowGameScreen(false));
     };
 
     // room state changes...
     room.state.onChange = (changes) => {
-      console.log('roomserver changed');
       changes.forEach((change) => {
         const { field, value } = change;
         switch (field) {
-          case 'roomInfo': {
+          case RoomStateChangeList.RoomInfo: {
             this.dispatch(
               setRoomInfo({
                 roomTilte: value.roomTitle,
@@ -136,8 +171,21 @@ export default class RoomServer {
             );
             break;
           }
-          case 'gameState': {
+          case RoomStateChangeList.GameStatus: {
+            const isPlaying = value === GameStatus.Playing;
+            if (isPlaying) {
+              this.dispatch(setShowGameScreen(isPlaying));
+            }
             this.dispatch(updateGameStatus(value));
+            break;
+          }
+          case RoomStateChangeList.ActivePlayer: {
+            this.dispatch(updateActivePlayer(value));
+            break;
+          }
+          case RoomStateChangeList.WinningPlayer: {
+            this.dispatch(updateWinningPlayer(value));
+            break;
           }
         }
       });

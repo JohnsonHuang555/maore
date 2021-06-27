@@ -1,9 +1,8 @@
-export enum Message {
-  PlayerSelection,
-  YourPlayerId,
+export enum RoomMessage {
+  GetYourPlayerId,
   ReadyGame,
   StartGame,
-  PlayAgain,
-  CloseGame,
+  CreatePlyayerOrder,
+  FinishGame,
   UpdateGameMode,
 }

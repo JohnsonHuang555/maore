@@ -27,6 +27,8 @@ const CreateRoom = (props: CreateRoomProps) => {
   const [roomTitle, setRoomTitle] = useState('');
   // 預設選第一個
   const [selectedMode, setSelectedMode] = useState('');
+  // lock create button
+  const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
     if (selectedGame.modes) {
@@ -35,6 +37,7 @@ const CreateRoom = (props: CreateRoomProps) => {
   }, []);
 
   const onConfirm = () => {
+    setIsCreating(true);
     if (!roomTitle) {
       dispatch(
         setSnackbar({
@@ -68,6 +71,7 @@ const CreateRoom = (props: CreateRoomProps) => {
           onChange={(e) => setRoomTitle(e.target.value)}
           style={{ marginBottom: '20px' }}
         />
+        <div className={styles.gameModeText}>遊戲模式</div>
         {selectedGame.modes && (
           <Grid container spacing={3}>
             {selectedGame.modes.map((mode) => (
@@ -101,7 +105,9 @@ const CreateRoom = (props: CreateRoomProps) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>取消</Button>
-        <Button onClick={() => onConfirm()}>建立</Button>
+        <Button disabled={isCreating} onClick={() => onConfirm()}>
+          建立
+        </Button>
       </DialogActions>
     </Dialog>
   );

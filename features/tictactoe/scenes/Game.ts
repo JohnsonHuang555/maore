@@ -1,13 +1,13 @@
-import { GameOverSceneData, GameSceneData } from 'models/Scenes';
+import { GameOverSceneData } from 'models/Scenes';
 import Phaser from 'phaser';
 import { Cell } from 'features/tictactoe/models/Cell';
-import Server from 'features/tictactoe/Server';
-import { GameState } from 'models/Room';
+import Server from 'features/tictactoe/TicTacToeServer';
+import { GameSceneData } from '../models/TicTacToeScene';
 
 export default class Game extends Phaser.Scene {
-  private server?: Server;
-  private onGameOver?: (data: GameOverSceneData) => void;
-
+  private server!: Server;
+  private onGameOver!: (data: GameOverSceneData) => void;
+  private gameStateText?: Phaser.GameObjects.Text;
   private cells: { display: Phaser.GameObjects.Rectangle; value: Cell }[] = [];
 
   constructor() {
@@ -33,7 +33,7 @@ export default class Game extends Phaser.Scene {
   private createBoard = () => {
     const { width, height } = this.scale;
     const size = 128;
-    const board: Cell[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const { board } = this.server.gameState;
 
     let x = width * 0.5 - size;
     let y = height * 0.5 - size;
@@ -42,7 +42,7 @@ export default class Game extends Phaser.Scene {
         .rectangle(x, y, size, size, 0xffffff)
         .setInteractive()
         .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-          this.server?.makeSelection(idx);
+          this.server.makeSelection(idx);
         });
 
       switch (cellState) {
@@ -68,9 +68,9 @@ export default class Game extends Phaser.Scene {
       }
     });
 
-    this.server?.onBoardChanged(this.handleBoardChanged, this);
-    this.server?.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
-    this.server?.onPlayerWon(this.handlePlayerWon, this);
+    this.server.onBoardChanged(this.handleBoardChanged, this);
+    this.server.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
+    this.server.onPlayerWon(this.handlePlayerWon, this);
   };
 
   private handleBoardChanged(newValue: Cell, idx: number) {
@@ -92,21 +92,31 @@ export default class Game extends Phaser.Scene {
   }
 
   private handlePlayerTurnChanged(playerIndex: number) {
-    // TODO: show a message letting the player know it is their turn
+    if (
+      this.server.playerInfo.playerIndex === playerIndex &&
+      !this.gameStateText
+    ) {
+      const { width } = this.scale;
+      this.gameStateText = this.add
+        .text(width * 0.5, 50, '你的回合')
+        .setOrigin(0.5);
+    } else {
+      this.gameStateText?.destroy();
+      this.gameStateText = undefined;
+    }
   }
 
   private handlePlayerWon(playerIndex: number) {
-    const gameState = this.server?.gameState;
+    if (playerIndex === -1) {
+      return;
+    }
     this.time.delayedCall(1000, () => {
       if (!this.onGameOver) {
         return;
       }
-      if (gameState === GameState.Finished) {
-        return;
-      }
-      console.log('handle player win');
-      this.onGameOver({ winner: this.server?.playerIndex === playerIndex });
-      this.server?.resetGame();
+      this.onGameOver({
+        winner: this.server.playerInfo.playerIndex === playerIndex,
+      });
     });
   }
 }

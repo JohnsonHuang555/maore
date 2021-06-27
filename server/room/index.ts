@@ -1,14 +1,15 @@
 import { Dispatcher } from '@colyseus/command';
 import { Client, Room } from 'colyseus';
 import RoomState from './state/RoomState';
-import { Message } from '../../models/messages/RoomMessage';
+import { RoomMessage } from '../../models/messages/RoomMessage';
 import { Metadata } from '../../models/Room';
 import PlayerLeftCommand from './commands/PlayerLeftCommand';
 import ReadyGameCommand from './commands/ReadyGameCommand';
 import StartGameCommand from './commands/StartGameCommand';
-import CloseGameCommand from './commands/CloseGameCommand';
+import ResetGameCommand from './commands/ResetGameCommand';
 import PlayerJoinedCommand from './commands/PlayerJoinedCommand';
 import UpdateRoomInfoCommand from './commands/UpdateRoomInfoCommand';
+import CreatePlayerOrderCommand from './commands/CreatePlayerOrderCommand';
 
 export default class BaseRoom {
   private dispatcher;
@@ -24,18 +25,18 @@ export default class BaseRoom {
 
   onCreate(option: Metadata) {
     this.room.setMetadata(option);
-    this.room.onMessage(Message.ReadyGame, (client) => {
+    this.room.onMessage(RoomMessage.ReadyGame, (client) => {
       this.dispatcher.dispatch(new ReadyGameCommand(), {
         client,
       });
     });
 
-    this.room.onMessage(Message.StartGame, () => {
+    this.room.onMessage(RoomMessage.StartGame, () => {
       this.dispatcher.dispatch(new StartGameCommand());
     });
 
-    this.room.onMessage(Message.CloseGame, () => {
-      this.dispatcher.dispatch(new CloseGameCommand());
+    this.room.onMessage(RoomMessage.CreatePlyayerOrder, () => {
+      this.dispatcher.dispatch(new CreatePlayerOrderCommand());
     });
   }
 
@@ -44,7 +45,7 @@ export default class BaseRoom {
       (c) => c.sessionId === client.sessionId
     );
 
-    client.send(Message.YourPlayerId, { yourPlayerId: client.id });
+    client.send(RoomMessage.GetYourPlayerId, { yourPlayerId: client.id });
 
     // update room title
     this.dispatcher.dispatch(new UpdateRoomInfoCommand(), {

@@ -1,7 +1,7 @@
 import { ActionType } from 'actions/RoomAction';
 import { RoomAvailable } from 'colyseus.js';
 import { Player } from 'models/Player';
-import { GameState, Metadata, RoomInfo } from 'models/Room';
+import { GameStatus, Metadata, RoomInfo } from 'models/Room';
 
 export type State = {
   isConnected: boolean;
@@ -10,7 +10,10 @@ export type State = {
   players: Player[];
   roomInfo: RoomInfo;
   yourPlayerId: string;
-  gameStatus: GameState;
+  gameStatus: GameStatus;
+  showGameScreen: boolean;
+  winningPlayer: number;
+  activePlayer: number;
 };
 
 const initialState: State = {
@@ -24,7 +27,10 @@ const initialState: State = {
     maxPlayers: 0,
     gamePack: '',
   },
-  gameStatus: GameState.WaitingForPlayers,
+  gameStatus: GameStatus.WaitingForPlayers,
+  showGameScreen: false,
+  winningPlayer: -1,
+  activePlayer: -1,
 };
 
 type LoadedRoomsAction = {
@@ -57,27 +63,30 @@ type RemovePlayerAction = {
   id: string;
 };
 
-type SetPlayerReadyAction = {
-  type: ActionType.SET_PLAYER_READY;
+type UpdatePlayerInfoAction = {
+  type: ActionType.UPDATE_PLAYER_INFO;
   id: string;
-  isReady: boolean;
-};
-
-type SetPlayerMasterAction = {
-  type: ActionType.SET_PLAYER_MASTER;
-  id: string;
-  isMaster: boolean;
-};
-
-type SetPlayerIndexAction = {
-  type: ActionType.SET_PLAYER_INDEX;
-  id: string;
-  playerIndex: number;
+  playerInfo: Partial<Player>;
 };
 
 type UpdateGameStatus = {
   type: ActionType.UPDATE_GAME_STATUS;
-  gameStatus: GameState;
+  gameStatus: GameStatus;
+};
+
+type SetShowGameScreen = {
+  type: ActionType.SET_SHOW_GAME_SCREEN;
+  show: boolean;
+};
+
+type UpdateWinningPlayer = {
+  type: ActionType.UPDATE_WINNING_PLAYER;
+  playerIndex: number;
+};
+
+type UpdateActivePlayer = {
+  type: ActionType.UPDATE_ACTIVIE_PLAYER;
+  playerIndex: number;
 };
 
 type ResetAction = {
@@ -91,10 +100,11 @@ type Action =
   | SetYourPlayerIdAction
   | AddPlayerAction
   | RemovePlayerAction
-  | SetPlayerReadyAction
-  | SetPlayerMasterAction
-  | SetPlayerIndexAction
+  | UpdatePlayerInfoAction
   | UpdateGameStatus
+  | SetShowGameScreen
+  | UpdateWinningPlayer
+  | UpdateActivePlayer
   | ResetAction;
 
 const reducer = (state = initialState, action: Action): State => {
@@ -139,42 +149,12 @@ const reducer = (state = initialState, action: Action): State => {
         players: newPlayers,
       };
     }
-    case ActionType.SET_PLAYER_READY: {
+    case ActionType.UPDATE_PLAYER_INFO: {
       const newPlayers = state.players.map((p) => {
         if (p.id === action.id) {
           return {
             ...p,
-            isReady: action.isReady,
-          };
-        }
-        return p;
-      });
-      return {
-        ...state,
-        players: newPlayers,
-      };
-    }
-    case ActionType.SET_PLAYER_MASTER: {
-      const newPlayers = state.players.map((p) => {
-        if (p.id === action.id) {
-          return {
-            ...p,
-            isMaster: action.isMaster,
-          };
-        }
-        return p;
-      });
-      return {
-        ...state,
-        players: newPlayers,
-      };
-    }
-    case ActionType.SET_PLAYER_INDEX: {
-      const newPlayers = state.players.map((p) => {
-        if (p.id === action.id) {
-          return {
-            ...p,
-            playerIndex: action.playerIndex,
+            ...action.playerInfo,
           };
         }
         return p;
@@ -190,6 +170,24 @@ const reducer = (state = initialState, action: Action): State => {
         gameStatus: action.gameStatus,
       };
     }
+    case ActionType.SET_SHOW_GAME_SCREEN: {
+      return {
+        ...state,
+        showGameScreen: action.show,
+      };
+    }
+    case ActionType.UPDATE_WINNING_PLAYER: {
+      return {
+        ...state,
+        winningPlayer: action.playerIndex,
+      };
+    }
+    case ActionType.UPDATE_ACTIVIE_PLAYER: {
+      return {
+        ...state,
+        activePlayer: action.playerIndex,
+      };
+    }
     case ActionType.RESET: {
       return {
         ...state,
@@ -200,6 +198,8 @@ const reducer = (state = initialState, action: Action): State => {
           gamePack: '',
         },
         players: [],
+        showGameScreen: false,
+        gameStatus: GameStatus.WaitingForPlayers,
       };
     }
     default: {
