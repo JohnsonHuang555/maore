@@ -21,7 +21,6 @@ import { PlayerState } from 'server/room/state/PlayerState';
 import { setClient, setRoom } from 'actions/ServerAction';
 import { TicTacToeState } from 'features/tictactoe/models/TicTacToeState';
 import { ChineseChessState } from 'features/chinese_chess/models/ChineseChessState';
-import { loadedInitalState } from 'actions/gameStateAction';
 
 enum RoomStateChangeList {
   RoomInfo = 'roomInfo',
@@ -95,15 +94,6 @@ export default class RoomServer {
         this.dispatch(setYourPlayerId(message.yourPlayerId));
       }
     );
-
-    room.onStateChange.once((state) => {
-      this.dispatch(
-        loadedInitalState({
-          board: state.board,
-          chineseChesses: state.chineseChesses,
-        })
-      );
-    });
 
     // room players changes...
     room.state.players.onAdd = (player) => {

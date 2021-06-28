@@ -74,7 +74,6 @@ export default class Server extends BaseServer {
           const { field, value } = change;
           switch (field) {
             case ChessInfoChangeList.IsFlipped:
-              console.log(value);
               this.events.emit('board-changed', { isFlipped: value });
               break;
             case ChessInfoChangeList.LocationX:

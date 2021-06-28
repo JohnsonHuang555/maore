@@ -9,5 +9,6 @@ export const ChineseChessConfig: GameInstance = {
   scene: [Bootstrap, Hidden],
   scale: {
     mode: Phaser.Scale.ScaleModes.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
   },
 };

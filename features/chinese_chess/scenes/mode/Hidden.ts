@@ -20,7 +20,7 @@ export default class Hidden extends Phaser.Scene {
   }
 
   preload() {
-    this.load.svg('map', '/chinese_chess/HiddenMap.svg');
+    this.load.image('map', '/chinese_chess/map/HiddenMode.png');
   }
 
   create(data: GameSceneData) {
@@ -34,7 +34,7 @@ export default class Hidden extends Phaser.Scene {
 
     const { width, height } = this.scale;
     const map = this.add.image(width * 0.5, height * 0.5, 'map');
-    map.setScale(2.5);
+    map.setScale(0.75);
     chineseChesses.forEach((chess) => {
       this.chessesDictionary[`${chess.locationX},${chess.locationY}`] = chess;
     });
@@ -43,8 +43,8 @@ export default class Hidden extends Phaser.Scene {
 
   private createBoard = () => {
     const { width, height } = this.scale;
-    const offsetX = 438;
-    const offsetY = 188;
+    const offsetX = 548;
+    const offsetY = 235;
     const size = 125;
     let drawX = width * 0.5 - offsetX;
     let drawY = height * 0.5 - offsetY;
@@ -61,7 +61,7 @@ export default class Hidden extends Phaser.Scene {
             // }
           });
         const chessImage = this.add
-          .circle(cell.x, cell.y, 50, 0x2a76b8)
+          .circle(cell.x, cell.y, 58, 0x2a76b8)
           .setInteractive()
           .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
             this.server.flipChess(id);
@@ -83,9 +83,9 @@ export default class Hidden extends Phaser.Scene {
           chessImage,
           chessInfo: alive ? chessInfo : undefined,
         });
-        drawX += size;
+        drawX += size + 31;
       }
-      drawY += size;
+      drawY += size + 31;
       drawX = width * 0.5 - offsetX;
     }
 

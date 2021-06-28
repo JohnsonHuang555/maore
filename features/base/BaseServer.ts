@@ -2,7 +2,6 @@ import Phaser from 'phaser';
 import { store } from 'pages/_app';
 import { Room as ClientRoom } from 'colyseus.js';
 import { Room } from 'middleware/services/RoomServer';
-import { State } from 'reducers/gameStateReducer';
 import { GameStatus, RoomInfo } from 'models/Room';
 import { RoomMessage } from 'models/messages/RoomMessage';
 import { Player } from 'models/Player';
@@ -13,7 +12,6 @@ export default class BaseServer {
   public events = new Phaser.Events.EventEmitter();
   private _playerInfo: Player;
   private _gameStatus: GameStatus;
-  private _gameState: State;
   private _roomInfo: RoomInfo;
 
   get playerIndex() {
@@ -25,11 +23,6 @@ export default class BaseServer {
     return this._gameStatus;
   }
 
-  // 遊戲資料
-  get gameState() {
-    return this._gameState;
-  }
-
   get playerInfo() {
     return this._playerInfo;
   }
@@ -39,7 +32,7 @@ export default class BaseServer {
   }
 
   constructor() {
-    const { server, room, gameState } = store.getState();
+    const { server, room } = store.getState();
     if (!server.room) {
       throw new Error('room not found...');
     }
@@ -49,7 +42,6 @@ export default class BaseServer {
     }
     this._playerInfo = playerInfo;
     this._gameStatus = room.gameStatus;
-    this._gameState = gameState;
     this._roomInfo = room.roomInfo;
     this.room = server.room;
     // 監聽 state 的變化

@@ -71,36 +71,38 @@ const CreateRoom = (props: CreateRoomProps) => {
           onChange={(e) => setRoomTitle(e.target.value)}
           style={{ marginBottom: '20px' }}
         />
-        <div className={styles.gameModeText}>遊戲模式</div>
         {selectedGame.modes && (
-          <Grid container spacing={3}>
-            {selectedGame.modes.map((mode) => (
-              <Grid
-                key={mode.value}
-                item
-                xs={4}
-                onClick={() => setSelectedMode(mode.value)}
-              >
-                <div className={styles.content}>
-                  <img src={mode.image} className={styles.image} />
-                  <div
-                    className={`${styles.background} ${
-                      selectedMode === mode.value ? styles.selectedMode : ''
-                    }`}
-                  ></div>
-                  <div className={styles.modeName}>{mode.label}</div>
-                  {mode.value === selectedMode && (
-                    <div className={styles.checkIcon}>
-                      <CheckCircleOutline
-                        style={{ fontSize: '44px' }}
-                        htmlColor="#72be52"
-                      />
-                    </div>
-                  )}
-                </div>
-              </Grid>
-            ))}
-          </Grid>
+          <>
+            <div className={styles.gameModeText}>遊戲模式</div>
+            <Grid container spacing={3}>
+              {selectedGame.modes.map((mode) => (
+                <Grid
+                  key={mode.value}
+                  item
+                  xs={4}
+                  onClick={() => setSelectedMode(mode.value)}
+                >
+                  <div className={styles.content}>
+                    <img src={mode.image} className={styles.image} />
+                    <div
+                      className={`${styles.background} ${
+                        selectedMode === mode.value ? styles.selectedMode : ''
+                      }`}
+                    ></div>
+                    <div className={styles.modeName}>{mode.label}</div>
+                    {mode.value === selectedMode && (
+                      <div className={styles.checkIcon}>
+                        <CheckCircleOutline
+                          style={{ fontSize: '44px' }}
+                          htmlColor="#72be52"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </Grid>
+              ))}
+            </Grid>
+          </>
         )}
       </DialogContent>
       <DialogActions>
