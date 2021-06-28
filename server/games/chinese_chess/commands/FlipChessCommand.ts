@@ -11,7 +11,6 @@ type Payload = {
 export default class FlipChessCommand extends Command<ChineseChessState> {
   execute(data: Payload) {
     const { client, id } = data;
-    console.log(id, 'id');
 
     if (this.state.gameStatus !== GameStatus.Playing) {
       return;
@@ -27,6 +26,5 @@ export default class FlipChessCommand extends Command<ChineseChessState> {
     );
 
     this.room.state.chineseChesses[chessIndex].isFlipped = true;
-    console.log(this.room.state.chineseChesses[chessIndex].isFlipped);
   }
 }

@@ -9,6 +9,7 @@ import { GameMode } from '../../../features/chinese_chess/models/Mode';
 import { ChineseChessMessage } from '../../../models/messages/ChineseChessMessage';
 import FlipChessCommand from './commands/FlipChessCommand';
 import CreateGameCommand from './commands/CreateGameCommand';
+import ResetCommand from './commands/ResetCommand';
 
 export default class ChineseChess extends Room<ChineseChessState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -36,7 +37,6 @@ export default class ChineseChess extends Room<ChineseChessState, Metadata> {
     this.onMessage(
       ChineseChessMessage.FlipChess,
       (client, message: { id: number }) => {
-        console.log('????', message);
         this.dispatcher.dispatch(new FlipChessCommand(), {
           client,
           id: message.id,
@@ -51,5 +51,6 @@ export default class ChineseChess extends Room<ChineseChessState, Metadata> {
 
   onLeave(client: Client) {
     this.baseRoom.onLeave(client);
+    this.dispatcher.dispatch(new ResetCommand());
   }
 }

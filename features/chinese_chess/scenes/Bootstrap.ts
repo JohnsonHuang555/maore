@@ -11,17 +11,24 @@ export default class Bootstrap extends Phaser.Scene {
 
   init() {
     this.server = new Server();
+    this.server.onAllPlayersLoaded(this.handleAllPlayersLoaded, this);
   }
 
   create() {
     this.createNewGame();
   }
 
+  private handleAllPlayersLoaded(isLoaded: boolean) {
+    if (isLoaded) {
+      console.log(isLoaded, 'all players loaded');
+      this.server.getGameData();
+    }
+  }
+
   private createNewGame = () => {
     // 在開始遊戲時，決定遊玩順序，由房主決定
     if (this.server.playerInfo.isMaster) {
       this.server.createPlayerOrder();
-      this.server.createGame();
     }
     this.scene.launch('hidden', {
       server: this.server,

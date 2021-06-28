@@ -54,6 +54,8 @@ export default class BaseServer {
     this.room = server.room;
     // 監聽 state 的變化
     store.subscribe(this.handleRoomStateChange);
+    // 打給後端載入完成
+    this.loadedGame();
   }
 
   showAlert(message: string) {
@@ -63,6 +65,10 @@ export default class BaseServer {
         message,
       })
     );
+  }
+
+  loadedGame() {
+    this.room.send(RoomMessage.LoadedGame);
   }
 
   createPlayerOrder() {
@@ -77,6 +83,10 @@ export default class BaseServer {
     store.dispatch(setShowGameScreen(false));
   }
 
+  onAllPlayersLoaded(cb: (isLoaded: boolean) => void, context?: any) {
+    this.events.on('is-all-players-loaded', cb, context);
+  }
+
   onPlayerTurnChanged(cb: (playerIndex: number) => void, context?: any) {
     this.events.on('player-turn-changed', cb, context);
   }
@@ -87,11 +97,12 @@ export default class BaseServer {
 
   private handleRoomStateChange = () => {
     const {
-      room: { winningPlayer, activePlayer, gameStatus },
+      room: { winningPlayer, activePlayer, gameStatus, isAllPlayersLoaded },
     } = store.getState();
     if (gameStatus === GameStatus.WaitingForPlayers) {
       this.events.destroy();
     }
+    this.events.emit('is-all-players-loaded', isAllPlayersLoaded);
     this.events.emit('player-win', winningPlayer);
     this.events.emit('player-turn-changed', activePlayer);
   };

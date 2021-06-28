@@ -26,6 +26,10 @@ export class PlayerState extends Schema {
   @type('number')
   playerOrder: number = -1;
 
+  // 遊戲畫面載入是否完成
+  @type('boolean')
+  gameLoaded: boolean = false;
+
   constructor(data: Payload) {
     super();
     const { id, name, isMaster, playerIndex } = data;

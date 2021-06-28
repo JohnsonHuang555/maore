@@ -17,15 +17,15 @@ export default class Server extends BaseServer {
     this.handleStateChange();
   }
 
-  createGame() {
+  getGameData() {
     const mode = this.roomInfo.gameMode as GameMode;
-    this.room.send(ChineseChessMessage.CreateGame, { mode });
+    this.room.send(ChineseChessMessage.CreateGame, {
+      mode,
+    });
   }
 
   flipChess(id: number) {
-    console.log('????');
     this.checkYourTurn();
-    console.log(id, 'id');
     this.room.send(ChineseChessMessage.FlipChess, { id });
   }
 
@@ -51,12 +51,14 @@ export default class Server extends BaseServer {
 
   private handleStateChange() {
     this.room.state.chineseChesses.onAdd = (chessInfo) => {
+      console.log(chessInfo);
       this.chineseChesses.push(chessInfo);
       chessInfo.onChange = (changes) => {
         changes.forEach((change) => {
           const { field, value } = change;
           switch (field) {
             case ChessInfoChangeList.IsFlipped:
+              console.log(value);
               this.events.emit('board-changed', { isFlipped: value });
               break;
             case ChessInfoChangeList.LocationX:

@@ -18,7 +18,9 @@ type Payload = {
 export default class CreateGameCommand extends Command<ChineseChessState> {
   execute(data: Payload) {
     const { mode } = data;
-    console.log(mode, 'mode');
+    if (this.room.state.chineseChesses.length) {
+      return;
+    }
     switch (mode) {
       case GameMode.Standard: {
         const chineseChesses = this.createStandard();

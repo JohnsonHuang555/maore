@@ -5,4 +5,5 @@ export type Player = {
   isReady: boolean;
   playerIndex: number;
   playerOrder: number;
+  gameLoaded: boolean;
 };
