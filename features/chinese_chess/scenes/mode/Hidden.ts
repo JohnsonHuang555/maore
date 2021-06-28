@@ -24,7 +24,7 @@ export default class Hidden extends Phaser.Scene {
   }
 
   create(data: GameSceneData) {
-    const { server, onGameOver } = data;
+    const { server, chineseChesses, onGameOver } = data;
     this.server = server;
     this.onGameOver = onGameOver;
 
@@ -35,7 +35,7 @@ export default class Hidden extends Phaser.Scene {
     const { width, height } = this.scale;
     const map = this.add.image(width * 0.5, height * 0.5, 'map');
     map.setScale(2.5);
-    this.server.chineseChesses.forEach((chess) => {
+    chineseChesses.forEach((chess) => {
       this.chessesDictionary[`${chess.locationX},${chess.locationY}`] = chess;
     });
     this.createBoard();

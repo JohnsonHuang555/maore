@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import Server from 'features/chinese_chess/ChineseChessServer';
 import { GameOverSceneData } from 'models/Scenes';
+import { ChessInfo } from '../models/ChineseChessState';
 
 // 決定要使用哪個場景
 export default class Bootstrap extends Phaser.Scene {
@@ -12,6 +13,7 @@ export default class Bootstrap extends Phaser.Scene {
   init() {
     this.server = new Server();
     this.server.onAllPlayersLoaded(this.handleAllPlayersLoaded, this);
+    this.server.onGameDataLoaded(this.handleGameDataLoaded, this);
   }
 
   create() {
@@ -20,9 +22,16 @@ export default class Bootstrap extends Phaser.Scene {
 
   private handleAllPlayersLoaded(isLoaded: boolean) {
     if (isLoaded) {
-      console.log(isLoaded, 'all players loaded');
       this.server.getGameData();
     }
+  }
+
+  private handleGameDataLoaded(chineseChesses: ChessInfo[]) {
+    this.scene.launch('hidden', {
+      chineseChesses,
+      server: this.server,
+      onGameOver: this.handleGameOver,
+    });
   }
 
   private createNewGame = () => {
@@ -30,10 +39,6 @@ export default class Bootstrap extends Phaser.Scene {
     if (this.server.playerInfo.isMaster) {
       this.server.createPlayerOrder();
     }
-    this.scene.launch('hidden', {
-      server: this.server,
-      onGameOver: this.handleGameOver,
-    });
   };
 
   private handleGameOver = (data: GameOverSceneData) => {

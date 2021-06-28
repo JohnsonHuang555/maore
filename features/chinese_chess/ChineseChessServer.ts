@@ -9,9 +9,9 @@ enum ChessInfoChangeList {
   LocationY = 'LocationY',
   Alive = 'alive',
 }
-export default class Server extends BaseServer {
-  public chineseChesses: ChessInfo[] = [];
 
+const TOTAL_CHESS_COUNT = 32;
+export default class Server extends BaseServer {
   constructor() {
     super();
     this.handleStateChange();
@@ -39,6 +39,10 @@ export default class Server extends BaseServer {
     this.room.send(ChineseChessMessage.EatChess, { id, targetId });
   }
 
+  onGameDataLoaded(cb: (chineseChesses: ChessInfo[]) => void, context?: any) {
+    this.events.on('game-data-loaded', cb, context);
+  }
+
   onBoardChanged(cb: (chessInfo: Partial<ChessInfo>) => void, context?: any) {
     this.events.on('board-changed', cb, context);
   }
@@ -50,9 +54,21 @@ export default class Server extends BaseServer {
   }
 
   private handleStateChange() {
-    this.room.state.chineseChesses.onAdd = (chessInfo) => {
-      console.log(chessInfo);
-      this.chineseChesses.push(chessInfo);
+    const chineseChesses: ChessInfo[] = [];
+    this.room.state.chineseChesses.onAdd = (chessInfo, idx) => {
+      chineseChesses.push({
+        id: chessInfo.id,
+        chessSide: chessInfo.chessSide,
+        name: chessInfo.name,
+        isFlipped: chessInfo.isFlipped,
+        locationX: chessInfo.locationX,
+        locationY: chessInfo.locationY,
+        rank: chessInfo.rank,
+        alive: chessInfo.alive,
+      });
+      if (idx === TOTAL_CHESS_COUNT - 1) {
+        this.events.emit('game-data-loaded', chineseChesses);
+      }
       chessInfo.onChange = (changes) => {
         changes.forEach((change) => {
           const { field, value } = change;
