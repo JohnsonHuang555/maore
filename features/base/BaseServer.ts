@@ -3,7 +3,7 @@ import { store } from 'pages/_app';
 import { Room as ClientRoom } from 'colyseus.js';
 import { Room } from 'middleware/services/RoomServer';
 import { State } from 'reducers/gameStateReducer';
-import { GameStatus } from 'models/Room';
+import { GameStatus, RoomInfo } from 'models/Room';
 import { RoomMessage } from 'models/messages/RoomMessage';
 import { Player } from 'models/Player';
 import { setSnackbar } from 'actions/AppAction';
@@ -14,6 +14,7 @@ export default class BaseServer {
   private _playerInfo: Player;
   private _gameStatus: GameStatus;
   private _gameState: State;
+  private _roomInfo: RoomInfo;
 
   get playerIndex() {
     return this._playerInfo;
@@ -33,6 +34,10 @@ export default class BaseServer {
     return this._playerInfo;
   }
 
+  get roomInfo() {
+    return this._roomInfo;
+  }
+
   constructor() {
     const { server, room, gameState } = store.getState();
     if (!server.room) {
@@ -45,6 +50,7 @@ export default class BaseServer {
     this._playerInfo = playerInfo;
     this._gameStatus = room.gameStatus;
     this._gameState = gameState;
+    this._roomInfo = room.roomInfo;
     this.room = server.room;
     // 監聽 state 的變化
     store.subscribe(this.handleRoomStateChange);

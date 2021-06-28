@@ -1,5 +1,6 @@
 export enum ChineseChessMessage {
-  FlipChess,
-  MoveChess,
-  EatChess,
+  CreateGame = 'create-game',
+  FlipChess = 'flip-chess',
+  MoveChess = 'move-chess',
+  EatChess = 'eat-chess,',
 }

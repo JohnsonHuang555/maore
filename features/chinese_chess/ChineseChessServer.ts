@@ -1,14 +1,29 @@
 import BaseServer from 'features/base/BaseServer';
 import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
 import { ChineseChessMessage } from 'models/messages/ChineseChessMessage';
+import { GameMode } from './models/Mode';
 
+enum ChessInfoChangeList {
+  IsFlipped = 'isFlipped',
+  LocationX = 'locationX',
+  LocationY = 'LocationY',
+  Alive = 'alive',
+}
 export default class Server extends BaseServer {
+  public chineseChesses: ChessInfo[] = [];
+
   constructor() {
     super();
     this.handleStateChange();
   }
 
+  createGame() {
+    const mode = this.roomInfo.gameMode as GameMode;
+    this.room.send(ChineseChessMessage.CreateGame, { mode });
+  }
+
   flipChess(id: number) {
+    console.log('????');
     this.checkYourTurn();
     console.log(id, 'id');
     this.room.send(ChineseChessMessage.FlipChess, { id });
@@ -24,7 +39,7 @@ export default class Server extends BaseServer {
     this.room.send(ChineseChessMessage.EatChess, { id, targetId });
   }
 
-  onBoardChanged(cb: (chessInfo: ChessInfo) => void, context?: any) {
+  onBoardChanged(cb: (chessInfo: Partial<ChessInfo>) => void, context?: any) {
     this.events.on('board-changed', cb, context);
   }
 
@@ -35,9 +50,27 @@ export default class Server extends BaseServer {
   }
 
   private handleStateChange() {
-    // this.room.state.chineseChesses.onChange = (chessInfo) => {
-    //   console.log(chessInfo);
-    //   this.events.emit('board-changed', chessInfo);
-    // };
+    this.room.state.chineseChesses.onAdd = (chessInfo) => {
+      this.chineseChesses.push(chessInfo);
+      chessInfo.onChange = (changes) => {
+        changes.forEach((change) => {
+          const { field, value } = change;
+          switch (field) {
+            case ChessInfoChangeList.IsFlipped:
+              this.events.emit('board-changed', { isFlipped: value });
+              break;
+            case ChessInfoChangeList.LocationX:
+              this.events.emit('board-changed', { locationY: value });
+              break;
+            case ChessInfoChangeList.LocationY:
+              this.events.emit('board-changed', { locationX: value });
+              break;
+            case ChessInfoChangeList.Alive:
+              this.events.emit('board-changed', { alive: value });
+              break;
+          }
+        });
+      };
+    };
   }
 }

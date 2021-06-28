@@ -1,8 +1,8 @@
 export enum RoomMessage {
-  GetYourPlayerId,
-  ReadyGame,
-  StartGame,
-  CreatePlyayerOrder,
-  FinishGame,
-  UpdateGameMode,
+  GetYourPlayerId = 'get-your-playerId',
+  ReadyGame = 'ready-game',
+  StartGame = 'start-game',
+  CreatePlyayerOrder = 'create-player-order',
+  FinishGame = 'finish-game',
+  UpdateGameMode = 'update-game-mode',
 }

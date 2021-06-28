@@ -1,3 +1,3 @@
 export enum TicTacToeMessage {
-  SelectCell,
+  SelectCell = 'select-cell',
 }

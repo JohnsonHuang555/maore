@@ -35,8 +35,7 @@ export default class Hidden extends Phaser.Scene {
     const { width, height } = this.scale;
     const map = this.add.image(width * 0.5, height * 0.5, 'map');
     map.setScale(2.5);
-    const { chineseChesses } = this.server.gameState;
-    chineseChesses.forEach((chess) => {
+    this.server.chineseChesses.forEach((chess) => {
       this.chessesDictionary[`${chess.locationX},${chess.locationY}`] = chess;
     });
     this.createBoard();
@@ -93,24 +92,25 @@ export default class Hidden extends Phaser.Scene {
     this.server.onBoardChanged(this.handleBoardChanged, this);
   };
 
-  private handleBoardChanged(chessInfo: ChessInfo) {
+  private handleBoardChanged(chessInfo: Partial<ChessInfo>) {
     const chess = this.board.find(
       (b) => b.chessInfo !== undefined && b.chessInfo.id === chessInfo.id
     );
     if (!chess) {
       return;
     }
-    chess.chessInfo = {
-      ...chess.chessInfo,
-      ...chessInfo,
-    };
-    if (chessInfo.isFlipped) {
-      chess.chessImage.setFillStyle(0xffffff);
-      this.add.text(
-        chess.chessInfo.locationX,
-        chess.chessInfo.locationY,
-        chess.chessInfo.name
-      );
-    }
+    console.log(chessInfo);
+    // chess.chessInfo = {
+    //   ...chess.chessInfo,
+    //   ...chessInfo,
+    // };
+    // if (chessInfo.isFlipped) {
+    //   chess.chessImage.setFillStyle(0xffffff);
+    //   this.add.text(
+    //     chess.chessInfo.locationX,
+    //     chess.chessInfo.locationY,
+    //     chess.chessInfo.name
+    //   );
+    // }
   }
 }

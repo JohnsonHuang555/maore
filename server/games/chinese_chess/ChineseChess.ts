@@ -8,6 +8,7 @@ import { Game, GameList } from '../../../models/Game';
 import { GameMode } from '../../../features/chinese_chess/models/Mode';
 import { ChineseChessMessage } from '../../../models/messages/ChineseChessMessage';
 import FlipChessCommand from './commands/FlipChessCommand';
+import CreateGameCommand from './commands/CreateGameCommand';
 
 export default class ChineseChess extends Room<ChineseChessState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -24,11 +25,18 @@ export default class ChineseChess extends Room<ChineseChessState, Metadata> {
       (m) => m.value === option.gameMode
     )?.maxPlayers;
     this.baseRoom.setMaxClient(maxPlayers as number);
-    this.setState(new ChineseChessState(option.gameMode as GameMode));
+    this.setState(new ChineseChessState());
+
+    this.onMessage(ChineseChessMessage.CreateGame, () => {
+      this.dispatcher.dispatch(new CreateGameCommand(), {
+        mode: option.gameMode as GameMode,
+      });
+    });
 
     this.onMessage(
       ChineseChessMessage.FlipChess,
       (client, message: { id: number }) => {
+        console.log('????', message);
         this.dispatcher.dispatch(new FlipChessCommand(), {
           client,
           id: message.id,
