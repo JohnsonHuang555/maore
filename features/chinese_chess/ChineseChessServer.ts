@@ -17,6 +17,14 @@ export default class Server extends BaseServer {
     this.handleStateChange();
   }
 
+  get IsYourTurn() {
+    if (this.playerInfo.playerIndex !== this.room.state.activePlayer) {
+      this.showAlert('不是你的回合！');
+      return false;
+    }
+    return true;
+  }
+
   getGameData() {
     const mode = this.roomInfo.gameMode as GameMode;
     this.room.send(ChineseChessMessage.CreateGame, {
@@ -25,17 +33,23 @@ export default class Server extends BaseServer {
   }
 
   flipChess(id: number) {
-    this.checkYourTurn();
+    if (!this.IsYourTurn) {
+      return;
+    }
     this.room.send(ChineseChessMessage.FlipChess, { id });
   }
 
   moveChess(id: number, targetX: number, targetY: number) {
-    this.checkYourTurn();
+    if (!this.IsYourTurn) {
+      return;
+    }
     this.room.send(ChineseChessMessage.MoveChess, { id, targetX, targetY });
   }
 
   eatChess(id: number, targetId: number) {
-    this.checkYourTurn();
+    if (!this.IsYourTurn) {
+      return;
+    }
     this.room.send(ChineseChessMessage.EatChess, { id, targetId });
   }
 
@@ -45,12 +59,6 @@ export default class Server extends BaseServer {
 
   onBoardChanged(cb: (chessInfo: Partial<ChessInfo>) => void, context?: any) {
     this.events.on('board-changed', cb, context);
-  }
-
-  private checkYourTurn() {
-    if (this.playerInfo.playerIndex !== this.room.state.activePlayer) {
-      this.showAlert('不是你的回合！');
-    }
   }
 
   private handleStateChange() {
@@ -74,16 +82,28 @@ export default class Server extends BaseServer {
           const { field, value } = change;
           switch (field) {
             case ChessInfoChangeList.IsFlipped:
-              this.events.emit('board-changed', { isFlipped: value });
+              this.events.emit('board-changed', {
+                id: chessInfo.id,
+                isFlipped: value,
+              });
               break;
             case ChessInfoChangeList.LocationX:
-              this.events.emit('board-changed', { locationY: value });
+              this.events.emit('board-changed', {
+                id: chessInfo.id,
+                locationY: value,
+              });
               break;
             case ChessInfoChangeList.LocationY:
-              this.events.emit('board-changed', { locationX: value });
+              this.events.emit('board-changed', {
+                id: chessInfo.id,
+                locationX: value,
+              });
               break;
             case ChessInfoChangeList.Alive:
-              this.events.emit('board-changed', { alive: value });
+              this.events.emit('board-changed', {
+                id: chessInfo.id,
+                alive: value,
+              });
               break;
           }
         });

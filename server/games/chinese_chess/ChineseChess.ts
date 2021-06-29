@@ -10,6 +10,8 @@ import { ChineseChessMessage } from '../../../models/messages/ChineseChessMessag
 import FlipChessCommand from './commands/FlipChessCommand';
 import CreateGameCommand from './commands/CreateGameCommand';
 import ResetCommand from './commands/ResetCommand';
+import EatChessCommand from './commands/EatChessCommand';
+import MoveChessCommand from './commands/MoveChessCommand';
 
 export default class ChineseChess extends Room<ChineseChessState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -36,10 +38,30 @@ export default class ChineseChess extends Room<ChineseChessState, Metadata> {
 
     this.onMessage(
       ChineseChessMessage.FlipChess,
-      (client, message: { id: number }) => {
+      (_c, message: { id: number }) => {
         this.dispatcher.dispatch(new FlipChessCommand(), {
-          client,
           id: message.id,
+        });
+      }
+    );
+
+    this.onMessage(
+      ChineseChessMessage.EatChess,
+      (_c, message: { id: number; targetId: number }) => {
+        this.dispatcher.dispatch(new EatChessCommand(), {
+          id: message.id,
+          targetId: message.targetId,
+        });
+      }
+    );
+
+    this.onMessage(
+      ChineseChessMessage.MoveChess,
+      (_c, message: { id: number; targetX: number; targetY: number }) => {
+        this.dispatcher.dispatch(new MoveChessCommand(), {
+          id: message.id,
+          targetX: message.targetX,
+          targetY: message.targetY,
         });
       }
     );

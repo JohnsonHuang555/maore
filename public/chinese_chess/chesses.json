@@ -1,0 +1,116 @@
+{"frames": [
+
+{
+	"filename": "car_black.png",
+	"frame": {"x":1,"y":1,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "car_red.png",
+	"frame": {"x":337,"y":1,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "elephant_black.png",
+	"frame": {"x":673,"y":1,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "elephant_red.png",
+	"frame": {"x":1,"y":350,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "guard_black.png",
+	"frame": {"x":337,"y":350,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "guard_red.png",
+	"frame": {"x":673,"y":350,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "hidden.png",
+	"frame": {"x":1,"y":1397,"w":343,"h":348},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":20,"w":343,"h":348},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "horse_black.png",
+	"frame": {"x":1,"y":699,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "horse_red.png",
+	"frame": {"x":337,"y":699,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "king_black.png",
+	"frame": {"x":673,"y":699,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "king_red.png",
+	"frame": {"x":1,"y":1048,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "soldier_black.png",
+	"frame": {"x":337,"y":1048,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "soldier_red.png",
+	"frame": {"x":673,"y":1048,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "chesses.png",
+	"format": "RGBA8888",
+	"size": {"w":1008,"h":1746},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:f2c6f9cb45ddb1c7c6858103d1cb09e9:9ea380de6ade279cdd97956784213c27:e6276a30de3df0f48ebca5d260ab8a52$"
+}
+}

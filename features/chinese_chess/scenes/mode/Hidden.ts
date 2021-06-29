@@ -9,10 +9,10 @@ export default class Hidden extends Phaser.Scene {
   private onGameOver!: (data: GameOverSceneData) => void;
   private board: {
     cell: Phaser.GameObjects.Rectangle;
-    chessImage: Phaser.GameObjects.Arc;
+    chessImage: Phaser.GameObjects.Image;
     chessInfo: ChessInfo | undefined;
   }[] = [];
-
+  private gameStateText?: Phaser.GameObjects.Text;
   private chessesDictionary: { [key: string]: ChessInfo } = {};
 
   constructor() {
@@ -20,7 +20,12 @@ export default class Hidden extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('map', '/chinese_chess/map/HiddenMode.png');
+    this.load.image('map', '/chinese_chess/map/hidden_mode.png');
+    this.load.atlas(
+      'chess',
+      '/chinese_chess/chesses.png',
+      '/chinese_chess/chesses.json'
+    );
   }
 
   create(data: GameSceneData) {
@@ -51,7 +56,7 @@ export default class Hidden extends Phaser.Scene {
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 8; x++) {
         const chessInfo = this.chessesDictionary[`${x},${y}`];
-        const { alive, id, name, isFlipped } = chessInfo;
+        const { alive, id } = chessInfo;
         const cell = this.add
           .rectangle(drawX, drawY, size, size, 0xffffff, 0)
           .setInteractive()
@@ -61,23 +66,13 @@ export default class Hidden extends Phaser.Scene {
             // }
           });
         const chessImage = this.add
-          .circle(cell.x, cell.y, 58, 0x2a76b8)
+          .image(cell.x, cell.y, 'chess', 'hidden.png')
+          .setDisplaySize(120, 120)
           .setInteractive()
           .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
             this.server.flipChess(id);
           });
-        // FIXME: 換成圖檔
-        // if (!isFlipped) {
-        //   this.add
-        //     .circle(cell.x, cell.y, 50, 0x2a76b8)
-        //     .setInteractive()
-        //     .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-        //       this.server.flipChess(id);
-        //     });
-        // } else {
-        //   this.add.circle(cell.x, cell.y, 50, 0xffffff);
-        //   this.add.text(cell.x, cell.y, name);
-        // }
+
         this.board.push({
           cell,
           chessImage,
@@ -90,27 +85,36 @@ export default class Hidden extends Phaser.Scene {
     }
 
     this.server.onBoardChanged(this.handleBoardChanged, this);
+    this.server.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
   };
 
-  private handleBoardChanged(chessInfo: Partial<ChessInfo>) {
-    const chess = this.board.find(
-      (b) => b.chessInfo !== undefined && b.chessInfo.id === chessInfo.id
-    );
-    if (!chess) {
-      return;
+  private handlePlayerTurnChanged(playerIndex: number) {
+    console.log(playerIndex);
+    if (
+      this.server.playerInfo.playerIndex === playerIndex &&
+      !this.gameStateText
+    ) {
+      const { width } = this.scale;
+      this.gameStateText = this.add
+        .text(width * 0.5, 50, '你的回合')
+        .setOrigin(0.5);
+    } else {
+      this.gameStateText?.destroy();
+      this.gameStateText = undefined;
     }
-    console.log(chessInfo);
-    // chess.chessInfo = {
-    //   ...chess.chessInfo,
-    //   ...chessInfo,
-    // };
-    // if (chessInfo.isFlipped) {
-    //   chess.chessImage.setFillStyle(0xffffff);
-    //   this.add.text(
-    //     chess.chessInfo.locationX,
-    //     chess.chessInfo.locationY,
-    //     chess.chessInfo.name
-    //   );
-    // }
+  }
+
+  private handleBoardChanged(chessInfo: Partial<ChessInfo>) {
+    this.board.forEach((b) => {
+      if (b.chessInfo && b.chessInfo.id === chessInfo.id) {
+        b.chessInfo = {
+          ...b.chessInfo,
+          ...chessInfo,
+        };
+        b.chessImage.update;
+        // FIXME: Change image...
+        // b.chessImage.setFillStyle(0xffffff);
+      }
+    });
   }
 }
