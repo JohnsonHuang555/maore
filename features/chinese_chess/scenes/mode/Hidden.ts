@@ -11,6 +11,7 @@ export default class Hidden extends Phaser.Scene {
     cell: Phaser.GameObjects.Rectangle;
     chessImage: Phaser.GameObjects.Image | undefined;
     chessInfo: ChessInfo | undefined;
+    isSelect: boolean;
   }[] = [];
   private gameStateText?: Phaser.GameObjects.Text;
   private chessesDictionary: { [key: string]: ChessInfo } = {};
@@ -82,6 +83,7 @@ export default class Hidden extends Phaser.Scene {
           cell,
           chessImage: alive ? chessImage : undefined,
           chessInfo: alive ? chessInfo : undefined,
+          isSelect: false,
         });
         drawX += size + 31;
       }
@@ -112,10 +114,6 @@ export default class Hidden extends Phaser.Scene {
     // 拿到新的棋子更新到棋盤上
     this.board.forEach((b) => {
       if (b.chessInfo && b.chessImage && b.chessInfo.id === chessInfo.id) {
-        b.chessInfo = {
-          ...b.chessInfo,
-          ...chessInfo,
-        };
         // 刪除原本的圖
         b.chessImage.destroy();
         // 放上新的圖
@@ -124,12 +122,14 @@ export default class Hidden extends Phaser.Scene {
           .setDisplaySize(120, 120)
           .setInteractive()
           .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-            // this.server.setSelectedChessId(b.chessInfo?.id)
-            console.log('select');
+            // TODO: 判斷陣營
+            this.server.setSelectedChessId(b.chessInfo?.id as number);
+            this.add.circle(b.cell.x, b.cell.y - 1.8, 50, 0xe05b5b, 0.3);
           });
-        // b.chessImage.update;
-        // FIXME: Change image...
-        // b.chessImage.setFillStyle(0xffffff);
+        b.chessInfo = {
+          ...b.chessInfo,
+          ...chessInfo,
+        };
       }
     });
   }

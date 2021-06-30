@@ -30,6 +30,10 @@ export class PlayerState extends Schema {
   @type('boolean')
   gameLoaded: boolean = false;
 
+  // 組別
+  @type('number')
+  group: number = -1;
+
   constructor(data: Payload) {
     super();
     const { id, name, isMaster, playerIndex } = data;

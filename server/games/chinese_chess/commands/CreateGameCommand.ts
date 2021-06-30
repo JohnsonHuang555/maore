@@ -23,6 +23,7 @@ export default class CreateGameCommand extends Command<ChineseChessState> {
     }
     switch (mode) {
       case GameMode.Standard: {
+        // TODO: 決定組別
         const chineseChesses = this.createStandard();
         this.room.state.chineseChesses = chineseChesses;
         break;

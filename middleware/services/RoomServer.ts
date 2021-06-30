@@ -35,6 +35,7 @@ enum PlayerStateChangeList {
   PlayerIndex = 'playerIndex',
   PlayerOrder = 'playerOrder',
   GameLoaded = 'gameLoaded',
+  Group = 'group',
 }
 
 export interface Room extends Schema, TicTacToeState, ChineseChessState {
@@ -138,6 +139,14 @@ export default class RoomServer {
               this.dispatch(
                 setPlayerInfo(player.id, {
                   gameLoaded: value,
+                })
+              );
+              break;
+            }
+            case PlayerStateChangeList.Group: {
+              this.dispatch(
+                setPlayerInfo(player.id, {
+                  group: value,
                 })
               );
               break;

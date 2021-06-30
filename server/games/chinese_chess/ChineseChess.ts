@@ -7,11 +7,19 @@ import GameUseCase from '../../usecases/GameUseCase';
 import { Game, GameList } from '../../../models/Game';
 import { GameMode } from '../../../features/chinese_chess/models/Mode';
 import { ChineseChessMessage } from '../../../models/messages/ChineseChessMessage';
+import { ChineseChessGroup } from '../../../features/chinese_chess/models/ChineseChessGroup';
+import { ChessSide } from '../../../features/chinese_chess/models/Chess';
 import FlipChessCommand from './commands/FlipChessCommand';
 import CreateGameCommand from './commands/CreateGameCommand';
 import ResetCommand from './commands/ResetCommand';
 import EatChessCommand from './commands/EatChessCommand';
 import MoveChessCommand from './commands/MoveChessCommand';
+import UpdatePlayerGroupCommand from '../../room/commands/UpdatePlayerGroupCommand';
+
+const groupMap = {
+  [ChessSide.Black]: ChineseChessGroup.Black,
+  [ChessSide.Red]: ChineseChessGroup.Red,
+};
 
 export default class ChineseChess extends Room<ChineseChessState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -38,9 +46,18 @@ export default class ChineseChess extends Room<ChineseChessState, Metadata> {
 
     this.onMessage(
       ChineseChessMessage.FlipChess,
-      (_c, message: { id: number }) => {
+      (client, message: { id: number }) => {
+        const chessIndex = this.state.chineseChesses.findIndex(
+          (c) => c.id === message.id
+        );
         this.dispatcher.dispatch(new FlipChessCommand(), {
-          id: message.id,
+          chessIndex,
+        });
+        const side = this.state.chineseChesses[chessIndex].chessSide;
+        this.dispatcher.dispatch(new UpdatePlayerGroupCommand(), {
+          allGroups: [ChineseChessGroup.Black, ChineseChessGroup.Red],
+          needSetGroup: groupMap[side],
+          playerId: client.id,
         });
       }
     );

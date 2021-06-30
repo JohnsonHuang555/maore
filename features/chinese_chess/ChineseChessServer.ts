@@ -28,8 +28,9 @@ export default class Server extends BaseServer {
     return true;
   }
 
-  set setSelectedChessId(id: number) {
+  setSelectedChessId(id: number) {
     this.selectedChessId = id;
+    console.log(id);
   }
 
   getGameData() {

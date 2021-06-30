@@ -8,6 +8,7 @@ export default class ResetGameCommand extends Command<RoomState> {
     for (let i = 0; i < playerCount; i++) {
       this.state.players[i].playerOrder = -1;
       this.state.players[i].gameLoaded = false;
+      this.state.players[i].group = -1;
       // 除了房主其餘玩家接重設準備狀態
       if (!this.state.players[i].isMaster) {
         this.state.players[i].isReady = false;
