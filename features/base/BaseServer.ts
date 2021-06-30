@@ -7,6 +7,8 @@ import { RoomMessage } from 'models/messages/RoomMessage';
 import { Player } from 'models/Player';
 import { setSnackbar } from 'actions/AppAction';
 import { setShowGameScreen } from 'actions/RoomAction';
+
+/** 共用接收與傳送房間資料，監聽 store state */
 export default class BaseServer {
   public room: ClientRoom<Room>;
   public events = new Phaser.Events.EventEmitter();
@@ -46,7 +48,7 @@ export default class BaseServer {
     this.room = server.room;
     // 監聽 state 的變化
     store.subscribe(this.handleRoomStateChange);
-    // 打給後端載入完成
+    // 打給後端 phaser 環境載入完成
     this.loadedGame();
   }
 

@@ -9,7 +9,7 @@ export default class Hidden extends Phaser.Scene {
   private onGameOver!: (data: GameOverSceneData) => void;
   private board: {
     cell: Phaser.GameObjects.Rectangle;
-    chessImage: Phaser.GameObjects.Image;
+    chessImage: Phaser.GameObjects.Image | undefined;
     chessInfo: ChessInfo | undefined;
   }[] = [];
   private gameStateText?: Phaser.GameObjects.Text;
@@ -35,6 +35,11 @@ export default class Hidden extends Phaser.Scene {
 
     if (!this.server) {
       throw new Error('server instance missing');
+    }
+
+    // 在開始遊戲時，決定遊玩順序，由房主決定
+    if (this.server.playerInfo.isMaster) {
+      this.server.createPlayerOrder();
     }
 
     const { width, height } = this.scale;
@@ -75,7 +80,7 @@ export default class Hidden extends Phaser.Scene {
 
         this.board.push({
           cell,
-          chessImage,
+          chessImage: alive ? chessImage : undefined,
           chessInfo: alive ? chessInfo : undefined,
         });
         drawX += size + 31;
@@ -89,7 +94,6 @@ export default class Hidden extends Phaser.Scene {
   };
 
   private handlePlayerTurnChanged(playerIndex: number) {
-    console.log(playerIndex);
     if (
       this.server.playerInfo.playerIndex === playerIndex &&
       !this.gameStateText
@@ -105,13 +109,25 @@ export default class Hidden extends Phaser.Scene {
   }
 
   private handleBoardChanged(chessInfo: Partial<ChessInfo>) {
+    // 拿到新的棋子更新到棋盤上
     this.board.forEach((b) => {
-      if (b.chessInfo && b.chessInfo.id === chessInfo.id) {
+      if (b.chessInfo && b.chessImage && b.chessInfo.id === chessInfo.id) {
         b.chessInfo = {
           ...b.chessInfo,
           ...chessInfo,
         };
-        b.chessImage.update;
+        // 刪除原本的圖
+        b.chessImage.destroy();
+        // 放上新的圖
+        b.chessImage = this.add
+          .image(b.cell.x, b.cell.y, 'chess', `${b.chessInfo.name}.png`)
+          .setDisplaySize(120, 120)
+          .setInteractive()
+          .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+            // this.server.setSelectedChessId(b.chessInfo?.id)
+            console.log('select');
+          });
+        // b.chessImage.update;
         // FIXME: Change image...
         // b.chessImage.setFillStyle(0xffffff);
       }

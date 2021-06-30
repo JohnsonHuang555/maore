@@ -11,18 +11,25 @@ enum ChessInfoChangeList {
 }
 
 const TOTAL_CHESS_COUNT = 32;
+/** 接收與傳送後端事件 */
 export default class Server extends BaseServer {
+  private selectedChessId?: number;
+
   constructor() {
     super();
     this.handleStateChange();
   }
 
-  get IsYourTurn() {
+  get isYourTurn() {
     if (this.playerInfo.playerIndex !== this.room.state.activePlayer) {
       this.showAlert('不是你的回合！');
       return false;
     }
     return true;
+  }
+
+  set setSelectedChessId(id: number) {
+    this.selectedChessId = id;
   }
 
   getGameData() {
@@ -33,21 +40,21 @@ export default class Server extends BaseServer {
   }
 
   flipChess(id: number) {
-    if (!this.IsYourTurn) {
+    if (!this.isYourTurn) {
       return;
     }
     this.room.send(ChineseChessMessage.FlipChess, { id });
   }
 
   moveChess(id: number, targetX: number, targetY: number) {
-    if (!this.IsYourTurn) {
+    if (!this.isYourTurn) {
       return;
     }
     this.room.send(ChineseChessMessage.MoveChess, { id, targetX, targetY });
   }
 
   eatChess(id: number, targetId: number) {
-    if (!this.IsYourTurn) {
+    if (!this.isYourTurn) {
       return;
     }
     this.room.send(ChineseChessMessage.EatChess, { id, targetId });
