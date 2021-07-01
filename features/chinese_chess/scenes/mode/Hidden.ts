@@ -3,6 +3,7 @@ import Server from 'features/chinese_chess/ChineseChessServer';
 import { GameOverSceneData } from 'models/Scenes';
 import { GameSceneData } from 'features/chinese_chess/models/ChineseChessScene';
 import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
+import { ChineseChessGroupMap } from 'features/chinese_chess/models/ChineseChessGroup';
 
 export default class Hidden extends Phaser.Scene {
   private server!: Server;
@@ -13,6 +14,7 @@ export default class Hidden extends Phaser.Scene {
     chessInfo: ChessInfo | undefined;
     isSelect: boolean;
   }[] = [];
+  private selectedChessUI?: Phaser.GameObjects.Arc;
   private gameStateText?: Phaser.GameObjects.Text;
   private chessesDictionary: { [key: string]: ChessInfo } = {};
 
@@ -122,9 +124,25 @@ export default class Hidden extends Phaser.Scene {
           .setDisplaySize(120, 120)
           .setInteractive()
           .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-            // TODO: 判斷陣營
-            this.server.setSelectedChessId(b.chessInfo?.id as number);
-            this.add.circle(b.cell.x, b.cell.y - 1.8, 50, 0xe05b5b, 0.3);
+            if (
+              b.chessInfo &&
+              this.server.yourGroup ===
+                ChineseChessGroupMap[b.chessInfo.chessSide]
+            ) {
+              this.selectedChessUI?.destroy();
+              this.selectedChessUI = undefined;
+              this.server.setSelectedChessId(b.chessInfo?.id as number);
+              this.selectedChessUI = this.add.circle(
+                b.cell.x,
+                b.cell.y - 1.8,
+                50,
+                0xe05b5b,
+                0.3
+              );
+            } else {
+              this.selectedChessUI?.destroy();
+              this.selectedChessUI = undefined;
+            }
           });
         b.chessInfo = {
           ...b.chessInfo,

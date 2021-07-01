@@ -12,13 +12,8 @@ import { setShowGameScreen } from 'actions/RoomAction';
 export default class BaseServer {
   public room: ClientRoom<Room>;
   public events = new Phaser.Events.EventEmitter();
-  private _playerInfo: Player;
   private _gameStatus: GameStatus;
   private _roomInfo: RoomInfo;
-
-  get playerIndex() {
-    return this._playerInfo;
-  }
 
   // 遊戲狀態
   get gameStatus() {
@@ -26,7 +21,9 @@ export default class BaseServer {
   }
 
   get playerInfo() {
-    return this._playerInfo;
+    const { room } = store.getState();
+    const playerInfo = room.players.find((p) => p.id === room.yourPlayerId);
+    return playerInfo as Player;
   }
 
   get roomInfo() {
@@ -38,11 +35,6 @@ export default class BaseServer {
     if (!server.room) {
       throw new Error('room not found...');
     }
-    const playerInfo = room.players.find((p) => p.id === room.yourPlayerId);
-    if (!playerInfo) {
-      throw new Error('player not found...');
-    }
-    this._playerInfo = playerInfo;
     this._gameStatus = room.gameStatus;
     this._roomInfo = room.roomInfo;
     this.room = server.room;

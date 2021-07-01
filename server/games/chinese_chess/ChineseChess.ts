@@ -8,18 +8,13 @@ import { Game, GameList } from '../../../models/Game';
 import { GameMode } from '../../../features/chinese_chess/models/Mode';
 import { ChineseChessMessage } from '../../../models/messages/ChineseChessMessage';
 import { ChineseChessGroup } from '../../../features/chinese_chess/models/ChineseChessGroup';
-import { ChessSide } from '../../../features/chinese_chess/models/Chess';
+import { ChineseChessGroupMap } from '../../../features/chinese_chess/models/ChineseChessGroup';
 import FlipChessCommand from './commands/FlipChessCommand';
 import CreateGameCommand from './commands/CreateGameCommand';
 import ResetCommand from './commands/ResetCommand';
 import EatChessCommand from './commands/EatChessCommand';
 import MoveChessCommand from './commands/MoveChessCommand';
 import UpdatePlayerGroupCommand from '../../room/commands/UpdatePlayerGroupCommand';
-
-const groupMap = {
-  [ChessSide.Black]: ChineseChessGroup.Black,
-  [ChessSide.Red]: ChineseChessGroup.Red,
-};
 
 export default class ChineseChess extends Room<ChineseChessState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -56,7 +51,7 @@ export default class ChineseChess extends Room<ChineseChessState, Metadata> {
         const side = this.state.chineseChesses[chessIndex].chessSide;
         this.dispatcher.dispatch(new UpdatePlayerGroupCommand(), {
           allGroups: [ChineseChessGroup.Black, ChineseChessGroup.Red],
-          needSetGroup: groupMap[side],
+          needSetGroup: ChineseChessGroupMap[side],
           playerId: client.id,
         });
       }

@@ -2,6 +2,7 @@ import BaseServer from 'features/base/BaseServer';
 import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
 import { ChineseChessMessage } from 'models/messages/ChineseChessMessage';
 import { GameMode } from './models/Mode';
+import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
 
 enum ChessInfoChangeList {
   IsFlipped = 'isFlipped',
@@ -28,9 +29,12 @@ export default class Server extends BaseServer {
     return true;
   }
 
+  get yourGroup(): ChineseChessGroup {
+    return this.playerInfo.group;
+  }
+
   setSelectedChessId(id: number) {
     this.selectedChessId = id;
-    console.log(id);
   }
 
   getGameData() {
