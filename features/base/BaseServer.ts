@@ -81,13 +81,30 @@ export default class BaseServer {
     this.events.on('player-win', cb, context);
   }
 
+  onPlayerGroupChanged(
+    cb: (groups: { id: string; playerName: string; group: number }[]) => void,
+    context?: any
+  ) {
+    this.events.on('player-group-changed', cb, context);
+  }
+
   private handleRoomStateChange = () => {
     const {
-      room: { winningPlayer, activePlayer, gameStatus, isAllPlayersLoaded },
+      room: {
+        winningPlayer,
+        activePlayer,
+        gameStatus,
+        isAllPlayersLoaded,
+        players,
+      },
     } = store.getState();
     if (gameStatus === GameStatus.WaitingForPlayers) {
       this.events.destroy();
     }
+    const playerGroupChanged = players
+      .filter((p) => p.group !== -1)
+      .map((p) => ({ id: p.id, playerName: p.name, group: p.group }));
+    this.events.emit('player-group-changed', playerGroupChanged);
     this.events.emit('is-all-players-loaded', isAllPlayersLoaded);
     this.events.emit('player-win', winningPlayer);
     this.events.emit('player-turn-changed', activePlayer);
