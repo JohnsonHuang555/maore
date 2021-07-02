@@ -1,4 +1,4 @@
-import { ChessSide } from './Chess';
+import { ChessSide } from './ChineseChess';
 
 export enum ChineseChessGroup {
   Black,

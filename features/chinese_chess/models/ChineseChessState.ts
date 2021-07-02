@@ -1,5 +1,5 @@
 import { ArraySchema } from '@colyseus/schema';
-import { ChessNameBlack, ChessNameRed, ChessSide } from './Chess';
+import { ChessNameBlack, ChessNameRed, ChessSide } from './ChineseChess';
 import { ChessInfoState } from 'server/games/chinese_chess/state/ChessInfoState';
 export interface ChessInfo {
   id: number;

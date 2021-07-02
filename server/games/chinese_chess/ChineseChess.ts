@@ -5,7 +5,7 @@ import BaseRoom from '../../room';
 import { Metadata } from '../../../models/Room';
 import GameUseCase from '../../usecases/GameUseCase';
 import { Game, GameList } from '../../../models/Game';
-import { GameMode } from '../../../features/chinese_chess/models/Mode';
+import { GameMode } from '../../../features/chinese_chess/models/ChinesChessMode';
 import { ChineseChessMessage } from '../../../models/messages/ChineseChessMessage';
 import { ChineseChessGroup } from '../../../features/chinese_chess/models/ChineseChessGroup';
 import { ChineseChessGroupMap } from '../../../features/chinese_chess/models/ChineseChessGroup';

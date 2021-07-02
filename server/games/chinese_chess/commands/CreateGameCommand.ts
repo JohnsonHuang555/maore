@@ -1,11 +1,11 @@
 import { Command } from '@colyseus/command';
-import { GameMode } from '../../../../features/chinese_chess/models/Mode';
+import { GameMode } from '../../../../features/chinese_chess/models/ChinesChessMode';
 import ChineseChessState from '../state/ChineseChessState';
 import {
   ChessNameRed,
   ChessNameBlack,
   ChessSide,
-} from '../../../../features/chinese_chess/models/Chess';
+} from '../../../../features/chinese_chess/models/ChineseChess';
 import { ArraySchema } from '@colyseus/schema';
 import { ChessInfoState } from '../state/ChessInfoState';
 import Random from '../../../utils/Random';

@@ -1,7 +1,7 @@
 import BaseServer from 'features/base/BaseServer';
 import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
 import { ChineseChessMessage } from 'models/messages/ChineseChessMessage';
-import { GameMode } from './models/Mode';
+import { GameMode } from './models/ChinesChessMode';
 import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
 
 enum ChessInfoChangeList {
