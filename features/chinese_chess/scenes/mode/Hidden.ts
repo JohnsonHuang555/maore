@@ -10,7 +10,7 @@ import {
   ChineseChessGroup,
   ChineseChessGroupMap,
 } from 'features/chinese_chess/models/ChineseChessGroup';
-import { ChineseChessMessage } from 'models/messages/ChineseChessMessage';
+import ChessController from 'features/chinese_chess/controllers/ChessController';
 
 const MAX_PLAYERS = 2;
 const GroupText = {
@@ -31,9 +31,14 @@ export default class Hidden extends Phaser.Scene {
   private otherGroupText?: Phaser.GameObjects.Text;
   private yourTurnText?: Phaser.GameObjects.Text;
   private chessesDictionary: { [key: string]: ChessInfo } = {};
+  private chesses: ChessController[] = [];
 
   constructor() {
     super('hidden');
+  }
+
+  init() {
+    this.chesses = [];
   }
 
   preload() {
@@ -68,46 +73,45 @@ export default class Hidden extends Phaser.Scene {
     this.createBoard();
   }
 
-  update() {
-    console.log('update...');
-  }
-
   private createBoard = () => {
     const { width, height } = this.scale;
     const offsetX = 548;
     const offsetY = 235;
-    const size = 125;
+    const cellSize = 128;
     let drawX = width * 0.5 - offsetX;
     let drawY = height * 0.5 - offsetY;
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 8; x++) {
         const chessInfo = this.chessesDictionary[`${x},${y}`];
-        const { alive, id } = chessInfo;
-        const cell = this.add
-          .rectangle(drawX, drawY, size, size, 0xffffff, 0)
-          .setInteractive()
-          .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-            // if () {
-            //   this.server.moveChess(id, x, y)
-            // }
-          });
-        const chessImage = this.add
-          .image(cell.x, cell.y, 'chess', 'hidden.png')
-          .setDisplaySize(120, 120)
-          .setInteractive()
-          .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-            this.server.flipChess(id);
-          });
+        // const { alive, id } = chessInfo;
+        // const cell = this.add
+        //   .rectangle(drawX, drawY, size, size, 0xffffff, 0)
+        //   .setInteractive()
+        //   .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+        //     // if () {
+        //     //   this.server.moveChess(id, x, y)
+        //     // }
+        //   });
+        this.chesses.push(
+          new ChessController(this, chessInfo, drawX, drawY, cellSize)
+        );
+        // const chessImage = this.add
+        //   .image(cell.x, cell.y, 'chess', 'hidden.png')
+        //   .setDisplaySize(120, 120)
+        //   .setInteractive()
+        //   .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+        //     this.server.flipChess(id);
+        //   });
 
-        this.board.push({
-          cell,
-          chessImage: alive ? chessImage : undefined,
-          chessInfo: alive ? chessInfo : undefined,
-          isSelect: false,
-        });
-        drawX += size + 31;
+        // this.board.push({
+        //   cell,
+        //   chessImage: alive ? chessImage : undefined,
+        //   chessInfo: alive ? chessInfo : undefined,
+        //   isSelect: false,
+        // });
+        drawX += cellSize + 28;
       }
-      drawY += size + 31;
+      drawY += cellSize + 28;
       drawX = width * 0.5 - offsetX;
     }
 
@@ -116,31 +120,11 @@ export default class Hidden extends Phaser.Scene {
     this.server.onPlayerGroupChanged(this.handlePlayerGroupChanged, this);
   };
 
-  private handlePlayerTurnChanged(playerIndex: number) {
-    if (
-      this.server.playerInfo.playerIndex === playerIndex &&
-      !this.yourTurnText
-    ) {
-      const { width } = this.scale;
-      this.yourTurnText = this.add.text(width * 0.5, 50, '你的回合', {
-        fontSize: '30px',
-        align: 'center',
-        padding: {
-          top: 5,
-        },
-      });
-    } else {
-      this.yourTurnText?.destroy();
-      this.yourTurnText = undefined;
-    }
-  }
-
   // 棋盤更新
   private handleBoardChanged(chessInfo: Partial<ChessInfo>) {
     // 拿到新的棋子更新到棋盤上
     this.board.forEach((b) => {
       if (b.chessInfo && b.chessImage && b.chessInfo.id === chessInfo.id) {
-        console.log('eat');
         // 刪除原本的圖
         b.chessImage.destroy();
         // 放上新的圖
@@ -182,6 +166,25 @@ export default class Hidden extends Phaser.Scene {
         return;
       }
     });
+  }
+
+  private handlePlayerTurnChanged(playerIndex: number) {
+    if (
+      this.server.playerInfo.playerIndex === playerIndex &&
+      !this.yourTurnText
+    ) {
+      const { width } = this.scale;
+      this.yourTurnText = this.add.text(width * 0.5, 50, '你的回合', {
+        fontSize: '30px',
+        align: 'center',
+        padding: {
+          top: 5,
+        },
+      });
+    } else {
+      this.yourTurnText?.destroy();
+      this.yourTurnText = undefined;
+    }
   }
 
   // 組別更新並顯示

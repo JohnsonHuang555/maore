@@ -95,7 +95,6 @@ export default class Server extends BaseServer {
       chessInfo.onChange = (changes) => {
         changes.forEach((change) => {
           const { field, value } = change;
-          console.log(field, value);
           switch (field) {
             case ChessInfoChangeList.IsFlipped:
               this.events.emit('board-changed', {
