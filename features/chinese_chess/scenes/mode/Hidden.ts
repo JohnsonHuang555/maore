@@ -10,6 +10,7 @@ import {
   ChineseChessGroup,
   ChineseChessGroupMap,
 } from 'features/chinese_chess/models/ChineseChessGroup';
+import { ChineseChessMessage } from 'models/messages/ChineseChessMessage';
 
 const MAX_PLAYERS = 2;
 const GroupText = {
@@ -65,6 +66,10 @@ export default class Hidden extends Phaser.Scene {
       this.chessesDictionary[`${chess.locationX},${chess.locationY}`] = chess;
     });
     this.createBoard();
+  }
+
+  update() {
+    console.log('update...');
   }
 
   private createBoard = () => {
@@ -130,10 +135,12 @@ export default class Hidden extends Phaser.Scene {
     }
   }
 
+  // 棋盤更新
   private handleBoardChanged(chessInfo: Partial<ChessInfo>) {
     // 拿到新的棋子更新到棋盤上
     this.board.forEach((b) => {
       if (b.chessInfo && b.chessImage && b.chessInfo.id === chessInfo.id) {
+        console.log('eat');
         // 刪除原本的圖
         b.chessImage.destroy();
         // 放上新的圖
@@ -149,7 +156,7 @@ export default class Hidden extends Phaser.Scene {
             ) {
               this.selectedChessUI?.destroy();
               this.selectedChessUI = undefined;
-              this.server.setSelectedChessId(b.chessInfo?.id as number);
+              this.server.setSelectedChessId(b.chessInfo.id as number);
               this.selectedChessUI = this.add.circle(
                 b.cell.x,
                 b.cell.y - 1.8,
@@ -157,19 +164,27 @@ export default class Hidden extends Phaser.Scene {
                 0xe05b5b,
                 0.3
               );
-            } else {
+            } else if (
+              b.chessInfo &&
+              this.server.selectedChessId &&
+              this.server.yourGroup !==
+                ChineseChessGroupMap[b.chessInfo.chessSide]
+            ) {
               this.selectedChessUI?.destroy();
               this.selectedChessUI = undefined;
+              this.server.eatChess(b.chessInfo.id as number);
             }
           });
         b.chessInfo = {
           ...b.chessInfo,
           ...chessInfo,
         };
+        return;
       }
     });
   }
 
+  // 組別更新並顯示
   private handlePlayerGroupChanged(groups: PlayerGroup[]) {
     if (
       groups.length === MAX_PLAYERS &&

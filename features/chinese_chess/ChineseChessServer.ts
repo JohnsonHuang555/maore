@@ -14,7 +14,7 @@ enum ChessInfoChangeList {
 const TOTAL_CHESS_COUNT = 32;
 /** 接收與傳送後端事件 */
 export default class Server extends BaseServer {
-  private selectedChessId?: number;
+  public selectedChessId?: number;
 
   constructor() {
     super();
@@ -58,11 +58,14 @@ export default class Server extends BaseServer {
     this.room.send(ChineseChessMessage.MoveChess, { id, targetX, targetY });
   }
 
-  eatChess(id: number, targetId: number) {
+  eatChess(targetId: number) {
     if (!this.isYourTurn) {
       return;
     }
-    this.room.send(ChineseChessMessage.EatChess, { id, targetId });
+    this.room.send(ChineseChessMessage.EatChess, {
+      id: this.selectedChessId,
+      targetId,
+    });
   }
 
   onGameDataLoaded(cb: (chineseChesses: ChessInfo[]) => void, context?: any) {
@@ -92,6 +95,7 @@ export default class Server extends BaseServer {
       chessInfo.onChange = (changes) => {
         changes.forEach((change) => {
           const { field, value } = change;
+          console.log(field, value);
           switch (field) {
             case ChessInfoChangeList.IsFlipped:
               this.events.emit('board-changed', {
