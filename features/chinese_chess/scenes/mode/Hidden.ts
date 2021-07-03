@@ -20,18 +20,19 @@ const GroupText = {
 export default class Hidden extends Phaser.Scene {
   private server!: Server;
   private onGameOver!: (data: GameOverSceneData) => void;
-  private board: {
-    cell: Phaser.GameObjects.Rectangle;
-    chessImage: Phaser.GameObjects.Image | undefined;
-    chessInfo: ChessInfo | undefined;
-    isSelect: boolean;
-  }[] = [];
+  // private board: {
+  //   cell: Phaser.GameObjects.Rectangle;
+  //   chessImage: Phaser.GameObjects.Image | undefined;
+  //   chessInfo: ChessInfo | undefined;
+  //   isSelect: boolean;
+  // }[] = [];
   private selectedChessUI?: Phaser.GameObjects.Arc;
   private yourGroupText?: Phaser.GameObjects.Text;
   private otherGroupText?: Phaser.GameObjects.Text;
   private yourTurnText?: Phaser.GameObjects.Text;
   private chessesDictionary: { [key: string]: ChessInfo } = {};
   private chesses: ChessController[] = [];
+  private changedChess?: Partial<ChessInfo>;
 
   constructor() {
     super('hidden');
@@ -74,7 +75,8 @@ export default class Hidden extends Phaser.Scene {
   }
 
   update(t: number, dt: number) {
-    this.chesses.forEach((chess) => chess.update(dt));
+    this.chesses.forEach((chess) => chess.update(dt, this.changedChess));
+    this.changedChess = undefined;
   }
 
   private createBoard = () => {
@@ -97,7 +99,14 @@ export default class Hidden extends Phaser.Scene {
         //     // }
         //   });
         this.chesses.push(
-          new ChessController(this, chessInfo, drawX, drawY, cellSize)
+          new ChessController(
+            this.server,
+            this,
+            chessInfo,
+            drawX,
+            drawY,
+            cellSize
+          )
         );
         // const chessImage = this.add
         //   .image(cell.x, cell.y, 'chess', 'hidden.png')
@@ -126,50 +135,51 @@ export default class Hidden extends Phaser.Scene {
 
   // 棋盤更新
   private handleBoardChanged(chessInfo: Partial<ChessInfo>) {
+    this.changedChess = chessInfo;
     // 拿到新的棋子更新到棋盤上
-    this.board.forEach((b) => {
-      if (b.chessInfo && b.chessImage && b.chessInfo.id === chessInfo.id) {
-        // 刪除原本的圖
-        b.chessImage.destroy();
-        // 放上新的圖
-        b.chessImage = this.add
-          .image(b.cell.x, b.cell.y, 'chess', `${b.chessInfo.name}.png`)
-          .setDisplaySize(120, 120)
-          .setInteractive()
-          .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-            if (
-              b.chessInfo &&
-              this.server.yourGroup ===
-                ChineseChessGroupMap[b.chessInfo.chessSide]
-            ) {
-              this.selectedChessUI?.destroy();
-              this.selectedChessUI = undefined;
-              this.server.setSelectedChessId(b.chessInfo.id as number);
-              this.selectedChessUI = this.add.circle(
-                b.cell.x,
-                b.cell.y - 1.8,
-                50,
-                0xe05b5b,
-                0.3
-              );
-            } else if (
-              b.chessInfo &&
-              this.server.selectedChessId &&
-              this.server.yourGroup !==
-                ChineseChessGroupMap[b.chessInfo.chessSide]
-            ) {
-              this.selectedChessUI?.destroy();
-              this.selectedChessUI = undefined;
-              this.server.eatChess(b.chessInfo.id as number);
-            }
-          });
-        b.chessInfo = {
-          ...b.chessInfo,
-          ...chessInfo,
-        };
-        return;
-      }
-    });
+    // this.board.forEach((b) => {
+    //   if (b.chessInfo && b.chessImage && b.chessInfo.id === chessInfo.id) {
+    //     // 刪除原本的圖
+    //     b.chessImage.destroy();
+    //     // 放上新的圖
+    //     b.chessImage = this.add
+    //       .image(b.cell.x, b.cell.y, 'chess', `${b.chessInfo.name}.png`)
+    //       .setDisplaySize(120, 120)
+    //       .setInteractive()
+    //       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+    //         if (
+    //           b.chessInfo &&
+    //           this.server.yourGroup ===
+    //             ChineseChessGroupMap[b.chessInfo.chessSide]
+    //         ) {
+    //           this.selectedChessUI?.destroy();
+    //           this.selectedChessUI = undefined;
+    //           this.server.setSelectedChessId(b.chessInfo.id as number);
+    //           this.selectedChessUI = this.add.circle(
+    //             b.cell.x,
+    //             b.cell.y - 1.8,
+    //             50,
+    //             0xe05b5b,
+    //             0.3
+    //           );
+    //         } else if (
+    //           b.chessInfo &&
+    //           this.server.selectedChessId &&
+    //           this.server.yourGroup !==
+    //             ChineseChessGroupMap[b.chessInfo.chessSide]
+    //         ) {
+    //           this.selectedChessUI?.destroy();
+    //           this.selectedChessUI = undefined;
+    //           this.server.eatChess(b.chessInfo.id as number);
+    //         }
+    //       });
+    //     b.chessInfo = {
+    //       ...b.chessInfo,
+    //       ...chessInfo,
+    //     };
+    //     return;
+    //   }
+    // });
   }
 
   private handlePlayerTurnChanged(playerIndex: number) {
