@@ -21,7 +21,6 @@ import { PlayerState } from 'server/room/state/PlayerState';
 import { setClient, setRoom } from 'actions/ServerAction';
 import { TicTacToeState } from 'features/tictactoe/models/TicTacToeState';
 import { ChineseChessState } from 'features/chinese_chess/models/ChineseChessState';
-import { loadedInitalState } from 'actions/gameStateAction';
 import { ChessState } from 'features/chess/model/ChessState';
 
 enum RoomStateChangeList {
@@ -36,6 +35,8 @@ enum PlayerStateChangeList {
   IsMaster = 'isMaster',
   PlayerIndex = 'playerIndex',
   PlayerOrder = 'playerOrder',
+  GameLoaded = 'gameLoaded',
+  Group = 'group',
 }
 
 export interface Room extends Schema, TicTacToeState, ChineseChessState, ChessState {
@@ -96,16 +97,6 @@ export default class RoomServer {
       }
     );
 
-    room.onStateChange.once((state) => {
-      this.dispatch(
-        loadedInitalState({
-          board: state.board,
-          chineseChesses: state.chineseChesses,
-          chesses: state.chesses,
-        })
-      );
-    });
-
     // room players changes...
     room.state.players.onAdd = (player) => {
       this.dispatch(addPlayer(player));
@@ -141,6 +132,22 @@ export default class RoomServer {
               this.dispatch(
                 setPlayerInfo(player.id, {
                   playerOrder: value,
+                })
+              );
+              break;
+            }
+            case PlayerStateChangeList.GameLoaded: {
+              this.dispatch(
+                setPlayerInfo(player.id, {
+                  gameLoaded: value,
+                })
+              );
+              break;
+            }
+            case PlayerStateChangeList.Group: {
+              this.dispatch(
+                setPlayerInfo(player.id, {
+                  group: value,
                 })
               );
               break;

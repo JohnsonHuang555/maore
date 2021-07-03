@@ -1,0 +1,132 @@
+{"frames": [
+
+{
+	"filename": "砲.png",
+	"frame": {"x":346,"y":1,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "炮.png",
+	"frame": {"x":682,"y":1,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "車.png",
+	"frame": {"x":346,"y":350,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "俥.png",
+	"frame": {"x":682,"y":350,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "象.png",
+	"frame": {"x":1,"y":351,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "相.png",
+	"frame": {"x":337,"y":699,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "士.png",
+	"frame": {"x":1,"y":700,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "仕.png",
+	"frame": {"x":673,"y":699,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "hidden.png",
+	"frame": {"x":1,"y":1,"w":343,"h":348},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":20,"w":343,"h":348},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "馬.png",
+	"frame": {"x":337,"y":1048,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "傌.png",
+	"frame": {"x":1,"y":1049,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "將.png",
+	"frame": {"x":673,"y":1048,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "帥.png",
+	"frame": {"x":1,"y":1398,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "卒.png",
+	"frame": {"x":337,"y":1397,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+},
+{
+	"filename": "兵.png",
+	"frame": {"x":673,"y":1397,"w":334,"h":347},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":21,"w":334,"h":347},
+	"sourceSize": {"w":389,"h":389}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "test.png",
+	"format": "RGBA8888",
+	"size": {"w":1017,"h":1746},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:e5bfba3a87e553da42a78a84368b90f3:5cdfd8cbd27f84058e0a46379517ae7c:02ab132358d6d8b512e80119463a8329$"
+}
+}

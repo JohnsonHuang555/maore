@@ -8,7 +8,7 @@ export enum ChessNameBlack {
   Guard = '士',
   Minister = '象',
   Chariot = '車',
-  Cannon = '包',
+  Cannon = '砲',
   Horse = '馬',
   Soldier = '卒',
 }

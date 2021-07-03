@@ -33,7 +33,7 @@ export default class Game extends Phaser.Scene {
   private createBoard = () => {
     const { width, height } = this.scale;
     const size = 128;
-    const { board } = this.server.gameState;
+    const board: Cell[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
     let x = width * 0.5 - size;
     let y = height * 0.5 - size;

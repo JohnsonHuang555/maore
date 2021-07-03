@@ -14,6 +14,7 @@ export type State = {
   showGameScreen: boolean;
   winningPlayer: number;
   activePlayer: number;
+  isAllPlayersLoaded: boolean; // 所有玩家載入狀態
 };
 
 const initialState: State = {
@@ -31,6 +32,7 @@ const initialState: State = {
   showGameScreen: false,
   winningPlayer: -1,
   activePlayer: -1,
+  isAllPlayersLoaded: false,
 };
 
 type LoadedRoomsAction = {
@@ -159,9 +161,12 @@ const reducer = (state = initialState, action: Action): State => {
         }
         return p;
       });
+      // 有玩家還沒載入完成
+      const hasPlayerNotLoaded = newPlayers.find((p) => !p.gameLoaded);
       return {
         ...state,
         players: newPlayers,
+        isAllPlayersLoaded: !hasPlayerNotLoaded,
       };
     }
     case ActionType.UPDATE_GAME_STATUS: {
@@ -200,6 +205,7 @@ const reducer = (state = initialState, action: Action): State => {
         players: [],
         showGameScreen: false,
         gameStatus: GameStatus.WaitingForPlayers,
+        isAllPlayersLoaded: false,
       };
     }
     default: {

@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
 import Server from 'features/chinese_chess/ChineseChessServer';
 import { GameOverSceneData } from 'models/Scenes';
+import { ChessInfo } from '../models/ChineseChessState';
 
-// 決定要使用哪個場景
+/** 決定要使用哪個場景 */
 export default class Bootstrap extends Phaser.Scene {
   private server!: Server;
   constructor() {
@@ -11,22 +12,25 @@ export default class Bootstrap extends Phaser.Scene {
 
   init() {
     this.server = new Server();
+    // 初始化 callback 方法
+    this.server.onAllPlayersLoaded(this.handleAllPlayersLoaded, this);
+    this.server.onGameDataLoaded(this.handleGameDataLoaded, this);
   }
 
-  create() {
-    this.createNewGame();
-  }
-
-  private createNewGame = () => {
-    // 在開始遊戲時，決定遊玩順序，由房主決定
-    if (this.server.playerInfo.isMaster) {
-      this.server.createPlayerOrder();
+  private handleAllPlayersLoaded(isLoaded: boolean) {
+    if (isLoaded) {
+      this.server.getGameData();
     }
+  }
+
+  private handleGameDataLoaded(chineseChesses: ChessInfo[]) {
+    // 遊戲資料載入完成才起場景
     this.scene.launch('hidden', {
+      chineseChesses,
       server: this.server,
       onGameOver: this.handleGameOver,
     });
-  };
+  }
 
   private handleGameOver = (data: GameOverSceneData) => {
     this.scene.stop('hidden');
