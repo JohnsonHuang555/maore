@@ -1,5 +1,5 @@
 import { Game, GameList } from '../../models/Game';
-import { GameMode as ChineseChessMode } from '../../features/chinese_chess/models/Mode';
+import { GameMode as ChineseChessMode } from '../../features/chinese_chess/models/ChinesChessMode';
 
 // TODO: 假資料之後寫入資料庫
 export const games: Game[] = [

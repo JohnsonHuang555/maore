@@ -25,10 +25,12 @@ export default class PlayerLeftCommand extends Command<RoomState> {
       this.room.state.players[0].isMaster = true;
     }
 
-    // 重新指派所有玩家 playerIndex
+    // 重新指派所有玩家 成員
     for (let i = 0; i < this.room.state.players.length; i++) {
       this.room.state.players[i].playerIndex = i;
       this.room.state.players[i].playerOrder = -1;
+      this.room.state.players[i].gameLoaded = false;
+      this.room.state.players[i].group = -1;
     }
   }
 }

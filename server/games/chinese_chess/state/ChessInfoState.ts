@@ -4,7 +4,7 @@ import {
   ChessSide,
   ChessNameBlack,
   ChessNameRed,
-} from '../../../../features/chinese_chess/models/Chess';
+} from '../../../../features/chinese_chess/models/ChineseChess';
 
 export class ChessInfoState extends Schema implements ChessInfo {
   @type('number')

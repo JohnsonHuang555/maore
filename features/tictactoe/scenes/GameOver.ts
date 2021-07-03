@@ -14,7 +14,11 @@ export default class GameOver extends Phaser.Scene {
         fontSize: '48px',
       })
       .setOrigin(0.5);
-
     this.add.text(title.x, title.y + 100, '輸入 ESC 關閉視窗').setOrigin(0.5);
+    this.input.keyboard.once('keyup-ESC', () => {
+      if (data.onFinish) {
+        data.onFinish();
+      }
+    });
   }
 }

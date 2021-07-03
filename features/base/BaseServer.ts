@@ -2,52 +2,46 @@ import Phaser from 'phaser';
 import { store } from 'pages/_app';
 import { Room as ClientRoom } from 'colyseus.js';
 import { Room } from 'middleware/services/RoomServer';
-import { State } from 'reducers/gameStateReducer';
-import { GameStatus } from 'models/Room';
+import { GameStatus, RoomInfo } from 'models/Room';
 import { RoomMessage } from 'models/messages/RoomMessage';
 import { Player } from 'models/Player';
 import { setSnackbar } from 'actions/AppAction';
 import { setShowGameScreen } from 'actions/RoomAction';
+
+/** 共用接收與傳送房間資料，監聽 store state */
 export default class BaseServer {
   public room: ClientRoom<Room>;
   public events = new Phaser.Events.EventEmitter();
-  private _playerInfo: Player;
   private _gameStatus: GameStatus;
-  private _gameState: State;
-
-  get playerIndex() {
-    return this._playerInfo;
-  }
+  private _roomInfo: RoomInfo;
 
   // 遊戲狀態
   get gameStatus() {
     return this._gameStatus;
   }
 
-  // 遊戲資料
-  get gameState() {
-    return this._gameState;
+  get playerInfo() {
+    const { room } = store.getState();
+    const playerInfo = room.players.find((p) => p.id === room.yourPlayerId);
+    return playerInfo as Player;
   }
 
-  get playerInfo() {
-    return this._playerInfo;
+  get roomInfo() {
+    return this._roomInfo;
   }
 
   constructor() {
-    const { server, room, gameState } = store.getState();
+    const { server, room } = store.getState();
     if (!server.room) {
       throw new Error('room not found...');
     }
-    const playerInfo = room.players.find((p) => p.id === room.yourPlayerId);
-    if (!playerInfo) {
-      throw new Error('player not found...');
-    }
-    this._playerInfo = playerInfo;
     this._gameStatus = room.gameStatus;
-    this._gameState = gameState;
+    this._roomInfo = room.roomInfo;
     this.room = server.room;
     // 監聽 state 的變化
     store.subscribe(this.handleRoomStateChange);
+    // 打給後端 phaser 環境載入完成
+    this.loadedGame();
   }
 
   showAlert(message: string) {
@@ -57,6 +51,10 @@ export default class BaseServer {
         message,
       })
     );
+  }
+
+  loadedGame() {
+    this.room.send(RoomMessage.LoadedGame);
   }
 
   createPlayerOrder() {
@@ -71,6 +69,10 @@ export default class BaseServer {
     store.dispatch(setShowGameScreen(false));
   }
 
+  onAllPlayersLoaded(cb: (isLoaded: boolean) => void, context?: any) {
+    this.events.on('is-all-players-loaded', cb, context);
+  }
+
   onPlayerTurnChanged(cb: (playerIndex: number) => void, context?: any) {
     this.events.on('player-turn-changed', cb, context);
   }
@@ -79,13 +81,31 @@ export default class BaseServer {
     this.events.on('player-win', cb, context);
   }
 
+  onPlayerGroupChanged(
+    cb: (groups: { id: string; playerName: string; group: number }[]) => void,
+    context?: any
+  ) {
+    this.events.on('player-group-changed', cb, context);
+  }
+
   private handleRoomStateChange = () => {
     const {
-      room: { winningPlayer, activePlayer, gameStatus },
+      room: {
+        winningPlayer,
+        activePlayer,
+        gameStatus,
+        isAllPlayersLoaded,
+        players,
+      },
     } = store.getState();
     if (gameStatus === GameStatus.WaitingForPlayers) {
       this.events.destroy();
     }
+    const playerGroupChanged = players
+      .filter((p) => p.group !== -1)
+      .map((p) => ({ id: p.id, playerName: p.name, group: p.group }));
+    this.events.emit('player-group-changed', playerGroupChanged);
+    this.events.emit('is-all-players-loaded', isAllPlayersLoaded);
     this.events.emit('player-win', winningPlayer);
     this.events.emit('player-turn-changed', activePlayer);
   };
