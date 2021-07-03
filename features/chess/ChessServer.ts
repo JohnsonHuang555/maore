@@ -2,6 +2,8 @@ import BaseServer from 'features/base/BaseServer';
 import { ChessMessage } from 'models/messages/ChessMessage';
 import { Chess } from './model/Chess';
 
+const TOTAL_CHESS_COUNT = 32;
+
 // 監聽與傳送給後端資料
 export default class Server extends BaseServer {
   constructor() {
@@ -31,10 +33,29 @@ export default class Server extends BaseServer {
   }
 
   private handleStateChange() {
-    console.log('game page changed');
+    // console.log('game page changed');
+    const chesses: Chess[] = [];
 
     this.room.state.chesses.onAdd = (chessInfo, idx) => {
-      console.log(chessInfo, 'chessInfochessInfochessInfochessInfo')
+      const {
+        id,
+        x,
+        y,
+        side,
+        name,
+      } = chessInfo;
+
+      chesses.push({
+        id,
+        x,
+        y,
+        side,
+        name,
+      });
+
+      if (idx === TOTAL_CHESS_COUNT - 1) {
+        this.events.emit('game-data-loaded', chesses);
+      }
     };
   
 

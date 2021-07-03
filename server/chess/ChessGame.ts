@@ -5,6 +5,7 @@ import ChessGameState from './ChessGameState';
 import BaseRoom from '../../server/room';
 import { ChessMessage } from '../../models/messages/ChessMessage';
 import CreateGameCommand from './commands/CreateGameCommand';
+import ResetCommand from './commands/ResetCommand';
 
 const MAX_CLIENTS = 2;
 export default class ChessGame extends Room<ChessGameState, Metadata> {
@@ -33,5 +34,6 @@ export default class ChessGame extends Room<ChessGameState, Metadata> {
   onLeave(client: Client) {
     // update players
     this.baseRoom.onLeave(client);
+    this.dispatcher.dispatch(new ResetCommand());
   }
 }

@@ -19,6 +19,15 @@ export default class Game extends Phaser.Scene {
     // this.cells = [];
   }
 
+  preload() {
+    this.load.svg('castle', '/chess/castle.svg');
+    this.load.svg('knight', '/chess/knight.svg');
+    this.load.svg('bishop', '/chess/bishop.svg');
+    this.load.svg('queen', '/chess/queen.svg');
+    this.load.svg('king', '/chess/king.svg');
+    this.load.svg('pawn', '/chess/pawn.svg');
+  }
+
   create(data: GameSceneData) {
     const { server, chesses, onGameOver } = data;
     this.server = server;
@@ -27,13 +36,14 @@ export default class Game extends Phaser.Scene {
     if (!this.server) {
       throw new Error('server instance missing');
     }
-
     this.createBoard(chesses);
+    const { width: sceneWidth } = this.scale;
+    
   }
 
   private createBoard = (chesses: Chess[]) => {
-    const { width, height } = this.scale;
-    const size = width / 8; // 一格的大小
+    const { width: sceneWidth } = this.scale;
+    const size = sceneWidth / 8; // 一格的大小
     const sixtyFourArray = Array.from(Array(64).keys());
 
     const emptyBoard: ChessCell[] = sixtyFourArray.map((_cell, index) => {
@@ -59,15 +69,13 @@ export default class Game extends Phaser.Scene {
     });
 
     emptyBoard.forEach((cellItem, index) => {
-      const { x: xIndex, y: yIndex, color } = cellItem;
+      const { x: xIndex, y: yIndex, color, chessName } = cellItem;
       const x = xIndex * size + size * 0.5;
       const y = yIndex * size + size * 0.5;
       const colorHex = color === CellColor.Black ? 0xaaaaaa : 0xffffff;
       const cell = this.add.rectangle(x, y, size, size, colorHex);
-      
-      // if (cell.x === ) {
-
-      // }
+            
+      chessName && this.add.image(x, y, chessName).setScale(0.5);
     });
 
     

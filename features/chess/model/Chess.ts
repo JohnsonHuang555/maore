@@ -12,12 +12,12 @@ export enum Side {
 };
 
 export enum ChessName {
-  Minion = 'Minion',
-  Caslte = 'Caslte',
-  Kight = 'Kight',
-  Bishop = 'Bishop',
-  Queen = 'Queen',
-  King = 'King',
+  Pawn = 'pawn',
+  Castle = 'castle',
+  Knight = 'knight',
+  Bishop = 'bishop',
+  Queen = 'queen',
+  King = 'king',
 }
 
 export enum ChessColumnName {

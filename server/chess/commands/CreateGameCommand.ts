@@ -22,7 +22,7 @@ export default class CreateGameCommand extends Command<ChessGameState> {
 
       const x = index % 8;
       let y = 0;
-      let name = ChessName.Minion;
+      let name = ChessName.Pawn;
 
       if (index < 8) {
         y = 0;
@@ -35,9 +35,9 @@ export default class CreateGameCommand extends Command<ChessGameState> {
       }
 
       if (id === 1 || id === 8 ||  id === 25 ||  id === 32) {
-        name = ChessName.Caslte;
+        name = ChessName.Castle;
       } else if (id === 2 || id === 7 ||  id === 26 ||  id === 31) {
-        name = ChessName.Kight;
+        name = ChessName.Knight;
       } else if (id === 3 || id === 6 ||  id === 27 ||  id === 30) {
         name = ChessName.Bishop;
       } else if (id === 4 || id === 28) {
@@ -45,7 +45,7 @@ export default class CreateGameCommand extends Command<ChessGameState> {
       } else if (id === 5 || id === 29) {
         name = ChessName.Queen;
       } else if (id > 8 && id < 25) {
-        name = ChessName.Minion;
+        name = ChessName.Pawn;
       }
 
       const side = id < 17 ? Side.Black : Side.White;
