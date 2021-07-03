@@ -73,6 +73,10 @@ export default class Hidden extends Phaser.Scene {
     this.createBoard();
   }
 
+  update(t: number, dt: number) {
+    this.chesses.forEach((chess) => chess.update(dt));
+  }
+
   private createBoard = () => {
     const { width, height } = this.scale;
     const offsetX = 548;

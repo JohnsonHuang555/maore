@@ -68,6 +68,8 @@ export default class StateMachine {
       return;
     }
 
+    console.log(this.isChangingState);
+
     if (this.isChangingState) {
       this.changeStateQueue.push(name);
       return;
