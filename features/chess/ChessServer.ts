@@ -1,18 +1,16 @@
-import { store } from 'pages/_app';
-// import { Message } from 'models/messages/RoomMessage';
-import { updateGameStatus } from 'actions/RoomAction';
 import BaseServer from 'features/base/BaseServer';
+import { ChessMessage } from 'models/messages/ChessMessage';
+import { Chess } from './model/Chess';
 
 // 監聽與傳送給後端資料
 export default class Server extends BaseServer {
   constructor() {
-    super();
-     
-    // this.handleStateChange();
+    super();   
+    this.handleStateChange();
   }
 
-  get initialChesses() {
-    return this.gameState.chesses;
+  getGameData() {
+    this.room.send(ChessMessage.CreateGame);
   }
 
   makeSelection(idx: number) {
@@ -24,12 +22,20 @@ export default class Server extends BaseServer {
     // this.room.send(Message.PlayerSelection, { index: idx });
   }
 
-  onBoardChanged(cb: (cell: number, index: number) => void, context?: any) {
+  onGameDataLoaded(cb: (chesses: Chess[]) => void, context?: any) {
+    this.events.on('game-data-loaded', cb, context);
+  }
+
+  onChessChanged(cb: (cell: number, index: number) => void, context?: any) {
     this.events.on('board-changed', cb, context);
   }
 
   private handleStateChange() {
     console.log('game page changed');
+
+    this.room.state.chesses.onAdd = (chessInfo, idx) => {
+      console.log(chessInfo, 'chessInfochessInfochessInfochessInfo')
+    };
   
 
     this.room.state.chesses.onChange = (item, idx) => {

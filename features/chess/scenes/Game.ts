@@ -3,6 +3,7 @@ import { GameSceneData } from 'features/chess/model/ChessScene';
 import Phaser from 'phaser';
 import { CellColor, ChessCell } from 'features/chess/model/ChessCell';
 import Server from 'features/chess/ChessServer';
+import { Chess } from '../model/Chess';
 
 export default class Game extends Phaser.Scene {
   private server!: Server;
@@ -19,7 +20,7 @@ export default class Game extends Phaser.Scene {
   }
 
   create(data: GameSceneData) {
-    const { server, onGameOver } = data;
+    const { server, chesses, onGameOver } = data;
     this.server = server;
     this.onGameOver = onGameOver;
 
@@ -27,12 +28,10 @@ export default class Game extends Phaser.Scene {
       throw new Error('server instance missing');
     }
 
-    this.createBoard();
+    this.createBoard(chesses);
   }
 
-  private createBoard = () => {
-    const { initialChesses } = this.server;
-    console.log(initialChesses, 'InitialChessInfo');
+  private createBoard = (chesses: Chess[]) => {
     const { width, height } = this.scale;
     const size = width / 8; // 一格的大小
     const sixtyFourArray = Array.from(Array(64).keys());
@@ -46,7 +45,7 @@ export default class Game extends Phaser.Scene {
       } else {
         color = index % 2 !== 0 ? CellColor.Black : CellColor.White;
       }
-      const currentChess = initialChesses.find(c => c.x === x && c.y === y);
+      const currentChess = chesses.find(c => c.x === x && c.y === y);
       const side = currentChess?.side;
       const chessName = currentChess?.name;
 

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import Server from 'features/chess/ChessServer';
 import { GameOverSceneData } from 'models/Scenes';
+import { Chess } from 'features/chess/model/Chess';
 
 export default class ChessBootstrap extends Phaser.Scene {
   private server!: Server;
@@ -10,10 +11,24 @@ export default class ChessBootstrap extends Phaser.Scene {
 
   init() {
     this.server = new Server();
+    // 初始化 callback 方法
+    this.server.onAllPlayersLoaded(this.handleAllPlayersLoaded, this);
+    this.server.onGameDataLoaded(this.handleGameDataLoaded, this);
   }
 
-  create() {
-    this.createNewGame();
+  private handleAllPlayersLoaded(isLoaded: boolean) {
+    if (isLoaded) {
+      this.server.getGameData();
+    }
+  }
+
+  private handleGameDataLoaded(chesses: Chess[]) {
+    // 遊戲資料載入完成才起場景
+    this.scene.launch('game', {
+      chesses,
+      server: this.server,
+      onGameOver: this.handleGameOver,
+    });
   }
 
   private handleGameOver = (data: GameOverSceneData) => {

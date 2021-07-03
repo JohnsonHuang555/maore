@@ -3,10 +3,12 @@ import { Dispatcher } from '@colyseus/command';
 import { Metadata } from '../../models/Room';
 import ChessGameState from './ChessGameState';
 import BaseRoom from '../../server/room';
+import { ChessMessage } from '../../models/messages/ChessMessage';
+import CreateGameCommand from './commands/CreateGameCommand';
 
 const MAX_CLIENTS = 2;
 export default class ChessGame extends Room<ChessGameState, Metadata> {
-  // private dispatcher = new Dispatcher(this);
+  private dispatcher = new Dispatcher(this);
   private baseRoom = new BaseRoom(this);
 
   onCreate(option: Metadata) {
@@ -15,6 +17,9 @@ export default class ChessGame extends Room<ChessGameState, Metadata> {
 
     this.setMetadata(option);
     this.setState(new ChessGameState());
+    this.onMessage(ChessMessage.CreateGame, () => {
+      this.dispatcher.dispatch(new CreateGameCommand());
+    });
   }
 
   onJoin(client: Client, option: Metadata) {
