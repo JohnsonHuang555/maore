@@ -6,11 +6,9 @@ import {
   PlayerGroup,
 } from 'features/chinese_chess/models/ChineseChessScene';
 import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
-import {
-  ChineseChessGroup,
-  ChineseChessGroupMap,
-} from 'features/chinese_chess/models/ChineseChessGroup';
+import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
 import ChessController from 'features/chinese_chess/controllers/ChessController';
+import { sharedInstance as events } from 'features/base/EventCenter';
 
 const MAX_PLAYERS = 2;
 const GroupText = {
@@ -20,12 +18,6 @@ const GroupText = {
 export default class Hidden extends Phaser.Scene {
   private server!: Server;
   private onGameOver!: (data: GameOverSceneData) => void;
-  // private board: {
-  //   cell: Phaser.GameObjects.Rectangle;
-  //   chessImage: Phaser.GameObjects.Image | undefined;
-  //   chessInfo: ChessInfo | undefined;
-  //   isSelect: boolean;
-  // }[] = [];
   private selectedChessUI?: Phaser.GameObjects.Arc;
   private yourGroupText?: Phaser.GameObjects.Text;
   private otherGroupText?: Phaser.GameObjects.Text;
@@ -72,6 +64,9 @@ export default class Hidden extends Phaser.Scene {
       this.chessesDictionary[`${chess.locationX},${chess.locationY}`] = chess;
     });
     this.createBoard();
+
+    events.on('select-chess', this.handleSelectChess, this);
+    events.on('clear-selected-chess-ui', this.handleClearSelectedChessUI, this);
   }
 
   update(t: number, dt: number) {
@@ -86,6 +81,7 @@ export default class Hidden extends Phaser.Scene {
     const cellSize = 128;
     let drawX = width * 0.5 - offsetX;
     let drawY = height * 0.5 - offsetY;
+    console.log(this.chessesDictionary);
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 8; x++) {
         const chessInfo = this.chessesDictionary[`${x},${y}`];
@@ -133,60 +129,34 @@ export default class Hidden extends Phaser.Scene {
     this.server.onPlayerGroupChanged(this.handlePlayerGroupChanged, this);
   };
 
+  private handleSelectChess(drawX: number, drawY: number, id: number) {
+    this.clearSelectedChessUI();
+    this.selectedChessUI = this.add
+      .circle(drawX, drawY - 1.8, 50, 0xe05b5b, 0.3)
+      .setDepth(1);
+    console.log(this.selectedChessUI.depth);
+    this.server.setSelectedChessId(id);
+  }
+
+  private handleClearSelectedChessUI() {
+    this.clearSelectedChessUI();
+  }
+
   // 棋盤更新
   private handleBoardChanged(chessInfo: Partial<ChessInfo>) {
+    console.log(chessInfo, 'dddd');
     this.changedChess = chessInfo;
-    // 拿到新的棋子更新到棋盤上
-    // this.board.forEach((b) => {
-    //   if (b.chessInfo && b.chessImage && b.chessInfo.id === chessInfo.id) {
-    //     // 刪除原本的圖
-    //     b.chessImage.destroy();
-    //     // 放上新的圖
-    //     b.chessImage = this.add
-    //       .image(b.cell.x, b.cell.y, 'chess', `${b.chessInfo.name}.png`)
-    //       .setDisplaySize(120, 120)
-    //       .setInteractive()
-    //       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-    //         if (
-    //           b.chessInfo &&
-    //           this.server.yourGroup ===
-    //             ChineseChessGroupMap[b.chessInfo.chessSide]
-    //         ) {
-    //           this.selectedChessUI?.destroy();
-    //           this.selectedChessUI = undefined;
-    //           this.server.setSelectedChessId(b.chessInfo.id as number);
-    //           this.selectedChessUI = this.add.circle(
-    //             b.cell.x,
-    //             b.cell.y - 1.8,
-    //             50,
-    //             0xe05b5b,
-    //             0.3
-    //           );
-    //         } else if (
-    //           b.chessInfo &&
-    //           this.server.selectedChessId &&
-    //           this.server.yourGroup !==
-    //             ChineseChessGroupMap[b.chessInfo.chessSide]
-    //         ) {
-    //           this.selectedChessUI?.destroy();
-    //           this.selectedChessUI = undefined;
-    //           this.server.eatChess(b.chessInfo.id as number);
-    //         }
-    //       });
-    //     b.chessInfo = {
-    //       ...b.chessInfo,
-    //       ...chessInfo,
-    //     };
-    //     return;
-    //   }
-    // });
+  }
+
+  private clearSelectedChessUI() {
+    this.selectedChessUI?.destroy();
+    this.selectedChessUI = undefined;
   }
 
   private handlePlayerTurnChanged(playerIndex: number) {
-    if (
-      this.server.playerInfo.playerIndex === playerIndex &&
-      !this.yourTurnText
-    ) {
+    this.yourTurnText?.destroy();
+    this.yourTurnText = undefined;
+    if (this.server.playerInfo.playerIndex === playerIndex) {
       const { width } = this.scale;
       this.yourTurnText = this.add.text(width * 0.5, 50, '你的回合', {
         fontSize: '30px',
@@ -195,9 +165,6 @@ export default class Hidden extends Phaser.Scene {
           top: 5,
         },
       });
-    } else {
-      this.yourTurnText?.destroy();
-      this.yourTurnText = undefined;
     }
   }
 

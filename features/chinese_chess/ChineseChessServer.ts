@@ -3,6 +3,7 @@ import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
 import { ChineseChessMessage } from 'models/messages/ChineseChessMessage';
 import { GameMode } from './models/ChinesChessMode';
 import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
+import { sharedInstance as events } from 'features/base/EventCenter';
 
 enum ChessInfoChangeList {
   IsFlipped = 'isFlipped',
@@ -14,6 +15,7 @@ enum ChessInfoChangeList {
 const TOTAL_CHESS_COUNT = 32;
 /** 接收與傳送後端事件 */
 export default class Server extends BaseServer {
+  // 已選擇的棋子
   public selectedChessId?: number;
 
   constructor() {
@@ -66,14 +68,15 @@ export default class Server extends BaseServer {
       id: this.selectedChessId,
       targetId,
     });
+    this.selectedChessId = undefined;
   }
 
   onGameDataLoaded(cb: (chineseChesses: ChessInfo[]) => void, context?: any) {
-    this.events.on('game-data-loaded', cb, context);
+    events.on('game-data-loaded', cb, context);
   }
 
   onBoardChanged(cb: (chessInfo: Partial<ChessInfo>) => void, context?: any) {
-    this.events.on('board-changed', cb, context);
+    events.on('board-changed', cb, context);
   }
 
   private handleStateChange() {
@@ -90,32 +93,32 @@ export default class Server extends BaseServer {
         alive: chessInfo.alive,
       });
       if (idx === TOTAL_CHESS_COUNT - 1) {
-        this.events.emit('game-data-loaded', chineseChesses);
+        events.emit('game-data-loaded', chineseChesses);
       }
       chessInfo.onChange = (changes) => {
         changes.forEach((change) => {
           const { field, value } = change;
           switch (field) {
             case ChessInfoChangeList.IsFlipped:
-              this.events.emit('board-changed', {
+              events.emit('board-changed', {
                 id: chessInfo.id,
                 isFlipped: value,
               });
               break;
             case ChessInfoChangeList.LocationX:
-              this.events.emit('board-changed', {
+              events.emit('board-changed', {
                 id: chessInfo.id,
                 locationY: value,
               });
               break;
             case ChessInfoChangeList.LocationY:
-              this.events.emit('board-changed', {
+              events.emit('board-changed', {
                 id: chessInfo.id,
                 locationX: value,
               });
               break;
             case ChessInfoChangeList.Alive:
-              this.events.emit('board-changed', {
+              events.emit('board-changed', {
                 id: chessInfo.id,
                 alive: value,
               });

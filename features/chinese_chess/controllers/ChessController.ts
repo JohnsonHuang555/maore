@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import StateMachine from 'statemachines/StateMachine';
 import { ChessInfo } from '../models/ChineseChessState';
 import Server from 'features/chinese_chess/ChineseChessServer';
+import { ChineseChessGroupMap } from '../models/ChineseChessGroup';
+import { sharedInstance as events } from '../../base/EventCenter';
 
 enum StateName {
   Idle = 'idle',
@@ -43,6 +45,9 @@ export default class ChessController {
         onEnter: this.chessChangedOnEnter,
         onUpdate: this.chessChangedOnUpdate,
       })
+      .addState('chess-handle-click', {
+        onEnter: this.chessHandleClickOnEnter,
+      })
       .setState('cell');
   }
 
@@ -79,12 +84,36 @@ export default class ChessController {
       .setInteractive()
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
         this.server.flipChess(this.chessInfo.id);
+        events.emit('clear-selected-chess-ui');
       });
   }
 
   private chessChangedOnUpdate() {
-    if (this.chessInfo.id === this.changedChess?.id) {
+    const { id, name, alive } = this.chessInfo;
+    if (id === this.changedChess?.id && alive) {
+      console.log('listen');
       this.chessImage.destroy();
+      this.chessImage = this.scene.add
+        .image(this.drawX, this.drawY, 'chess', `${name}.png`)
+        .setDisplaySize(120, 120)
+        .setInteractive()
+        .setDepth(1);
+      this.stateMachine.setState('chess-handle-click');
     }
+  }
+
+  private chessHandleClickOnEnter() {
+    const { id, chessSide } = this.chessInfo;
+    this.chessImage.on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+      if (this.server.yourGroup === ChineseChessGroupMap[chessSide]) {
+        events.emit('select-chess', this.drawX, this.drawY, id);
+      } else if (
+        this.server.yourGroup !== ChineseChessGroupMap[chessSide] &&
+        this.server.selectedChessId
+      ) {
+        this.server.eatChess(id);
+        this.stateMachine.setState('chess-changed');
+      }
+    });
   }
 }

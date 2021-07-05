@@ -7,11 +7,11 @@ import { RoomMessage } from 'models/messages/RoomMessage';
 import { Player } from 'models/Player';
 import { setSnackbar } from 'actions/AppAction';
 import { setShowGameScreen } from 'actions/RoomAction';
+import { sharedInstance as events } from 'features/base/EventCenter';
 
 /** 共用接收與傳送房間資料，監聽 store state */
 export default class BaseServer {
   public room: ClientRoom<Room>;
-  public events = new Phaser.Events.EventEmitter();
   private _gameStatus: GameStatus;
   private _roomInfo: RoomInfo;
 
@@ -70,22 +70,22 @@ export default class BaseServer {
   }
 
   onAllPlayersLoaded(cb: (isLoaded: boolean) => void, context?: any) {
-    this.events.on('is-all-players-loaded', cb, context);
+    events.on('is-all-players-loaded', cb, context);
   }
 
   onPlayerTurnChanged(cb: (playerIndex: number) => void, context?: any) {
-    this.events.on('player-turn-changed', cb, context);
+    events.on('player-turn-changed', cb, context);
   }
 
   onPlayerWon(cb: (playerIndex: number) => void, context?: any) {
-    this.events.on('player-win', cb, context);
+    events.on('player-win', cb, context);
   }
 
   onPlayerGroupChanged(
     cb: (groups: { id: string; playerName: string; group: number }[]) => void,
     context?: any
   ) {
-    this.events.on('player-group-changed', cb, context);
+    events.on('player-group-changed', cb, context);
   }
 
   private handleRoomStateChange = () => {
@@ -99,14 +99,15 @@ export default class BaseServer {
       },
     } = store.getState();
     if (gameStatus === GameStatus.WaitingForPlayers) {
-      this.events.destroy();
+      // events.destroy();
+      events.removeAllListeners();
     }
     const playerGroupChanged = players
       .filter((p) => p.group !== -1)
       .map((p) => ({ id: p.id, playerName: p.name, group: p.group }));
-    this.events.emit('player-group-changed', playerGroupChanged);
-    this.events.emit('is-all-players-loaded', isAllPlayersLoaded);
-    this.events.emit('player-win', winningPlayer);
-    this.events.emit('player-turn-changed', activePlayer);
+    events.emit('player-group-changed', playerGroupChanged);
+    events.emit('is-all-players-loaded', isAllPlayersLoaded);
+    events.emit('player-win', winningPlayer);
+    events.emit('player-turn-changed', activePlayer);
   };
 }
