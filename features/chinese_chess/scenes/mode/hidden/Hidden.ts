@@ -9,13 +9,14 @@ import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
 import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
 import { sharedInstance as events } from 'features/base/EventCenter';
 import ComponentService from 'features/base/services/ComponentService';
-import { ClickOnMeComponent } from './../../../components/ClickOnMeComponent';
+import { FlipChessComponent } from 'features/chinese_chess/components/FlipChessComponent';
 
 const MAX_PLAYERS = 2;
 const GroupText = {
   [ChineseChessGroup.Black]: '黑方',
   [ChineseChessGroup.Red]: '紅方',
 };
+
 export default class Hidden extends Phaser.Scene {
   private components!: ComponentService;
   private server!: Server;
@@ -73,8 +74,8 @@ export default class Hidden extends Phaser.Scene {
     });
     this.createBoard();
 
-    events.on('select-chess', this.handleSelectChess, this);
-    events.on('clear-selected-chess-ui', this.handleClearSelectedChessUI, this);
+    // events.on('select-chess', this.handleSelectChess, this);
+    // events.on('clear-selected-chess-ui', this.handleClearSelectedChessUI, this);
   }
 
   update(t: number, dt: number) {
@@ -91,7 +92,6 @@ export default class Hidden extends Phaser.Scene {
     const size = 128;
     let drawX = width * 0.5 - offsetX;
     let drawY = height * 0.5 - offsetY;
-    console.log(this.chessesDictionary);
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 8; x++) {
         const chessInfo = this.chessesDictionary[`${x},${y}`];
@@ -101,13 +101,16 @@ export default class Hidden extends Phaser.Scene {
           .setInteractive();
 
         const chess = this.add
-          .image(cell.x, cell.y, 'chess', 'hidden.png')
+          .sprite(cell.x, cell.y, 'chess', 'hidden.png')
           .setDisplaySize(120, 120);
 
         this.chesses.push(chess);
 
         // TODO: add a component to the chess
-        this.components.addComponent(chess, new ClickOnMeComponent());
+        this.components.addComponent(
+          chess,
+          new FlipChessComponent(x, y, this.handleSelectChess)
+        );
 
         drawX += size + 28;
       }
@@ -120,17 +123,42 @@ export default class Hidden extends Phaser.Scene {
     this.server.onPlayerGroupChanged(this.handlePlayerGroupChanged, this);
   };
 
-  private handleSelectChess(drawX: number, drawY: number, id: number) {
-    this.clearSelectedChessUI();
-    this.selectedChessUI = this.add
-      .circle(drawX, drawY - 1.8, 50, 0xe05b5b, 0.3)
-      .setDepth(1);
-    this.server.setSelectedChessId(id);
+  private getAt(x: number, y: number) {
+    const index = y * 8 + x;
+    return {
+      chess: this.chesses[index],
+      index,
+    };
   }
 
-  private handleClearSelectedChessUI() {
-    this.clearSelectedChessUI();
-  }
+  private handleSelectChess = (component: FlipChessComponent) => {
+    const { x, y } = component.getLocation();
+    const selected = this.getAt(x, y);
+    console.log(selected);
+    const timeline = this.tweens.timeline({
+      onComplete: () => {
+        timeline.destroy();
+      },
+    });
+    timeline.add({
+      targets: selected.chess,
+      scale: 1.1,
+      duration: 300,
+    });
+
+    // timeline.add({
+    //   targets: component,
+    //   scaleX: 0,
+    //   duration: 300,
+    //   delay: 200,
+    // });
+
+    timeline.play();
+  };
+
+  // private handleClearSelectedChessUI() {
+  //   this.clearSelectedChessUI();
+  // }
 
   // 棋盤更新
   private handleBoardChanged(chessInfo: Partial<ChessInfo>) {
@@ -138,10 +166,10 @@ export default class Hidden extends Phaser.Scene {
     this.changedChess = chessInfo;
   }
 
-  private clearSelectedChessUI() {
-    this.selectedChessUI?.destroy();
-    this.selectedChessUI = undefined;
-  }
+  // private clearSelectedChessUI() {
+  //   this.selectedChessUI?.destroy();
+  //   this.selectedChessUI = undefined;
+  // }
 
   private handlePlayerTurnChanged(playerIndex: number) {
     this.yourTurnText?.destroy();

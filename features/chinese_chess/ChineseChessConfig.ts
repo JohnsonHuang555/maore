@@ -12,9 +12,11 @@ export const ChineseChessConfig: GameInstance = {
     mode: Phaser.Scale.ScaleModes.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  // physics: {
-  //   arcade: {
-  //     debug: true,
-  //   },
-  // },
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 0 },
+      debug: false,
+    },
+  },
 };
