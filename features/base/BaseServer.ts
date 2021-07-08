@@ -99,7 +99,6 @@ export default class BaseServer {
       },
     } = store.getState();
     if (gameStatus === GameStatus.WaitingForPlayers) {
-      // events.destroy();
       events.removeAllListeners();
     }
     const playerGroupChanged = players

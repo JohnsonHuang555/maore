@@ -7,8 +7,9 @@ import {
 } from 'features/chinese_chess/models/ChineseChessScene';
 import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
 import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
-import ChessController from 'features/chinese_chess/controllers/ChessController';
 import { sharedInstance as events } from 'features/base/EventCenter';
+import ComponentService from 'features/base/services/ComponentService';
+import { ClickOnMeComponent } from './../../../components/ClickOnMeComponent';
 
 const MAX_PLAYERS = 2;
 const GroupText = {
@@ -16,6 +17,7 @@ const GroupText = {
   [ChineseChessGroup.Red]: '紅方',
 };
 export default class Hidden extends Phaser.Scene {
+  private components!: ComponentService;
   private server!: Server;
   private onGameOver!: (data: GameOverSceneData) => void;
   private selectedChessUI?: Phaser.GameObjects.Arc;
@@ -23,15 +25,21 @@ export default class Hidden extends Phaser.Scene {
   private otherGroupText?: Phaser.GameObjects.Text;
   private yourTurnText?: Phaser.GameObjects.Text;
   private chessesDictionary: { [key: string]: ChessInfo } = {};
-  private chesses: ChessController[] = [];
   private changedChess?: Partial<ChessInfo>;
+  private chesses: Phaser.GameObjects.Image[] = [];
 
   constructor() {
     super('hidden');
   }
 
   init() {
-    this.chesses = [];
+    // create components service
+    this.components = new ComponentService();
+
+    // TODO: clean up components on scene shutdown
+    this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.components.destroy();
+    });
   }
 
   preload() {
@@ -70,15 +78,17 @@ export default class Hidden extends Phaser.Scene {
   }
 
   update(t: number, dt: number) {
-    this.chesses.forEach((chess) => chess.update(dt, this.changedChess));
-    this.changedChess = undefined;
+    // TODO: update components
+    this.components.update(dt);
+    // this.chesses.forEach((chess) => chess.update(dt, this.changedChess));
+    // this.changedChess = undefined;
   }
 
   private createBoard = () => {
     const { width, height } = this.scale;
     const offsetX = 548;
     const offsetY = 235;
-    const cellSize = 128;
+    const size = 128;
     let drawX = width * 0.5 - offsetX;
     let drawY = height * 0.5 - offsetY;
     console.log(this.chessesDictionary);
@@ -86,41 +96,22 @@ export default class Hidden extends Phaser.Scene {
       for (let x = 0; x < 8; x++) {
         const chessInfo = this.chessesDictionary[`${x},${y}`];
         // const { alive, id } = chessInfo;
-        // const cell = this.add
-        //   .rectangle(drawX, drawY, size, size, 0xffffff, 0)
-        //   .setInteractive()
-        //   .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-        //     // if () {
-        //     //   this.server.moveChess(id, x, y)
-        //     // }
-        //   });
-        this.chesses.push(
-          new ChessController(
-            this.server,
-            this,
-            chessInfo,
-            drawX,
-            drawY,
-            cellSize
-          )
-        );
-        // const chessImage = this.add
-        //   .image(cell.x, cell.y, 'chess', 'hidden.png')
-        //   .setDisplaySize(120, 120)
-        //   .setInteractive()
-        //   .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-        //     this.server.flipChess(id);
-        //   });
+        const cell = this.add
+          .rectangle(drawX, drawY, size, size, 0xffffff, 0)
+          .setInteractive();
 
-        // this.board.push({
-        //   cell,
-        //   chessImage: alive ? chessImage : undefined,
-        //   chessInfo: alive ? chessInfo : undefined,
-        //   isSelect: false,
-        // });
-        drawX += cellSize + 28;
+        const chess = this.add
+          .image(cell.x, cell.y, 'chess', 'hidden.png')
+          .setDisplaySize(120, 120);
+
+        this.chesses.push(chess);
+
+        // TODO: add a component to the chess
+        this.components.addComponent(chess, new ClickOnMeComponent());
+
+        drawX += size + 28;
       }
-      drawY += cellSize + 28;
+      drawY += size + 28;
       drawX = width * 0.5 - offsetX;
     }
 
@@ -134,7 +125,6 @@ export default class Hidden extends Phaser.Scene {
     this.selectedChessUI = this.add
       .circle(drawX, drawY - 1.8, 50, 0xe05b5b, 0.3)
       .setDepth(1);
-    console.log(this.selectedChessUI.depth);
     this.server.setSelectedChessId(id);
   }
 
@@ -144,7 +134,7 @@ export default class Hidden extends Phaser.Scene {
 
   // 棋盤更新
   private handleBoardChanged(chessInfo: Partial<ChessInfo>) {
-    console.log(chessInfo, 'dddd');
+    console.log(chessInfo, 'updated');
     this.changedChess = chessInfo;
   }
 
