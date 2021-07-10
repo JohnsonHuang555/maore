@@ -1,19 +1,26 @@
 import Phaser from 'phaser';
 
 import { IComponent } from 'features/base/services/ComponentService';
+import ChineseChessServer from '../ChineseChessServer';
 
 export class FlipChessComponent implements IComponent {
   private gameObject!: Phaser.GameObjects.GameObject;
 
+  private server: ChineseChessServer;
+  private id: number;
   private x: number;
   private y: number;
   private onFlip: (component: FlipChessComponent) => void;
 
   constructor(
+    server: ChineseChessServer,
+    id: number,
     x: number,
     y: number,
     onFlip: (component: FlipChessComponent) => void
   ) {
+    this.server = server;
+    this.id = id;
     this.x = x;
     this.y = y;
     this.onFlip = onFlip;
@@ -26,13 +33,25 @@ export class FlipChessComponent implements IComponent {
   awake() {
     this.gameObject
       .setInteractive()
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, this.handleClick, this);
+      .on(
+        Phaser.Input.Events.GAMEOBJECT_POINTER_UP,
+        this.handleFlipChess,
+        this
+      );
+  }
+
+  update() {
+    const changedChessInfo = this.server.changedChessInfo;
+    if (changedChessInfo && changedChessInfo.chessInfo.id === this.id) {
+      this.server.clearChangedChessInfo();
+      this.onFlip(this);
+    }
   }
 
   destroy() {
     this.gameObject.off(
       Phaser.Input.Events.GAMEOBJECT_POINTER_UP,
-      this.handleClick,
+      this.handleFlipChess,
       this
     );
   }
@@ -49,7 +68,10 @@ export class FlipChessComponent implements IComponent {
     };
   }
 
-  private handleClick() {
-    this.onFlip(this);
+  private handleFlipChess() {
+    if (this.server.isYourTurn) {
+      // this.onFlip(this);
+      this.server.flipChess(this.id);
+    }
   }
 }

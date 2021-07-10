@@ -13,7 +13,7 @@ import {
 } from 'actions/RoomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
-import { RoomMessage } from 'models/messages/RoomMessage';
+import { RoomMessage } from 'models/Message';
 import { GameStatus, Metadata } from 'models/Room';
 import { AnyAction, Dispatch } from 'redux';
 import { Schema, ArraySchema } from '@colyseus/schema';

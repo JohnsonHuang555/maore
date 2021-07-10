@@ -26,7 +26,6 @@ export default class Hidden extends Phaser.Scene {
   private otherGroupText?: Phaser.GameObjects.Text;
   private yourTurnText?: Phaser.GameObjects.Text;
   private chessesDictionary: { [key: string]: ChessInfo } = {};
-  private changedChess?: Partial<ChessInfo>;
   private chesses: Phaser.GameObjects.Image[] = [];
 
   constructor() {
@@ -61,6 +60,9 @@ export default class Hidden extends Phaser.Scene {
       throw new Error('server instance missing');
     }
 
+    // FIXME: 有沒有更好的做法
+    this.server.clearChangedChessInfo();
+
     // 在開始遊戲時，決定遊玩順序，由房主決定
     if (this.server.playerInfo.isMaster) {
       this.server.createPlayerOrder();
@@ -72,6 +74,7 @@ export default class Hidden extends Phaser.Scene {
     chineseChesses.forEach((chess) => {
       this.chessesDictionary[`${chess.locationX},${chess.locationY}`] = chess;
     });
+
     this.createBoard();
 
     // events.on('select-chess', this.handleSelectChess, this);
@@ -81,8 +84,6 @@ export default class Hidden extends Phaser.Scene {
   update(t: number, dt: number) {
     // TODO: update components
     this.components.update(dt);
-    // this.chesses.forEach((chess) => chess.update(dt, this.changedChess));
-    // this.changedChess = undefined;
   }
 
   private createBoard = () => {
@@ -94,8 +95,6 @@ export default class Hidden extends Phaser.Scene {
     let drawY = height * 0.5 - offsetY;
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 8; x++) {
-        const chessInfo = this.chessesDictionary[`${x},${y}`];
-        // const { alive, id } = chessInfo;
         const cell = this.add
           .rectangle(drawX, drawY, size, size, 0xffffff, 0)
           .setInteractive();
@@ -105,11 +104,12 @@ export default class Hidden extends Phaser.Scene {
           .setDisplaySize(120, 120);
 
         this.chesses.push(chess);
+        const { id } = this.chessesDictionary[`${x},${y}`];
 
         // TODO: add a component to the chess
         this.components.addComponent(
           chess,
-          new FlipChessComponent(x, y, this.handleSelectChess)
+          new FlipChessComponent(this.server, id, x, y, this.handleFlipChess)
         );
 
         drawX += size + 28;
@@ -118,7 +118,6 @@ export default class Hidden extends Phaser.Scene {
       drawX = width * 0.5 - offsetX;
     }
 
-    this.server.onBoardChanged(this.handleBoardChanged, this);
     this.server.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
     this.server.onPlayerGroupChanged(this.handlePlayerGroupChanged, this);
   };
@@ -131,45 +130,34 @@ export default class Hidden extends Phaser.Scene {
     };
   }
 
-  private handleSelectChess = (component: FlipChessComponent) => {
+  private handleFlipChess = (component: FlipChessComponent) => {
     const { x, y } = component.getLocation();
+    console.log(x, y);
+    const chessInfo = this.chessesDictionary[`${x},${y}`];
     const selected = this.getAt(x, y);
-    console.log(selected);
     const timeline = this.tweens.timeline({
       onComplete: () => {
         timeline.destroy();
       },
     });
+
     timeline.add({
       targets: selected.chess,
-      scale: 1.1,
-      duration: 300,
+      scale: 0,
+      duration: 100,
+      onComplete: () => {
+        selected.chess.setTexture('chess', `${chessInfo.name}.png`);
+      },
     });
 
-    // timeline.add({
-    //   targets: component,
-    //   scaleX: 0,
-    //   duration: 300,
-    //   delay: 200,
-    // });
+    timeline.add({
+      targets: selected.chess,
+      scale: 0.34,
+      duration: 100,
+    });
 
     timeline.play();
   };
-
-  // private handleClearSelectedChessUI() {
-  //   this.clearSelectedChessUI();
-  // }
-
-  // 棋盤更新
-  private handleBoardChanged(chessInfo: Partial<ChessInfo>) {
-    console.log(chessInfo, 'updated');
-    this.changedChess = chessInfo;
-  }
-
-  // private clearSelectedChessUI() {
-  //   this.selectedChessUI?.destroy();
-  //   this.selectedChessUI = undefined;
-  // }
 
   private handlePlayerTurnChanged(playerIndex: number) {
     this.yourTurnText?.destroy();
