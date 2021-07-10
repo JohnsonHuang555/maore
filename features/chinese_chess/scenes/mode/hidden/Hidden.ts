@@ -109,7 +109,14 @@ export default class Hidden extends Phaser.Scene {
         // TODO: add a component to the chess
         this.components.addComponent(
           chess,
-          new FlipChessComponent(this.server, id, x, y, this.handleFlipChess)
+          new FlipChessComponent(
+            this.server,
+            id,
+            x,
+            y,
+            this.handleFlipChess,
+            this.handleSelectChess
+          )
         );
 
         drawX += size + 28;
@@ -132,7 +139,6 @@ export default class Hidden extends Phaser.Scene {
 
   private handleFlipChess = (component: FlipChessComponent) => {
     const { x, y } = component.getLocation();
-    console.log(x, y);
     const chessInfo = this.chessesDictionary[`${x},${y}`];
     const selected = this.getAt(x, y);
     const timeline = this.tweens.timeline({
@@ -157,6 +163,39 @@ export default class Hidden extends Phaser.Scene {
     });
 
     timeline.play();
+  };
+
+  private handleSelectChess = (component: FlipChessComponent) => {
+    const { x, y } = component.getLocation();
+    const selected = this.getAt(x, y);
+
+    const primaryColor = Phaser.Display.Color.ValueToColor(0xff0000);
+    const secondColor = Phaser.Display.Color.ValueToColor(0x00ff00);
+
+    this.tweens.addCounter({
+      from: 0,
+      to: 100,
+      duration: 500,
+      ease: Phaser.Math.Easing.Sine.InOut,
+      repeat: -1,
+      yoyo: true,
+      onUpdate: (tween) => {
+        const value = tween.getValue();
+        const colorObject = Phaser.Display.Color.Interpolate.ColorWithColor(
+          primaryColor,
+          secondColor,
+          100,
+          value
+        );
+
+        const color = Phaser.Display.Color.GetColor(
+          colorObject.r,
+          colorObject.g,
+          colorObject.b
+        );
+        selected.chess.setTint(color);
+      },
+    });
   };
 
   private handlePlayerTurnChanged(playerIndex: number) {

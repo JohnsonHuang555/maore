@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-
 import { IComponent } from 'features/base/services/ComponentService';
 import ChineseChessServer from '../ChineseChessServer';
 
@@ -10,20 +9,24 @@ export class FlipChessComponent implements IComponent {
   private id: number;
   private x: number;
   private y: number;
+  private isFlipped: boolean = false;
   private onFlip: (component: FlipChessComponent) => void;
+  private onSelect: (component: FlipChessComponent) => void;
 
   constructor(
     server: ChineseChessServer,
     id: number,
     x: number,
     y: number,
-    onFlip: (component: FlipChessComponent) => void
+    onFlip: (component: FlipChessComponent) => void,
+    onSelect: (component: FlipChessComponent) => void
   ) {
     this.server = server;
     this.id = id;
     this.x = x;
     this.y = y;
     this.onFlip = onFlip;
+    this.onSelect = onSelect;
   }
 
   init(go: Phaser.GameObjects.GameObject) {
@@ -35,7 +38,7 @@ export class FlipChessComponent implements IComponent {
       .setInteractive()
       .on(
         Phaser.Input.Events.GAMEOBJECT_POINTER_UP,
-        this.handleFlipChess,
+        this.handleClickChess,
         this
       );
   }
@@ -43,6 +46,7 @@ export class FlipChessComponent implements IComponent {
   update() {
     const changedChessInfo = this.server.changedChessInfo;
     if (changedChessInfo && changedChessInfo.chessInfo.id === this.id) {
+      this.isFlipped = true;
       this.server.clearChangedChessInfo();
       this.onFlip(this);
     }
@@ -51,7 +55,7 @@ export class FlipChessComponent implements IComponent {
   destroy() {
     this.gameObject.off(
       Phaser.Input.Events.GAMEOBJECT_POINTER_UP,
-      this.handleFlipChess,
+      this.handleClickChess,
       this
     );
   }
@@ -68,10 +72,14 @@ export class FlipChessComponent implements IComponent {
     };
   }
 
-  private handleFlipChess() {
+  private handleClickChess() {
     if (this.server.isYourTurn) {
-      // this.onFlip(this);
-      this.server.flipChess(this.id);
+      if (!this.isFlipped) {
+        this.server.flipChess(this.id);
+      } else {
+        // select chess
+        this.onSelect(this);
+      }
     }
   }
 }
