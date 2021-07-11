@@ -3,7 +3,7 @@ import { Dispatcher } from '@colyseus/command';
 import { Metadata } from '../../models/Room';
 import ChessGameState from './ChessGameState';
 import BaseRoom from '../../server/room';
-import { ChessMessage } from '../../models/messages/ChessMessage';
+import { ChessMessage } from '../../features/chess/model/ChessMessage';
 import CreateGameCommand from './commands/CreateGameCommand';
 import ResetCommand from './commands/ResetCommand';
 

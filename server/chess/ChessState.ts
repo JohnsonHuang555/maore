@@ -19,13 +19,17 @@ export class ChessState extends Schema implements Chess {
   @type('string')
   side: Side;
 
+  @type('boolean')
+  alive: boolean;
+
   constructor(data: Payload) {
     super();
-    const { id, x, y, name, side } = data;
+    const { id, x, y, name, side, alive } = data;
     this.id = id;
     this.x = x;
     this.y = y;
     this.name = name;
     this.side = side;
+    this.alive = alive;
   }
 }

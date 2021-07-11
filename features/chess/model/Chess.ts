@@ -4,6 +4,7 @@ export type Chess = {
   y: ChessRowName;
   side: Side;
   name: ChessName;
+  alive: boolean;
 }
 
 export enum Side {
