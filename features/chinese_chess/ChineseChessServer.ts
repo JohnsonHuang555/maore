@@ -4,6 +4,7 @@ import { ChineseChessMessage } from 'features/chinese_chess/models/ChineseChessM
 import { GameMode } from './models/ChinesChessMode';
 import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
 import { sharedInstance as events } from 'features/base/EventCenter';
+import { RoomMessage } from 'models/Message';
 
 export type ChangedChessInfo = {
   actionType: ChineseChessMessage;
@@ -82,7 +83,7 @@ export default class ChineseChessServer extends BaseServer {
 
   getGameData() {
     const mode = this.roomInfo.gameMode as GameMode;
-    this.room.send(ChineseChessMessage.CreateGame, {
+    this.room.send(RoomMessage.CreateGame, {
       mode,
     });
   }
@@ -97,6 +98,7 @@ export default class ChineseChessServer extends BaseServer {
   }
 
   eatChess(targetId: number) {
+    console.log(targetId, 'asd');
     this.room.send(ChineseChessMessage.EatChess, {
       id: this.selectedChessId,
       targetId,

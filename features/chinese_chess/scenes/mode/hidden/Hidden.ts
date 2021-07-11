@@ -11,7 +11,7 @@ import ComponentService from 'features/base/services/ComponentService';
 import { ChessComponent } from 'features/chinese_chess/components/ChessComponent';
 
 const MAX_PLAYERS = 2;
-const GroupText: any = {
+const GroupText: { [key: string]: string } = {
   [ChineseChessGroup.Black]: '黑方',
   [ChineseChessGroup.Red]: '紅方',
 };
