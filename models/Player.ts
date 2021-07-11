@@ -6,5 +6,5 @@ export type Player = {
   playerIndex: number;
   playerOrder: number;
   gameLoaded: boolean;
-  group: number;
+  group: string;
 };

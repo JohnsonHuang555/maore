@@ -31,8 +31,8 @@ export class PlayerState extends Schema {
   gameLoaded: boolean = false;
 
   // 組別
-  @type('number')
-  group: number = -1;
+  @type('string')
+  group: string = '';
 
   constructor(data: Payload) {
     super();
