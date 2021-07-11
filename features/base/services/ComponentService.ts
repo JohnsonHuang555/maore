@@ -53,8 +53,7 @@ export default class ComponentService {
     if (!components) {
       return null;
     }
-
-    return components.find((component) => components instanceof componentType);
+    return components.find((component) => component instanceof componentType);
   }
 
   destroy() {

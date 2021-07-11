@@ -4,7 +4,7 @@ import ChineseChessServer from '../ChineseChessServer';
 import { ChessInfo } from '../models/ChineseChessState';
 import { ChineseChessGroupMap } from '../models/ChineseChessGroup';
 
-export class FlipChessComponent implements IComponent {
+export class ChessComponent implements IComponent {
   private gameObject!: Phaser.GameObjects.GameObject;
 
   private server: ChineseChessServer;
@@ -12,16 +12,16 @@ export class FlipChessComponent implements IComponent {
   private x: number;
   private y: number;
   private isFlipped: boolean = false;
-  private onFlip: (component: FlipChessComponent) => void;
-  private onSelect: (component: FlipChessComponent) => void;
+  private onFlip: (component: ChessComponent) => void;
+  private onSelect: (component: ChessComponent) => void;
 
   constructor(
     server: ChineseChessServer,
     chessInfo: ChessInfo,
     x: number,
     y: number,
-    onFlip: (component: FlipChessComponent) => void,
-    onSelect: (component: FlipChessComponent) => void
+    onFlip: (component: ChessComponent) => void,
+    onSelect: (component: ChessComponent) => void
   ) {
     this.server = server;
     this.chessInfo = chessInfo;
@@ -36,6 +36,7 @@ export class FlipChessComponent implements IComponent {
   }
 
   awake() {
+    // FIXME: 修正點選區域
     this.gameObject
       .setInteractive({ useHandCursor: true })
       .on(
