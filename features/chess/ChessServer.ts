@@ -1,6 +1,7 @@
 import BaseServer from 'features/base/BaseServer';
 import { ChessMessage } from 'models/messages/ChessMessage';
 import { Chess } from './model/Chess';
+import { sharedInstance as events } from 'features/base/EventCenter';
 
 const TOTAL_CHESS_COUNT = 32;
 
@@ -25,11 +26,11 @@ export default class Server extends BaseServer {
   }
 
   onGameDataLoaded(cb: (chesses: Chess[]) => void, context?: any) {
-    this.events.on('game-data-loaded', cb, context);
+    events.on('game-data-loaded', cb, context);
   }
 
   onChessChanged(cb: (cell: number, index: number) => void, context?: any) {
-    this.events.on('board-changed', cb, context);
+    events.on('board-changed', cb, context);
   }
 
   private handleStateChange() {
@@ -54,13 +55,13 @@ export default class Server extends BaseServer {
       });
 
       if (idx === TOTAL_CHESS_COUNT - 1) {
-        this.events.emit('game-data-loaded', chesses);
+        events.emit('game-data-loaded', chesses);
       }
     };
   
 
     this.room.state.chesses.onChange = (item, idx) => {
-      this.events.emit('board-changed', item, idx);
+      events.emit('board-changed', item, idx);
     };
   }
 }
