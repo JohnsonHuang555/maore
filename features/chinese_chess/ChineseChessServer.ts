@@ -44,7 +44,7 @@ export default class ChineseChessServer extends BaseServer {
     return this.playerInfo.group;
   }
 
-  setSelectedChessId(id: number) {
+  setSelectedChessId(id: number | undefined) {
     this.selectedChessId = id;
   }
 
@@ -89,6 +89,7 @@ export default class ChineseChessServer extends BaseServer {
 
   flipChess(id: number) {
     this.room.send(ChineseChessMessage.FlipChess, { id });
+    this.setSelectedChessId(undefined);
   }
 
   moveChess(id: number, targetX: number, targetY: number) {

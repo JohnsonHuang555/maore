@@ -6,7 +6,10 @@ import {
   PlayerGroup,
 } from 'features/chinese_chess/models/ChineseChessScene';
 import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
-import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
+import {
+  ChineseChessGroup,
+  ChineseChessGroupMap,
+} from 'features/chinese_chess/models/ChineseChessGroup';
 import { sharedInstance as events } from 'features/base/EventCenter';
 import ComponentService from 'features/base/services/ComponentService';
 import { FlipChessComponent } from 'features/chinese_chess/components/FlipChessComponent';
@@ -104,14 +107,14 @@ export default class Hidden extends Phaser.Scene {
           .setDisplaySize(120, 120);
 
         this.chesses.push(chess);
-        const { id } = this.chessesDictionary[`${x},${y}`];
+        const chessInfo = this.chessesDictionary[`${x},${y}`];
 
         // TODO: add a component to the chess
         this.components.addComponent(
           chess,
           new FlipChessComponent(
             this.server,
-            id,
+            chessInfo,
             x,
             y,
             this.handleFlipChess,
@@ -139,7 +142,7 @@ export default class Hidden extends Phaser.Scene {
 
   private handleFlipChess = (component: FlipChessComponent) => {
     const { x, y } = component.getLocation();
-    const chessInfo = this.chessesDictionary[`${x},${y}`];
+    const { name } = this.chessesDictionary[`${x},${y}`];
     const selected = this.getAt(x, y);
     const timeline = this.tweens.timeline({
       onComplete: () => {
@@ -152,7 +155,7 @@ export default class Hidden extends Phaser.Scene {
       scale: 0,
       duration: 100,
       onComplete: () => {
-        selected.chess.setTexture('chess', `${chessInfo.name}.png`);
+        selected.chess.setTexture('chess', `${name}.png`);
       },
     });
 
@@ -169,8 +172,8 @@ export default class Hidden extends Phaser.Scene {
     const { x, y } = component.getLocation();
     const selected = this.getAt(x, y);
 
-    const primaryColor = Phaser.Display.Color.ValueToColor(0xff0000);
-    const secondColor = Phaser.Display.Color.ValueToColor(0x00ff00);
+    const primaryColor = Phaser.Display.Color.ValueToColor(0xe0978b);
+    const secondColor = Phaser.Display.Color.ValueToColor(0xeeeeee);
 
     this.tweens.addCounter({
       from: 0,
