@@ -12,5 +12,5 @@ export type GameSceneData = {
 export type PlayerGroup = {
   id: string;
   playerName: string;
-  group: ChineseChessGroup;
+  group: ChineseChessGroup | string;
 };

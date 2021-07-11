@@ -41,7 +41,7 @@ export default class ChineseChessServer extends BaseServer {
   }
 
   get yourGroup(): ChineseChessGroup {
-    return this.playerInfo.group;
+    return this.playerInfo.group as ChineseChessGroup;
   }
 
   setSelectedChessId(id: number | undefined) {

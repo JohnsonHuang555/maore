@@ -82,7 +82,7 @@ export default class BaseServer {
   }
 
   onPlayerGroupChanged(
-    cb: (groups: { id: string; playerName: string; group: number }[]) => void,
+    cb: (groups: { id: string; playerName: string; group: string }[]) => void,
     context?: any
   ) {
     events.on('player-group-changed', cb, context);
@@ -102,7 +102,7 @@ export default class BaseServer {
       events.removeAllListeners();
     }
     const playerGroupChanged = players
-      .filter((p) => p.group !== -1)
+      .filter((p) => p.group !== '')
       .map((p) => ({ id: p.id, playerName: p.name, group: p.group }));
     events.emit('player-group-changed', playerGroupChanged);
     events.emit('is-all-players-loaded', isAllPlayersLoaded);

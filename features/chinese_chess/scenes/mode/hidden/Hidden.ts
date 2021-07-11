@@ -15,7 +15,7 @@ import ComponentService from 'features/base/services/ComponentService';
 import { FlipChessComponent } from 'features/chinese_chess/components/FlipChessComponent';
 
 const MAX_PLAYERS = 2;
-const GroupText = {
+const GroupText: any = {
   [ChineseChessGroup.Black]: '黑方',
   [ChineseChessGroup.Red]: '紅方',
 };

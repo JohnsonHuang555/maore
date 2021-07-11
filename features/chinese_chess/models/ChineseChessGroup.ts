@@ -1,8 +1,8 @@
 import { ChessSide } from './ChineseChess';
 
 export enum ChineseChessGroup {
-  Black,
-  Red,
+  Black = 'black',
+  Red = 'red',
 }
 
 export const ChineseChessGroupMap = {

@@ -2,12 +2,12 @@ import { Command } from '@colyseus/command';
 import RoomState from '../state/RoomState';
 
 type Payload = {
-  allGroups: number[];
-  needSetGroup: number;
+  allGroups: string[];
+  needSetGroup: string;
   playerId: string;
 };
 
-const NO_VALUE = -1;
+const NO_VALUE = '';
 export default class UpdatePlayerGroupCommand extends Command<RoomState> {
   execute(data: Payload) {
     const { allGroups, playerId, needSetGroup } = data;

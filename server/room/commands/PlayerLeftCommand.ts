@@ -30,7 +30,7 @@ export default class PlayerLeftCommand extends Command<RoomState> {
       this.room.state.players[i].playerIndex = i;
       this.room.state.players[i].playerOrder = -1;
       this.room.state.players[i].gameLoaded = false;
-      this.room.state.players[i].group = -1;
+      this.room.state.players[i].group = '';
     }
   }
 }
