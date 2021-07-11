@@ -1,4 +1,4 @@
-import { TicTacToeMessage } from 'models/messages/TicTacToeMessage';
+import { TicTacToeMessage } from 'features/tictactoe/models/TicTacToeMessage';
 import BaseServer from 'features/base/BaseServer';
 
 // 監聽與傳送給後端資料

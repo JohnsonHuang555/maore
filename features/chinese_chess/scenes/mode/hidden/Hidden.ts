@@ -10,35 +10,39 @@ import {
   ChineseChessGroup,
   ChineseChessGroupMap,
 } from 'features/chinese_chess/models/ChineseChessGroup';
-import ChessController from 'features/chinese_chess/controllers/ChessController';
+import { sharedInstance as events } from 'features/base/EventCenter';
+import ComponentService from 'features/base/services/ComponentService';
+import { FlipChessComponent } from 'features/chinese_chess/components/FlipChessComponent';
 
 const MAX_PLAYERS = 2;
 const GroupText = {
   [ChineseChessGroup.Black]: '黑方',
   [ChineseChessGroup.Red]: '紅方',
 };
+
 export default class Hidden extends Phaser.Scene {
+  private components!: ComponentService;
   private server!: Server;
   private onGameOver!: (data: GameOverSceneData) => void;
-  private board: {
-    cell: Phaser.GameObjects.Rectangle;
-    chessImage: Phaser.GameObjects.Image | undefined;
-    chessInfo: ChessInfo | undefined;
-    isSelect: boolean;
-  }[] = [];
   private selectedChessUI?: Phaser.GameObjects.Arc;
   private yourGroupText?: Phaser.GameObjects.Text;
   private otherGroupText?: Phaser.GameObjects.Text;
   private yourTurnText?: Phaser.GameObjects.Text;
   private chessesDictionary: { [key: string]: ChessInfo } = {};
-  private chesses: ChessController[] = [];
+  private chesses: Phaser.GameObjects.Image[] = [];
 
   constructor() {
     super('hidden');
   }
 
   init() {
-    this.chesses = [];
+    // create components service
+    this.components = new ComponentService();
+
+    // TODO: clean up components on scene shutdown
+    this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.components.destroy();
+    });
   }
 
   preload() {
@@ -59,6 +63,9 @@ export default class Hidden extends Phaser.Scene {
       throw new Error('server instance missing');
     }
 
+    // FIXME: 有沒有更好的做法
+    this.server.clearChangedChessInfo();
+
     // 在開始遊戲時，決定遊玩順序，由房主決定
     if (this.server.playerInfo.isMaster) {
       this.server.createPlayerOrder();
@@ -70,109 +77,134 @@ export default class Hidden extends Phaser.Scene {
     chineseChesses.forEach((chess) => {
       this.chessesDictionary[`${chess.locationX},${chess.locationY}`] = chess;
     });
+
     this.createBoard();
+
+    // events.on('select-chess', this.handleSelectChess, this);
+    // events.on('clear-selected-chess-ui', this.handleClearSelectedChessUI, this);
+  }
+
+  update(t: number, dt: number) {
+    // TODO: update components
+    this.components.update(dt);
   }
 
   private createBoard = () => {
     const { width, height } = this.scale;
     const offsetX = 548;
     const offsetY = 235;
-    const cellSize = 128;
+    const size = 128;
     let drawX = width * 0.5 - offsetX;
     let drawY = height * 0.5 - offsetY;
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 8; x++) {
-        const chessInfo = this.chessesDictionary[`${x},${y}`];
-        // const { alive, id } = chessInfo;
-        // const cell = this.add
-        //   .rectangle(drawX, drawY, size, size, 0xffffff, 0)
-        //   .setInteractive()
-        //   .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-        //     // if () {
-        //     //   this.server.moveChess(id, x, y)
-        //     // }
-        //   });
-        this.chesses.push(
-          new ChessController(this, chessInfo, drawX, drawY, cellSize)
-        );
-        // const chessImage = this.add
-        //   .image(cell.x, cell.y, 'chess', 'hidden.png')
-        //   .setDisplaySize(120, 120)
-        //   .setInteractive()
-        //   .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-        //     this.server.flipChess(id);
-        //   });
+        const cell = this.add
+          .rectangle(drawX, drawY, size, size, 0xffffff, 0)
+          .setInteractive();
 
-        // this.board.push({
-        //   cell,
-        //   chessImage: alive ? chessImage : undefined,
-        //   chessInfo: alive ? chessInfo : undefined,
-        //   isSelect: false,
-        // });
-        drawX += cellSize + 28;
+        const chess = this.add
+          .sprite(cell.x, cell.y, 'chess', 'hidden.png')
+          .setDisplaySize(120, 120);
+
+        this.chesses.push(chess);
+        const chessInfo = this.chessesDictionary[`${x},${y}`];
+
+        // TODO: add a component to the chess
+        this.components.addComponent(
+          chess,
+          new FlipChessComponent(
+            this.server,
+            chessInfo,
+            x,
+            y,
+            this.handleFlipChess,
+            this.handleSelectChess
+          )
+        );
+
+        drawX += size + 28;
       }
-      drawY += cellSize + 28;
+      drawY += size + 28;
       drawX = width * 0.5 - offsetX;
     }
 
-    this.server.onBoardChanged(this.handleBoardChanged, this);
     this.server.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
     this.server.onPlayerGroupChanged(this.handlePlayerGroupChanged, this);
   };
 
-  // 棋盤更新
-  private handleBoardChanged(chessInfo: Partial<ChessInfo>) {
-    // 拿到新的棋子更新到棋盤上
-    this.board.forEach((b) => {
-      if (b.chessInfo && b.chessImage && b.chessInfo.id === chessInfo.id) {
-        // 刪除原本的圖
-        b.chessImage.destroy();
-        // 放上新的圖
-        b.chessImage = this.add
-          .image(b.cell.x, b.cell.y, 'chess', `${b.chessInfo.name}.png`)
-          .setDisplaySize(120, 120)
-          .setInteractive()
-          .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-            if (
-              b.chessInfo &&
-              this.server.yourGroup ===
-                ChineseChessGroupMap[b.chessInfo.chessSide]
-            ) {
-              this.selectedChessUI?.destroy();
-              this.selectedChessUI = undefined;
-              this.server.setSelectedChessId(b.chessInfo.id as number);
-              this.selectedChessUI = this.add.circle(
-                b.cell.x,
-                b.cell.y - 1.8,
-                50,
-                0xe05b5b,
-                0.3
-              );
-            } else if (
-              b.chessInfo &&
-              this.server.selectedChessId &&
-              this.server.yourGroup !==
-                ChineseChessGroupMap[b.chessInfo.chessSide]
-            ) {
-              this.selectedChessUI?.destroy();
-              this.selectedChessUI = undefined;
-              this.server.eatChess(b.chessInfo.id as number);
-            }
-          });
-        b.chessInfo = {
-          ...b.chessInfo,
-          ...chessInfo,
-        };
-        return;
-      }
-    });
+  private getAt(x: number, y: number) {
+    const index = y * 8 + x;
+    return {
+      chess: this.chesses[index],
+      index,
+    };
   }
 
+  private handleFlipChess = (component: FlipChessComponent) => {
+    const { x, y } = component.getLocation();
+    const { name } = this.chessesDictionary[`${x},${y}`];
+    const selected = this.getAt(x, y);
+    const timeline = this.tweens.timeline({
+      onComplete: () => {
+        timeline.destroy();
+      },
+    });
+
+    timeline.add({
+      targets: selected.chess,
+      scale: 0,
+      duration: 100,
+      onComplete: () => {
+        selected.chess.setTexture('chess', `${name}.png`);
+      },
+    });
+
+    timeline.add({
+      targets: selected.chess,
+      scale: 0.34,
+      duration: 100,
+    });
+
+    timeline.play();
+  };
+
+  private handleSelectChess = (component: FlipChessComponent) => {
+    const { x, y } = component.getLocation();
+    const selected = this.getAt(x, y);
+
+    const primaryColor = Phaser.Display.Color.ValueToColor(0xe0978b);
+    const secondColor = Phaser.Display.Color.ValueToColor(0xeeeeee);
+
+    this.tweens.addCounter({
+      from: 0,
+      to: 100,
+      duration: 500,
+      ease: Phaser.Math.Easing.Sine.InOut,
+      repeat: -1,
+      yoyo: true,
+      onUpdate: (tween) => {
+        const value = tween.getValue();
+        const colorObject = Phaser.Display.Color.Interpolate.ColorWithColor(
+          primaryColor,
+          secondColor,
+          100,
+          value
+        );
+
+        const color = Phaser.Display.Color.GetColor(
+          colorObject.r,
+          colorObject.g,
+          colorObject.b
+        );
+        selected.chess.setTint(color);
+      },
+    });
+  };
+
   private handlePlayerTurnChanged(playerIndex: number) {
-    if (
-      this.server.playerInfo.playerIndex === playerIndex &&
-      !this.yourTurnText
-    ) {
+    this.yourTurnText?.destroy();
+    this.yourTurnText = undefined;
+    if (this.server.playerInfo.playerIndex === playerIndex) {
       const { width } = this.scale;
       this.yourTurnText = this.add.text(width * 0.5, 50, '你的回合', {
         fontSize: '30px',
@@ -181,9 +213,6 @@ export default class Hidden extends Phaser.Scene {
           top: 5,
         },
       });
-    } else {
-      this.yourTurnText?.destroy();
-      this.yourTurnText = undefined;
     }
   }
 
