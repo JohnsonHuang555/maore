@@ -27,6 +27,7 @@
     "redux": "^4.1.0",
     "redux-devtools-extension": "^2.13.9",
     "sass": "^1.32.13",
+    "short-uuid": "^4.2.0",
     "swr": "^0.5.6"
   },
   "devDependencies": {

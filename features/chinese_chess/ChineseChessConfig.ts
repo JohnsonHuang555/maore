@@ -1,6 +1,6 @@
 import { GameInstance } from '@ion-phaser/react';
 import Bootstrap from './scenes/Bootstrap';
-import Hidden from './scenes/mode/Hidden';
+import Hidden from './scenes/mode/hidden/Hidden';
 
 // 遊戲設定
 export const ChineseChessConfig: GameInstance = {
@@ -12,9 +12,11 @@ export const ChineseChessConfig: GameInstance = {
     mode: Phaser.Scale.ScaleModes.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  // physics: {
-  //   arcade: {
-  //     debug: true,
-  //   },
-  // },
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 0 },
+      debug: false,
+    },
+  },
 };
