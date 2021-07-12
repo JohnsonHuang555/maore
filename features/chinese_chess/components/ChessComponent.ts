@@ -3,6 +3,7 @@ import { IComponent } from 'features/base/services/ComponentService';
 import ChineseChessServer from '../ChineseChessServer';
 import { ChessInfo } from '../models/ChineseChessState';
 import { ChineseChessGroupMap } from '../models/ChineseChessGroup';
+import { ChineseChessMessage } from '../models/ChineseChessMessage';
 
 export class ChessComponent implements IComponent {
   private gameObject!: Phaser.GameObjects.GameObject;
@@ -52,9 +53,20 @@ export class ChessComponent implements IComponent {
       changedChessInfo &&
       changedChessInfo.chessInfo.id === this.chessInfo.id
     ) {
-      this.isFlipped = true;
+      const { actionType, chessInfo } = changedChessInfo;
+      switch (actionType) {
+        case ChineseChessMessage.FlipChess:
+          this.isFlipped = true;
+          this.onFlip(this);
+          break;
+        case ChineseChessMessage.EatChess:
+          // eat
+          console.log('eat..', chessInfo);
+          break;
+        case ChineseChessMessage.MoveChess:
+          break;
+      }
       this.server.clearChangedChessInfo();
-      this.onFlip(this);
     }
   }
 
