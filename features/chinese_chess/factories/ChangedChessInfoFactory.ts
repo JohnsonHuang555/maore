@@ -41,6 +41,7 @@ export default class ChangedChessInfoFactory {
             chessInfo: { id: chessInfo.id },
           };
         } else {
+          console.log(chessInfo, 'changed...');
           if (chessInfo.alive !== undefined) {
             this.tempChessInfo = {
               targetId: chessInfo.id,

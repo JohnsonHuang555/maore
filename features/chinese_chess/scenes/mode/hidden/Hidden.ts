@@ -117,7 +117,9 @@ export default class Hidden extends Phaser.Scene {
             x,
             y,
             this.handleFlipChess,
-            this.handleSelectChess
+            this.handleSelectChess,
+            this.handleRemoveChess,
+            this.handleMoveChess
           )
         );
 
@@ -205,6 +207,37 @@ export default class Hidden extends Phaser.Scene {
       },
     });
     selected.tween = tween;
+  };
+
+  private handleRemoveChess = (component: ChessComponent) => {
+    // TODO: animate??
+    this.clearSelectedChessUI();
+    const { x, y } = component.getLocation();
+    const selected = this.getAt(x, y);
+    selected.sprite.destroy();
+    console.log('remove');
+  };
+
+  private handleMoveChess = (
+    component: ChessComponent,
+    locationX: number,
+    locationY: number
+  ) => {
+    this.clearSelectedChessUI();
+    const { x, y } = component.getLocation();
+    const selected = this.getAt(x, y);
+    const duration = 300;
+    const ease = Phaser.Math.Easing.Back.Out;
+    this.tweens.add({
+      targets: selected.sprite,
+      x: locationX,
+      y: locationY,
+      duration,
+      ease,
+      onComplete: () => {
+        component.setLoaction(locationX, locationY);
+      },
+    });
   };
 
   private clearSelectedChessUI() {

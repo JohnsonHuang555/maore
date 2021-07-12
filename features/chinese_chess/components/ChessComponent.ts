@@ -15,6 +15,12 @@ export class ChessComponent implements IComponent {
   private isFlipped: boolean = false;
   private onFlip: (component: ChessComponent) => void;
   private onSelect: (component: ChessComponent) => void;
+  private onRemove: (component: ChessComponent) => void;
+  private onMove: (
+    component: ChessComponent,
+    locationX: number,
+    locationY: number
+  ) => void;
 
   constructor(
     server: ChineseChessServer,
@@ -22,7 +28,13 @@ export class ChessComponent implements IComponent {
     x: number,
     y: number,
     onFlip: (component: ChessComponent) => void,
-    onSelect: (component: ChessComponent) => void
+    onSelect: (component: ChessComponent) => void,
+    onRemove: (component: ChessComponent) => void,
+    onMove: (
+      component: ChessComponent,
+      locationX: number,
+      locationY: number
+    ) => void
   ) {
     this.server = server;
     this.chessInfo = chessInfo;
@@ -30,6 +42,8 @@ export class ChessComponent implements IComponent {
     this.y = y;
     this.onFlip = onFlip;
     this.onSelect = onSelect;
+    this.onRemove = onRemove;
+    this.onMove = onMove;
   }
 
   init(go: Phaser.GameObjects.GameObject) {
@@ -49,23 +63,30 @@ export class ChessComponent implements IComponent {
 
   update() {
     const changedChessInfo = this.server.changedChessInfo;
-    if (
-      changedChessInfo &&
-      changedChessInfo.chessInfo.id === this.chessInfo.id
-    ) {
+    if (changedChessInfo?.chessInfo.id === this.chessInfo.id) {
       const { actionType, chessInfo } = changedChessInfo;
       switch (actionType) {
-        case ChineseChessMessage.FlipChess:
+        case ChineseChessMessage.FlipChess: {
           this.isFlipped = true;
           this.onFlip(this);
           break;
+        }
         case ChineseChessMessage.EatChess:
-          // eat
-          console.log('eat..', chessInfo);
+        case ChineseChessMessage.MoveChess: {
+          if (chessInfo.locationX) {
+            this.onMove(this, chessInfo.locationX, this.chessInfo.locationY);
+          } else if (chessInfo.locationY) {
+            this.onMove(this, chessInfo.locationY, this.chessInfo.locationY);
+          }
           break;
-        case ChineseChessMessage.MoveChess:
-          break;
+        }
       }
+      this.server.clearChangedChessInfo();
+    } else if (
+      changedChessInfo?.chessInfo.targetId === this.chessInfo.id &&
+      changedChessInfo.actionType === ChineseChessMessage.EatChess
+    ) {
+      this.onRemove(this);
       this.server.clearChangedChessInfo();
     }
   }
@@ -76,6 +97,11 @@ export class ChessComponent implements IComponent {
       this.handleClickChess,
       this
     );
+  }
+
+  setLoaction(x: number, y: number) {
+    this.x = x;
+    this.y = y;
   }
 
   getLocation() {
