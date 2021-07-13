@@ -23,6 +23,7 @@ export default class ChineseChessServer extends BaseServer {
   public selectedChessId?: number;
   // 當更新棋子時，會有值
   public changedChessInfo?: ChangedChessInfo;
+  private chineseChesses: ChessInfo[] = [];
 
   constructor() {
     super();
@@ -39,6 +40,7 @@ export default class ChineseChessServer extends BaseServer {
 
   setChangedChessInfo(chessInfo: Partial<ChessInfo>) {
     this.changedChessInfo = ChangedChessInfoFactory.getChangedChessInfo(
+      this.chineseChesses,
       chessInfo,
       this.roomInfo.gameMode as GameMode
     );
@@ -78,9 +80,8 @@ export default class ChineseChessServer extends BaseServer {
   }
 
   private handleStateChange() {
-    const chineseChesses: ChessInfo[] = [];
     this.room.state.chineseChesses.onAdd = (chessInfo) => {
-      chineseChesses.push({
+      this.chineseChesses.push({
         id: chessInfo.id,
         chessSide: chessInfo.chessSide,
         name: chessInfo.name,
@@ -91,8 +92,8 @@ export default class ChineseChessServer extends BaseServer {
         alive: chessInfo.alive,
       });
 
-      if (chineseChesses.length === TOTAL_CHESS_COUNT) {
-        events.emit('game-data-loaded', chineseChesses);
+      if (this.chineseChesses.length === TOTAL_CHESS_COUNT) {
+        events.emit('game-data-loaded', this.chineseChesses);
       }
       chessInfo.onChange = (changes) => {
         changes.forEach((change) => {
