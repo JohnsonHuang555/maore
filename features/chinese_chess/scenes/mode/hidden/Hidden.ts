@@ -16,9 +16,10 @@ const GroupText: { [key: string]: string } = {
   [ChineseChessGroup.Red]: '紅方',
 };
 
-type ChessUI = {
+type Chess = {
+  id: number;
+  name: string;
   sprite: Phaser.GameObjects.Sprite;
-  tween?: Phaser.Tweens.Tween;
 };
 
 export default class Hidden extends Phaser.Scene {
@@ -29,18 +30,15 @@ export default class Hidden extends Phaser.Scene {
   private otherGroupText?: Phaser.GameObjects.Text;
   private yourTurnText?: Phaser.GameObjects.Text;
   private chessesDictionary: { [key: string]: ChessInfo } = {};
-  private chesses: ChessUI[] = [];
-  private prevSelectedChessLocation?: { x: number; y: number };
+  private chesses: Chess[] = [];
+  private prevSelectedChessId?: number;
 
   constructor() {
     super('hidden');
   }
 
   init() {
-    // create components service
     this.components = new ComponentService();
-
-    // TODO: clean up components on scene shutdown
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.components.destroy();
     });
@@ -76,6 +74,7 @@ export default class Hidden extends Phaser.Scene {
     const map = this.add.image(width * 0.5, height * 0.5, 'map');
     map.setScale(0.75);
     chineseChesses.forEach((chess) => {
+      // TODO: 需要更新
       this.chessesDictionary[`${chess.locationX},${chess.locationY}`] = chess;
     });
 
@@ -84,7 +83,6 @@ export default class Hidden extends Phaser.Scene {
 
   // FPS 60
   update(t: number, dt: number) {
-    // TODO: update components
     this.components.update(dt);
   }
 
@@ -97,25 +95,29 @@ export default class Hidden extends Phaser.Scene {
     let drawY = height * 0.5 - offsetY;
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 8; x++) {
+        // 格子
         const cell = this.add
           .rectangle(drawX, drawY, size, size, 0xffffff, 0)
           .setInteractive();
 
-        const chess = this.add
+        // 棋子
+        const chessSprite = this.add
           .sprite(cell.x, cell.y, 'chess', 'hidden.png')
           .setDisplaySize(120, 120);
+        // .setSize(size, size);
 
-        this.chesses.push({ sprite: chess });
         const chessInfo = this.chessesDictionary[`${x},${y}`];
+        this.chesses.push({
+          id: chessInfo.id,
+          name: chessInfo.name,
+          sprite: chessSprite,
+        });
 
-        // TODO: add a component to the chess
         this.components.addComponent(
-          chess,
+          chessSprite,
           new ChessComponent(
             this.server,
             chessInfo,
-            x,
-            y,
             this.handleFlipChess,
             this.handleSelectChess,
             this.handleRemoveChess,
@@ -133,17 +135,21 @@ export default class Hidden extends Phaser.Scene {
     this.server.onPlayerGroupChanged(this.handlePlayerGroupChanged, this);
   };
 
-  private getAt(x: number, y: number): ChessUI {
-    const index = y * 8 + x;
-    return this.chesses[index];
+  private getChessById(id: number): { chess: Chess; index: number } {
+    const chessIndex = this.chesses.findIndex((c) => c.id === id);
+    if (chessIndex === -1) {
+      throw new Error('Chess not found');
+    }
+    return {
+      chess: this.chesses[chessIndex],
+      index: chessIndex,
+    };
   }
 
-  private handleFlipChess = (component: ChessComponent) => {
+  private handleFlipChess = (id: number) => {
     // 清除之前選的
     this.clearSelectedChessUI();
-    const { x, y } = component.getLocation();
-    const { name } = this.chessesDictionary[`${x},${y}`];
-    const selected = this.getAt(x, y);
+    const { chess } = this.getChessById(id);
     const timeline = this.tweens.timeline({
       onComplete: () => {
         timeline.destroy();
@@ -151,16 +157,16 @@ export default class Hidden extends Phaser.Scene {
     });
 
     timeline.add({
-      targets: selected.sprite,
+      targets: chess.sprite,
       scale: 0,
       duration: 100,
       onComplete: () => {
-        selected.sprite.setTexture('chess', `${name}.png`);
+        chess.sprite.setTexture('chess', `${chess.name}.png`);
       },
     });
 
     timeline.add({
-      targets: selected.sprite,
+      targets: chess.sprite,
       scale: 0.34,
       duration: 100,
     });
@@ -168,21 +174,16 @@ export default class Hidden extends Phaser.Scene {
     timeline.play();
   };
 
-  private handleSelectChess = (component: ChessComponent) => {
+  private handleSelectChess = (id: number) => {
     // 清除之前選的
     this.clearSelectedChessUI();
-    const { x, y } = component.getLocation();
-    const selected = this.getAt(x, y);
-
-    this.prevSelectedChessLocation = {
-      x,
-      y,
-    };
+    const { chess } = this.getChessById(id);
+    this.prevSelectedChessId = id;
 
     const primaryColor = Phaser.Display.Color.ValueToColor(0xe0978b);
     const secondColor = Phaser.Display.Color.ValueToColor(0xeeeeee);
 
-    const tween = this.tweens.addCounter({
+    this.tweens.addCounter({
       from: 0,
       to: 100,
       duration: 500,
@@ -203,51 +204,72 @@ export default class Hidden extends Phaser.Scene {
           colorObject.g,
           colorObject.b
         );
-        selected.sprite.setTint(color);
+        chess.sprite.setTint(color);
       },
     });
-    selected.tween = tween;
   };
 
-  private handleRemoveChess = (targetX: number, targetY: number) => {
-    // TODO: animate??
+  private handleRemoveChess = (id: number) => {
     this.clearSelectedChessUI();
-    const selected = this.getAt(targetX, targetY);
-    selected.sprite.destroy();
+    const { chess, index } = this.getChessById(id);
+    this.tweens.add({
+      targets: chess.sprite,
+      scale: 0,
+      duration: 100,
+      onComplete: () => {
+        this.chesses.splice(index, 1);
+        chess.sprite.destroy();
+      },
+    });
   };
 
   private handleMoveChess = (
-    component: ChessComponent,
+    id: number,
     locationX: number,
     locationY: number
   ) => {
-    console.log(locationX, locationY);
-    this.clearSelectedChessUI();
-    const { x, y } = component.getLocation();
-    const selected = this.getAt(x, y);
-    const targetChess = this.getAt(locationX, locationY);
-    const duration = 300;
-    const ease = Phaser.Math.Easing.Back.Out;
-    this.tweens.add({
-      targets: selected.sprite,
-      x: targetChess.sprite.x,
-      y: targetChess.sprite.y,
-      duration,
-      ease,
-      onComplete: () => {
-        component.setLoaction(locationX, locationY);
-      },
-    });
+    // console.log('target', locationX, locationY);
+    // this.clearSelectedChessUI();
+    // const { x, y } = component.getLocation();
+    // console.log(x, y);
+    // const selected = this.getAt(x, y);
+    // const targetChess = this.getAt(locationX, locationY);
+    // const duration = 300;
+    // const ease = Phaser.Math.Easing.Back.Out;
+    // this.tweens.add({
+    //   targets: selected.chess,
+    //   x: targetChess.chess.x,
+    //   y: targetChess.chess.y,
+    //   duration,
+    //   ease,
+    //   onComplete: () => {
+    //     targetChess.chess.destroy();
+    //     this.chesses[selected.index] = targetChess.chess;
+    //     component.setLoaction(locationX, locationY);
+    //   },
+    // });
+    // this.tweens.add({
+    //   targets: targetChess.chess,
+    //   x: selected.chess.x,
+    //   y: selected.chess.y,
+    //   duration,
+    //   ease,
+    //   onComplete: () => {
+    //     this.chesses[targetChess.index] = selected.chess;
+    //     component.setLoaction(x, y);
+    //   },
+    // });
   };
 
   private clearSelectedChessUI() {
-    if (!this.prevSelectedChessLocation) {
+    this.tweens.killAll();
+
+    if (!this.prevSelectedChessId) {
       return;
     }
-    const { x, y } = this.prevSelectedChessLocation;
-    const selected = this.getAt(x, y);
-    selected.tween?.stop();
-    selected.sprite.clearTint();
+    const { chess } = this.getChessById(this.prevSelectedChessId);
+    chess.sprite.clearTint();
+    this.prevSelectedChessId = undefined;
   }
 
   private handlePlayerTurnChanged(playerIndex: number) {
