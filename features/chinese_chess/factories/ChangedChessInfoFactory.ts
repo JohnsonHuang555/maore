@@ -1,12 +1,9 @@
-import { GameMode } from '../models/ChinesChessMode';
 import { ChineseChessMessage } from '../models/ChineseChessMessage';
 import { ChessInfo } from '../models/ChineseChessState';
 
 type ChessInfoResponse = {
   id?: number;
   targetId?: number;
-  targetLocationX?: number;
-  targetLocationY?: number;
 };
 
 export type ChangedChessInfo = {
@@ -23,7 +20,6 @@ export default class ChangedChessInfoFactory {
   }
 
   static getChangedChessInfo(
-    chineseChesses: ChessInfo[],
     chessInfo: Partial<ChessInfo>
   ): ChangedChessInfo | undefined {
     if (!chessInfo.id) {
@@ -37,25 +33,15 @@ export default class ChangedChessInfoFactory {
       };
     } else {
       if (chessInfo.alive !== undefined && !chessInfo.alive) {
-        const { locationX, locationY, id } = chineseChesses.find(
-          (c) => c.id === chessInfo.id
-        ) as ChessInfo;
         this.tempChessInfo = {
-          targetId: id,
-          targetLocationX: locationX,
-          targetLocationY: locationY,
+          targetId: chessInfo.id,
         };
-      } else if (
-        this.tempChessInfo?.targetLocationX ||
-        this.tempChessInfo?.targetLocationY
-      ) {
+      } else if (this.tempChessInfo?.targetId) {
         return {
           actionType: ChineseChessMessage.EatChess,
           chessInfo: {
             id: chessInfo.id,
             targetId: this.tempChessInfo.targetId,
-            targetLocationX: this.tempChessInfo.targetLocationX,
-            targetLocationY: this.tempChessInfo.targetLocationY,
           },
         };
       } else {

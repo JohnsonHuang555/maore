@@ -103,7 +103,8 @@ export default class Hidden extends Phaser.Scene {
         // 棋子
         const chessSprite = this.add
           .sprite(cell.x, cell.y, 'chess', 'hidden.png')
-          .setDisplaySize(120, 120);
+          .setDisplaySize(120, 120)
+          .setDepth(1);
         // .setSize(size, size);
 
         const chessInfo = this.chessesDictionary[`${x},${y}`];
@@ -127,8 +128,8 @@ export default class Hidden extends Phaser.Scene {
 
         drawX += size + 28;
       }
-      drawY += size + 28;
       drawX = width * 0.5 - offsetX;
+      drawY += size + 28;
     }
 
     this.server.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
@@ -217,48 +218,26 @@ export default class Hidden extends Phaser.Scene {
       scale: 0,
       duration: 100,
       onComplete: () => {
-        this.chesses.splice(index, 1);
+        chess.sprite.removeAllListeners();
         chess.sprite.destroy();
+        this.chesses.splice(index, 1);
       },
     });
   };
 
-  private handleMoveChess = (
-    id: number,
-    locationX: number,
-    locationY: number
-  ) => {
-    // console.log('target', locationX, locationY);
-    // this.clearSelectedChessUI();
-    // const { x, y } = component.getLocation();
-    // console.log(x, y);
-    // const selected = this.getAt(x, y);
-    // const targetChess = this.getAt(locationX, locationY);
-    // const duration = 300;
-    // const ease = Phaser.Math.Easing.Back.Out;
-    // this.tweens.add({
-    //   targets: selected.chess,
-    //   x: targetChess.chess.x,
-    //   y: targetChess.chess.y,
-    //   duration,
-    //   ease,
-    //   onComplete: () => {
-    //     targetChess.chess.destroy();
-    //     this.chesses[selected.index] = targetChess.chess;
-    //     component.setLoaction(locationX, locationY);
-    //   },
-    // });
-    // this.tweens.add({
-    //   targets: targetChess.chess,
-    //   x: selected.chess.x,
-    //   y: selected.chess.y,
-    //   duration,
-    //   ease,
-    //   onComplete: () => {
-    //     this.chesses[targetChess.index] = selected.chess;
-    //     component.setLoaction(x, y);
-    //   },
-    // });
+  private handleMoveChess = (id: number, targetId: number) => {
+    this.clearSelectedChessUI();
+    const { chess } = this.getChessById(id);
+    const { chess: targetChess } = this.getChessById(targetId);
+    const duration = 300;
+    const ease = Phaser.Math.Easing.Back.Out;
+    this.tweens.add({
+      targets: chess.sprite,
+      x: targetChess.sprite.x,
+      y: targetChess.sprite.y,
+      duration,
+      ease,
+    });
   };
 
   private clearSelectedChessUI() {

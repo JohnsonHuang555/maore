@@ -14,7 +14,7 @@ export class ChessComponent implements IComponent {
   private onFlip: (id: number) => void;
   private onSelect: (id: number) => void;
   private onRemove: (id: number) => void;
-  private onMove: (id: number, locationX: number, locationY: number) => void;
+  private onMove: (id: number, targetId: number) => void;
 
   constructor(
     server: ChineseChessServer,
@@ -22,7 +22,7 @@ export class ChessComponent implements IComponent {
     onFlip: (id: number) => void,
     onSelect: (id: number) => void,
     onRemove: (id: number) => void,
-    onMove: (id: number, locationX: number, locationY: number) => void
+    onMove: (id: number, targetId: number) => void
   ) {
     this.server = server;
     this.chessInfo = chessInfo;
@@ -58,13 +58,9 @@ export class ChessComponent implements IComponent {
           break;
         }
         case ChineseChessMessage.EatChess: {
-          const { targetId, targetLocationX, targetLocationY } = chessInfo;
+          const { targetId } = chessInfo;
           this.onRemove(targetId as number);
-          this.onMove(
-            this.chessInfo.id,
-            targetLocationX as number,
-            targetLocationY as number
-          );
+          this.onMove(this.chessInfo.id, targetId as number);
           break;
         }
         case ChineseChessMessage.MoveChess: {
@@ -81,7 +77,6 @@ export class ChessComponent implements IComponent {
   }
 
   destroy() {
-    console.log('destroy??');
     this.gameObject.off(
       Phaser.Input.Events.GAMEOBJECT_POINTER_UP,
       this.handleClickChess,

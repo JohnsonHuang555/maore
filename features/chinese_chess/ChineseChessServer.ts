@@ -39,10 +39,8 @@ export default class ChineseChessServer extends BaseServer {
   }
 
   setChangedChessInfo(chessInfo: Partial<ChessInfo>) {
-    this.changedChessInfo = ChangedChessInfoFactory.getChangedChessInfo(
-      this.chineseChesses,
-      chessInfo
-    );
+    this.changedChessInfo =
+      ChangedChessInfoFactory.getChangedChessInfo(chessInfo);
   }
 
   clearChangedChessInfo() {
