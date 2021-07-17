@@ -18,7 +18,7 @@ const GroupText: { [key: string]: string } = {
 };
 
 type Cell = {
-  x: number;
+  x: number; // 資料的XY ex. x 0, y1
   y: number;
   rectangle: Phaser.GameObjects.Rectangle;
 };
@@ -26,7 +26,7 @@ type Cell = {
 type Chess = {
   id: number;
   name: string;
-  sprite: Phaser.GameObjects.Sprite;
+  sprite: Phaser.GameObjects.Sprite; // image, circle, rectange, sprite
 };
 
 export default class Hidden extends Phaser.Scene {
@@ -49,6 +49,7 @@ export default class Hidden extends Phaser.Scene {
 
   init() {
     this.components = new ComponentService();
+    // FIXME: 實測沒有被執行，效能的部分要再處理，很多事件都要 destroy 不然會有一堆垃圾
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.components.destroy();
     });
@@ -84,7 +85,6 @@ export default class Hidden extends Phaser.Scene {
     const map = this.add.image(width * 0.5, height * 0.5, 'map');
     map.setScale(0.75);
     chineseChesses.forEach((chess) => {
-      // TODO: 需要更新
       this.initialChessesDictionary[`${chess.locationX},${chess.locationY}`] =
         chess;
     });
@@ -109,7 +109,7 @@ export default class Hidden extends Phaser.Scene {
         const chessInfo = this.initialChessesDictionary[`${x},${y}`];
         // 格子
         const cell = this.add
-          .rectangle(drawX, drawY, size, size, 0xffffff)
+          .rectangle(drawX, drawY, size, size, 0xffffff, 0)
           .setDisplaySize(120, 120);
 
         this.cells.push({
@@ -268,8 +268,6 @@ export default class Hidden extends Phaser.Scene {
     targetLocationX: number,
     targetLocationY: number
   ) => {
-    console.log(targetLocationX, 'x');
-    console.log(targetLocationY, 'y');
     this.clearSelectedChessUI();
     const { chess } = this.getChessById(id);
     const { rectangle } = this.getCellByLocation(

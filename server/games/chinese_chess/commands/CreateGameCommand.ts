@@ -4,8 +4,8 @@ import ChineseChessState from '../state/ChineseChessState';
 import {
   ChessNameRed,
   ChessNameBlack,
-  ChessSide,
-} from '../../../../features/chinese_chess/models/ChineseChess';
+} from '../../../../features/chinese_chess/models/ChineseChessName';
+import { ChessSide } from '../../../../features/chinese_chess/models/ChineseChessSide';
 import { ArraySchema } from '@colyseus/schema';
 import { ChessInfoState } from '../state/ChessInfoState';
 import Random from '../../../utils/Random';

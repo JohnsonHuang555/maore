@@ -134,12 +134,4 @@ export default class ChineseChessServer extends BaseServer {
       };
     };
   }
-
-  private getChessById(id: number) {
-    const chess = this.chineseChesses.find((c) => c.id === id);
-    if (!chess) {
-      throw new Error('Chess not found');
-    }
-    return chess;
-  }
 }

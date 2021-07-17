@@ -121,6 +121,7 @@ export class ChessComponent implements IComponent {
         this.server.selectedChessId &&
         this.server.yourGroup !== ChineseChessGroupMap[this.chessInfo.chessSide]
       ) {
+        // TODO: 吃的邏輯
         // eat chess
         this.server.eatChess(this.chessInfo.id);
       }
