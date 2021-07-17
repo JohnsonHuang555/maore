@@ -39,8 +39,12 @@ export default class ChineseChessServer extends BaseServer {
   }
 
   setChangedChessInfo(chessInfo: Partial<ChessInfo>) {
-    this.changedChessInfo =
-      ChangedChessInfoFactory.getChangedChessInfo(chessInfo);
+    const isHiddenMode = this.roomInfo.gameMode === GameMode.Hidden;
+    this.changedChessInfo = ChangedChessInfoFactory.getChangedChessInfo(
+      chessInfo,
+      this.chineseChesses,
+      isHiddenMode
+    );
   }
 
   clearChangedChessInfo() {
@@ -60,8 +64,13 @@ export default class ChineseChessServer extends BaseServer {
     this.setSelectedChessId(undefined);
   }
 
-  moveChess(id: number, targetX: number, targetY: number) {
-    this.room.send(ChineseChessMessage.MoveChess, { id, targetX, targetY });
+  moveChess(targetX: number, targetY: number) {
+    this.room.send(ChineseChessMessage.MoveChess, {
+      id: this.selectedChessId,
+      targetX,
+      targetY,
+    });
+    this.setSelectedChessId(undefined);
   }
 
   eatChess(targetId: number) {
@@ -124,5 +133,13 @@ export default class ChineseChessServer extends BaseServer {
         });
       };
     };
+  }
+
+  private getChessById(id: number) {
+    const chess = this.chineseChesses.find((c) => c.id === id);
+    if (!chess) {
+      throw new Error('Chess not found');
+    }
+    return chess;
   }
 }

@@ -1,9 +1,12 @@
+import { ChessNameBlack, ChessNameRed } from '../models/ChineseChess';
 import { ChineseChessMessage } from '../models/ChineseChessMessage';
 import { ChessInfo } from '../models/ChineseChessState';
 
 type ChessInfoResponse = {
   id?: number;
   targetId?: number;
+  targetLocationX?: number;
+  targetLocationY?: number;
 };
 
 export type ChangedChessInfo = {
@@ -20,7 +23,9 @@ export default class ChangedChessInfoFactory {
   }
 
   static getChangedChessInfo(
-    chessInfo: Partial<ChessInfo>
+    chessInfo: Partial<ChessInfo>,
+    chineseChesses: ChessInfo[],
+    isHiddenMode: boolean
   ): ChangedChessInfo | undefined {
     if (!chessInfo.id) {
       throw new Error('chess id not found...');
@@ -44,16 +49,53 @@ export default class ChangedChessInfoFactory {
             targetId: this.tempChessInfo.targetId,
           },
         };
-      } else {
-        // const { locationX, locationY } = chineseChesses.find(
-        //   (c) => c.id === chessInfo.id
-        // ) as ChessInfo;
-        // return {
-        //   actionType: ChineseChessMessage.MoveChess,
-        //   chessInfo: {
-        //     targetLocationX: loc
-        //   }
-        // };
+      } else if (
+        chessInfo.locationX !== undefined ||
+        chessInfo.locationY !== undefined
+      ) {
+        const chessName = chineseChesses.find(
+          (c) => c.id === chessInfo.id
+        )?.name;
+        if (!chessName) {
+          throw new Error('Chess not found');
+        }
+        const onlyLocationXorLocationY = [
+          ChessNameBlack.Cannon,
+          ChessNameRed.Cannon,
+          ChessNameBlack.King,
+          ChessNameRed.King,
+          ChessNameBlack.Chariot,
+          ChessNameRed.Chariot,
+          ChessNameBlack.Soldier,
+          ChessNameRed.Soldier,
+        ];
+        if (isHiddenMode || onlyLocationXorLocationY.includes(chessName)) {
+          return {
+            actionType: ChineseChessMessage.MoveChess,
+            chessInfo: {
+              id: chessInfo.id,
+              targetLocationX: chessInfo.locationX,
+              targetLocationY: chessInfo.locationY,
+            },
+          };
+        }
+
+        this.tempChessInfo = {
+          targetLocationX: chessInfo.locationX,
+          targetLocationY: chessInfo.locationY,
+        };
+      } else if (
+        this.tempChessInfo?.targetLocationX ||
+        this.tempChessInfo?.targetLocationY
+      ) {
+        return {
+          actionType: ChineseChessMessage.MoveChess,
+          chessInfo: {
+            id: chessInfo.id,
+            targetLocationX: this.tempChessInfo.targetLocationX,
+            targetLocationY: this.tempChessInfo.targetLocationY,
+          },
+        };
       }
     }
   }

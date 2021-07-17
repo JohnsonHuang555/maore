@@ -13,22 +13,30 @@ export class ChessComponent implements IComponent {
   private isFlipped: boolean = false;
   private onFlip: (id: number) => void;
   private onSelect: (id: number) => void;
-  private onRemove: (id: number) => void;
-  private onMove: (id: number, targetId: number) => void;
+  private onEat: (id: number, targetId: number) => void;
+  private onMove: (
+    id: number,
+    targetLocationX: number,
+    targetLocationY: number
+  ) => void;
 
   constructor(
     server: ChineseChessServer,
     chessInfo: ChessInfo,
     onFlip: (id: number) => void,
     onSelect: (id: number) => void,
-    onRemove: (id: number) => void,
-    onMove: (id: number, targetId: number) => void
+    onEat: (id: number, targetId: number) => void,
+    onMove: (
+      id: number,
+      targetLocationX: number,
+      targetLocationY: number
+    ) => void
   ) {
     this.server = server;
     this.chessInfo = chessInfo;
     this.onFlip = onFlip;
     this.onSelect = onSelect;
-    this.onRemove = onRemove;
+    this.onEat = onEat;
     this.onMove = onMove;
   }
 
@@ -59,16 +67,25 @@ export class ChessComponent implements IComponent {
         }
         case ChineseChessMessage.EatChess: {
           const { targetId } = chessInfo;
-          this.onRemove(targetId as number);
-          this.onMove(this.chessInfo.id, targetId as number);
+          this.onEat(this.chessInfo.id, targetId as number);
           break;
         }
         case ChineseChessMessage.MoveChess: {
-          // if (chessInfo.locationX) {
-          //   this.onMove(this, chessInfo.locationX, this.chessInfo.locationY);
-          // } else if (chessInfo.locationY) {
-          //   this.onMove(this, this.chessInfo.locationX, chessInfo.locationY);
-          // }
+          if (chessInfo.targetLocationX !== undefined) {
+            this.chessInfo.locationX = chessInfo.targetLocationX;
+            this.onMove(
+              this.chessInfo.id,
+              chessInfo.targetLocationX,
+              this.chessInfo.locationY
+            );
+          } else if (chessInfo.targetLocationY !== undefined) {
+            this.chessInfo.locationY = chessInfo.targetLocationY;
+            this.onMove(
+              this.chessInfo.id,
+              this.chessInfo.locationX,
+              chessInfo.targetLocationY
+            );
+          }
           break;
         }
       }

@@ -9,11 +9,18 @@ import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
 import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
 import ComponentService from 'features/base/services/ComponentService';
 import { ChessComponent } from 'features/chinese_chess/components/ChessComponent';
+import { CellComponent } from 'features/chinese_chess/components/CellComponent';
 
 const MAX_PLAYERS = 2;
 const GroupText: { [key: string]: string } = {
   [ChineseChessGroup.Black]: '黑方',
   [ChineseChessGroup.Red]: '紅方',
+};
+
+type Cell = {
+  x: number;
+  y: number;
+  rectangle: Phaser.GameObjects.Rectangle;
 };
 
 type Chess = {
@@ -29,9 +36,12 @@ export default class Hidden extends Phaser.Scene {
   private yourGroupText?: Phaser.GameObjects.Text;
   private otherGroupText?: Phaser.GameObjects.Text;
   private yourTurnText?: Phaser.GameObjects.Text;
-  private chessesDictionary: { [key: string]: ChessInfo } = {};
-  private chesses: Chess[] = [];
+  private initialChessesDictionary: { [key: string]: ChessInfo } = {};
   private prevSelectedChessId?: number;
+
+  // UI
+  private cells: Cell[] = [];
+  private chesses: Chess[] = [];
 
   constructor() {
     super('hidden');
@@ -75,7 +85,8 @@ export default class Hidden extends Phaser.Scene {
     map.setScale(0.75);
     chineseChesses.forEach((chess) => {
       // TODO: 需要更新
-      this.chessesDictionary[`${chess.locationX},${chess.locationY}`] = chess;
+      this.initialChessesDictionary[`${chess.locationX},${chess.locationY}`] =
+        chess;
     });
 
     this.createBoard();
@@ -95,33 +106,44 @@ export default class Hidden extends Phaser.Scene {
     let drawY = height * 0.5 - offsetY;
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 8; x++) {
+        const chessInfo = this.initialChessesDictionary[`${x},${y}`];
         // 格子
         const cell = this.add
-          .rectangle(drawX, drawY, size, size, 0xffffff, 0)
-          .setInteractive();
+          .rectangle(drawX, drawY, size, size, 0xffffff)
+          .setDisplaySize(120, 120);
+
+        this.cells.push({
+          x,
+          y,
+          rectangle: cell,
+        });
+
+        this.components.addComponent(
+          cell,
+          new CellComponent(this.server, x, y)
+        );
 
         // 棋子
-        const chessSprite = this.add
+        const chess = this.add
           .sprite(cell.x, cell.y, 'chess', 'hidden.png')
           .setDisplaySize(120, 120)
           .setDepth(1);
         // .setSize(size, size);
 
-        const chessInfo = this.chessesDictionary[`${x},${y}`];
         this.chesses.push({
           id: chessInfo.id,
           name: chessInfo.name,
-          sprite: chessSprite,
+          sprite: chess,
         });
 
         this.components.addComponent(
-          chessSprite,
+          chess,
           new ChessComponent(
             this.server,
             chessInfo,
             this.handleFlipChess,
             this.handleSelectChess,
-            this.handleRemoveChess,
+            this.handleEatChess,
             this.handleMoveChess
           )
         );
@@ -135,6 +157,14 @@ export default class Hidden extends Phaser.Scene {
     this.server.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
     this.server.onPlayerGroupChanged(this.handlePlayerGroupChanged, this);
   };
+
+  private getCellByLocation(x: number, y: number): Cell {
+    const cell = this.cells.find((c) => c.x === x && c.y === y);
+    if (!cell) {
+      throw new Error('Cell not found');
+    }
+    return cell;
+  }
 
   private getChessById(id: number): { chess: Chess; index: number } {
     const chessIndex = this.chesses.findIndex((c) => c.id === id);
@@ -168,7 +198,7 @@ export default class Hidden extends Phaser.Scene {
 
     timeline.add({
       targets: chess.sprite,
-      scale: 0.34,
+      scale: 0.32,
       duration: 100,
     });
 
@@ -210,33 +240,48 @@ export default class Hidden extends Phaser.Scene {
     });
   };
 
-  private handleRemoveChess = (id: number) => {
+  private handleEatChess = (id: number, targetId: number) => {
     this.clearSelectedChessUI();
-    const { chess, index } = this.getChessById(id);
+    const { chess } = this.getChessById(id);
+    const { chess: targetChess, index } = this.getChessById(targetId);
     this.tweens.add({
-      targets: chess.sprite,
+      targets: targetChess.sprite,
       scale: 0,
       duration: 100,
       onComplete: () => {
-        chess.sprite.removeAllListeners();
-        chess.sprite.destroy();
+        targetChess.sprite.removeAllListeners();
+        targetChess.sprite.destroy();
         this.chesses.splice(index, 1);
       },
     });
-  };
-
-  private handleMoveChess = (id: number, targetId: number) => {
-    this.clearSelectedChessUI();
-    const { chess } = this.getChessById(id);
-    const { chess: targetChess } = this.getChessById(targetId);
-    const duration = 300;
-    const ease = Phaser.Math.Easing.Back.Out;
     this.tweens.add({
       targets: chess.sprite,
       x: targetChess.sprite.x,
       y: targetChess.sprite.y,
-      duration,
-      ease,
+      duration: 300,
+      ease: Phaser.Math.Easing.Back.Out,
+    });
+  };
+
+  private handleMoveChess = (
+    id: number,
+    targetLocationX: number,
+    targetLocationY: number
+  ) => {
+    console.log(targetLocationX, 'x');
+    console.log(targetLocationY, 'y');
+    this.clearSelectedChessUI();
+    const { chess } = this.getChessById(id);
+    const { rectangle } = this.getCellByLocation(
+      targetLocationX,
+      targetLocationY
+    );
+    this.tweens.add({
+      targets: chess.sprite,
+      x: rectangle.x,
+      y: rectangle.y,
+      duration: 300,
+      ease: Phaser.Math.Easing.Back.Out,
     });
   };
 
@@ -251,6 +296,7 @@ export default class Hidden extends Phaser.Scene {
     this.prevSelectedChessId = undefined;
   }
 
+  // 房間相關
   private handlePlayerTurnChanged(playerIndex: number) {
     this.yourTurnText?.destroy();
     this.yourTurnText = undefined;
