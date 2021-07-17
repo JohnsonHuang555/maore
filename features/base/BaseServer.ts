@@ -30,6 +30,14 @@ export default class BaseServer {
     return this._roomInfo;
   }
 
+  get isYourTurn() {
+    if (this.playerInfo.playerIndex !== this.room.state.activePlayer) {
+      this.showAlert('不是你的回合！');
+      return false;
+    }
+    return true;
+  }
+
   constructor() {
     const { server, room } = store.getState();
     if (!server.room) {

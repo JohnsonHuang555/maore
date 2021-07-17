@@ -15,6 +15,7 @@ import ResetCommand from './commands/ResetCommand';
 import EatChessCommand from './commands/EatChessCommand';
 import MoveChessCommand from './commands/MoveChessCommand';
 import UpdatePlayerGroupCommand from '../../room/commands/UpdatePlayerGroupCommand';
+import { RoomMessage } from '../../../models/Message';
 
 export default class ChineseChess extends Room<ChineseChessState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -33,7 +34,7 @@ export default class ChineseChess extends Room<ChineseChessState, Metadata> {
     this.baseRoom.setMaxClient(maxPlayers as number);
     this.setState(new ChineseChessState());
 
-    this.onMessage(ChineseChessMessage.CreateGame, () => {
+    this.onMessage(RoomMessage.CreateGame, () => {
       this.dispatcher.dispatch(new CreateGameCommand(), {
         mode: option.gameMode as GameMode,
       });

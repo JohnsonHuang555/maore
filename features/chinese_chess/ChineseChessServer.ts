@@ -4,16 +4,15 @@ import { ChineseChessMessage } from 'features/chinese_chess/models/ChineseChessM
 import { GameMode } from './models/ChinesChessMode';
 import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
 import { sharedInstance as events } from 'features/base/EventCenter';
-
-export type ChangedChessInfo = {
-  actionType: ChineseChessMessage;
-  chessInfo: Partial<ChessInfo>;
-};
+import { RoomMessage } from 'models/Message';
+import ChangedChessInfoFactory, {
+  ChangedChessInfo,
+} from './factories/ChangedChessInfoFactory';
 
 enum ChessInfoChangeList {
   IsFlipped = 'isFlipped',
   LocationX = 'locationX',
-  LocationY = 'LocationY',
+  LocationY = 'locationY',
   Alive = 'alive',
 }
 
@@ -24,20 +23,11 @@ export default class ChineseChessServer extends BaseServer {
   public selectedChessId?: number;
   // 當更新棋子時，會有值
   public changedChessInfo?: ChangedChessInfo;
-  // 暫存因為更新不會打整包，如果 ID 沒變代表同一組資料
-  private tempChessInfo?: Partial<ChessInfo>;
+  private chineseChesses: ChessInfo[] = [];
 
   constructor() {
     super();
     this.handleStateChange();
-  }
-
-  get isYourTurn() {
-    if (this.playerInfo.playerIndex !== this.room.state.activePlayer) {
-      this.showAlert('不是你的回合！');
-      return false;
-    }
-    return true;
   }
 
   get yourGroup(): ChineseChessGroup {
@@ -49,40 +39,22 @@ export default class ChineseChessServer extends BaseServer {
   }
 
   setChangedChessInfo(chessInfo: Partial<ChessInfo>) {
-    this.tempChessInfo = {
-      ...this.tempChessInfo,
-      ...chessInfo,
-    };
-    const { isFlipped, locationX, locationY, alive } = this.tempChessInfo;
-    if (isFlipped) {
-      // 翻牌
-      this.changedChessInfo = {
-        actionType: ChineseChessMessage.FlipChess,
-        chessInfo: { ...this.tempChessInfo },
-      };
-    } else if (locationX && locationY && alive) {
-      // 吃棋
-      this.changedChessInfo = {
-        actionType: ChineseChessMessage.EatChess,
-        chessInfo: { ...this.tempChessInfo },
-      };
-    } else if (locationX && locationY) {
-      // 移動
-      this.changedChessInfo = {
-        actionType: ChineseChessMessage.EatChess,
-        chessInfo: { ...this.tempChessInfo },
-      };
-    }
+    const isHiddenMode = this.roomInfo.gameMode === GameMode.Hidden;
+    this.changedChessInfo = ChangedChessInfoFactory.getChangedChessInfo(
+      chessInfo,
+      this.chineseChesses,
+      isHiddenMode
+    );
   }
 
   clearChangedChessInfo() {
-    this.tempChessInfo = undefined;
+    ChangedChessInfoFactory.clearTempChessInfo();
     this.changedChessInfo = undefined;
   }
 
   getGameData() {
     const mode = this.roomInfo.gameMode as GameMode;
-    this.room.send(ChineseChessMessage.CreateGame, {
+    this.room.send(RoomMessage.CreateGame, {
       mode,
     });
   }
@@ -92,8 +64,13 @@ export default class ChineseChessServer extends BaseServer {
     this.setSelectedChessId(undefined);
   }
 
-  moveChess(id: number, targetX: number, targetY: number) {
-    this.room.send(ChineseChessMessage.MoveChess, { id, targetX, targetY });
+  moveChess(targetX: number, targetY: number) {
+    this.room.send(ChineseChessMessage.MoveChess, {
+      id: this.selectedChessId,
+      targetX,
+      targetY,
+    });
+    this.setSelectedChessId(undefined);
   }
 
   eatChess(targetId: number) {
@@ -101,7 +78,7 @@ export default class ChineseChessServer extends BaseServer {
       id: this.selectedChessId,
       targetId,
     });
-    this.selectedChessId = undefined;
+    this.setSelectedChessId(undefined);
   }
 
   onGameDataLoaded(cb: (chineseChesses: ChessInfo[]) => void, context?: any) {
@@ -109,9 +86,8 @@ export default class ChineseChessServer extends BaseServer {
   }
 
   private handleStateChange() {
-    const chineseChesses: ChessInfo[] = [];
     this.room.state.chineseChesses.onAdd = (chessInfo) => {
-      chineseChesses.push({
+      this.chineseChesses.push({
         id: chessInfo.id,
         chessSide: chessInfo.chessSide,
         name: chessInfo.name,
@@ -122,8 +98,8 @@ export default class ChineseChessServer extends BaseServer {
         alive: chessInfo.alive,
       });
 
-      if (chineseChesses.length === TOTAL_CHESS_COUNT) {
-        events.emit('game-data-loaded', chineseChesses);
+      if (this.chineseChesses.length === TOTAL_CHESS_COUNT) {
+        events.emit('game-data-loaded', this.chineseChesses);
       }
       chessInfo.onChange = (changes) => {
         changes.forEach((change) => {
@@ -157,5 +133,13 @@ export default class ChineseChessServer extends BaseServer {
         });
       };
     };
+  }
+
+  private getChessById(id: number) {
+    const chess = this.chineseChesses.find((c) => c.id === id);
+    if (!chess) {
+      throw new Error('Chess not found');
+    }
+    return chess;
   }
 }
