@@ -8,6 +8,8 @@ import { RoomMessage } from 'models/Message';
 import ChangedChessInfoFactory, {
   ChangedChessInfo,
 } from './factories/ChangedChessInfoFactory';
+import { ChessNameBlack, ChessNameRed } from './models/ChineseChessName';
+import { CheckMoveRange } from './utils/CheckMoveRange';
 
 enum ChessInfoChangeList {
   IsFlipped = 'isFlipped',
@@ -73,7 +75,35 @@ export default class ChineseChessServer extends BaseServer {
     this.setSelectedChessId(undefined);
   }
 
-  eatChess(targetId: number) {
+  eatChess(chessInfo: ChessInfo) {
+    const {
+      id: targetId,
+      rank: targetRank,
+      locationX: targetX,
+      locationY: targetY,
+      name: targetChessName,
+    } = chessInfo;
+    if (!this.selectedChessId) {
+      return;
+    }
+    // 取得前一個棋子
+    const { name, locationX, locationY, rank } = this.getChessById(
+      this.selectedChessId
+    );
+    const canMove = this.canMoveChess(
+      name,
+      locationX,
+      locationY,
+      targetX,
+      targetY
+    );
+    if (!canMove) {
+      return;
+    }
+    const canEat = this.canEatChess(name, targetChessName, rank, targetRank);
+    if (!canEat) {
+      return;
+    }
     this.room.send(ChineseChessMessage.EatChess, {
       id: this.selectedChessId,
       targetId,
@@ -85,8 +115,83 @@ export default class ChineseChessServer extends BaseServer {
     events.on('game-data-loaded', cb, context);
   }
 
+  private getChessById(id: number): ChessInfo {
+    const chess = this.chineseChesses.find((c) => c.id === id);
+    if (!chess) {
+      throw new Error('Chess not found');
+    }
+    return chess;
+  }
+
+  private canMoveChess(
+    chessName: ChessNameBlack | ChessNameRed,
+    locationX: number,
+    locationY: number,
+    targetX: number,
+    targetY: number
+  ): boolean {
+    switch (this.roomInfo.gameMode) {
+      case GameMode.Standard: {
+        return false;
+      }
+      case GameMode.Hidden: {
+        if (
+          chessName !== ChessNameBlack.Cannon &&
+          chessName !== ChessNameRed.Cannon
+        ) {
+          const range = CheckMoveRange.shortCross(locationX, locationY);
+          return CheckMoveRange.isInRange(range, targetX, targetY);
+        }
+        return false;
+      }
+      default: {
+        return false;
+      }
+    }
+  }
+
+  private canEatChess(
+    chessName: ChessNameBlack | ChessNameRed,
+    targetChessName: ChessNameBlack | ChessNameRed,
+    rank?: number,
+    targetRank?: number
+  ): boolean {
+    switch (this.roomInfo.gameMode) {
+      case GameMode.Standard: {
+        return false;
+      }
+      case GameMode.Hidden: {
+        if (rank === undefined || targetRank === undefined) {
+          return false;
+        }
+        if (
+          chessName === ChessNameBlack.Cannon ||
+          chessName === ChessNameRed.Cannon
+        ) {
+          // TODO: 判斷有無隔一個
+          return true;
+        }
+        if (
+          (chessName === ChessNameBlack.Soldier &&
+            targetChessName === ChessNameRed.King) ||
+          (chessName === ChessNameRed.Soldier &&
+            targetChessName === ChessNameBlack.King)
+        ) {
+          return true;
+        }
+        if (rank >= targetRank) {
+          return true;
+        }
+        return false;
+      }
+      default: {
+        return false;
+      }
+    }
+  }
+
   private handleStateChange() {
-    this.room.state.chineseChesses.onAdd = (chessInfo) => {
+    this.room.state.chineseChesses.onAdd = (chessInfo, idx) => {
       this.chineseChesses.push({
         id: chessInfo.id,
         chessSide: chessInfo.chessSide,
@@ -110,24 +215,28 @@ export default class ChineseChessServer extends BaseServer {
                 id: chessInfo.id,
                 isFlipped: value,
               });
+              this.chineseChesses[idx].isFlipped = value;
               break;
             case ChessInfoChangeList.LocationX:
               this.setChangedChessInfo({
                 id: chessInfo.id,
                 locationX: value,
               });
+              this.chineseChesses[idx].locationX = value;
               break;
             case ChessInfoChangeList.LocationY:
               this.setChangedChessInfo({
                 id: chessInfo.id,
                 locationY: value,
               });
+              this.chineseChesses[idx].locationY = value;
               break;
             case ChessInfoChangeList.Alive:
               this.setChangedChessInfo({
                 id: chessInfo.id,
                 alive: value,
               });
+              this.chineseChesses[idx].alive = value;
               break;
           }
         });

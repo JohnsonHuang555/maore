@@ -8,7 +8,7 @@ export class CheckMoveRange {
     const canMove = range.find((r) => {
       return r.x === targetX && r.y === targetY;
     });
-    return canMove ? true : false;
+    return !!canMove;
   }
 
   // 短十字

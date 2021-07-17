@@ -106,24 +106,23 @@ export class ChessComponent implements IComponent {
       return;
     }
 
+    const { id, chessSide } = this.chessInfo;
     if (!this.isFlipped) {
-      this.server.flipChess(this.chessInfo.id);
+      this.server.flipChess(id);
     } else {
       if (
-        this.server.yourGroup ===
-          ChineseChessGroupMap[this.chessInfo.chessSide] &&
-        this.server.selectedChessId !== this.chessInfo.id
+        this.server.yourGroup === ChineseChessGroupMap[chessSide] &&
+        this.server.selectedChessId !== id
       ) {
         // select chess
-        this.onSelect(this.chessInfo.id);
-        this.server.setSelectedChessId(this.chessInfo.id);
+        this.onSelect(id);
+        this.server.setSelectedChessId(id);
       } else if (
         this.server.selectedChessId &&
-        this.server.yourGroup !== ChineseChessGroupMap[this.chessInfo.chessSide]
+        this.server.yourGroup !== ChineseChessGroupMap[chessSide]
       ) {
-        // TODO: 吃的邏輯
         // eat chess
-        this.server.eatChess(this.chessInfo.id);
+        this.server.eatChess(this.chessInfo);
       }
     }
   }

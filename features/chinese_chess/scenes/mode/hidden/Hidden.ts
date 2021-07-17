@@ -7,7 +7,6 @@ import {
 } from 'features/chinese_chess/models/ChineseChessScene';
 import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
 import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
-import ComponentService from 'features/base/services/ComponentService';
 import { ChessComponent } from 'features/chinese_chess/components/ChessComponent';
 import { CellComponent } from 'features/chinese_chess/components/CellComponent';
 
@@ -30,7 +29,6 @@ type Chess = {
 };
 
 export default class Hidden extends Phaser.Scene {
-  private components!: ComponentService;
   private server!: Server;
   private onGameOver!: (data: GameOverSceneData) => void;
   private yourGroupText?: Phaser.GameObjects.Text;
@@ -45,14 +43,6 @@ export default class Hidden extends Phaser.Scene {
 
   constructor() {
     super('hidden');
-  }
-
-  init() {
-    this.components = new ComponentService();
-    // FIXME: 實測沒有被執行，效能的部分要再處理，很多事件都要 destroy 不然會有一堆垃圾
-    this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-      this.components.destroy();
-    });
   }
 
   preload() {
@@ -94,7 +84,7 @@ export default class Hidden extends Phaser.Scene {
 
   // FPS 60
   update(t: number, dt: number) {
-    this.components.update(dt);
+    this.server.components.update(dt);
   }
 
   private createBoard = () => {
@@ -118,7 +108,7 @@ export default class Hidden extends Phaser.Scene {
           rectangle: cell,
         });
 
-        this.components.addComponent(
+        this.server.components.addComponent(
           cell,
           new CellComponent(this.server, x, y)
         );
@@ -136,7 +126,7 @@ export default class Hidden extends Phaser.Scene {
           sprite: chess,
         });
 
-        this.components.addComponent(
+        this.server.components.addComponent(
           chess,
           new ChessComponent(
             this.server,
