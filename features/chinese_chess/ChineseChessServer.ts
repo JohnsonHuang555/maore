@@ -18,6 +18,11 @@ enum ChessInfoChangeList {
   Alive = 'alive',
 }
 
+enum MoveOrEat {
+  Move = 'move',
+  Eat = 'eat',
+}
+
 const TOTAL_CHESS_COUNT = 32;
 /** 接收與傳送後端事件 */
 export default class ChineseChessServer extends BaseServer {
@@ -67,6 +72,20 @@ export default class ChineseChessServer extends BaseServer {
   }
 
   moveChess(targetX: number, targetY: number) {
+    const { name, locationX, locationY } = this.getChessById(
+      this.selectedChessId as number
+    );
+    const canMove = this.canMoveChess(
+      name,
+      locationX,
+      locationY,
+      targetX,
+      targetY,
+      MoveOrEat.Eat
+    );
+    if (!canMove) {
+      return;
+    }
     this.room.send(ChineseChessMessage.MoveChess, {
       id: this.selectedChessId,
       targetX,
@@ -95,12 +114,22 @@ export default class ChineseChessServer extends BaseServer {
       locationX,
       locationY,
       targetX,
-      targetY
+      targetY,
+      MoveOrEat.Eat
     );
     if (!canMove) {
       return;
     }
-    const canEat = this.canEatChess(name, targetChessName, rank, targetRank);
+    const canEat = this.canEatChess(
+      name,
+      targetChessName,
+      locationX,
+      locationY,
+      targetX,
+      targetY,
+      rank,
+      targetRank
+    );
     if (!canEat) {
       return;
     }
@@ -128,7 +157,8 @@ export default class ChineseChessServer extends BaseServer {
     locationX: number,
     locationY: number,
     targetX: number,
-    targetY: number
+    targetY: number,
+    moveOrEat: MoveOrEat
   ): boolean {
     switch (this.roomInfo.gameMode) {
       case GameMode.Standard: {
@@ -136,13 +166,14 @@ export default class ChineseChessServer extends BaseServer {
       }
       case GameMode.Hidden: {
         if (
-          chessName !== ChessNameBlack.Cannon &&
-          chessName !== ChessNameRed.Cannon
+          (chessName === ChessNameBlack.Cannon ||
+            chessName === ChessNameRed.Cannon) &&
+          moveOrEat === MoveOrEat.Eat
         ) {
-          const range = CheckMoveRange.shortCross(locationX, locationY);
-          return CheckMoveRange.isInRange(range, targetX, targetY);
+          return true;
         }
-        return false;
+        const range = CheckMoveRange.shortCross(locationX, locationY);
+        return CheckMoveRange.isInRange(range, targetX, targetY);
       }
       default: {
         return false;
@@ -153,6 +184,10 @@ export default class ChineseChessServer extends BaseServer {
   private canEatChess(
     chessName: ChessNameBlack | ChessNameRed,
     targetChessName: ChessNameBlack | ChessNameRed,
+    locationX: number,
+    locationY: number,
+    targetX: number,
+    targetY: number,
     rank?: number,
     targetRank?: number
   ): boolean {
@@ -169,8 +204,9 @@ export default class ChineseChessServer extends BaseServer {
           chessName === ChessNameRed.Cannon
         ) {
           // TODO: 判斷有無隔一個
-          return true;
+          return this.canonEatLogic(locationX, locationY, targetX, targetY);
         }
+        // 卒可以吃帥，兵可以吃將
         if (
           (chessName === ChessNameBlack.Soldier &&
             targetChessName === ChessNameRed.King) ||
@@ -178,6 +214,24 @@ export default class ChineseChessServer extends BaseServer {
             targetChessName === ChessNameBlack.King)
         ) {
           return true;
+        }
+        // 帥不可以吃卒，將不可以吃兵
+        if (
+          (chessName === ChessNameBlack.King &&
+            targetChessName === ChessNameRed.Soldier) ||
+          (chessName === ChessNameRed.King &&
+            targetChessName === ChessNameBlack.Soldier)
+        ) {
+          return false;
+        }
+        // 卒不可以吃砲，兵不可以吃砲
+        if (
+          (chessName === ChessNameBlack.Soldier &&
+            targetChessName === ChessNameRed.Cannon) ||
+          (chessName === ChessNameRed.Soldier &&
+            targetChessName === ChessNameBlack.Cannon)
+        ) {
+          return false;
         }
         if (rank >= targetRank) {
           return true;
@@ -188,6 +242,41 @@ export default class ChineseChessServer extends BaseServer {
         return false;
       }
     }
+  }
+
+  // 砲吃的邏輯
+  private canonEatLogic(
+    locationX: number,
+    locationY: number,
+    targetX: number,
+    targetY: number
+  ): boolean {
+    let middleChesses: ChessInfo[] = [];
+    if (locationX === targetX) {
+      middleChesses = this.chineseChesses.filter((c) => {
+        return (
+          c.locationX === targetX &&
+          c.locationY > Math.min(targetY, locationY) &&
+          c.locationY < Math.max(targetY, locationY) &&
+          c.alive
+        );
+      });
+    } else if (locationY === targetY) {
+      middleChesses = this.chineseChesses.filter((c) => {
+        return (
+          c.locationY === targetY &&
+          c.locationX > Math.min(targetX, locationX) &&
+          c.locationX < Math.max(targetX, locationX) &&
+          c.alive
+        );
+      });
+    }
+
+    // 只有隔一個則可以吃
+    if (middleChesses.length === 1) {
+      return true;
+    }
+    return false;
   }
 
   private handleStateChange() {
