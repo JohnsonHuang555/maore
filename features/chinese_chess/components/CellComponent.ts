@@ -38,7 +38,6 @@ export class CellComponent implements IComponent {
     }
 
     if (this.server.selectedChessId) {
-      console.log('x', this.x, 'y', this.y);
       this.server.moveChess(this.x, this.y);
     }
   }

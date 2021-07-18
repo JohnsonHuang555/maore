@@ -1,8 +1,9 @@
 import {
   ChessNameRed,
   ChessNameBlack,
-  ChessSide,
-} from '../../../../features/chinese_chess/models/ChineseChess';
+} from '../../../../features/chinese_chess/models/ChineseChessName';
+
+import { ChessSide } from '../../../../features/chinese_chess/models/ChineseChessSide';
 
 type ChessHiddenMap = {
   id: number;

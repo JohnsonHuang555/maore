@@ -1,4 +1,4 @@
-import { ChessNameBlack, ChessNameRed } from '../models/ChineseChess';
+import { ChessNameBlack, ChessNameRed } from '../models/ChineseChessName';
 import { ChineseChessMessage } from '../models/ChineseChessMessage';
 import { ChessInfo } from '../models/ChineseChessState';
 

@@ -8,12 +8,19 @@ import { RoomMessage } from 'models/Message';
 import ChangedChessInfoFactory, {
   ChangedChessInfo,
 } from './factories/ChangedChessInfoFactory';
+import { ChessNameBlack, ChessNameRed } from './models/ChineseChessName';
+import { CheckMoveRange } from './utils/CheckMoveRange';
 
 enum ChessInfoChangeList {
   IsFlipped = 'isFlipped',
   LocationX = 'locationX',
   LocationY = 'locationY',
   Alive = 'alive',
+}
+
+enum MoveOrEat {
+  Move = 'move',
+  Eat = 'eat',
 }
 
 const TOTAL_CHESS_COUNT = 32;
@@ -65,6 +72,20 @@ export default class ChineseChessServer extends BaseServer {
   }
 
   moveChess(targetX: number, targetY: number) {
+    const { name, locationX, locationY } = this.getChessById(
+      this.selectedChessId as number
+    );
+    const canMove = this.canMoveChess(
+      name,
+      locationX,
+      locationY,
+      targetX,
+      targetY,
+      MoveOrEat.Eat
+    );
+    if (!canMove) {
+      return;
+    }
     this.room.send(ChineseChessMessage.MoveChess, {
       id: this.selectedChessId,
       targetX,
@@ -73,7 +94,45 @@ export default class ChineseChessServer extends BaseServer {
     this.setSelectedChessId(undefined);
   }
 
-  eatChess(targetId: number) {
+  eatChess(chessInfo: ChessInfo) {
+    const {
+      id: targetId,
+      rank: targetRank,
+      locationX: targetX,
+      locationY: targetY,
+      name: targetChessName,
+    } = chessInfo;
+    if (!this.selectedChessId) {
+      return;
+    }
+    // 取得前一個棋子
+    const { name, locationX, locationY, rank } = this.getChessById(
+      this.selectedChessId
+    );
+    const canMove = this.canMoveChess(
+      name,
+      locationX,
+      locationY,
+      targetX,
+      targetY,
+      MoveOrEat.Eat
+    );
+    if (!canMove) {
+      return;
+    }
+    const canEat = this.canEatChess(
+      name,
+      targetChessName,
+      locationX,
+      locationY,
+      targetX,
+      targetY,
+      rank,
+      targetRank
+    );
+    if (!canEat) {
+      return;
+    }
     this.room.send(ChineseChessMessage.EatChess, {
       id: this.selectedChessId,
       targetId,
@@ -85,8 +144,143 @@ export default class ChineseChessServer extends BaseServer {
     events.on('game-data-loaded', cb, context);
   }
 
+  private getChessById(id: number): ChessInfo {
+    const chess = this.chineseChesses.find((c) => c.id === id);
+    if (!chess) {
+      throw new Error('Chess not found');
+    }
+    return chess;
+  }
+
+  private canMoveChess(
+    chessName: ChessNameBlack | ChessNameRed,
+    locationX: number,
+    locationY: number,
+    targetX: number,
+    targetY: number,
+    moveOrEat: MoveOrEat
+  ): boolean {
+    switch (this.roomInfo.gameMode) {
+      case GameMode.Standard: {
+        return false;
+      }
+      case GameMode.Hidden: {
+        if (
+          (chessName === ChessNameBlack.Cannon ||
+            chessName === ChessNameRed.Cannon) &&
+          moveOrEat === MoveOrEat.Eat
+        ) {
+          return true;
+        }
+        const range = CheckMoveRange.shortCross(locationX, locationY);
+        return CheckMoveRange.isInRange(range, targetX, targetY);
+      }
+      default: {
+        return false;
+      }
+    }
+  }
+
+  private canEatChess(
+    chessName: ChessNameBlack | ChessNameRed,
+    targetChessName: ChessNameBlack | ChessNameRed,
+    locationX: number,
+    locationY: number,
+    targetX: number,
+    targetY: number,
+    rank?: number,
+    targetRank?: number
+  ): boolean {
+    switch (this.roomInfo.gameMode) {
+      case GameMode.Standard: {
+        return false;
+      }
+      case GameMode.Hidden: {
+        if (rank === undefined || targetRank === undefined) {
+          return false;
+        }
+        if (
+          chessName === ChessNameBlack.Cannon ||
+          chessName === ChessNameRed.Cannon
+        ) {
+          // TODO: 判斷有無隔一個
+          return this.canonEatLogic(locationX, locationY, targetX, targetY);
+        }
+        // 卒可以吃帥，兵可以吃將
+        if (
+          (chessName === ChessNameBlack.Soldier &&
+            targetChessName === ChessNameRed.King) ||
+          (chessName === ChessNameRed.Soldier &&
+            targetChessName === ChessNameBlack.King)
+        ) {
+          return true;
+        }
+        // 帥不可以吃卒，將不可以吃兵
+        if (
+          (chessName === ChessNameBlack.King &&
+            targetChessName === ChessNameRed.Soldier) ||
+          (chessName === ChessNameRed.King &&
+            targetChessName === ChessNameBlack.Soldier)
+        ) {
+          return false;
+        }
+        // 卒不可以吃砲，兵不可以吃砲
+        if (
+          (chessName === ChessNameBlack.Soldier &&
+            targetChessName === ChessNameRed.Cannon) ||
+          (chessName === ChessNameRed.Soldier &&
+            targetChessName === ChessNameBlack.Cannon)
+        ) {
+          return false;
+        }
+        if (rank >= targetRank) {
+          return true;
+        }
+        return false;
+      }
+      default: {
+        return false;
+      }
+    }
+  }
+
+  // 砲吃的邏輯
+  private canonEatLogic(
+    locationX: number,
+    locationY: number,
+    targetX: number,
+    targetY: number
+  ): boolean {
+    let middleChesses: ChessInfo[] = [];
+    if (locationX === targetX) {
+      middleChesses = this.chineseChesses.filter((c) => {
+        return (
+          c.locationX === targetX &&
+          c.locationY > Math.min(targetY, locationY) &&
+          c.locationY < Math.max(targetY, locationY) &&
+          c.alive
+        );
+      });
+    } else if (locationY === targetY) {
+      middleChesses = this.chineseChesses.filter((c) => {
+        return (
+          c.locationY === targetY &&
+          c.locationX > Math.min(targetX, locationX) &&
+          c.locationX < Math.max(targetX, locationX) &&
+          c.alive
+        );
+      });
+    }
+
+    // 只有隔一個則可以吃
+    if (middleChesses.length === 1) {
+      return true;
+    }
+    return false;
+  }
+
   private handleStateChange() {
-    this.room.state.chineseChesses.onAdd = (chessInfo) => {
+    this.room.state.chineseChesses.onAdd = (chessInfo, idx) => {
       this.chineseChesses.push({
         id: chessInfo.id,
         chessSide: chessInfo.chessSide,
@@ -110,36 +304,32 @@ export default class ChineseChessServer extends BaseServer {
                 id: chessInfo.id,
                 isFlipped: value,
               });
+              this.chineseChesses[idx].isFlipped = value;
               break;
             case ChessInfoChangeList.LocationX:
               this.setChangedChessInfo({
                 id: chessInfo.id,
                 locationX: value,
               });
+              this.chineseChesses[idx].locationX = value;
               break;
             case ChessInfoChangeList.LocationY:
               this.setChangedChessInfo({
                 id: chessInfo.id,
                 locationY: value,
               });
+              this.chineseChesses[idx].locationY = value;
               break;
             case ChessInfoChangeList.Alive:
               this.setChangedChessInfo({
                 id: chessInfo.id,
                 alive: value,
               });
+              this.chineseChesses[idx].alive = value;
               break;
           }
         });
       };
     };
-  }
-
-  private getChessById(id: number) {
-    const chess = this.chineseChesses.find((c) => c.id === id);
-    if (!chess) {
-      throw new Error('Chess not found');
-    }
-    return chess;
   }
 }

@@ -1,10 +1,10 @@
 import { Schema, type } from '@colyseus/schema';
 import { ChessInfo } from '../../../../features/chinese_chess/models/ChineseChessState';
 import {
-  ChessSide,
   ChessNameBlack,
   ChessNameRed,
-} from '../../../../features/chinese_chess/models/ChineseChess';
+} from '../../../../features/chinese_chess/models/ChineseChessName';
+import { ChessSide } from '../../../../features/chinese_chess/models/ChineseChessSide';
 
 export class ChessInfoState extends Schema implements ChessInfo {
   @type('number')

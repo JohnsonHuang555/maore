@@ -1,8 +1,3 @@
-export enum ChessSide {
-  Black = 'black',
-  Red = 'red',
-}
-
 export enum ChessNameBlack {
   King = '將',
   Guard = '士',

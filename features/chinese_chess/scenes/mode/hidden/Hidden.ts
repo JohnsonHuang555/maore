@@ -7,7 +7,6 @@ import {
 } from 'features/chinese_chess/models/ChineseChessScene';
 import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
 import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
-import ComponentService from 'features/base/services/ComponentService';
 import { ChessComponent } from 'features/chinese_chess/components/ChessComponent';
 import { CellComponent } from 'features/chinese_chess/components/CellComponent';
 
@@ -18,7 +17,7 @@ const GroupText: { [key: string]: string } = {
 };
 
 type Cell = {
-  x: number;
+  x: number; // 資料的XY ex. x 0, y1
   y: number;
   rectangle: Phaser.GameObjects.Rectangle;
 };
@@ -26,11 +25,10 @@ type Cell = {
 type Chess = {
   id: number;
   name: string;
-  sprite: Phaser.GameObjects.Sprite;
+  sprite: Phaser.GameObjects.Sprite; // image, circle, rectange, sprite
 };
 
 export default class Hidden extends Phaser.Scene {
-  private components!: ComponentService;
   private server!: Server;
   private onGameOver!: (data: GameOverSceneData) => void;
   private yourGroupText?: Phaser.GameObjects.Text;
@@ -45,13 +43,6 @@ export default class Hidden extends Phaser.Scene {
 
   constructor() {
     super('hidden');
-  }
-
-  init() {
-    this.components = new ComponentService();
-    this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-      this.components.destroy();
-    });
   }
 
   preload() {
@@ -84,7 +75,6 @@ export default class Hidden extends Phaser.Scene {
     const map = this.add.image(width * 0.5, height * 0.5, 'map');
     map.setScale(0.75);
     chineseChesses.forEach((chess) => {
-      // TODO: 需要更新
       this.initialChessesDictionary[`${chess.locationX},${chess.locationY}`] =
         chess;
     });
@@ -94,7 +84,7 @@ export default class Hidden extends Phaser.Scene {
 
   // FPS 60
   update(t: number, dt: number) {
-    this.components.update(dt);
+    this.server.components.update(dt);
   }
 
   private createBoard = () => {
@@ -109,7 +99,7 @@ export default class Hidden extends Phaser.Scene {
         const chessInfo = this.initialChessesDictionary[`${x},${y}`];
         // 格子
         const cell = this.add
-          .rectangle(drawX, drawY, size, size, 0xffffff)
+          .rectangle(drawX, drawY, size, size, 0xffffff, 0)
           .setDisplaySize(120, 120);
 
         this.cells.push({
@@ -118,7 +108,7 @@ export default class Hidden extends Phaser.Scene {
           rectangle: cell,
         });
 
-        this.components.addComponent(
+        this.server.components.addComponent(
           cell,
           new CellComponent(this.server, x, y)
         );
@@ -136,7 +126,7 @@ export default class Hidden extends Phaser.Scene {
           sprite: chess,
         });
 
-        this.components.addComponent(
+        this.server.components.addComponent(
           chess,
           new ChessComponent(
             this.server,
@@ -268,8 +258,6 @@ export default class Hidden extends Phaser.Scene {
     targetLocationX: number,
     targetLocationY: number
   ) => {
-    console.log(targetLocationX, 'x');
-    console.log(targetLocationY, 'y');
     this.clearSelectedChessUI();
     const { chess } = this.getChessById(id);
     const { rectangle } = this.getCellByLocation(

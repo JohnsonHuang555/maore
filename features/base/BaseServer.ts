@@ -1,4 +1,3 @@
-import Phaser from 'phaser';
 import { store } from 'pages/_app';
 import { Room as ClientRoom } from 'colyseus.js';
 import { Room } from 'middleware/services/RoomServer';
@@ -8,10 +7,12 @@ import { Player } from 'models/Player';
 import { setSnackbar } from 'actions/AppAction';
 import { setShowGameScreen } from 'actions/RoomAction';
 import { sharedInstance as events } from 'features/base/EventCenter';
+import ComponentService from 'features/base/services/ComponentService';
 
 /** 共用接收與傳送房間資料，監聽 store state */
 export default class BaseServer {
   public room: ClientRoom<Room>;
+  public components: ComponentService;
   private _gameStatus: GameStatus;
   private _roomInfo: RoomInfo;
 
@@ -46,6 +47,7 @@ export default class BaseServer {
     this._gameStatus = room.gameStatus;
     this._roomInfo = room.roomInfo;
     this.room = server.room;
+    this.components = new ComponentService();
     // 監聽 state 的變化
     store.subscribe(this.handleRoomStateChange);
     // 打給後端 phaser 環境載入完成
@@ -107,6 +109,7 @@ export default class BaseServer {
       },
     } = store.getState();
     if (gameStatus === GameStatus.WaitingForPlayers) {
+      this.components.destroy();
       events.removeAllListeners();
     }
     const playerGroupChanged = players
