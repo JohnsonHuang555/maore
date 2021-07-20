@@ -50,7 +50,7 @@ export default class RoomServer {
   private dispatch: Dispatch<AnyAction>;
 
   constructor(dispatch: Dispatch<AnyAction>) {
-    const client = new Client('ws://localhost:3000');
+    const client = new Client('ws://localhost:2568');
     dispatch(setClient(client));
     this.dispatch = dispatch;
   }

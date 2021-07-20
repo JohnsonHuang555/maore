@@ -1,5 +1,5 @@
 import { Schema, type } from '@colyseus/schema';
-import { GameList } from 'models/Game';
+import { GameList } from '../../../models/Game';
 import { Payload } from '../commands/UpdateRoomInfoCommand';
 
 // An abstract roomInfo object
