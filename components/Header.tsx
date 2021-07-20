@@ -2,8 +2,7 @@ import { AppBar, Toolbar, Typography } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import Toast from 'components/Toast';
 import { Button } from '@material-ui/core';
-import LoginModal from './modals/LogInModal';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   showLoginModalSelector,
@@ -17,6 +16,7 @@ import {
   setUserInfo,
 } from 'actions/AppAction';
 import styles from 'styles/components/header.module.scss';
+import LoginModal from './modals/LoginModal';
 
 const Header = () => {
   const dispatch = useDispatch();
