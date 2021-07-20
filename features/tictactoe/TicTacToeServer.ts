@@ -1,5 +1,6 @@
 import { TicTacToeMessage } from 'features/tictactoe/models/TicTacToeMessage';
 import BaseServer from 'features/base/BaseServer';
+import { sharedInstance as events } from 'features/base/EventCenter';
 
 // 監聽與傳送給後端資料
 export default class Server extends BaseServer {
@@ -18,12 +19,12 @@ export default class Server extends BaseServer {
   }
 
   onBoardChanged(cb: (cell: number, index: number) => void, context?: any) {
-    this.events.on('board-changed', cb, context);
+    events.on('board-changed', cb, context);
   }
 
   private handleStateChange() {
     this.room.state.board.onChange = (item, idx) => {
-      this.events.emit('board-changed', item, idx);
+      events.emit('board-changed', item, idx);
     };
   }
 }

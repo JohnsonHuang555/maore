@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon",
     "build": "next build && tsc --project tsconfig.server.json",
-    "start": "cross-env NODE_ENV=production node dist/index.js"
+    "start": "next start -p ${PORT:=3000}"
   },
   "dependencies": {
     "@colyseus/command": "^0.1.6",
