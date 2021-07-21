@@ -104,11 +104,15 @@ const Rooms = () => {
             </div>
           </div>
           <div className={`${styles.messages} ${styles.block}`}>
-            <div className={styles.messageContent}>
-              <span className={styles.message}>笑死</span>
-              <span className={styles.message}>快開始阿</span>
-              <span className={styles.message}>單挑</span>
-              <span className={styles.message}>sp4</span>
+            <div className={styles.contentWrapper}>
+              <div className={styles.overflowContainer}>
+                <div className={styles.overflowContent}>
+                  <span className={styles.message}>笑死</span>
+                  <span className={styles.message}>快開始阿</span>
+                  <span className={styles.message}>單挑</span>
+                  <span className={styles.message}>sp4</span>
+                </div>
+              </div>
             </div>
             <TextField
               id="outlined-basic"
