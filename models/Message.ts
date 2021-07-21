@@ -7,4 +7,6 @@ export enum RoomMessage {
   UpdateGameMode = 'update-game-mode',
   LoadedGame = 'Loaded-game', // 對前端來說永遠都 request true，改成 false 的情境只有在後端做
   CreateGame = 'create-game',
+  SendMessage = 'send-message',
+  GetMessages = 'get-messages',
 }

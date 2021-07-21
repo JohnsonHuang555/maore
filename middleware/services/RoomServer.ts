@@ -10,6 +10,7 @@ import {
   updateWinningPlayer,
   updateActivePlayer,
   setPlayerInfo,
+  setMessage,
 } from 'actions/RoomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
@@ -88,6 +89,10 @@ export default class RoomServer {
     room.send(RoomMessage.StartGame);
   }
 
+  async sendMessage(room: ClientRoom<Room>, message: string) {
+    room.send(RoomMessage.SendMessage, message);
+  }
+
   private handleRoomChange(room: ClientRoom<Room>) {
     room.onMessage(
       RoomMessage.GetYourPlayerId,
@@ -95,6 +100,10 @@ export default class RoomServer {
         this.dispatch(setYourPlayerId(message.yourPlayerId));
       }
     );
+
+    room.onMessage(RoomMessage.GetMessages, (message: string) => {
+      this.dispatch(setMessage(message));
+    });
 
     // room players changes...
     room.state.players.onAdd = (player) => {

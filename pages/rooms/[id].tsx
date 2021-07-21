@@ -1,21 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Layout from 'components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createdRoomIdSelector,
+  messagesSelector,
   playersSelector,
   roomInfoSelector,
   showGameScreenSelector,
 } from 'selectors/roomSelector';
 import Grid from '@material-ui/core/Grid';
 import { useRouter } from 'next/router';
-import { Button, TextField } from '@material-ui/core';
+import { Button, InputAdornment, TextField } from '@material-ui/core';
 import PlayerList from 'components/rooms/PlayerCard';
 import {
   initialClient,
   joinRoom,
   leaveRoom,
   readyGame,
+  sendMessage,
   startGame,
 } from 'actions/ServerAction';
 import { playerIdSelector } from 'selectors/roomSelector';
@@ -25,6 +27,7 @@ import { clientSelector } from 'selectors/serverSelector';
 import dynamic from 'next/dynamic';
 import { isLoginSelector, userInfoSelector } from 'selectors/appSelector';
 import { setShowLoginModal } from 'actions/AppAction';
+import { Send } from '@material-ui/icons';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('components/rooms/GameScreen'),
@@ -43,16 +46,28 @@ const Rooms = () => {
   const userInfo = useSelector(userInfoSelector);
   const isLogin = useSelector(isLoginSelector);
   const showGameScreen = useSelector(showGameScreenSelector);
+  const messages = useSelector(messagesSelector);
+
+  const [currentMessage, setCurrentMessage] = useState('');
+  const messageRef = useRef<any>(null);
 
   useWarningOnExit({
     shouldWarn: true,
     leaveRoom,
   });
 
+  // use effects start
   useEffect(() => {
     const userInfo = localStorage.getItem('userInfo');
     if (!userInfo) {
       dispatch(setShowLoginModal(true));
+    }
+    if (messageRef && messageRef.current) {
+      messageRef.current.addEventListener('DOMNodeInserted', () => {
+        const scroll =
+          messageRef.current.scrollHeight - messageRef.current.clientHeight;
+        messageRef.current.scrollTo(0, scroll);
+      });
     }
   }, []);
 
@@ -68,6 +83,7 @@ const Rooms = () => {
       dispatch(joinRoom(String(roomId), userInfo.name));
     }
   }, [roomId, createdRoomId, isLogin]);
+  // use effect end
 
   const isMaster = (): boolean => {
     const player = players.find((p) => p.isMaster && p.id === yourPlayerId);
@@ -93,6 +109,14 @@ const Rooms = () => {
     return false;
   };
 
+  const onSendMessage = () => {
+    if (!currentMessage) {
+      return;
+    }
+    dispatch(sendMessage(currentMessage));
+    setCurrentMessage('');
+  };
+
   return (
     <Layout>
       <h2 className="title">{roomInfo.roomTilte}</h2>
@@ -105,12 +129,13 @@ const Rooms = () => {
           </div>
           <div className={`${styles.messages} ${styles.block}`}>
             <div className={styles.contentWrapper}>
-              <div className={styles.overflowContainer}>
+              <div className={styles.overflowContainer} ref={messageRef}>
                 <div className={styles.overflowContent}>
-                  <span className={styles.message}>笑死</span>
-                  <span className={styles.message}>快開始阿</span>
-                  <span className={styles.message}>單挑</span>
-                  <span className={styles.message}>sp4</span>
+                  {messages.map((message, index) => (
+                    <span key={index} className={styles.message}>
+                      {message}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
@@ -119,6 +144,27 @@ const Rooms = () => {
               label="說點什麼吧..."
               variant="outlined"
               size="small"
+              value={currentMessage}
+              InputProps={{
+                onKeyDown: (e) => {
+                  if (e.key === 'Enter') {
+                    onSendMessage();
+                  }
+                },
+                onChange: (e) => {
+                  setCurrentMessage(e.target.value);
+                },
+                endAdornment: (
+                  <InputAdornment position="start">
+                    <div
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => onSendMessage()}
+                    >
+                      <Send />
+                    </div>
+                  </InputAdornment>
+                ),
+              }}
             />
           </div>
         </Grid>

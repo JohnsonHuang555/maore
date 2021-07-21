@@ -44,6 +44,14 @@ export default class BaseRoom {
         client,
       });
     });
+
+    this.room.onMessage(RoomMessage.SendMessage, (client, message) => {
+      const clientIndex = this.room.clients.findIndex(
+        (c) => c.id === client.id
+      );
+      const name = this.room.state.players[clientIndex].name;
+      this.room.broadcast(RoomMessage.GetMessages, `${name}: ${message}`);
+    });
   }
 
   onJoin(client: Client, option: Metadata) {

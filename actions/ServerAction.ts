@@ -12,6 +12,7 @@ export enum ActionType {
   LEAVE_ROOM = 'LEAVE_ROOM',
   READY_GAME = 'READY_GAME',
   START_GAME = 'START_GAME',
+  SEND_MESSAGE = 'SEND_MESSAGE',
 }
 
 export const initialClient = () => {
@@ -86,5 +87,12 @@ export const readyGame = () => {
 export const startGame = () => {
   return {
     type: ActionType.START_GAME,
+  };
+};
+
+export const sendMessage = (message: string) => {
+  return {
+    type: ActionType.SEND_MESSAGE,
+    message,
   };
 };

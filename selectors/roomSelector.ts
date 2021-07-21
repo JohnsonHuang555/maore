@@ -9,3 +9,4 @@ export const roomInfoSelector = (store: StoreState) => store.room.roomInfo;
 export const playerIdSelector = (store: StoreState) => store.room.yourPlayerId;
 export const showGameScreenSelector = (store: StoreState) =>
   store.room.showGameScreen;
+export const messagesSelector = (store: StoreState) => store.room.messages;

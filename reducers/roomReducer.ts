@@ -14,7 +14,8 @@ export type State = {
   showGameScreen: boolean;
   winningPlayer: number;
   activePlayer: number;
-  isAllPlayersLoaded: boolean; // 所有玩家載入狀態
+  isAllPlayersLoaded: boolean; // 所有玩家載入狀態,
+  messages: string[]; // 聊天訊息
 };
 
 const initialState: State = {
@@ -33,6 +34,7 @@ const initialState: State = {
   winningPlayer: -1,
   activePlayer: -1,
   isAllPlayersLoaded: false,
+  messages: [],
 };
 
 type LoadedRoomsAction = {
@@ -91,6 +93,11 @@ type UpdateActivePlayer = {
   playerIndex: number;
 };
 
+type SetMessage = {
+  type: ActionType.SET_MESSAGE;
+  message: string;
+};
+
 type ResetAction = {
   type: ActionType.RESET;
 };
@@ -107,6 +114,7 @@ type Action =
   | SetShowGameScreen
   | UpdateWinningPlayer
   | UpdateActivePlayer
+  | SetMessage
   | ResetAction;
 
 const reducer = (state = initialState, action: Action): State => {
@@ -193,6 +201,12 @@ const reducer = (state = initialState, action: Action): State => {
         activePlayer: action.playerIndex,
       };
     }
+    case ActionType.SET_MESSAGE: {
+      return {
+        ...state,
+        messages: [...state.messages, action.message],
+      };
+    }
     case ActionType.RESET: {
       return {
         ...state,
@@ -206,6 +220,7 @@ const reducer = (state = initialState, action: Action): State => {
         showGameScreen: false,
         gameStatus: GameStatus.WaitingForPlayers,
         isAllPlayersLoaded: false,
+        messages: [],
       };
     }
     default: {

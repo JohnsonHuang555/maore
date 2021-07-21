@@ -15,6 +15,7 @@ export enum ActionType {
   SET_SHOW_GAME_SCREEN = 'SET_SHOW_GAME_SCREEN',
   UPDATE_WINNING_PLAYER = 'UPDATE_WINNING_PLAYER',
   UPDATE_ACTIVIE_PLAYER = 'UPDATE_ACTIVIE_PLAYER',
+  SET_MESSAGE = 'SET_MESSAGE',
   RESET = 'RESET',
 }
 
@@ -93,6 +94,13 @@ export const updateActivePlayer = (playerIndex: number) => {
   return {
     type: ActionType.UPDATE_ACTIVIE_PLAYER,
     playerIndex,
+  };
+};
+
+export const setMessage = (message: string) => {
+  return {
+    type: ActionType.SET_MESSAGE,
+    message,
   };
 };
 
