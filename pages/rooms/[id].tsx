@@ -28,6 +28,7 @@ import dynamic from 'next/dynamic';
 import { isLoginSelector, userInfoSelector } from 'selectors/appSelector';
 import { setShowLoginModal } from 'actions/AppAction';
 import { Send } from '@material-ui/icons';
+import GameSetting from 'components/rooms/GameSetting';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('components/rooms/GameScreen'),
@@ -170,7 +171,9 @@ const Rooms = () => {
         </Grid>
         <Grid item lg={3} xs={3}>
           <div className={`${styles.block} ${styles.rightArea}`}>
-            <div className={`${styles.content} ${styles.settings}`}>123</div>
+            <div className={`${styles.content} ${styles.settings}`}>
+              <GameSetting gamePack={roomInfo.gamePack} />
+            </div>
             {isMaster() ? (
               <Button
                 variant="contained"

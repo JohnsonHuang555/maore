@@ -23,6 +23,7 @@ export default class PlayerLeftCommand extends Command<RoomState> {
 
     if (!hasMaster) {
       this.room.state.players[0].isMaster = true;
+      this.room.state.players[0].isReady = true;
     }
 
     // 重新指派所有玩家 成員

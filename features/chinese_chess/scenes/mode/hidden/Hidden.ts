@@ -46,6 +46,7 @@ export default class Hidden extends Phaser.Scene {
   }
 
   preload() {
+    this.load.image('background', '/chinese_chess/background.jpeg');
     this.load.image('map', '/chinese_chess/map/hidden_mode.png');
     this.load.atlas(
       'chess',
@@ -72,6 +73,9 @@ export default class Hidden extends Phaser.Scene {
     }
 
     const { width, height } = this.scale;
+    const bg = this.add.image(innerWidth / 2, innerHeight / 2, 'background');
+    bg.setDisplaySize(innerWidth, innerHeight);
+
     const map = this.add.image(width * 0.5, height * 0.5, 'map');
     map.setScale(0.75);
     chineseChesses.forEach((chess) => {
