@@ -2,7 +2,7 @@ import { Dispatcher } from '@colyseus/command';
 import { Client, Room } from 'colyseus';
 import RoomState from './state/RoomState';
 import { RoomMessage } from '../../models/Message';
-import { Metadata } from '../../models/Room';
+import { Metadata, RoomInfo } from '../../models/Room';
 import PlayerLeftCommand from './commands/PlayerLeftCommand';
 import ReadyGameCommand from './commands/ReadyGameCommand';
 import StartGameCommand from './commands/StartGameCommand';
@@ -52,6 +52,13 @@ export default class BaseRoom {
       const name = this.room.state.players[clientIndex].name;
       this.room.broadcast(RoomMessage.GetMessages, `${name}: ${message}`);
     });
+
+    this.room.onMessage(
+      RoomMessage.UpdateRoomInfo,
+      (_c, message: { roomInfo: Partial<RoomInfo> }) => {
+        //
+      }
+    );
   }
 
   onJoin(client: Client, option: Metadata) {

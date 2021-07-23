@@ -15,7 +15,7 @@ import {
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
 import { RoomMessage } from 'models/Message';
-import { GameStatus, Metadata } from 'models/Room';
+import { GameStatus, Metadata, RoomInfo } from 'models/Room';
 import { AnyAction, Dispatch } from 'redux';
 import { Schema, ArraySchema } from '@colyseus/schema';
 import { PlayerState } from 'server/room/state/PlayerState';
@@ -91,6 +91,10 @@ export default class RoomServer {
 
   async sendMessage(room: ClientRoom<Room>, message: string) {
     room.send(RoomMessage.SendMessage, message);
+  }
+
+  async updateRoomInfo(room: ClientRoom<Room>, roomInfo: Partial<RoomInfo>) {
+    room.send(RoomMessage.UpdateRoomInfo, { roomInfo });
   }
 
   private handleRoomChange(room: ClientRoom<Room>) {
@@ -176,6 +180,7 @@ export default class RoomServer {
         const { field, value } = change;
         switch (field) {
           case RoomStateChangeList.RoomInfo: {
+            console.log(value);
             this.dispatch(
               setRoomInfo({
                 roomTilte: value.roomTitle,

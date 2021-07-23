@@ -21,7 +21,5 @@ export default class EatChessCommand extends Command<ChineseChessState> {
       this.room.state.chineseChesses[targetChessIndex].locationX;
     this.room.state.chineseChesses[chessIndex].locationY =
       this.room.state.chineseChesses[targetChessIndex].locationY;
-
-    return [new NextTurnCommand()];
   }
 }

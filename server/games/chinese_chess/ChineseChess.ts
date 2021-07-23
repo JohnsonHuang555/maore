@@ -16,6 +16,7 @@ import EatChessCommand from './commands/EatChessCommand';
 import MoveChessCommand from './commands/MoveChessCommand';
 import UpdatePlayerGroupCommand from '../../room/commands/UpdatePlayerGroupCommand';
 import { RoomMessage } from '../../../models/Message';
+import CheckWinnerCommand from './commands/CheckWinnerCommand';
 
 export default class ChineseChess extends Room<ChineseChessState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -60,10 +61,16 @@ export default class ChineseChess extends Room<ChineseChessState, Metadata> {
 
     this.onMessage(
       ChineseChessMessage.EatChess,
-      (_c, message: { id: number; targetId: number }) => {
+      (client, message: { id: number; targetId: number }) => {
         this.dispatcher.dispatch(new EatChessCommand(), {
           id: message.id,
           targetId: message.targetId,
+        });
+        const clientIndex = this.clients.findIndex((c) => c.id === client.id);
+        const group = this.state.players[clientIndex].group;
+        this.dispatcher.dispatch(new CheckWinnerCommand(), {
+          gameMode: this.metadata.gameMode as GameMode,
+          group,
         });
       }
     );
