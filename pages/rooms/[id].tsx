@@ -19,6 +19,7 @@ import {
   readyGame,
   sendMessage,
   startGame,
+  updateRoomInfo,
 } from 'actions/ServerAction';
 import { playerIdSelector } from 'selectors/roomSelector';
 import styles from 'styles/pages/rooms.module.scss';
@@ -29,6 +30,7 @@ import { isLoginSelector, userInfoSelector } from 'selectors/appSelector';
 import { setShowLoginModal } from 'actions/AppAction';
 import { Send } from '@material-ui/icons';
 import GameSetting from 'components/rooms/GameSetting';
+import { RoomInfo } from 'models/Room';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('components/rooms/GameScreen'),
@@ -120,7 +122,7 @@ const Rooms = () => {
 
   return (
     <Layout>
-      <h2 className="title">{roomInfo.roomTilte}</h2>
+      <h2 className="title">{roomInfo.roomTitle}</h2>
       <Grid container spacing={3} style={{ height: '100%' }}>
         <Grid item lg={9} xs={9} className={styles.leftArea}>
           <div className={`${styles.playerList} ${styles.block}`}>
@@ -172,7 +174,14 @@ const Rooms = () => {
         <Grid item lg={3} xs={3}>
           <div className={`${styles.block} ${styles.rightArea}`}>
             <div className={`${styles.content} ${styles.settings}`}>
-              <GameSetting gamePack={roomInfo.gamePack} />
+              <GameSetting
+                gamePack={roomInfo.gamePack}
+                settings={roomInfo.extraSettings}
+                currentGameMode={roomInfo.gameMode}
+                onChange={(roomInfo: Partial<RoomInfo>) =>
+                  dispatch(updateRoomInfo(roomInfo))
+                }
+              />
             </div>
             {isMaster() ? (
               <Button

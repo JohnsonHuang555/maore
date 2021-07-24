@@ -183,10 +183,11 @@ export default class RoomServer {
             console.log(value);
             this.dispatch(
               setRoomInfo({
-                roomTilte: value.roomTitle,
+                roomTitle: value.roomTitle,
                 maxPlayers: value.maxPlayers,
                 gamePack: value.gamePack,
                 gameMode: value.gameMode,
+                extraSettings: value.extraSettings,
               })
             );
             break;

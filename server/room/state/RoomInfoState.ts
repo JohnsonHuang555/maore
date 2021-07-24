@@ -16,5 +16,5 @@ export class RoomInfoState extends Schema {
   gameMode?: string;
 
   @type('string')
-  extraSetting?: string;
+  extraSettings?: string;
 }
