@@ -3,7 +3,6 @@ import Layout from 'components/Layout';
 import { Game, GameList } from 'models/Game';
 import { useRouter } from 'next/router';
 import Grid from '@material-ui/core/Grid';
-import Icon from 'components/Icon';
 import { Info } from '@material-ui/icons';
 import useSWR from 'swr';
 import Image from 'next/image';

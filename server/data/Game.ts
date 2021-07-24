@@ -1,5 +1,5 @@
 import { Game, GameList } from '../../models/Game';
-import { GameMode as ChineseChessMode } from '../../features/chinese_chess/models/ChinesChessMode';
+import { EnhanceGameModes as ChineseChessModes } from '../../features/chinese_chess/models/ChinesChessMode';
 
 // TODO: 假資料之後寫入資料庫
 export const games: Game[] = [
@@ -24,21 +24,6 @@ export const games: Game[] = [
     homeImg: '/chinese_chess/home.png',
     estimateTime: 5,
     gamePack: GameList.ChineseChess,
-    modes: [
-      {
-        label: '標準(大盤)',
-        value: ChineseChessMode.Standard,
-        image: '/chinese_chess/standard.png',
-        minPlayers: 2,
-        maxPlayers: 2,
-      },
-      {
-        label: '暗棋(小盤)',
-        value: ChineseChessMode.Hidden,
-        image: '/chinese_chess/hidden.png',
-        minPlayers: 2,
-        maxPlayers: 2,
-      },
-    ],
+    modes: ChineseChessModes,
   },
 ];

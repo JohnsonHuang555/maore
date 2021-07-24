@@ -1,9 +1,9 @@
-import { GameMode } from 'features/chinese_chess/models/ChinesChessMode';
-import { GameList } from 'models/Game';
+import { GameList, GameMode } from 'models/Game';
 import styles from 'styles/components/gameSetting.module.scss';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { RoomInfo } from 'models/Room';
+import { EnhanceGameModes as ChineseChessModes } from 'features/chinese_chess/models/ChinesChessMode';
 
 type GameSettingProps = {
   gamePack: GameList | '';
@@ -15,26 +15,28 @@ type GameSettingProps = {
 const GameSetting = (props: GameSettingProps) => {
   const { gamePack, settings, currentGameMode, onChange } = props;
 
-  const playingGame: { [key: string]: string[] } = {
-    [GameList.ChineseChess]: [GameMode.Standard, GameMode.Hidden],
+  const playingGame: { [key: string]: GameMode[] } = {
+    [GameList.ChineseChess]: ChineseChessModes,
   };
 
   return (
     <div className={styles.gameSetting}>
-      <Select
-        labelId="demo-simple-select-outlined-label"
-        id="demo-simple-select-outlined"
-        value={currentGameMode}
-        onChange={(e) => onChange({ gameMode: e.target.value as string })}
-        label="Age"
-      >
-        <MenuItem value="">
-          <em>None</em>
-        </MenuItem>
-        <MenuItem value={10}>Ten</MenuItem>
-        <MenuItem value={20}>Twenty</MenuItem>
-        <MenuItem value={30}>Thirty</MenuItem>
-      </Select>
+      {currentGameMode && (
+        <Select
+          labelId="game-mode-label"
+          id="game-mode"
+          value={currentGameMode}
+          variant="outlined"
+          onChange={(e) => onChange({ gameMode: e.target.value as string })}
+          label="遊戲模式"
+        >
+          {playingGame[gamePack].map((m, idx) => (
+            <MenuItem key={idx} value={m.value}>
+              {m.label}
+            </MenuItem>
+          ))}
+        </Select>
+      )}
     </div>
   );
 };

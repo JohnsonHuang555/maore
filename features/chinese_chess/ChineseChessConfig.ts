@@ -9,7 +9,7 @@ export const ChineseChessConfig: GameInstance = {
   type: Phaser.AUTO,
   scene: [Bootstrap, Hidden],
   scale: {
-    mode: Phaser.Scale.ScaleModes.FIT,
+    mode: Phaser.Scale.ScaleModes.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   physics: {
