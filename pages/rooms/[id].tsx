@@ -19,6 +19,7 @@ import {
   readyGame,
   sendMessage,
   startGame,
+  updateRoomInfo,
 } from 'actions/ServerAction';
 import { playerIdSelector } from 'selectors/roomSelector';
 import styles from 'styles/pages/rooms.module.scss';
@@ -132,7 +133,7 @@ const Rooms = () => {
 
   return (
     <Layout>
-      <h2 className="title">{roomInfo.roomTilte}</h2>
+      <h2 className="title">{roomInfo.roomTitle}</h2>
       <Grid container spacing={3} style={{ height: '100%' }}>
         <Grid item lg={9} xs={9} className={styles.leftArea}>
           <div className={`${styles.playerList} ${styles.block}`}>

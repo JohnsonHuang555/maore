@@ -6,7 +6,7 @@ export enum ActionType {
   LOADED_ROOMS = 'LOADED_ROOMS',
   CREATED_ROOM = 'CREATED_ROOM',
   SET_ROOM_INFO = 'SET_ROOM_INFO',
-  SET_YOUR_PLAYERID = 'SET_YOUR_PLAYERID',
+  SET_YOUR_PLAYER_ID = 'SET_YOUR_PLAYER_ID',
   ADD_PLAYER = 'ADD_PLAYER',
   REMOVE_PLAYER = 'REMOVE_PLAYER',
   SET_PLAYER_ORDER = 'SET_PLAYER_ORDER',
@@ -14,7 +14,7 @@ export enum ActionType {
   UPDATE_GAME_STATUS = 'UPDATE_GAME_STATUS',
   SET_SHOW_GAME_SCREEN = 'SET_SHOW_GAME_SCREEN',
   UPDATE_WINNING_PLAYER = 'UPDATE_WINNING_PLAYER',
-  UPDATE_ACTIVIE_PLAYER = 'UPDATE_ACTIVIE_PLAYER',
+  UPDATE_ACTIVE_PLAYER = 'UPDATE_ACTIVE_PLAYER',
   SET_MESSAGE = 'SET_MESSAGE',
   RESET = 'RESET',
 }
@@ -56,7 +56,7 @@ export const removePlayer = (id: string) => {
 
 export const setYourPlayerId = (yourPlayerId: string) => {
   return {
-    type: ActionType.SET_YOUR_PLAYERID,
+    type: ActionType.SET_YOUR_PLAYER_ID,
     yourPlayerId,
   };
 };
@@ -92,7 +92,7 @@ export const updateWinningPlayer = (playerIndex: number) => {
 
 export const updateActivePlayer = (playerIndex: number) => {
   return {
-    type: ActionType.UPDATE_ACTIVIE_PLAYER,
+    type: ActionType.UPDATE_ACTIVE_PLAYER,
     playerIndex,
   };
 };

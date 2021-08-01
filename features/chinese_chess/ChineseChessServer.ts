@@ -30,6 +30,7 @@ export default class ChineseChessServer extends BaseServer {
   public selectedChessId?: number;
   // 當更新棋子時，會有值
   public changedChessInfo?: ChangedChessInfo;
+  // 所有棋子，隨著後端更新
   private chineseChesses: ChessInfo[] = [];
 
   constructor() {
@@ -203,7 +204,6 @@ export default class ChineseChessServer extends BaseServer {
           chessName === ChessNameBlack.Cannon ||
           chessName === ChessNameRed.Cannon
         ) {
-          // TODO: 判斷有無隔一個
           return this.canonEatLogic(locationX, locationY, targetX, targetY);
         }
         // 卒可以吃帥，兵可以吃將

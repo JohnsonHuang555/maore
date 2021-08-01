@@ -25,7 +25,7 @@ const initialState: State = {
   players: [],
   yourPlayerId: '',
   roomInfo: {
-    roomTilte: '',
+    roomTitle: '',
     maxPlayers: 0,
     gamePack: '',
   },
@@ -53,7 +53,7 @@ type SetRoomInfo = {
 };
 
 type SetYourPlayerIdAction = {
-  type: ActionType.SET_YOUR_PLAYERID;
+  type: ActionType.SET_YOUR_PLAYER_ID;
   yourPlayerId: string;
 };
 
@@ -89,7 +89,7 @@ type UpdateWinningPlayer = {
 };
 
 type UpdateActivePlayer = {
-  type: ActionType.UPDATE_ACTIVIE_PLAYER;
+  type: ActionType.UPDATE_ACTIVE_PLAYER;
   playerIndex: number;
 };
 
@@ -140,7 +140,7 @@ const reducer = (state = initialState, action: Action): State => {
         },
       };
     }
-    case ActionType.SET_YOUR_PLAYERID: {
+    case ActionType.SET_YOUR_PLAYER_ID: {
       return {
         ...state,
         yourPlayerId: action.yourPlayerId,
@@ -195,7 +195,7 @@ const reducer = (state = initialState, action: Action): State => {
         winningPlayer: action.playerIndex,
       };
     }
-    case ActionType.UPDATE_ACTIVIE_PLAYER: {
+    case ActionType.UPDATE_ACTIVE_PLAYER: {
       return {
         ...state,
         activePlayer: action.playerIndex,
@@ -212,7 +212,7 @@ const reducer = (state = initialState, action: Action): State => {
         ...state,
         createdRoomId: '',
         roomInfo: {
-          roomTilte: '',
+          roomTitle: '',
           maxPlayers: 0,
           gamePack: '',
         },
