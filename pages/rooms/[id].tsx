@@ -29,6 +29,9 @@ import { isLoginSelector, userInfoSelector } from 'selectors/appSelector';
 import { setShowLoginModal } from 'actions/AppAction';
 import { Send } from '@material-ui/icons';
 import GameSetting from 'components/rooms/GameSetting';
+import { Game } from 'models/Game';
+import useSWR from 'swr';
+import { fetcher } from 'pages/api/base/Fetcher';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('components/rooms/GameScreen'),
@@ -86,7 +89,16 @@ const Rooms = () => {
   }, [roomId, createdRoomId, isLogin]);
   // use effect end
 
-  const isMaster = (): boolean => {
+  const { data: game, error } = useSWR<Game, Error>(
+    `/api/game/${roomInfo.gamePack}`,
+    fetcher
+  );
+
+  if (error) {
+    throw new Error('Game not loaded');
+  }
+
+  const checkIsMaster = (): boolean => {
     const player = players.find((p) => p.isMaster && p.id === yourPlayerId);
     if (player) {
       return true;
@@ -172,9 +184,14 @@ const Rooms = () => {
         <Grid item lg={3} xs={3}>
           <div className={`${styles.block} ${styles.rightArea}`}>
             <div className={`${styles.content} ${styles.settings}`}>
-              <GameSetting gamePack={roomInfo.gamePack} />
+              <GameSetting
+                roomInfo={roomInfo}
+                gameModes={game?.modes}
+                isMaster={checkIsMaster()}
+                onChangeRoomInfo={() => {}}
+              />
             </div>
-            {isMaster() ? (
+            {checkIsMaster() ? (
               <Button
                 variant="contained"
                 color="secondary"

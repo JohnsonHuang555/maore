@@ -14,7 +14,7 @@ type RoomCardProps = {
 const RoomCard = (props: RoomCardProps) => {
   const { title, maxPlayers, nowPlayers, joinRoom } = props;
   return (
-    <Grid item lg={4} xs={6}>
+    <Grid item lg={6} xs={12}>
       <div className={styles.room}>
         <div className={styles.header}>
           <span className={styles.title}>{title}</span>

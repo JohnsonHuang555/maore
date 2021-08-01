@@ -3,7 +3,6 @@ import Layout from 'components/Layout';
 import { Game, GameList } from 'models/Game';
 import { useRouter } from 'next/router';
 import Grid from '@material-ui/core/Grid';
-import Icon from 'components/Icon';
 import { Info } from '@material-ui/icons';
 import useSWR from 'swr';
 import Image from 'next/image';
@@ -17,16 +16,7 @@ import RoomCard from 'components/games/RoomCard';
 import styles from 'styles/pages/game.module.scss';
 import { clientSelector } from 'selectors/serverSelector';
 import { userInfoSelector } from 'selectors/appSelector';
-
-const fetcher = async (url: string) => {
-  const res = await fetch(url);
-  const data = await res.json();
-
-  if (res.status !== 200) {
-    throw new Error(data.message);
-  }
-  return data;
-};
+import { fetcher } from 'pages/api/base/Fetcher';
 
 const Games = () => {
   const router = useRouter();

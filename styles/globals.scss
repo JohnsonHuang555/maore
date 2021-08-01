@@ -1,3 +1,5 @@
+@import "./color.scss";
+
 html, body {
   height: 100%;
 }
@@ -10,7 +12,7 @@ html, body {
 
 .title {
   width: 100%;
-  border-bottom: 4px double white;
+  border-bottom: 4px double $white;
   padding-bottom: 10px;
 }
 
@@ -20,4 +22,8 @@ html, body {
 
 .MuiOutlinedInput-notchedOutline {
   border-color: rgba(255, 255, 255, 0.23) !important;
+}
+
+.MuiSelect-root {
+  background-color: $grey-4 !important;
 }

@@ -52,7 +52,8 @@
   .settings {
     height: 100%;
     margin-bottom: 10px;
-    overflow-x: auto;
+    overflow-y: auto;
+    padding: 10px 10px 0 10px;
   }
   .readyGame, .startGame {
     color: $white;
