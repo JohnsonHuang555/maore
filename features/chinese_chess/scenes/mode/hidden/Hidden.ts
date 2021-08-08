@@ -27,6 +27,7 @@ type Chess = {
   name: string;
   sprite: Phaser.GameObjects.Sprite; // image, circle, rectange, sprite
 };
+const GAME_PADDING = 20;
 
 export default class Hidden extends Phaser.Scene {
   private server!: Server;
@@ -48,6 +49,8 @@ export default class Hidden extends Phaser.Scene {
   preload() {
     this.load.image('background', '/chinese_chess/background.jpeg');
     this.load.image('map', '/chinese_chess/map/hidden_mode.png');
+    this.load.image('player', '/chinese_chess/player.png');
+    this.load.image('black_king', '/chinese_chess/black_king.png');
     this.load.atlas(
       'chess',
       '/chinese_chess/chesses.png',
@@ -72,22 +75,32 @@ export default class Hidden extends Phaser.Scene {
       this.server.createPlayerOrder();
     }
 
+    // init ui
     const { width, height } = this.scale;
-    const bg = this.add.image(innerWidth / 2, innerHeight / 2, 'background');
-    bg.setDisplaySize(innerWidth, innerHeight);
+    this.add.image(width / 2, height / 2, 'background');
+    this.add.image(width / 2, height / 2, 'map').setScale(0.5);
+    this.add
+      .rectangle(width - GAME_PADDING, height - GAME_PADDING, 120, 40, 0x168d71)
+      .setOrigin(1, 1);
+    this.add
+      .image(width - GAME_PADDING, GAME_PADDING, 'player')
+      .setScale(0.75)
+      .setOrigin(1, 0);
+    this.add
+      .image(GAME_PADDING, height - GAME_PADDING, 'player')
+      .setScale(0.75)
+      .setOrigin(0, 1);
 
-    const map = this.add.image(width * 0.5, height * 0.5, 'map');
-    map.setScale(0.75);
     chineseChesses.forEach((chess) => {
       this.initialChessesDictionary[`${chess.locationX},${chess.locationY}`] =
         chess;
     });
 
-    this.createBoard();
+    // this.createBoard();
   }
 
   // FPS 60
-  update(t: number, dt: number) {
+  update(_t: number, dt: number) {
     this.server.components.update(dt);
   }
 
