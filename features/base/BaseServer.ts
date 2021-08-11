@@ -39,6 +39,11 @@ export default class BaseServer {
     return true;
   }
 
+  get allPlayers() {
+    const { room } = store.getState();
+    return room.players;
+  }
+
   constructor() {
     const { server, room } = store.getState();
     if (!server.room) {
@@ -91,10 +96,7 @@ export default class BaseServer {
     events.on('player-win', cb, context);
   }
 
-  onPlayerGroupChanged(
-    cb: (groups: { id: string; playerName: string; group: string }[]) => void,
-    context?: any
-  ) {
+  onPlayerGroupChanged(cb: (count: number) => void, context?: any) {
     events.on('player-group-changed', cb, context);
   }
 
@@ -112,10 +114,8 @@ export default class BaseServer {
       this.components.destroy();
       events.removeAllListeners();
     }
-    const playerGroupChanged = players
-      .filter((p) => p.group !== '')
-      .map((p) => ({ id: p.id, playerName: p.name, group: p.group }));
-    events.emit('player-group-changed', playerGroupChanged);
+    const hasGroupPlayerCount = players.filter((p) => p.group).length;
+    events.emit('player-group-changed', hasGroupPlayerCount);
     events.emit('is-all-players-loaded', isAllPlayersLoaded);
     events.emit('player-win', winningPlayer);
     events.emit('player-turn-changed', activePlayer);

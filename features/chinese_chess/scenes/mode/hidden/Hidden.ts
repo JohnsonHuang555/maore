@@ -1,21 +1,12 @@
 import Phaser from 'phaser';
 import Server from 'features/chinese_chess/ChineseChessServer';
 import { GameOverSceneData } from 'models/Scenes';
-import {
-  GameSceneData,
-  PlayerGroup,
-} from 'features/chinese_chess/models/ChineseChessScene';
+import { GameSceneData } from 'features/chinese_chess/models/ChineseChessScene';
 import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
-import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
 import { ChessComponent } from 'features/chinese_chess/components/ChessComponent';
 import { CellComponent } from 'features/chinese_chess/components/CellComponent';
 
 const MAX_PLAYERS = 2;
-const GroupText: { [key: string]: string } = {
-  [ChineseChessGroup.Black]: '黑方',
-  [ChineseChessGroup.Red]: '紅方',
-};
-
 type Cell = {
   x: number; // 資料的XY ex. x 0, y1
   y: number;
@@ -50,7 +41,8 @@ export default class Hidden extends Phaser.Scene {
     this.load.image('background', '/chinese_chess/background.jpeg');
     this.load.image('map', '/chinese_chess/map/hidden_mode.png');
     this.load.image('player', '/chinese_chess/player.png');
-    this.load.image('black_king', '/chinese_chess/black_king.png');
+    this.load.image('black', '/chinese_chess/black_king.png');
+    this.load.image('red', '/chinese_chess/red_king.png');
     this.load.atlas(
       'chess',
       '/chinese_chess/chesses.png',
@@ -75,28 +67,64 @@ export default class Hidden extends Phaser.Scene {
       this.server.createPlayerOrder();
     }
 
-    // init ui
+    // 初始化畫面
     const { width, height } = this.scale;
     this.add.image(width / 2, height / 2, 'background');
     this.add.image(width / 2, height / 2, 'map').setScale(0.5);
     this.add
       .rectangle(width - GAME_PADDING, height - GAME_PADDING, 120, 40, 0x168d71)
       .setOrigin(1, 1);
-    this.add
+    // 對手
+    const opponentImage = this.add
       .image(width - GAME_PADDING, GAME_PADDING, 'player')
       .setScale(0.75)
       .setOrigin(1, 0);
-    this.add
+    // 玩家
+    const playerImage = this.add
       .image(GAME_PADDING, height - GAME_PADDING, 'player')
       .setScale(0.75)
       .setOrigin(0, 1);
 
-    chineseChesses.forEach((chess) => {
-      this.initialChessesDictionary[`${chess.locationX},${chess.locationY}`] =
-        chess;
+    const nameStyle = {
+      font: '20px Arial',
+      fill: '#fff',
+      boundsAlignH: 'center',
+      boundsAlignV: 'middle',
+    };
+
+    this.server.allPlayers.forEach(({ id, name }) => {
+      if (id === this.server.playerInfo.id) {
+        const text = this.add.text(0, 0, name, nameStyle);
+        Phaser.Display.Align.In.Center(
+          text,
+          this.add.zone(
+            GAME_PADDING + 65,
+            height - GAME_PADDING - 17,
+            playerImage.width,
+            playerImage.height
+          )
+        );
+      } else {
+        const text = this.add.text(0, 0, name, nameStyle);
+        Phaser.Display.Align.In.Center(
+          text,
+          this.add.zone(
+            width - GAME_PADDING - 63,
+            GAME_PADDING + 125,
+            opponentImage.width,
+            opponentImage.height
+          )
+        );
+      }
     });
 
-    // this.createBoard();
+    // 做字典以解決效能問題
+    this.initialChessesDictionary = chineseChesses.reduce((prev, current) => {
+      prev[`${current.locationX},${current.locationY}`] = current;
+      return prev;
+    }, {} as { [key: string]: ChessInfo });
+
+    this.createBoard();
   }
 
   // FPS 60
@@ -106,9 +134,9 @@ export default class Hidden extends Phaser.Scene {
 
   private createBoard = () => {
     const { width, height } = this.scale;
-    const offsetX = 548;
-    const offsetY = 235;
-    const size = 128;
+    const offsetX = 365;
+    const offsetY = 158;
+    const size = 64;
     let drawX = width * 0.5 - offsetX;
     let drawY = height * 0.5 - offsetY;
     for (let y = 0; y < 4; y++) {
@@ -117,7 +145,7 @@ export default class Hidden extends Phaser.Scene {
         // 格子
         const cell = this.add
           .rectangle(drawX, drawY, size, size, 0xffffff, 0)
-          .setDisplaySize(120, 120);
+          .setDisplaySize(100, 100);
 
         this.cells.push({
           x,
@@ -133,7 +161,7 @@ export default class Hidden extends Phaser.Scene {
         // 棋子
         const chess = this.add
           .sprite(cell.x, cell.y, 'chess', 'hidden.png')
-          .setDisplaySize(120, 120)
+          .setDisplaySize(100, 100)
           .setDepth(1);
         // .setSize(size, size);
 
@@ -155,10 +183,10 @@ export default class Hidden extends Phaser.Scene {
           )
         );
 
-        drawX += size + 28;
+        drawX += size + 40;
       }
       drawX = width * 0.5 - offsetX;
-      drawY += size + 28;
+      drawY += size + 40;
     }
 
     this.server.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
@@ -205,7 +233,8 @@ export default class Hidden extends Phaser.Scene {
 
     timeline.add({
       targets: chess.sprite,
-      scale: 0.32,
+      displayWidth: 100,
+      displayHeight: 100,
       duration: 100,
     });
 
@@ -301,7 +330,7 @@ export default class Hidden extends Phaser.Scene {
     this.prevSelectedChessId = undefined;
   }
 
-  // 房間相關
+  // 你的回合
   private handlePlayerTurnChanged(playerIndex: number) {
     this.yourTurnText?.destroy();
     this.yourTurnText = undefined;
@@ -318,37 +347,27 @@ export default class Hidden extends Phaser.Scene {
   }
 
   // 組別更新並顯示
-  private handlePlayerGroupChanged(groups: PlayerGroup[]) {
+  private handlePlayerGroupChanged(groupCount: number) {
     if (
-      groups.length === MAX_PLAYERS &&
+      groupCount === MAX_PLAYERS &&
       !this.yourGroupText &&
       !this.otherGroupText
     ) {
-      const { width } = this.scale;
-      const player1 = groups[0];
-      const player2 = groups[1];
-      this.otherGroupText = this.add.text(
-        width * 0.3,
-        50,
-        `${player1.playerName}：${GroupText[player1.group]}`,
-        {
-          padding: {
-            top: 5,
-          },
-          fontSize: '24px',
+      const { width, height } = this.scale;
+      console.log(this.server.allPlayers);
+      this.server.allPlayers.forEach(({ id, group }) => {
+        if (id === this.server.playerInfo.id) {
+          this.add
+            .image(GAME_PADDING + 85, height - GAME_PADDING - 45, group)
+            .setScale(0.75)
+            .setOrigin(0, 1);
+        } else {
+          this.add
+            .image(width - GAME_PADDING, GAME_PADDING + 55, group)
+            .setScale(0.75)
+            .setOrigin(1, 0);
         }
-      );
-      this.otherGroupText = this.add.text(
-        width * 0.7,
-        50,
-        `${player2.playerName}：${GroupText[player2.group]}`,
-        {
-          padding: {
-            top: 5,
-          },
-          fontSize: '24px',
-        }
-      );
+      });
     }
   }
 }
