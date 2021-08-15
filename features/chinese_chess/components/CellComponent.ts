@@ -20,7 +20,7 @@ export class CellComponent implements IComponent {
 
   awake() {
     this.gameObject
-      .setInteractive({ useHandCursor: true })
+      .setInteractive()
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, this.handleClick, this);
   }
 

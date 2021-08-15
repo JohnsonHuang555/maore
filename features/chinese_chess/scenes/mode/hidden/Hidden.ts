@@ -5,6 +5,7 @@ import { GameSceneData } from 'features/chinese_chess/models/ChineseChessScene';
 import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
 import { ChessComponent } from 'features/chinese_chess/components/ChessComponent';
 import { CellComponent } from 'features/chinese_chess/components/CellComponent';
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 
 const MAX_PLAYERS = 2;
 type Cell = {
@@ -30,19 +31,27 @@ export default class Hidden extends Phaser.Scene {
   private prevSelectedChessId?: number;
 
   // UI
+  rexUI!: RexUIPlugin;
   private cells: Cell[] = [];
   private chesses: Chess[] = [];
+  private showModal: boolean = false;
 
   constructor() {
     super('hidden');
   }
 
   preload() {
+    this.load.scenePlugin({
+      key: 'rexuiplugin',
+      url: RexUIPlugin,
+      sceneKey: 'rexUI',
+    });
     this.load.image('background', '/chinese_chess/background.jpeg');
     this.load.image('map', '/chinese_chess/map/hidden_mode.png');
     this.load.image('player', '/chinese_chess/player.png');
     this.load.image('black', '/chinese_chess/black_king.png');
     this.load.image('red', '/chinese_chess/red_king.png');
+    this.load.image('surrender', '/chinese_chess/btn_surrender.png');
     this.load.atlas(
       'chess',
       '/chinese_chess/chesses.png',
@@ -72,8 +81,13 @@ export default class Hidden extends Phaser.Scene {
     this.add.image(width / 2, height / 2, 'background');
     this.add.image(width / 2, height / 2, 'map').setScale(0.5);
     this.add
-      .rectangle(width - GAME_PADDING, height - GAME_PADDING, 120, 40, 0x168d71)
-      .setOrigin(1, 1);
+      .image(width - GAME_PADDING, height - GAME_PADDING, 'surrender')
+      .setScale(0.75)
+      .setOrigin(1, 1)
+      .setInteractive()
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+        this.showSurrenderModal();
+      });
     // 對手
     const opponentImage = this.add
       .image(width - GAME_PADDING, GAME_PADDING, 'player')
@@ -369,5 +383,73 @@ export default class Hidden extends Phaser.Scene {
         }
       });
     }
+  }
+
+  private showSurrenderModal() {
+    this.showModal = true;
+    const { width, height } = this.scale;
+    const dialog = this.rexUI.add
+      .dialog({
+        x: width * 0.5,
+        y: height * 0.5,
+
+        background: this.add.rectangle(0, 0, 100, 100, 0x1565c0),
+
+        title: this.rexUI.add.label({
+          background: this.add.rectangle(0, 0, 100, 40, 0x003c8f),
+          text: this.add.text(0, 0, 'Title', {
+            fontSize: '24px',
+          }),
+          space: {
+            left: 15,
+            right: 15,
+            top: 10,
+            bottom: 10,
+          },
+        }),
+
+        content: this.add.text(0, 0, 'Do you want to build a snow man?', {
+          fontSize: '24px',
+        }),
+
+        actions: [this.createLabel('Yes'), this.createLabel('No')],
+
+        space: {
+          title: 25,
+          content: 25,
+          action: 15,
+
+          left: 20,
+          right: 20,
+          top: 20,
+          bottom: 20,
+        },
+
+        align: {
+          actions: 'right', // 'center'|'left'|'right'
+        },
+
+        expand: {
+          content: false, // Content is a pure text object
+        },
+      })
+      .layout()
+      .setDepth(999)
+      .popUp(1000);
+  }
+
+  private createLabel(text: string) {
+    return this.rexUI.add.label({
+      background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 20, 0x5e92f3),
+      text: this.add.text(0, 0, text, {
+        fontSize: '24px',
+      }),
+      space: {
+        left: 10,
+        right: 10,
+        top: 10,
+        bottom: 10,
+      },
+    });
   }
 }
