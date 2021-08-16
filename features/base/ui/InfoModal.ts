@@ -4,11 +4,12 @@ type InfoModalProps = {
   scene: any;
   title?: string;
   description: string;
+  noOKbutton: boolean;
 };
 
 const InfoModal = (props: InfoModalProps) => {
   const { scene } = props;
-  const { title = '訊息', description } = props;
+  const { title = '訊息', description, noOKbutton } = props;
   const { width, height } = scene.scale;
   return scene.rexUI.add
     .dialog({
@@ -54,7 +55,7 @@ const InfoModal = (props: InfoModalProps) => {
         },
       }),
 
-      actions: [Button(scene, '好')],
+      actions: noOKbutton ? [] : [Button(scene, '好')],
 
       space: {
         title: 25,

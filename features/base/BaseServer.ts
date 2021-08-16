@@ -15,6 +15,7 @@ export default class BaseServer {
   public components: ComponentService;
   private _gameStatus: GameStatus;
   private _roomInfo: RoomInfo;
+  private _isGameOver: boolean = false;
 
   // 遊戲狀態
   get gameStatus() {
@@ -32,16 +33,20 @@ export default class BaseServer {
   }
 
   get isYourTurn() {
-    if (this.playerInfo.playerIndex !== this.room.state.activePlayer) {
-      this.showAlert('不是你的回合！');
-      return false;
-    }
-    return true;
+    // if (this.playerInfo.playerIndex !== this.room.state.activePlayer) {
+    //   this.showAlert('不是你的回合！');
+    //   return false;
+    // }
+    return this.playerInfo.playerIndex === this.room.state.activePlayer;
   }
 
   get allPlayers() {
     const { room } = store.getState();
     return room.players;
+  }
+
+  get isGameOver() {
+    return this._isGameOver;
   }
 
   constructor() {
@@ -116,6 +121,9 @@ export default class BaseServer {
     if (gameStatus === GameStatus.WaitingForPlayers) {
       this.components.destroy();
       events.removeAllListeners();
+    }
+    if (winningPlayer !== -1) {
+      this._isGameOver = true;
     }
     const hasGroupPlayerCount = players.filter((p) => p.group).length;
     events.emit('player-group-changed', hasGroupPlayerCount);

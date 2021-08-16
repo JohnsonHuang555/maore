@@ -33,10 +33,11 @@ export class CellComponent implements IComponent {
   }
 
   private handleClick() {
-    if (this.server.showSurrenderModal) {
-      return;
-    }
-    if (!this.server.isYourTurn) {
+    if (
+      this.server.showSurrenderModal ||
+      this.server.isGameOver ||
+      !this.server.isYourTurn
+    ) {
       return;
     }
 

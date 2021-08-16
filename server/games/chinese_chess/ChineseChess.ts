@@ -92,6 +92,11 @@ export default class ChineseChess extends Room<ChineseChessState, Metadata> {
         client,
       });
     });
+
+    // 結束遊戲
+    this.onMessage(RoomMessage.FinishGame, () => {
+      this.dispatcher.dispatch(new ResetCommand());
+    });
   }
 
   onJoin(client: Client, option: Metadata) {

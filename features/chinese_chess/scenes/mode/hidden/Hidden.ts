@@ -26,11 +26,9 @@ const GAME_PADDING = 20;
 
 export default class Hidden extends Phaser.Scene {
   private server!: Server;
-  private yourGroupText?: Phaser.GameObjects.Text;
-  private otherGroupText?: Phaser.GameObjects.Text;
-  private yourTurnText?: Phaser.GameObjects.Text;
   private initialChessesDictionary: { [key: string]: ChessInfo } = {};
   private prevSelectedChessId?: number;
+  private onGameOver!: () => void;
 
   // UI
   rexUI!: RexUIPlugin;
@@ -38,6 +36,7 @@ export default class Hidden extends Phaser.Scene {
   private chesses: Chess[] = [];
   private surrenderDialog?: Dialog;
   private gameOverDialog?: Dialog;
+  private yourTurnText?: Phaser.GameObjects.Text;
 
   constructor() {
     super('hidden');
@@ -63,8 +62,9 @@ export default class Hidden extends Phaser.Scene {
   }
 
   create(data: GameSceneData) {
-    const { server, chineseChesses } = data;
+    const { server, chineseChesses, onGameOver } = data;
     this.server = server;
+    this.onGameOver = onGameOver;
 
     if (!this.server) {
       throw new Error('server instance missing');
@@ -379,23 +379,21 @@ export default class Hidden extends Phaser.Scene {
     this.yourTurnText = undefined;
     if (this.server.playerInfo.playerIndex === playerIndex) {
       const { width } = this.scale;
-      this.yourTurnText = this.add.text(width * 0.5, 50, '你的回合', {
-        fontSize: '30px',
-        align: 'center',
-        padding: {
-          top: 5,
-        },
-      });
+      this.yourTurnText = this.add
+        .text(width * 0.5, 50, '你的回合', {
+          fontSize: '30px',
+          align: 'center',
+          padding: {
+            top: 5,
+          },
+        })
+        .setOrigin(0.5, 0.5);
     }
   }
 
   // 組別更新並顯示
   private handlePlayerGroupChanged(groupCount: number) {
-    if (
-      groupCount === MAX_PLAYERS &&
-      !this.yourGroupText &&
-      !this.otherGroupText
-    ) {
+    if (groupCount === MAX_PLAYERS) {
       const { width, height } = this.scale;
       this.server.allPlayers.forEach(({ id, group }) => {
         if (id === this.server.playerInfo.id) {
@@ -415,16 +413,20 @@ export default class Hidden extends Phaser.Scene {
 
   // 玩家勝出
   private handlePlayerWon(playerIndex: number) {
-    console.log(playerIndex, 'dddd');
     if (playerIndex === -1) {
       return;
     }
-    this.time.delayedCall(1000, () => {
+    this.time.delayedCall(500, () => {
+      if (!this.onGameOver) {
+        return;
+      }
+      this.yourTurnText?.destroy();
       const isYouWin = this.server.playerInfo.playerIndex === playerIndex;
       this.gameOverDialog = InfoModal({
         scene: this,
         title: 'Game Over',
         description: isYouWin ? '你贏了' : '你輸了',
+        noOKbutton: true,
       });
 
       this.gameOverDialog?.on(
@@ -434,6 +436,20 @@ export default class Hidden extends Phaser.Scene {
         },
         this
       );
+
+      const { width } = this.scale;
+      this.add
+        .text(width / 2, 50, '按 ESC 關閉離開', {
+          fontSize: '30px',
+          align: 'center',
+          padding: {
+            top: 5,
+          },
+        })
+        .setOrigin(0.5, 0.5);
+      this.input.keyboard.once('keyup-ESC', () => {
+        this.onGameOver();
+      });
     });
   }
 }
