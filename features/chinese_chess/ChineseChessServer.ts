@@ -150,6 +150,10 @@ export default class ChineseChessServer extends BaseServer {
     this.setSelectedChessId(undefined);
   }
 
+  surrender() {
+    this.room.send(ChineseChessMessage.Surrender);
+  }
+
   onGameDataLoaded(cb: (chineseChesses: ChessInfo[]) => void, context?: any) {
     events.on('game-data-loaded', cb, context);
   }

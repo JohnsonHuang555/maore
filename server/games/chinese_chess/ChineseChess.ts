@@ -17,6 +17,7 @@ import MoveChessCommand from './commands/MoveChessCommand';
 import UpdatePlayerGroupCommand from '../../room/commands/UpdatePlayerGroupCommand';
 import { RoomMessage } from '../../../models/Message';
 import CheckWinnerCommand from './commands/CheckWinnerCommand';
+import SurrenderCommand from './commands/SurrenderCommand';
 
 export default class ChineseChess extends Room<ChineseChessState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -85,6 +86,12 @@ export default class ChineseChess extends Room<ChineseChessState, Metadata> {
         });
       }
     );
+
+    this.onMessage(ChineseChessMessage.Surrender, (client) => {
+      this.dispatcher.dispatch(new SurrenderCommand(), {
+        client,
+      });
+    });
   }
 
   onJoin(client: Client, option: Metadata) {

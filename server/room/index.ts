@@ -56,7 +56,7 @@ export default class BaseRoom {
     this.room.onMessage(
       RoomMessage.UpdateRoomInfo,
       (_c, message: { roomInfo: Partial<RoomInfo> }) => {
-        //
+        // TODO: 編輯房間資訊
       }
     );
   }

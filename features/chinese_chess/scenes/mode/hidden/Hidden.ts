@@ -7,6 +7,8 @@ import { ChessComponent } from 'features/chinese_chess/components/ChessComponent
 import { CellComponent } from 'features/chinese_chess/components/CellComponent';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import Dialog from 'phaser3-rex-plugins/templates/ui/dialog/Dialog';
+import YesOrNoModal from 'features/base/ui/YesOrNoModal';
+import InfoModal from 'features/base/ui/InfoModal';
 
 const MAX_PLAYERS = 2;
 type Cell = {
@@ -24,7 +26,6 @@ const GAME_PADDING = 20;
 
 export default class Hidden extends Phaser.Scene {
   private server!: Server;
-  private onGameOver!: (data: GameOverSceneData) => void;
   private yourGroupText?: Phaser.GameObjects.Text;
   private otherGroupText?: Phaser.GameObjects.Text;
   private yourTurnText?: Phaser.GameObjects.Text;
@@ -35,7 +36,8 @@ export default class Hidden extends Phaser.Scene {
   rexUI!: RexUIPlugin;
   private cells: Cell[] = [];
   private chesses: Chess[] = [];
-  private dialog?: Dialog;
+  private surrenderDialog?: Dialog;
+  private gameOverDialog?: Dialog;
 
   constructor() {
     super('hidden');
@@ -61,9 +63,8 @@ export default class Hidden extends Phaser.Scene {
   }
 
   create(data: GameSceneData) {
-    const { server, chineseChesses, onGameOver } = data;
+    const { server, chineseChesses } = data;
     this.server = server;
-    this.onGameOver = onGameOver;
 
     if (!this.server) {
       throw new Error('server instance missing');
@@ -83,9 +84,9 @@ export default class Hidden extends Phaser.Scene {
       .image(width / 2, height / 2, 'background')
       .setInteractive()
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-        if (this.dialog && this.server.showSurrenderModal) {
+        if (this.surrenderDialog && this.server.showSurrenderModal) {
           this.server.setShowSurrenderModal(false);
-          this.dialog.destroy();
+          this.surrenderDialog.destroy();
         }
       });
     this.add.image(width / 2, height / 2, 'map').setScale(0.5);
@@ -98,7 +99,22 @@ export default class Hidden extends Phaser.Scene {
         if (this.server.showSurrenderModal) {
           return;
         }
-        this.createSurrenderModal();
+        this.surrenderDialog = YesOrNoModal({
+          scene: this,
+          description: '確定要投降嗎?',
+        });
+        this.surrenderDialog?.on(
+          'button.click',
+          (button: any) => {
+            if (button.text === '是') {
+              this.server.surrender();
+            }
+            this.server.setShowSurrenderModal(false);
+            this.surrenderDialog?.destroy();
+          },
+          this
+        );
+        this.server.setShowSurrenderModal(true);
       });
     // 對手
     const opponentImage = this.add
@@ -217,6 +233,7 @@ export default class Hidden extends Phaser.Scene {
 
     this.server.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
     this.server.onPlayerGroupChanged(this.handlePlayerGroupChanged, this);
+    this.server.onPlayerWon(this.handlePlayerWon, this);
   };
 
   private getCellByLocation(x: number, y: number): Cell {
@@ -396,80 +413,27 @@ export default class Hidden extends Phaser.Scene {
     }
   }
 
-  private createSurrenderModal() {
-    this.server.setShowSurrenderModal(true);
-    const { width, height } = this.scale;
-    this.dialog = this.rexUI.add
-      .dialog({
-        x: width * 0.5,
-        y: height * 0.5,
+  // 玩家勝出
+  private handlePlayerWon(playerIndex: number) {
+    console.log(playerIndex, 'dddd');
+    if (playerIndex === -1) {
+      return;
+    }
+    this.time.delayedCall(1000, () => {
+      const isYouWin = this.server.playerInfo.playerIndex === playerIndex;
+      this.gameOverDialog = InfoModal({
+        scene: this,
+        title: 'Game Over',
+        description: isYouWin ? '你贏了' : '你輸了',
+      });
 
-        background: this.add.rectangle(0, 0, 100, 100, 0x1565c0),
-
-        title: this.rexUI.add.label({
-          background: this.add.rectangle(0, 0, 100, 40, 0x003c8f),
-          text: this.add.text(0, 0, '訊息', {
-            fontSize: '24px',
-            padding: {
-              top: 5,
-            },
-          }),
-          space: {
-            left: 15,
-            right: 15,
-            top: 10,
-            bottom: 10,
-          },
-        }),
-
-        content: this.add.text(0, 0, '確定要投降嗎?', {
-          fontSize: '24px',
-          padding: {
-            top: 5,
-          },
-        }),
-
-        actions: [this.createLabel('是'), this.createLabel('否')],
-
-        space: {
-          title: 25,
-          content: 25,
-          action: 15,
-
-          left: 20,
-          right: 20,
-          top: 20,
-          bottom: 20,
+      this.gameOverDialog?.on(
+        'button.click',
+        () => {
+          this.gameOverDialog?.destroy();
         },
-
-        align: {
-          actions: 'right', // 'center'|'left'|'right'
-        },
-
-        expand: {
-          content: false, // Content is a pure text object
-        },
-      })
-      .layout()
-      .setDepth(999)
-      .popUp(500);
-  }
-
-  private createLabel(text: string) {
-    return this.rexUI.add.label({
-      background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 20, 0x5e92f3),
-      text: this.add.text(0, 0, text, {
-        fontSize: '24px',
-        padding: {
-          top: 5,
-        },
-      }),
-      space: {
-        left: 10,
-        right: 10,
-        top: 10,
-        bottom: 10,
-      },
+        this
+      );
     });
   }
 }

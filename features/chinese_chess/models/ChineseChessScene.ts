@@ -6,7 +6,6 @@ import { ChessInfo } from './ChineseChessState';
 export type GameSceneData = {
   server: Server;
   chineseChesses: ChessInfo[];
-  onGameOver: (data: GameOverSceneData) => void;
 };
 
 export type PlayerGroup = {

@@ -59,6 +59,7 @@ export default class BaseServer {
     this.loadedGame();
   }
 
+  // change redux state
   showAlert(message: string) {
     store.dispatch(
       setSnackbar({
@@ -68,6 +69,11 @@ export default class BaseServer {
     );
   }
 
+  closeGameScreen() {
+    store.dispatch(setShowGameScreen(false));
+  }
+
+  // events
   loadedGame() {
     this.room.send(RoomMessage.LoadedGame);
   }
@@ -80,10 +86,7 @@ export default class BaseServer {
     this.room.send(RoomMessage.FinishGame);
   }
 
-  closeGameScreen() {
-    store.dispatch(setShowGameScreen(false));
-  }
-
+  // handles
   onAllPlayersLoaded(cb: (isLoaded: boolean) => void, context?: any) {
     events.on('is-all-players-loaded', cb, context);
   }
