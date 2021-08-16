@@ -28,8 +28,13 @@ const TOTAL_CHESS_COUNT = 32;
 export default class ChineseChessServer extends BaseServer {
   // 已選擇的棋子
   public selectedChessId?: number;
+
   // 當更新棋子時，會有值
   public changedChessInfo?: ChangedChessInfo;
+
+  // 投降視窗是否開啟
+  public showSurrenderModal: boolean = false;
+
   // 所有棋子，隨著後端更新
   private chineseChesses: ChessInfo[] = [];
 
@@ -44,6 +49,10 @@ export default class ChineseChessServer extends BaseServer {
 
   setSelectedChessId(id: number | undefined) {
     this.selectedChessId = id;
+  }
+
+  setShowSurrenderModal(show: boolean) {
+    this.showSurrenderModal = show;
   }
 
   setChangedChessInfo(chessInfo: Partial<ChessInfo>) {

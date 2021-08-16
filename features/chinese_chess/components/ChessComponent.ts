@@ -102,6 +102,9 @@ export class ChessComponent implements IComponent {
   }
 
   private handleClickChess() {
+    if (this.server.showSurrenderModal) {
+      return;
+    }
     if (!this.server.isYourTurn) {
       return;
     }

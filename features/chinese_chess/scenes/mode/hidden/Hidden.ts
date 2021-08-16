@@ -6,6 +6,7 @@ import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
 import { ChessComponent } from 'features/chinese_chess/components/ChessComponent';
 import { CellComponent } from 'features/chinese_chess/components/CellComponent';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
+import Dialog from 'phaser3-rex-plugins/templates/ui/dialog/Dialog';
 
 const MAX_PLAYERS = 2;
 type Cell = {
@@ -34,7 +35,7 @@ export default class Hidden extends Phaser.Scene {
   rexUI!: RexUIPlugin;
   private cells: Cell[] = [];
   private chesses: Chess[] = [];
-  private showModal: boolean = false;
+  private dialog?: Dialog;
 
   constructor() {
     super('hidden');
@@ -78,7 +79,15 @@ export default class Hidden extends Phaser.Scene {
 
     // 初始化畫面
     const { width, height } = this.scale;
-    this.add.image(width / 2, height / 2, 'background');
+    this.add
+      .image(width / 2, height / 2, 'background')
+      .setInteractive()
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+        if (this.dialog && this.server.showSurrenderModal) {
+          this.server.setShowSurrenderModal(false);
+          this.dialog.destroy();
+        }
+      });
     this.add.image(width / 2, height / 2, 'map').setScale(0.5);
     this.add
       .image(width - GAME_PADDING, height - GAME_PADDING, 'surrender')
@@ -86,7 +95,10 @@ export default class Hidden extends Phaser.Scene {
       .setOrigin(1, 1)
       .setInteractive()
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-        this.showSurrenderModal();
+        if (this.server.showSurrenderModal) {
+          return;
+        }
+        this.createSurrenderModal();
       });
     // 對手
     const opponentImage = this.add
@@ -368,7 +380,6 @@ export default class Hidden extends Phaser.Scene {
       !this.otherGroupText
     ) {
       const { width, height } = this.scale;
-      console.log(this.server.allPlayers);
       this.server.allPlayers.forEach(({ id, group }) => {
         if (id === this.server.playerInfo.id) {
           this.add
@@ -385,10 +396,10 @@ export default class Hidden extends Phaser.Scene {
     }
   }
 
-  private showSurrenderModal() {
-    this.showModal = true;
+  private createSurrenderModal() {
+    this.server.setShowSurrenderModal(true);
     const { width, height } = this.scale;
-    const dialog = this.rexUI.add
+    this.dialog = this.rexUI.add
       .dialog({
         x: width * 0.5,
         y: height * 0.5,
@@ -397,8 +408,11 @@ export default class Hidden extends Phaser.Scene {
 
         title: this.rexUI.add.label({
           background: this.add.rectangle(0, 0, 100, 40, 0x003c8f),
-          text: this.add.text(0, 0, 'Title', {
+          text: this.add.text(0, 0, '訊息', {
             fontSize: '24px',
+            padding: {
+              top: 5,
+            },
           }),
           space: {
             left: 15,
@@ -408,11 +422,14 @@ export default class Hidden extends Phaser.Scene {
           },
         }),
 
-        content: this.add.text(0, 0, 'Do you want to build a snow man?', {
+        content: this.add.text(0, 0, '確定要投降嗎?', {
           fontSize: '24px',
+          padding: {
+            top: 5,
+          },
         }),
 
-        actions: [this.createLabel('Yes'), this.createLabel('No')],
+        actions: [this.createLabel('是'), this.createLabel('否')],
 
         space: {
           title: 25,
@@ -435,7 +452,7 @@ export default class Hidden extends Phaser.Scene {
       })
       .layout()
       .setDepth(999)
-      .popUp(1000);
+      .popUp(500);
   }
 
   private createLabel(text: string) {
@@ -443,6 +460,9 @@ export default class Hidden extends Phaser.Scene {
       background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 20, 0x5e92f3),
       text: this.add.text(0, 0, text, {
         fontSize: '24px',
+        padding: {
+          top: 5,
+        },
       }),
       space: {
         left: 10,
