@@ -32,17 +32,9 @@ export default class Bootstrap extends Phaser.Scene {
     });
   }
 
-  private handleGameOver = (data: GameOverSceneData) => {
+  private handleGameOver = () => {
     this.scene.stop('hidden');
     this.server.finishGame();
-    this.scene.launch('game-over', {
-      ...data,
-      onClose: this.handleClose,
-    });
-  };
-
-  private handleClose = () => {
-    this.scene.stop('game-over');
     this.server.closeGameScreen();
   };
 }

@@ -37,7 +37,6 @@ const CreateRoom = (props: CreateRoomProps) => {
   }, []);
 
   const onConfirm = () => {
-    setIsCreating(true);
     if (!roomTitle) {
       dispatch(
         setSnackbar({
@@ -47,6 +46,7 @@ const CreateRoom = (props: CreateRoomProps) => {
       );
       return;
     }
+    setIsCreating(true);
     onCreateRoom(roomTitle, selectedMode);
   };
 

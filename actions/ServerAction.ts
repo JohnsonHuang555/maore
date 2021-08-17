@@ -1,6 +1,7 @@
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { Room } from 'middleware/services/RoomServer';
 import { GameList } from 'models/Game';
+import { RoomInfo } from 'models/Room';
 
 export enum ActionType {
   INITIAL_CLIENT = 'INITIAL_CLIENT',
@@ -12,6 +13,8 @@ export enum ActionType {
   LEAVE_ROOM = 'LEAVE_ROOM',
   READY_GAME = 'READY_GAME',
   START_GAME = 'START_GAME',
+  SEND_MESSAGE = 'SEND_MESSAGE',
+  UPDATE_ROOM_INFO = 'UPDATE_ROOM_INFO',
 }
 
 export const initialClient = () => {
@@ -86,5 +89,19 @@ export const readyGame = () => {
 export const startGame = () => {
   return {
     type: ActionType.START_GAME,
+  };
+};
+
+export const sendMessage = (message: string) => {
+  return {
+    type: ActionType.SEND_MESSAGE,
+    message,
+  };
+};
+
+export const updateRoomInfo = (roomInfo: Partial<RoomInfo>) => {
+  return {
+    type: ActionType.UPDATE_ROOM_INFO,
+    roomInfo,
   };
 };

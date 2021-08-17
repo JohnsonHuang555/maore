@@ -20,7 +20,7 @@ export class CellComponent implements IComponent {
 
   awake() {
     this.gameObject
-      .setInteractive({ useHandCursor: true })
+      .setInteractive()
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, this.handleClick, this);
   }
 
@@ -33,7 +33,11 @@ export class CellComponent implements IComponent {
   }
 
   private handleClick() {
-    if (!this.server.isYourTurn) {
+    if (
+      this.server.showSurrenderModal ||
+      this.server.isGameOver ||
+      !this.server.isYourTurn
+    ) {
       return;
     }
 

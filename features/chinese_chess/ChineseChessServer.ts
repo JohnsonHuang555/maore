@@ -28,8 +28,14 @@ const TOTAL_CHESS_COUNT = 32;
 export default class ChineseChessServer extends BaseServer {
   // 已選擇的棋子
   public selectedChessId?: number;
+
   // 當更新棋子時，會有值
   public changedChessInfo?: ChangedChessInfo;
+
+  // 投降視窗是否開啟
+  public showSurrenderModal: boolean = false;
+
+  // 所有棋子，隨著後端更新
   private chineseChesses: ChessInfo[] = [];
 
   constructor() {
@@ -43,6 +49,10 @@ export default class ChineseChessServer extends BaseServer {
 
   setSelectedChessId(id: number | undefined) {
     this.selectedChessId = id;
+  }
+
+  setShowSurrenderModal(show: boolean) {
+    this.showSurrenderModal = show;
   }
 
   setChangedChessInfo(chessInfo: Partial<ChessInfo>) {
@@ -140,6 +150,10 @@ export default class ChineseChessServer extends BaseServer {
     this.setSelectedChessId(undefined);
   }
 
+  surrender() {
+    this.room.send(ChineseChessMessage.Surrender);
+  }
+
   onGameDataLoaded(cb: (chineseChesses: ChessInfo[]) => void, context?: any) {
     events.on('game-data-loaded', cb, context);
   }
@@ -203,7 +217,6 @@ export default class ChineseChessServer extends BaseServer {
           chessName === ChessNameBlack.Cannon ||
           chessName === ChessNameRed.Cannon
         ) {
-          // TODO: 判斷有無隔一個
           return this.canonEatLogic(locationX, locationY, targetX, targetY);
         }
         // 卒可以吃帥，兵可以吃將

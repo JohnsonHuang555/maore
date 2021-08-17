@@ -14,8 +14,9 @@ export type Metadata = {
 };
 
 export type RoomInfo = {
-  roomTilte: string;
+  roomTitle: string;
   maxPlayers: number;
   gamePack: GameList | '';
   gameMode?: string;
+  extraSettings?: string; // JSON.stringify
 };

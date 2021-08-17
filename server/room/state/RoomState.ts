@@ -35,10 +35,6 @@ export default class RoomState extends Schema implements Room {
   constructor() {
     super();
     this.players = new ArraySchema<PlayerState>();
-    this.roomInfo = new RoomInfoState({
-      roomTitle: '',
-      maxPlayers: 0,
-      gamePack: '',
-    });
+    this.roomInfo = new RoomInfoState();
   }
 }

@@ -5,12 +5,12 @@ import { IonPhaser, GameInstance } from '@ion-phaser/react';
 import React, { useEffect, useRef, useState } from 'react';
 import styles from 'styles/components/gameScreen.module.scss';
 
-type GameSreenProps = {
+type GameScreenProps = {
   gamePack: GameList | '';
 };
 
 /** 決定要使用的遊戲 */
-const GameScreen = (props: GameSreenProps) => {
+const GameScreen = (props: GameScreenProps) => {
   const { gamePack } = props;
   const gameRef = useRef<HTMLIonPhaserElement>(null);
   const [game, setGame] = useState<GameInstance>();

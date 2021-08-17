@@ -1,22 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Layout from 'components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createdRoomIdSelector,
+  messagesSelector,
   playersSelector,
   roomInfoSelector,
   showGameScreenSelector,
 } from 'selectors/roomSelector';
 import Grid from '@material-ui/core/Grid';
 import { useRouter } from 'next/router';
-import { Button, TextField } from '@material-ui/core';
+import { Button, InputAdornment, TextField } from '@material-ui/core';
 import PlayerList from 'components/rooms/PlayerCard';
 import {
   initialClient,
   joinRoom,
   leaveRoom,
   readyGame,
+  sendMessage,
   startGame,
+  updateRoomInfo,
 } from 'actions/ServerAction';
 import { playerIdSelector } from 'selectors/roomSelector';
 import styles from 'styles/pages/rooms.module.scss';
@@ -25,6 +28,11 @@ import { clientSelector } from 'selectors/serverSelector';
 import dynamic from 'next/dynamic';
 import { isLoginSelector, userInfoSelector } from 'selectors/appSelector';
 import { setShowLoginModal } from 'actions/AppAction';
+import { Send } from '@material-ui/icons';
+import GameSetting from 'components/rooms/GameSetting';
+import { Game } from 'models/Game';
+import useSWR from 'swr';
+import { fetcher } from 'pages/api/base/Fetcher';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('components/rooms/GameScreen'),
@@ -43,16 +51,28 @@ const Rooms = () => {
   const userInfo = useSelector(userInfoSelector);
   const isLogin = useSelector(isLoginSelector);
   const showGameScreen = useSelector(showGameScreenSelector);
+  const messages = useSelector(messagesSelector);
+
+  const [currentMessage, setCurrentMessage] = useState('');
+  const messageRef = useRef<any>(null);
 
   useWarningOnExit({
     shouldWarn: true,
     leaveRoom,
   });
 
+  // use effects start
   useEffect(() => {
     const userInfo = localStorage.getItem('userInfo');
     if (!userInfo) {
       dispatch(setShowLoginModal(true));
+    }
+    if (messageRef && messageRef.current) {
+      messageRef.current.addEventListener('DOMNodeInserted', () => {
+        const scroll =
+          messageRef.current.scrollHeight - messageRef.current.clientHeight;
+        messageRef.current.scrollTo(0, scroll);
+      });
     }
   }, []);
 
@@ -68,8 +88,18 @@ const Rooms = () => {
       dispatch(joinRoom(String(roomId), userInfo.name));
     }
   }, [roomId, createdRoomId, isLogin]);
+  // use effect end
 
-  const isMaster = (): boolean => {
+  const { data: game, error } = useSWR<Game, Error>(
+    `/api/game/${roomInfo.gamePack}`,
+    fetcher
+  );
+
+  if (error) {
+    throw new Error('Game not loaded');
+  }
+
+  const checkIsMaster = (): boolean => {
     const player = players.find((p) => p.isMaster && p.id === yourPlayerId);
     if (player) {
       return true;
@@ -93,9 +123,17 @@ const Rooms = () => {
     return false;
   };
 
+  const onSendMessage = () => {
+    if (!currentMessage) {
+      return;
+    }
+    dispatch(sendMessage(currentMessage));
+    setCurrentMessage('');
+  };
+
   return (
     <Layout>
-      <h2 className="title">{roomInfo.roomTilte}</h2>
+      <h2 className="title">{roomInfo.roomTitle}</h2>
       <Grid container spacing={3} style={{ height: '100%' }}>
         <Grid item lg={9} xs={9} className={styles.leftArea}>
           <div className={`${styles.playerList} ${styles.block}`}>
@@ -104,24 +142,57 @@ const Rooms = () => {
             </div>
           </div>
           <div className={`${styles.messages} ${styles.block}`}>
-            <div className={styles.messageContent}>
-              <span className={styles.message}>笑死</span>
-              <span className={styles.message}>快開始阿</span>
-              <span className={styles.message}>單挑</span>
-              <span className={styles.message}>sp4</span>
+            <div className={styles.contentWrapper}>
+              <div className={styles.overflowContainer} ref={messageRef}>
+                <div className={styles.overflowContent}>
+                  {messages.map((message, index) => (
+                    <span key={index} className={styles.message}>
+                      {message}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
             <TextField
               id="outlined-basic"
               label="說點什麼吧..."
               variant="outlined"
               size="small"
+              value={currentMessage}
+              InputProps={{
+                onKeyDown: (e) => {
+                  if (e.key === 'Enter') {
+                    onSendMessage();
+                  }
+                },
+                onChange: (e) => {
+                  setCurrentMessage(e.target.value);
+                },
+                endAdornment: (
+                  <InputAdornment position="start">
+                    <div
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => onSendMessage()}
+                    >
+                      <Send />
+                    </div>
+                  </InputAdornment>
+                ),
+              }}
             />
           </div>
         </Grid>
         <Grid item lg={3} xs={3}>
           <div className={`${styles.block} ${styles.rightArea}`}>
-            <div className={`${styles.content} ${styles.settings}`}>123</div>
-            {isMaster() ? (
+            <div className={`${styles.content} ${styles.settings}`}>
+              <GameSetting
+                roomInfo={roomInfo}
+                gameModes={game?.modes}
+                isMaster={checkIsMaster()}
+                onChangeRoomInfo={() => {}}
+              />
+            </div>
+            {checkIsMaster() ? (
               <Button
                 variant="contained"
                 color="secondary"

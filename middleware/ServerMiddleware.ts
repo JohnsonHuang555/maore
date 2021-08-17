@@ -45,6 +45,14 @@ const ServerMiddleware: Middleware<Dispatch> =
           roomServer.startGame(server.room);
           break;
         }
+        case ActionType.SEND_MESSAGE: {
+          roomServer.sendMessage(server.room, action.message);
+          break;
+        }
+        case ActionType.UPDATE_ROOM_INFO: {
+          roomServer.updateRoomInfo(server.room, action.roomInfo);
+          break;
+        }
       }
     }
     return next(action);

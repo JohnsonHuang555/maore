@@ -1,21 +1,16 @@
 import Phaser from 'phaser';
 import Server from 'features/chinese_chess/ChineseChessServer';
 import { GameOverSceneData } from 'models/Scenes';
-import {
-  GameSceneData,
-  PlayerGroup,
-} from 'features/chinese_chess/models/ChineseChessScene';
+import { GameSceneData } from 'features/chinese_chess/models/ChineseChessScene';
 import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
-import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
 import { ChessComponent } from 'features/chinese_chess/components/ChessComponent';
 import { CellComponent } from 'features/chinese_chess/components/CellComponent';
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
+import Dialog from 'phaser3-rex-plugins/templates/ui/dialog/Dialog';
+import YesOrNoModal from 'features/base/ui/YesOrNoModal';
+import InfoModal from 'features/base/ui/InfoModal';
 
 const MAX_PLAYERS = 2;
-const GroupText: { [key: string]: string } = {
-  [ChineseChessGroup.Black]: '黑方',
-  [ChineseChessGroup.Red]: '紅方',
-};
-
 type Cell = {
   x: number; // 資料的XY ex. x 0, y1
   y: number;
@@ -27,26 +22,38 @@ type Chess = {
   name: string;
   sprite: Phaser.GameObjects.Sprite; // image, circle, rectange, sprite
 };
+const GAME_PADDING = 20;
 
 export default class Hidden extends Phaser.Scene {
   private server!: Server;
-  private onGameOver!: (data: GameOverSceneData) => void;
-  private yourGroupText?: Phaser.GameObjects.Text;
-  private otherGroupText?: Phaser.GameObjects.Text;
-  private yourTurnText?: Phaser.GameObjects.Text;
   private initialChessesDictionary: { [key: string]: ChessInfo } = {};
   private prevSelectedChessId?: number;
+  private onGameOver!: () => void;
 
   // UI
+  rexUI!: RexUIPlugin;
   private cells: Cell[] = [];
   private chesses: Chess[] = [];
+  private surrenderDialog?: Dialog;
+  private gameOverDialog?: Dialog;
+  private yourTurnText?: Phaser.GameObjects.Text;
 
   constructor() {
     super('hidden');
   }
 
   preload() {
+    this.load.scenePlugin({
+      key: 'rexuiplugin',
+      url: RexUIPlugin,
+      sceneKey: 'rexUI',
+    });
+    this.load.image('background', '/chinese_chess/background.jpeg');
     this.load.image('map', '/chinese_chess/map/hidden_mode.png');
+    this.load.image('player', '/chinese_chess/player.png');
+    this.load.image('black', '/chinese_chess/black_king.png');
+    this.load.image('red', '/chinese_chess/red_king.png');
+    this.load.image('surrender', '/chinese_chess/btn_surrender.png');
     this.load.atlas(
       'chess',
       '/chinese_chess/chesses.png',
@@ -71,27 +78,107 @@ export default class Hidden extends Phaser.Scene {
       this.server.createPlayerOrder();
     }
 
+    // 初始化畫面
     const { width, height } = this.scale;
-    const map = this.add.image(width * 0.5, height * 0.5, 'map');
-    map.setScale(0.75);
-    chineseChesses.forEach((chess) => {
-      this.initialChessesDictionary[`${chess.locationX},${chess.locationY}`] =
-        chess;
+    this.add
+      .image(width / 2, height / 2, 'background')
+      .setInteractive()
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+        if (this.surrenderDialog && this.server.showSurrenderModal) {
+          this.server.setShowSurrenderModal(false);
+          this.surrenderDialog.destroy();
+        }
+      });
+    this.add.image(width / 2, height / 2, 'map').setScale(0.5);
+    this.add
+      .image(width - GAME_PADDING, height - GAME_PADDING, 'surrender')
+      .setScale(0.75)
+      .setOrigin(1, 1)
+      .setInteractive()
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+        if (this.server.showSurrenderModal || this.server.isGameOver) {
+          return;
+        }
+        this.surrenderDialog = YesOrNoModal({
+          scene: this,
+          description: '確定要投降嗎?',
+        });
+        this.surrenderDialog?.on(
+          'button.click',
+          (button: any) => {
+            if (button.text === '是') {
+              this.server.surrender();
+            }
+            this.server.setShowSurrenderModal(false);
+            this.surrenderDialog?.destroy();
+          },
+          this
+        );
+        this.server.setShowSurrenderModal(true);
+      });
+    // 對手
+    const opponentImage = this.add
+      .image(width - GAME_PADDING, GAME_PADDING, 'player')
+      .setScale(0.75)
+      .setOrigin(1, 0);
+    // 玩家
+    const playerImage = this.add
+      .image(GAME_PADDING, height - GAME_PADDING, 'player')
+      .setScale(0.75)
+      .setOrigin(0, 1);
+
+    const nameStyle = {
+      font: '20px Arial',
+      fill: '#fff',
+      boundsAlignH: 'center',
+      boundsAlignV: 'middle',
+    };
+
+    this.server.allPlayers.forEach(({ id, name }) => {
+      if (id === this.server.playerInfo.id) {
+        const text = this.add.text(0, 0, name, nameStyle);
+        Phaser.Display.Align.In.Center(
+          text,
+          this.add.zone(
+            GAME_PADDING + 65,
+            height - GAME_PADDING - 17,
+            playerImage.width,
+            playerImage.height
+          )
+        );
+      } else {
+        const text = this.add.text(0, 0, name, nameStyle);
+        Phaser.Display.Align.In.Center(
+          text,
+          this.add.zone(
+            width - GAME_PADDING - 63,
+            GAME_PADDING + 125,
+            opponentImage.width,
+            opponentImage.height
+          )
+        );
+      }
     });
+
+    // 做字典以解決效能問題
+    this.initialChessesDictionary = chineseChesses.reduce((prev, current) => {
+      prev[`${current.locationX},${current.locationY}`] = current;
+      return prev;
+    }, {} as { [key: string]: ChessInfo });
 
     this.createBoard();
   }
 
   // FPS 60
-  update(t: number, dt: number) {
+  update(_t: number, dt: number) {
     this.server.components.update(dt);
   }
 
   private createBoard = () => {
     const { width, height } = this.scale;
-    const offsetX = 548;
-    const offsetY = 235;
-    const size = 128;
+    const offsetX = 365;
+    const offsetY = 158;
+    const size = 64;
     let drawX = width * 0.5 - offsetX;
     let drawY = height * 0.5 - offsetY;
     for (let y = 0; y < 4; y++) {
@@ -100,7 +187,7 @@ export default class Hidden extends Phaser.Scene {
         // 格子
         const cell = this.add
           .rectangle(drawX, drawY, size, size, 0xffffff, 0)
-          .setDisplaySize(120, 120);
+          .setDisplaySize(100, 100);
 
         this.cells.push({
           x,
@@ -116,7 +203,7 @@ export default class Hidden extends Phaser.Scene {
         // 棋子
         const chess = this.add
           .sprite(cell.x, cell.y, 'chess', 'hidden.png')
-          .setDisplaySize(120, 120)
+          .setDisplaySize(100, 100)
           .setDepth(1);
         // .setSize(size, size);
 
@@ -138,14 +225,15 @@ export default class Hidden extends Phaser.Scene {
           )
         );
 
-        drawX += size + 28;
+        drawX += size + 40;
       }
       drawX = width * 0.5 - offsetX;
-      drawY += size + 28;
+      drawY += size + 40;
     }
 
     this.server.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
     this.server.onPlayerGroupChanged(this.handlePlayerGroupChanged, this);
+    this.server.onPlayerWon(this.handlePlayerWon, this);
   };
 
   private getCellByLocation(x: number, y: number): Cell {
@@ -188,7 +276,8 @@ export default class Hidden extends Phaser.Scene {
 
     timeline.add({
       targets: chess.sprite,
-      scale: 0.32,
+      displayWidth: 100,
+      displayHeight: 100,
       duration: 100,
     });
 
@@ -284,54 +373,83 @@ export default class Hidden extends Phaser.Scene {
     this.prevSelectedChessId = undefined;
   }
 
-  // 房間相關
+  // 你的回合
   private handlePlayerTurnChanged(playerIndex: number) {
     this.yourTurnText?.destroy();
     this.yourTurnText = undefined;
     if (this.server.playerInfo.playerIndex === playerIndex) {
       const { width } = this.scale;
-      this.yourTurnText = this.add.text(width * 0.5, 50, '你的回合', {
-        fontSize: '30px',
-        align: 'center',
-        padding: {
-          top: 5,
-        },
-      });
+      this.yourTurnText = this.add
+        .text(width * 0.5, 50, '你的回合', {
+          fontSize: '30px',
+          align: 'center',
+          padding: {
+            top: 5,
+          },
+        })
+        .setOrigin(0.5, 0.5);
     }
   }
 
   // 組別更新並顯示
-  private handlePlayerGroupChanged(groups: PlayerGroup[]) {
-    if (
-      groups.length === MAX_PLAYERS &&
-      !this.yourGroupText &&
-      !this.otherGroupText
-    ) {
-      const { width } = this.scale;
-      const player1 = groups[0];
-      const player2 = groups[1];
-      this.otherGroupText = this.add.text(
-        width * 0.3,
-        50,
-        `${player1.playerName}：${GroupText[player1.group]}`,
-        {
-          padding: {
-            top: 5,
-          },
-          fontSize: '24px',
+  private handlePlayerGroupChanged(groupCount: number) {
+    if (groupCount === MAX_PLAYERS) {
+      const { width, height } = this.scale;
+      this.server.allPlayers.forEach(({ id, group }) => {
+        if (id === this.server.playerInfo.id) {
+          this.add
+            .image(GAME_PADDING + 85, height - GAME_PADDING - 45, group)
+            .setScale(0.75)
+            .setOrigin(0, 1);
+        } else {
+          this.add
+            .image(width - GAME_PADDING, GAME_PADDING + 55, group)
+            .setScale(0.75)
+            .setOrigin(1, 0);
         }
-      );
-      this.otherGroupText = this.add.text(
-        width * 0.7,
-        50,
-        `${player2.playerName}：${GroupText[player2.group]}`,
-        {
-          padding: {
-            top: 5,
-          },
-          fontSize: '24px',
-        }
-      );
+      });
     }
+  }
+
+  // 玩家勝出
+  private handlePlayerWon(playerIndex: number) {
+    if (playerIndex === -1) {
+      return;
+    }
+    this.time.delayedCall(500, () => {
+      if (!this.onGameOver) {
+        return;
+      }
+      this.yourTurnText?.destroy();
+      const isYouWin = this.server.playerInfo.playerIndex === playerIndex;
+      this.gameOverDialog = InfoModal({
+        scene: this,
+        title: 'Game Over',
+        description: isYouWin ? '你贏了' : '你輸了',
+        noOKbutton: true,
+      });
+
+      this.gameOverDialog?.on(
+        'button.click',
+        () => {
+          this.gameOverDialog?.destroy();
+        },
+        this
+      );
+
+      const { width } = this.scale;
+      this.add
+        .text(width / 2, 50, '按 ESC 關閉離開', {
+          fontSize: '30px',
+          align: 'center',
+          padding: {
+            top: 5,
+          },
+        })
+        .setOrigin(0.5, 0.5);
+      this.input.keyboard.once('keyup-ESC', () => {
+        this.onGameOver();
+      });
+    });
   }
 }

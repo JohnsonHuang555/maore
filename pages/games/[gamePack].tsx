@@ -3,6 +3,7 @@ import Layout from 'components/Layout';
 import { Game, GameList } from 'models/Game';
 import { useRouter } from 'next/router';
 import Grid from '@material-ui/core/Grid';
+import { Info } from '@material-ui/icons';
 import useSWR from 'swr';
 import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,16 +16,7 @@ import RoomCard from 'components/games/RoomCard';
 import styles from 'styles/pages/game.module.scss';
 import { clientSelector } from 'selectors/serverSelector';
 import { userInfoSelector } from 'selectors/appSelector';
-
-const fetcher = async (url: string) => {
-  const res = await fetch(url);
-  const data = await res.json();
-
-  if (res.status !== 200) {
-    throw new Error(data.message);
-  }
-  return data;
-};
+import { fetcher } from 'pages/api/base/Fetcher';
 
 const Games = () => {
   const router = useRouter();
@@ -156,15 +148,25 @@ const Games = () => {
           spacing={3}
           style={{ alignContent: 'flex-start' }}
         >
-          {rooms.map((room) => (
-            <RoomCard
-              key={room.roomId}
-              title={room.metadata?.roomTitle as string}
-              maxPlayers={room.maxClients}
-              nowPlayers={room.clients}
-              joinRoom={() => onJoinRoom(room.roomId)}
-            />
-          ))}
+          <>
+            {!rooms.length && (
+              <Grid item xs={12}>
+                <div className={styles.noRooms}>
+                  <Info />
+                  查無房間
+                </div>
+              </Grid>
+            )}
+            {rooms.map((room) => (
+              <RoomCard
+                key={room.roomId}
+                title={room.metadata?.roomTitle as string}
+                maxPlayers={room.maxClients}
+                nowPlayers={room.clients}
+                joinRoom={() => onJoinRoom(room.roomId)}
+              />
+            ))}
+          </>
         </Grid>
       </Grid>
     </Layout>

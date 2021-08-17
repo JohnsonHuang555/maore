@@ -47,7 +47,7 @@ export class ChessComponent implements IComponent {
   awake() {
     // FIXME: 修正點選區域
     this.gameObject
-      .setInteractive({ useHandCursor: true })
+      .setInteractive()
       .on(
         Phaser.Input.Events.GAMEOBJECT_POINTER_UP,
         this.handleClickChess,
@@ -102,7 +102,11 @@ export class ChessComponent implements IComponent {
   }
 
   private handleClickChess() {
-    if (!this.server.isYourTurn) {
+    if (
+      this.server.showSurrenderModal ||
+      this.server.isGameOver ||
+      !this.server.isYourTurn
+    ) {
       return;
     }
 

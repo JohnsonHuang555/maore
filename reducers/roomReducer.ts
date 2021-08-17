@@ -14,7 +14,8 @@ export type State = {
   showGameScreen: boolean;
   winningPlayer: number;
   activePlayer: number;
-  isAllPlayersLoaded: boolean; // 所有玩家載入狀態
+  isAllPlayersLoaded: boolean; // 所有玩家載入狀態,
+  messages: string[]; // 聊天訊息
 };
 
 const initialState: State = {
@@ -24,7 +25,7 @@ const initialState: State = {
   players: [],
   yourPlayerId: '',
   roomInfo: {
-    roomTilte: '',
+    roomTitle: '',
     maxPlayers: 0,
     gamePack: '',
   },
@@ -33,6 +34,7 @@ const initialState: State = {
   winningPlayer: -1,
   activePlayer: -1,
   isAllPlayersLoaded: false,
+  messages: [],
 };
 
 type LoadedRoomsAction = {
@@ -51,7 +53,7 @@ type SetRoomInfo = {
 };
 
 type SetYourPlayerIdAction = {
-  type: ActionType.SET_YOUR_PLAYERID;
+  type: ActionType.SET_YOUR_PLAYER_ID;
   yourPlayerId: string;
 };
 
@@ -87,8 +89,13 @@ type UpdateWinningPlayer = {
 };
 
 type UpdateActivePlayer = {
-  type: ActionType.UPDATE_ACTIVIE_PLAYER;
+  type: ActionType.UPDATE_ACTIVE_PLAYER;
   playerIndex: number;
+};
+
+type SetMessage = {
+  type: ActionType.SET_MESSAGE;
+  message: string;
 };
 
 type ResetAction = {
@@ -107,6 +114,7 @@ type Action =
   | SetShowGameScreen
   | UpdateWinningPlayer
   | UpdateActivePlayer
+  | SetMessage
   | ResetAction;
 
 const reducer = (state = initialState, action: Action): State => {
@@ -132,7 +140,7 @@ const reducer = (state = initialState, action: Action): State => {
         },
       };
     }
-    case ActionType.SET_YOUR_PLAYERID: {
+    case ActionType.SET_YOUR_PLAYER_ID: {
       return {
         ...state,
         yourPlayerId: action.yourPlayerId,
@@ -187,10 +195,16 @@ const reducer = (state = initialState, action: Action): State => {
         winningPlayer: action.playerIndex,
       };
     }
-    case ActionType.UPDATE_ACTIVIE_PLAYER: {
+    case ActionType.UPDATE_ACTIVE_PLAYER: {
       return {
         ...state,
         activePlayer: action.playerIndex,
+      };
+    }
+    case ActionType.SET_MESSAGE: {
+      return {
+        ...state,
+        messages: [...state.messages, action.message],
       };
     }
     case ActionType.RESET: {
@@ -198,7 +212,7 @@ const reducer = (state = initialState, action: Action): State => {
         ...state,
         createdRoomId: '',
         roomInfo: {
-          roomTilte: '',
+          roomTitle: '',
           maxPlayers: 0,
           gamePack: '',
         },
@@ -206,6 +220,7 @@ const reducer = (state = initialState, action: Action): State => {
         showGameScreen: false,
         gameStatus: GameStatus.WaitingForPlayers,
         isAllPlayersLoaded: false,
+        messages: [],
       };
     }
     default: {

@@ -1,11 +1,12 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
+    "outDir": "lib",
+    "target": "es6",
     "module": "commonjs",
-    "outDir": "dist",
-    "target": "es2017",
-    "isolatedModules": false,
-    "noEmit": false
+    "strict": true,
+    "strictNullChecks": false,
+    "esModuleInterop": true,
+    "experimentalDecorators": true
   },
   "include": ["server/**/*.ts"]
 }

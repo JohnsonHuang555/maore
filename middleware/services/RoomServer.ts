@@ -10,11 +10,12 @@ import {
   updateWinningPlayer,
   updateActivePlayer,
   setPlayerInfo,
+  setMessage,
 } from 'actions/RoomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { GameList } from 'models/Game';
 import { RoomMessage } from 'models/Message';
-import { GameStatus, Metadata } from 'models/Room';
+import { GameStatus, Metadata, RoomInfo } from 'models/Room';
 import { AnyAction, Dispatch } from 'redux';
 import { Schema, ArraySchema } from '@colyseus/schema';
 import { PlayerState } from 'server/room/state/PlayerState';
@@ -50,7 +51,7 @@ export default class RoomServer {
   private dispatch: Dispatch<AnyAction>;
 
   constructor(dispatch: Dispatch<AnyAction>) {
-    const client = new Client('ws://localhost:3000');
+    const client = new Client('ws://localhost:2568');
     dispatch(setClient(client));
     this.dispatch = dispatch;
   }
@@ -88,6 +89,14 @@ export default class RoomServer {
     room.send(RoomMessage.StartGame);
   }
 
+  async sendMessage(room: ClientRoom<Room>, message: string) {
+    room.send(RoomMessage.SendMessage, message);
+  }
+
+  async updateRoomInfo(room: ClientRoom<Room>, roomInfo: Partial<RoomInfo>) {
+    room.send(RoomMessage.UpdateRoomInfo, { roomInfo });
+  }
+
   private handleRoomChange(room: ClientRoom<Room>) {
     room.onMessage(
       RoomMessage.GetYourPlayerId,
@@ -95,6 +104,10 @@ export default class RoomServer {
         this.dispatch(setYourPlayerId(message.yourPlayerId));
       }
     );
+
+    room.onMessage(RoomMessage.GetMessages, (message: string) => {
+      this.dispatch(setMessage(message));
+    });
 
     // room players changes...
     room.state.players.onAdd = (player) => {
@@ -167,12 +180,14 @@ export default class RoomServer {
         const { field, value } = change;
         switch (field) {
           case RoomStateChangeList.RoomInfo: {
+            console.log(value);
             this.dispatch(
               setRoomInfo({
-                roomTilte: value.roomTitle,
+                roomTitle: value.roomTitle,
                 maxPlayers: value.maxPlayers,
                 gamePack: value.gamePack,
                 gameMode: value.gameMode,
+                extraSettings: value.extraSettings,
               })
             );
             break;
