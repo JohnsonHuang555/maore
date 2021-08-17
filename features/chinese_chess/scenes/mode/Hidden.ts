@@ -96,7 +96,7 @@ export default class Hidden extends Phaser.Scene {
       .setOrigin(1, 1)
       .setInteractive()
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-        if (this.server.showSurrenderModal) {
+        if (this.server.showSurrenderModal || this.server.isGameOver) {
           return;
         }
         this.surrenderDialog = YesOrNoModal({

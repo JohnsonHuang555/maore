@@ -1,6 +1,6 @@
 import { GameInstance } from '@ion-phaser/react';
 import Bootstrap from './scenes/Bootstrap';
-import Hidden from './scenes/mode/hidden/Hidden';
+import Hidden from './scenes/mode/Hidden';
 
 // 遊戲設定
 export const ChineseChessConfig: GameInstance = {
