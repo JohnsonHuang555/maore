@@ -3,12 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start -p ${PORT:=3000}",
-    "dev-server": "nodemon",
-    "build-server": "tsc --project tsconfig.server.json",
-    "start-server": "node dist/server/index"
+    "dev": "nodemon",
+    "build": "next build && tsc --project tsconfig.server.json",
+    "start": "cross-env NODE_ENV=production node dist/index.js"
   },
   "dependencies": {
     "@colyseus/command": "^0.1.6",
