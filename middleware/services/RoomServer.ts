@@ -180,7 +180,6 @@ export default class RoomServer {
         const { field, value } = change;
         switch (field) {
           case RoomStateChangeList.RoomInfo: {
-            console.log(value);
             this.dispatch(
               setRoomInfo({
                 roomTitle: value.roomTitle,

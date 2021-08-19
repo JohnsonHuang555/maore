@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import Server from 'features/chinese_chess/ChineseChessServer';
-import { GameOverSceneData } from 'models/Scenes';
 import { ChessInfo } from '../models/ChineseChessState';
 
 /** 決定要使用哪個場景 */
@@ -11,6 +10,7 @@ export default class Bootstrap extends Phaser.Scene {
   }
 
   init() {
+    console.log('init bootstrap');
     this.server = new Server();
     // 初始化 callback 方法
     this.server.onAllPlayersLoaded(this.handleAllPlayersLoaded, this);
@@ -34,7 +34,6 @@ export default class Bootstrap extends Phaser.Scene {
 
   private handleGameOver = () => {
     this.scene.stop('hidden');
-    this.server.finishGame();
     this.server.closeGameScreen();
   };
 }
