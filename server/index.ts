@@ -25,4 +25,5 @@ nextApp.prepare().then(() => {
   });
 
   gameServer.listen(port);
+  console.log(`Listening on port: ${port}`);
 });

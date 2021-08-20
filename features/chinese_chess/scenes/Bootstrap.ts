@@ -18,12 +18,12 @@ export default class Bootstrap extends Phaser.Scene {
   }
 
   private handleAllPlayersLoaded(isLoaded: boolean) {
-    if (isLoaded) {
-      this.server.getGameData();
-    }
+    console.log('get game data', isLoaded);
+    this.server.getGameData();
   }
 
   private handleGameDataLoaded(chineseChesses: ChessInfo[]) {
+    console.log('---handleGameDataLoaded---');
     // 遊戲資料載入完成才起場景
     this.scene.launch('hidden', {
       chineseChesses,

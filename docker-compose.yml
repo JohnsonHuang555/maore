@@ -11,9 +11,3 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
       - /usr/src/app/.next
-  server:
-    ports:
-      - 2568:2568
-    build:
-      context: ./server
-      dockerfile: Dockerfile

@@ -306,6 +306,7 @@ export default class ChineseChessServer extends BaseServer {
       });
 
       if (this.chineseChesses.length === TOTAL_CHESS_COUNT) {
+        console.log('game-data-loaded');
         events.emit('game-data-loaded', this.chineseChesses);
       }
       chessInfo.onChange = (changes) => {
