@@ -2411,10 +2411,10 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-phaser3-rex-plugins@^1.1.58:
-  version "1.1.58"
-  resolved "https://registry.yarnpkg.com/phaser3-rex-plugins/-/phaser3-rex-plugins-1.1.58.tgz#058abed22f916ce12f4ec6bf5fef68a09c6fec5a"
-  integrity sha512-VoBduUnD/m6Pn6A+uY+WsEKu9Nl3eLjjYFs8rsRkN67reSpSqKFhIOB20lEwA3Tinl62NMMP4IbXDINPE/pl8w==
+phaser3-rex-plugins@^1.1.59:
+  version "1.1.59"
+  resolved "https://registry.yarnpkg.com/phaser3-rex-plugins/-/phaser3-rex-plugins-1.1.59.tgz#426c7cd6bbff96dadb9ef3e458e783196474f408"
+  integrity sha512-oF7s3iIaddMlS00ROVHYbLiPB4eScD7ZG/7AOr/0iXwGoCCFWQWXGRXumIMcjNdN6DhkdjMUZRt95jqDKgumjg==
   dependencies:
     eventemitter3 "^3.1.2"
     lokijs "^1.5.12"

@@ -17,6 +17,7 @@ type Payload = {
 
 export default class CreateGameCommand extends Command<ChineseChessState> {
   execute(data: Payload) {
+    console.log('create....');
     const { mode } = data;
     if (this.room.state.chineseChesses.length) {
       return;
