@@ -51,8 +51,7 @@ export default class RoomServer {
   private dispatch: Dispatch<AnyAction>;
 
   constructor(dispatch: Dispatch<AnyAction>) {
-    const host = location.host;
-    const client = new Client(`ws://${host}`);
+    const client = new Client();
     dispatch(setClient(client));
     this.dispatch = dispatch;
   }
