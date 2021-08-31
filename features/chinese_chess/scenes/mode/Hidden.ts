@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import Server from 'features/chinese_chess/ChineseChessServer';
-import { GameOverSceneData } from 'models/Scenes';
 import { GameSceneData } from 'features/chinese_chess/models/ChineseChessScene';
 import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
 import { ChessComponent } from 'features/chinese_chess/components/ChessComponent';

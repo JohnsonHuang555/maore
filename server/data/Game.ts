@@ -25,13 +25,13 @@ export const games: Game[] = [
     estimateTime: 5,
     gamePack: GameList.ChineseChess,
     modes: [
-      // {
-      //   label: '標準(大盤)',
-      //   value: ChineseChessMode.Standard,
-      //   image: '/chinese_chess/standard.png',
-      //   minPlayers: 2,
-      //   maxPlayers: 2,
-      // },
+      {
+        label: '標準(大盤)',
+        value: ChineseChessMode.Standard,
+        image: '/chinese_chess/standard.png',
+        minPlayers: 2,
+        maxPlayers: 2,
+      },
       {
         label: '暗棋(小盤)',
         value: ChineseChessMode.Hidden,
