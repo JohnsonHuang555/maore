@@ -220,6 +220,7 @@ export default class Standard extends Phaser.Scene {
   };
 
   private handleSelectChess = (id: number) => {
+    console.log(id, 'iod');
     // 清除之前選的
     this.clearSelectedChessUI();
     const { chess } = this.getChessById(id);
@@ -298,9 +299,7 @@ export default class Standard extends Phaser.Scene {
 
   // 組別更新並顯示
   private handlePlayerGroupChanged(groupCount: number) {
-    console.log(groupCount, 'ggg');
     if (groupCount === MAX_PLAYERS) {
-      console.log(this.server.allPlayers);
       const { width, height } = this.scale;
       this.server.allPlayers.forEach(({ id, group }) => {
         if (id === this.server.playerInfo.id) {
