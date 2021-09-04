@@ -76,6 +76,10 @@ export default class ChineseChessServer extends BaseServer {
     });
   }
 
+  updatePlayerGroup() {
+    this.room.send(ChineseChessMessage.UpdatePlayerGroupByStandardMode);
+  }
+
   flipChess(id: number) {
     this.room.send(ChineseChessMessage.FlipChess, { id });
     this.setSelectedChessId(undefined);

@@ -4,6 +4,7 @@ import ChineseChessServer from '../ChineseChessServer';
 import { ChessInfo } from '../models/ChineseChessState';
 import { ChineseChessGroupMap } from '../models/ChineseChessGroup';
 import { ChineseChessMessage } from '../models/ChineseChessMessage';
+import { GameMode } from '../models/ChinesChessMode';
 
 export class ChessComponent implements IComponent {
   private gameObject!: Phaser.GameObjects.GameObject;
@@ -11,7 +12,7 @@ export class ChessComponent implements IComponent {
   private server: ChineseChessServer;
   private chessInfo: ChessInfo;
   private isFlipped: boolean = false;
-  private onFlip: (id: number) => void;
+  private onFlip?: (id: number) => void;
   private onSelect: (id: number) => void;
   private onEat: (id: number, targetId: number) => void;
   private onMove: (
@@ -23,21 +24,21 @@ export class ChessComponent implements IComponent {
   constructor(
     server: ChineseChessServer,
     chessInfo: ChessInfo,
-    onFlip: (id: number) => void,
     onSelect: (id: number) => void,
     onEat: (id: number, targetId: number) => void,
     onMove: (
       id: number,
       targetLocationX: number,
       targetLocationY: number
-    ) => void
+    ) => void,
+    onFlip?: (id: number) => void
   ) {
     this.server = server;
     this.chessInfo = chessInfo;
-    this.onFlip = onFlip;
     this.onSelect = onSelect;
     this.onEat = onEat;
     this.onMove = onMove;
+    this.onFlip = onFlip;
   }
 
   init(go: Phaser.GameObjects.GameObject) {
@@ -61,6 +62,9 @@ export class ChessComponent implements IComponent {
       const { actionType, chessInfo } = changedChessInfo;
       switch (actionType) {
         case ChineseChessMessage.FlipChess: {
+          if (!this.onFlip) {
+            break;
+          }
           this.isFlipped = true;
           this.onFlip(this.chessInfo.id);
           break;
@@ -111,7 +115,7 @@ export class ChessComponent implements IComponent {
     }
 
     const { id, chessSide } = this.chessInfo;
-    if (!this.isFlipped) {
+    if (!this.isFlipped && this.server.roomInfo.gameMode === GameMode.Hidden) {
       this.server.flipChess(id);
     } else {
       if (

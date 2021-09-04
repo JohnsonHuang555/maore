@@ -8,21 +8,13 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import Dialog from 'phaser3-rex-plugins/templates/ui/dialog/Dialog';
 import YesOrNoModal from 'features/base/ui/YesOrNoModal';
 import InfoModal from 'features/base/ui/InfoModal';
+import {
+  Cell,
+  Chess,
+  GAME_PADDING,
+} from 'features/chinese_chess/models/ChineseChessUI';
 
 const MAX_PLAYERS = 2;
-type Cell = {
-  x: number; // 資料的XY ex. x 0, y1
-  y: number;
-  rectangle: Phaser.GameObjects.Rectangle;
-};
-
-type Chess = {
-  id: number;
-  name: string;
-  sprite: Phaser.GameObjects.Sprite; // image, circle, rectange, sprite
-};
-const GAME_PADDING = 20;
-
 export default class Hidden extends Phaser.Scene {
   private server!: Server;
   private initialChessesDictionary: { [key: string]: ChessInfo } = {};
@@ -217,10 +209,10 @@ export default class Hidden extends Phaser.Scene {
           new ChessComponent(
             this.server,
             chessInfo,
-            this.handleFlipChess,
             this.handleSelectChess,
             this.handleEatChess,
-            this.handleMoveChess
+            this.handleMoveChess,
+            this.handleFlipChess
           )
         );
 

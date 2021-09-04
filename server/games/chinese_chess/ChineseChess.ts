@@ -93,6 +93,22 @@ export default class ChineseChess extends Room<ChineseChessState, Metadata> {
       });
     });
 
+    this.onMessage(
+      ChineseChessMessage.UpdatePlayerGroupByStandardMode,
+      (client) => {
+        // 順位一的玩家為黑色
+        console.log('yoyo');
+        const playerId = this.state.players.find(
+          (p) => p.playerOrder === 0
+        )?.id;
+        this.dispatcher.dispatch(new UpdatePlayerGroupCommand(), {
+          allGroups: [ChineseChessGroup.Black, ChineseChessGroup.Red],
+          needSetGroup: ChineseChessGroupMap[ChineseChessGroup.Black],
+          playerId,
+        });
+      }
+    );
+
     // 結束遊戲
     this.onMessage(RoomMessage.FinishGame, () => {
       this.dispatcher.dispatch(new ResetCommand());
