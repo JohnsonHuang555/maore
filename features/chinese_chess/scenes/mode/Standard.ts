@@ -151,6 +151,9 @@ export default class Standard extends Phaser.Scene {
       return prev;
     }, {} as { [key: string]: ChessInfo });
 
+    console.log(chineseChesses);
+    console.log(this.initialChessesDictionary);
+
     this.createBoard();
   }
 
@@ -220,7 +223,6 @@ export default class Standard extends Phaser.Scene {
   };
 
   private handleSelectChess = (id: number) => {
-    console.log(id, 'iod');
     // 清除之前選的
     this.clearSelectedChessUI();
     const { chess } = this.getChessById(id);
@@ -255,9 +257,57 @@ export default class Standard extends Phaser.Scene {
     });
   };
 
-  private handleEatChess = () => {};
+  private handleEatChess = (id: number, targetId: number) => {
+    this.clearSelectedChessUI();
+    const { chess } = this.getChessById(id);
+    const { chess: targetChess, index } = this.getChessById(targetId);
+    this.tweens.add({
+      targets: targetChess.sprite,
+      scale: 0,
+      duration: 100,
+      onComplete: () => {
+        targetChess.sprite.removeAllListeners();
+        targetChess.sprite.destroy();
+        this.chesses.splice(index, 1);
+      },
+    });
+    this.tweens.add({
+      targets: chess.sprite,
+      x: targetChess.sprite.x,
+      y: targetChess.sprite.y,
+      duration: 300,
+      ease: Phaser.Math.Easing.Back.Out,
+    });
+  };
 
-  private handleMoveChess = () => {};
+  private handleMoveChess = (
+    id: number,
+    targetLocationX: number,
+    targetLocationY: number
+  ) => {
+    console.log('move ui');
+    this.clearSelectedChessUI();
+    const { chess } = this.getChessById(id);
+    const { rectangle } = this.getCellByLocation(
+      targetLocationX,
+      targetLocationY
+    );
+    this.tweens.add({
+      targets: chess.sprite,
+      x: rectangle.x,
+      y: rectangle.y,
+      duration: 300,
+      ease: Phaser.Math.Easing.Back.Out,
+    });
+  };
+
+  private getCellByLocation(x: number, y: number): Cell {
+    const cell = this.cells.find((c) => c.x === x && c.y === y);
+    if (!cell) {
+      throw new Error('Cell not found');
+    }
+    return cell;
+  }
 
   private getChessById(id: number): { chess: Chess; index: number } {
     const chessIndex = this.chesses.findIndex((c) => c.id === id);

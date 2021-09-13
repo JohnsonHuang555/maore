@@ -121,6 +121,7 @@ export default class CreateGameCommand extends Command<ChineseChessState> {
                 alive: true,
               })
             );
+            id++;
             break;
           }
           case 6:
@@ -136,6 +137,7 @@ export default class CreateGameCommand extends Command<ChineseChessState> {
                 alive: true,
               })
             );
+            id++;
             break;
           }
         }

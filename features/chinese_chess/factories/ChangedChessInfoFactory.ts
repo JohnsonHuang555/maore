@@ -69,6 +69,8 @@ export default class ChangedChessInfoFactory {
           ChessNameBlack.Soldier,
           ChessNameRed.Soldier,
         ];
+
+        // 所有只有走直線的情境，還有暗棋
         if (isHiddenMode || onlyLocationXorLocationY.includes(chessName)) {
           return {
             actionType: ChineseChessMessage.MoveChess,
@@ -79,21 +81,20 @@ export default class ChangedChessInfoFactory {
             },
           };
         }
+        // locationX 跟 locationY 都會有的情境
+        const targetLocationX = this.tempChessInfo?.targetLocationX
+          ? this.tempChessInfo?.targetLocationX
+          : chessInfo.locationX;
+        const targetLocationY = this.tempChessInfo?.targetLocationY
+          ? this.tempChessInfo?.targetLocationY
+          : chessInfo.locationY;
 
-        this.tempChessInfo = {
-          targetLocationX: chessInfo.locationX,
-          targetLocationY: chessInfo.locationY,
-        };
-      } else if (
-        this.tempChessInfo?.targetLocationX ||
-        this.tempChessInfo?.targetLocationY
-      ) {
         return {
           actionType: ChineseChessMessage.MoveChess,
           chessInfo: {
             id: chessInfo.id,
-            targetLocationX: this.tempChessInfo.targetLocationX,
-            targetLocationY: this.tempChessInfo.targetLocationY,
+            targetLocationX,
+            targetLocationY,
           },
         };
       }
