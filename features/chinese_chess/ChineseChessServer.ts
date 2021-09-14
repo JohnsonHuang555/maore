@@ -95,10 +95,9 @@ export default class ChineseChessServer extends BaseServer {
       locationY,
       targetX,
       targetY,
-      MoveOrEat.Eat
+      MoveOrEat.Move
     );
 
-    console.log(this.selectedChessId, canMove, 'MOVCE');
     if (!canMove) {
       return;
     }
@@ -180,10 +179,21 @@ export default class ChineseChessServer extends BaseServer {
     targetY: number,
     moveOrEat: MoveOrEat
   ): boolean {
+    if (
+      (chessName === ChessNameBlack.Cannon ||
+        chessName === ChessNameRed.Cannon) &&
+      moveOrEat === MoveOrEat.Eat
+    ) {
+      return true;
+    }
     switch (this.roomInfo.gameMode) {
       case GameMode.Standard: {
         switch (chessName) {
           case ChessNameBlack.King: {
+            // 王見王
+            if (moveOrEat === MoveOrEat.Eat) {
+              return this.kingEatLogic(locationY, targetX, targetY);
+            }
             // 限制範圍
             if (targetY > 2) {
               return false;
@@ -192,6 +202,10 @@ export default class ChineseChessServer extends BaseServer {
             return CheckMoveRange.isInRange(range, targetX, targetY);
           }
           case ChessNameRed.King: {
+            // 王見王
+            if (moveOrEat === MoveOrEat.Eat) {
+              return this.kingEatLogic(locationY, targetX, targetY);
+            }
             // 限制範圍
             if (targetY < 7) {
               return false;
@@ -337,11 +351,6 @@ export default class ChineseChessServer extends BaseServer {
                 }
               }
             });
-            console.log(range, 'dddd');
-            console.log(
-              CheckMoveRange.isInRange(range, targetX, targetY),
-              'aaa'
-            );
             return CheckMoveRange.isInRange(range, targetX, targetY);
           }
           case ChessNameBlack.Minister:
@@ -412,13 +421,6 @@ export default class ChineseChessServer extends BaseServer {
         return false;
       }
       case GameMode.Hidden: {
-        if (
-          (chessName === ChessNameBlack.Cannon ||
-            chessName === ChessNameRed.Cannon) &&
-          moveOrEat === MoveOrEat.Eat
-        ) {
-          return true;
-        }
         const range = CheckMoveRange.shortCross(locationX, locationY);
         return CheckMoveRange.isInRange(range, targetX, targetY);
       }
@@ -438,19 +440,20 @@ export default class ChineseChessServer extends BaseServer {
     rank?: number,
     targetRank?: number
   ): boolean {
+    // 炮要另外判斷
+    if (
+      chessName === ChessNameBlack.Cannon ||
+      chessName === ChessNameRed.Cannon
+    ) {
+      return this.canonEatLogic(locationX, locationY, targetX, targetY);
+    }
     switch (this.roomInfo.gameMode) {
       case GameMode.Standard: {
-        return false;
+        return true;
       }
       case GameMode.Hidden: {
         if (rank === undefined || targetRank === undefined) {
           return false;
-        }
-        if (
-          chessName === ChessNameBlack.Cannon ||
-          chessName === ChessNameRed.Cannon
-        ) {
-          return this.canonEatLogic(locationX, locationY, targetX, targetY);
         }
         // 卒可以吃帥，兵可以吃將
         if (
@@ -520,6 +523,29 @@ export default class ChineseChessServer extends BaseServer {
 
     // 只有隔一個則可以吃
     if (middleChesses.length === 1) {
+      return true;
+    }
+    return false;
+  }
+
+  // 將吃的邏輯
+  private kingEatLogic(
+    locationY: number,
+    targetX: number,
+    targetY: number
+  ): boolean {
+    let middleChesses: ChessInfo[] = [];
+    middleChesses = this.chineseChesses.filter((c) => {
+      return (
+        c.locationX === targetX &&
+        c.locationY > Math.min(targetY, locationY) &&
+        c.locationY < Math.max(targetY, locationY) &&
+        c.alive
+      );
+    });
+
+    // 中間都沒有棋子可以吃
+    if (middleChesses.length === 0) {
       return true;
     }
     return false;

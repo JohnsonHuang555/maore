@@ -13,6 +13,7 @@ import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
 import { CellComponent } from 'features/chinese_chess/components/CellComponent';
 import { ChessComponent } from 'features/chinese_chess/components/ChessComponent';
 import InfoModal from 'features/base/ui/InfoModal';
+import { ChessSide } from 'features/chinese_chess/models/ChineseChessSide';
 
 const MAX_PLAYERS = 2;
 export default class Standard extends Phaser.Scene {
@@ -20,6 +21,8 @@ export default class Standard extends Phaser.Scene {
   private initialChessesDictionary: { [key: string]: ChessInfo | undefined } =
     {};
   private prevSelectedChessId?: number;
+  // 遊戲開始
+  private isGameStart: boolean = false;
   private onGameOver!: () => void;
 
   // UI
@@ -154,7 +157,9 @@ export default class Standard extends Phaser.Scene {
     console.log(chineseChesses);
     console.log(this.initialChessesDictionary);
 
-    this.createBoard();
+    this.server.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
+    this.server.onPlayerGroupChanged(this.handlePlayerGroupChanged, this);
+    this.server.onPlayerWon(this.handlePlayerWon, this);
   }
 
   // FPS 60
@@ -164,63 +169,79 @@ export default class Standard extends Phaser.Scene {
 
   private createBoard = () => {
     const { width, height } = this.scale;
+    const size = 55;
     const offsetX = 265;
     const offsetY = 300;
-    const size = 55;
     let drawX = width * 0.5 - offsetX;
     let drawY = height * 0.5 - offsetY;
-    for (let y = 0; y < 10; y++) {
-      for (let x = 0; x < 9; x++) {
-        const chessInfo = this.initialChessesDictionary[`${x},${y}`];
-        // 格子
-        const cell = this.add.rectangle(drawX, drawY, size, size, 0xffffff, 0);
-
-        this.cells.push({
-          x,
-          y,
-          rectangle: cell,
-        });
-
-        this.server.components.addComponent(
-          cell,
-          new CellComponent(this.server, x, y)
-        );
-
-        if (chessInfo) {
-          // 棋子
-          const chess = this.add
-            .sprite(cell.x, cell.y, 'chess', `${chessInfo.name}.png`)
-            .setDisplaySize(size, size)
-            .setDepth(1);
-
-          this.chesses.push({
-            id: chessInfo.id,
-            name: chessInfo.name,
-            sprite: chess,
-          });
-
-          this.server.components.addComponent(
-            chess,
-            new ChessComponent(
-              this.server,
-              chessInfo,
-              this.handleSelectChess,
-              this.handleEatChess,
-              this.handleMoveChess
-            )
-          );
+    if (this.server.playerInfo.group === ChessSide.Black) {
+      for (let y = 9; y >= 0; y--) {
+        for (let x = 8; x >= 0; x--) {
+          this.createBoardItem(drawX, drawY, size, x, y);
+          drawX += size + 11;
         }
-
-        drawX += size + 11;
+        drawX = width * 0.5 - offsetX;
+        drawY += size + 12;
       }
-      drawX = width * 0.5 - offsetX;
-      drawY += size + 12;
+    } else {
+      for (let y = 0; y < 10; y++) {
+        for (let x = 0; x < 9; x++) {
+          this.createBoardItem(drawX, drawY, size, x, y);
+          drawX += size + 11;
+        }
+        drawX = width * 0.5 - offsetX;
+        drawY += size + 12;
+      }
     }
-
-    this.server.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
-    this.server.onPlayerGroupChanged(this.handlePlayerGroupChanged, this);
-    this.server.onPlayerWon(this.handlePlayerWon, this);
   };
+
+  private createBoardItem(
+    drawX: number,
+    drawY: number,
+    size: number,
+    x: number,
+    y: number
+  ) {
+    const chessInfo = this.initialChessesDictionary[`${x},${y}`];
+    // 格子
+    const cell = this.add.rectangle(drawX, drawY, size, size, 0xffffff, 0);
+
+    this.cells.push({
+      x,
+      y,
+      rectangle: cell,
+    });
+
+    this.server.components.addComponent(
+      cell,
+      new CellComponent(this.server, x, y)
+    );
+
+    if (chessInfo) {
+      // 棋子
+      const chess = this.add
+        .sprite(cell.x, cell.y, 'chess', `${chessInfo.name}.png`)
+        .setDisplaySize(size, size)
+        .setDepth(1);
+
+      this.chesses.push({
+        id: chessInfo.id,
+        name: chessInfo.name,
+        sprite: chess,
+      });
+
+      this.server.components.addComponent(
+        chess,
+        new ChessComponent(
+          this.server,
+          chessInfo,
+          this.handleSelectChess,
+          this.handleEatChess,
+          this.handleMoveChess
+        )
+      );
+    }
+  }
 
   private handleSelectChess = (id: number) => {
     // 清除之前選的
@@ -285,7 +306,6 @@ export default class Standard extends Phaser.Scene {
     targetLocationX: number,
     targetLocationY: number
   ) => {
-    console.log('move ui');
     this.clearSelectedChessUI();
     const { chess } = this.getChessById(id);
     const { rectangle } = this.getCellByLocation(
@@ -320,6 +340,7 @@ export default class Standard extends Phaser.Scene {
     };
   }
 
+  // 清除選取 UI
   private clearSelectedChessUI() {
     this.tweens.killAll();
 
@@ -349,7 +370,11 @@ export default class Standard extends Phaser.Scene {
 
   // 組別更新並顯示
   private handlePlayerGroupChanged(groupCount: number) {
-    if (groupCount === MAX_PLAYERS) {
+    if (!this.isGameStart && groupCount === MAX_PLAYERS) {
+      this.isGameStart = true;
+      // 因為要知道組別決定如何劃出棋盤
+      this.createBoard();
+
       const { width, height } = this.scale;
       this.server.allPlayers.forEach(({ id, group }) => {
         if (id === this.server.playerInfo.id) {

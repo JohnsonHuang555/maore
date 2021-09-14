@@ -60,7 +60,6 @@ export class ChessComponent implements IComponent {
     const changedChessInfo = this.server.changedChessInfo;
     if (changedChessInfo?.chessInfo.id === this.chessInfo.id) {
       const { actionType, chessInfo } = changedChessInfo;
-      console.log();
       switch (actionType) {
         case ChineseChessMessage.FlipChess: {
           if (!this.onFlip) {
@@ -76,7 +75,6 @@ export class ChessComponent implements IComponent {
           break;
         }
         case ChineseChessMessage.MoveChess: {
-          console.log('jojjo');
           if (chessInfo.targetLocationX !== undefined) {
             this.chessInfo.locationX = chessInfo.targetLocationX;
             this.onMove(
