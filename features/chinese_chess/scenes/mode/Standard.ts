@@ -154,9 +154,6 @@ export default class Standard extends Phaser.Scene {
       return prev;
     }, {} as { [key: string]: ChessInfo });
 
-    console.log(chineseChesses);
-    console.log(this.initialChessesDictionary);
-
     this.server.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
     this.server.onPlayerGroupChanged(this.handlePlayerGroupChanged, this);
     this.server.onPlayerWon(this.handlePlayerWon, this);
@@ -422,7 +419,6 @@ export default class Standard extends Phaser.Scene {
       this.add
         .text(width / 2, 50, '按 ESC 關閉離開', {
           fontSize: '30px',
-          align: 'center',
           padding: {
             top: 5,
           },
