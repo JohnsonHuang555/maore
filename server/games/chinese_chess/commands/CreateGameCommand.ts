@@ -17,8 +17,8 @@ type Payload = {
 
 export default class CreateGameCommand extends Command<ChineseChessState> {
   execute(data: Payload) {
-    console.log('create....');
     const { mode } = data;
+    // 避免重複創建
     if (this.room.state.chineseChesses.length) {
       return;
     }
@@ -121,6 +121,7 @@ export default class CreateGameCommand extends Command<ChineseChessState> {
                 alive: true,
               })
             );
+            id++;
             break;
           }
           case 6:
@@ -136,11 +137,14 @@ export default class CreateGameCommand extends Command<ChineseChessState> {
                 alive: true,
               })
             );
+            id++;
             break;
           }
         }
       }
-      currentIndex++;
+      if (y === 0 || y === 2 || y === 3 || y === 6 || y === 7 || y === 9) {
+        currentIndex++;
+      }
     }
     return chesses;
   }

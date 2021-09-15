@@ -1,24 +1,28 @@
-import Phaser from 'phaser';
-import Server from 'features/chinese_chess/ChineseChessServer';
 import { GameSceneData } from 'features/chinese_chess/models/ChineseChessScene';
-import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
-import { ChessComponent } from 'features/chinese_chess/components/ChessComponent';
-import { CellComponent } from 'features/chinese_chess/components/CellComponent';
-import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
-import Dialog from 'phaser3-rex-plugins/templates/ui/dialog/Dialog';
+import Phaser from 'phaser';
 import YesOrNoModal from 'features/base/ui/YesOrNoModal';
-import InfoModal from 'features/base/ui/InfoModal';
+import Server from 'features/chinese_chess/ChineseChessServer';
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import {
   Cell,
   Chess,
   GAME_PADDING,
 } from 'features/chinese_chess/models/ChineseChessUI';
+import Dialog from 'phaser3-rex-plugins/templates/ui/dialog/Dialog';
+import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
+import { CellComponent } from 'features/chinese_chess/components/CellComponent';
+import { ChessComponent } from 'features/chinese_chess/components/ChessComponent';
+import InfoModal from 'features/base/ui/InfoModal';
+import { ChessSide } from 'features/chinese_chess/models/ChineseChessSide';
 
 const MAX_PLAYERS = 2;
-export default class Hidden extends Phaser.Scene {
+export default class Standard extends Phaser.Scene {
   private server!: Server;
-  private initialChessesDictionary: { [key: string]: ChessInfo } = {};
+  private initialChessesDictionary: { [key: string]: ChessInfo | undefined } =
+    {};
   private prevSelectedChessId?: number;
+  // 遊戲開始
+  private isGameStart: boolean = false;
   private onGameOver!: () => void;
 
   // UI
@@ -30,7 +34,7 @@ export default class Hidden extends Phaser.Scene {
   private yourTurnText?: Phaser.GameObjects.Text;
 
   constructor() {
-    super('hidden');
+    super('standard');
   }
 
   preload() {
@@ -40,7 +44,7 @@ export default class Hidden extends Phaser.Scene {
       sceneKey: 'rexUI',
     });
     this.load.image('background', '/chinese_chess/background.jpeg');
-    this.load.image('map', '/chinese_chess/map/hidden_mode.png');
+    this.load.image('map', '/chinese_chess/map/standard_mode.png');
     this.load.image('player', '/chinese_chess/player.png');
     this.load.image('black', '/chinese_chess/black_king.png');
     this.load.image('red', '/chinese_chess/red_king.png');
@@ -67,20 +71,12 @@ export default class Hidden extends Phaser.Scene {
     // 在開始遊戲時，決定遊玩順序，由房主決定
     if (this.server.playerInfo.isMaster) {
       this.server.createPlayerOrder();
+      this.server.updatePlayerGroup();
     }
 
-    // 初始化畫面
     const { width, height } = this.scale;
-    this.add
-      .image(width / 2, height / 2, 'background')
-      .setInteractive()
-      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-        if (this.surrenderDialog && this.server.showSurrenderModal) {
-          this.server.setShowSurrenderModal(false);
-          this.surrenderDialog.destroy();
-        }
-      });
-    this.add.image(width / 2, height / 2, 'map').setScale(0.5);
+    this.add.image(width / 2, height / 2, 'background');
+    this.add.image(width / 2, height / 2, 'map').setScale(0.55);
     this.add
       .image(width - GAME_PADDING, height - GAME_PADDING, 'surrender')
       .setScale(0.75)
@@ -107,6 +103,7 @@ export default class Hidden extends Phaser.Scene {
         );
         this.server.setShowSurrenderModal(true);
       });
+
     // 對手
     const opponentImage = this.add
       .image(width - GAME_PADDING, GAME_PADDING, 'player')
@@ -157,7 +154,9 @@ export default class Hidden extends Phaser.Scene {
       return prev;
     }, {} as { [key: string]: ChessInfo });
 
-    this.createBoard();
+    this.server.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
+    this.server.onPlayerGroupChanged(this.handlePlayerGroupChanged, this);
+    this.server.onPlayerWon(this.handlePlayerWon, this);
   }
 
   // FPS 60
@@ -167,113 +166,79 @@ export default class Hidden extends Phaser.Scene {
 
   private createBoard = () => {
     const { width, height } = this.scale;
-    const offsetX = 365;
-    const offsetY = 158;
-    const size = 64;
+    const size = 55;
+    const offsetX = 265;
+    const offsetY = 300;
     let drawX = width * 0.5 - offsetX;
     let drawY = height * 0.5 - offsetY;
-    for (let y = 0; y < 4; y++) {
-      for (let x = 0; x < 8; x++) {
-        const chessInfo = this.initialChessesDictionary[`${x},${y}`];
-        // 格子
-        const cell = this.add
-          .rectangle(drawX, drawY, size, size, 0xffffff, 0)
-          .setDisplaySize(100, 100);
-
-        this.cells.push({
-          x,
-          y,
-          rectangle: cell,
-        });
-
-        this.server.components.addComponent(
-          cell,
-          new CellComponent(this.server, x, y)
-        );
-
-        // 棋子
-        const chess = this.add
-          .sprite(cell.x, cell.y, 'chess', 'hidden.png')
-          .setDisplaySize(100, 100)
-          .setDepth(1);
-        // .setSize(size, size);
-
-        this.chesses.push({
-          id: chessInfo.id,
-          name: chessInfo.name,
-          sprite: chess,
-        });
-
-        this.server.components.addComponent(
-          chess,
-          new ChessComponent(
-            this.server,
-            chessInfo,
-            this.handleSelectChess,
-            this.handleEatChess,
-            this.handleMoveChess,
-            this.handleFlipChess
-          )
-        );
-
-        drawX += size + 40;
+    if (this.server.playerInfo.group === ChessSide.Black) {
+      for (let y = 9; y >= 0; y--) {
+        for (let x = 8; x >= 0; x--) {
+          this.createBoardItem(drawX, drawY, size, x, y);
+          drawX += size + 11;
+        }
+        drawX = width * 0.5 - offsetX;
+        drawY += size + 12;
       }
-      drawX = width * 0.5 - offsetX;
-      drawY += size + 40;
+    } else {
+      for (let y = 0; y < 10; y++) {
+        for (let x = 0; x < 9; x++) {
+          this.createBoardItem(drawX, drawY, size, x, y);
+          drawX += size + 11;
+        }
+        drawX = width * 0.5 - offsetX;
+        drawY += size + 12;
+      }
     }
-
-    this.server.onPlayerTurnChanged(this.handlePlayerTurnChanged, this);
-    this.server.onPlayerGroupChanged(this.handlePlayerGroupChanged, this);
-    this.server.onPlayerWon(this.handlePlayerWon, this);
   };
 
-  private getCellByLocation(x: number, y: number): Cell {
-    const cell = this.cells.find((c) => c.x === x && c.y === y);
-    if (!cell) {
-      throw new Error('Cell not found');
+  private createBoardItem(
+    drawX: number,
+    drawY: number,
+    size: number,
+    x: number,
+    y: number
+  ) {
+    const chessInfo = this.initialChessesDictionary[`${x},${y}`];
+    // 格子
+    const cell = this.add.rectangle(drawX, drawY, size, size, 0xffffff, 0);
+
+    this.cells.push({
+      x,
+      y,
+      rectangle: cell,
+    });
+
+    this.server.components.addComponent(
+      cell,
+      new CellComponent(this.server, x, y)
+    );
+
+    if (chessInfo) {
+      // 棋子
+      const chess = this.add
+        .sprite(cell.x, cell.y, 'chess', `${chessInfo.name}.png`)
+        .setDisplaySize(size, size)
+        .setDepth(1);
+
+      this.chesses.push({
+        id: chessInfo.id,
+        name: chessInfo.name,
+        sprite: chess,
+      });
+
+      this.server.components.addComponent(
+        chess,
+        new ChessComponent(
+          this.server,
+          chessInfo,
+          this.handleSelectChess,
+          this.handleEatChess,
+          this.handleMoveChess
+        )
+      );
     }
-    return cell;
   }
-
-  private getChessById(id: number): { chess: Chess; index: number } {
-    const chessIndex = this.chesses.findIndex((c) => c.id === id);
-    if (chessIndex === -1) {
-      throw new Error('Chess not found');
-    }
-    return {
-      chess: this.chesses[chessIndex],
-      index: chessIndex,
-    };
-  }
-
-  private handleFlipChess = (id: number) => {
-    // 清除之前選的
-    this.clearSelectedChessUI();
-    const { chess } = this.getChessById(id);
-    const timeline = this.tweens.timeline({
-      onComplete: () => {
-        timeline.destroy();
-      },
-    });
-
-    timeline.add({
-      targets: chess.sprite,
-      scale: 0,
-      duration: 100,
-      onComplete: () => {
-        chess.sprite.setTexture('chess', `${chess.name}.png`);
-      },
-    });
-
-    timeline.add({
-      targets: chess.sprite,
-      displayWidth: 100,
-      displayHeight: 100,
-      duration: 100,
-    });
-
-    timeline.play();
-  };
 
   private handleSelectChess = (id: number) => {
     // 清除之前選的
@@ -353,6 +318,26 @@ export default class Hidden extends Phaser.Scene {
     });
   };
 
+  private getCellByLocation(x: number, y: number): Cell {
+    const cell = this.cells.find((c) => c.x === x && c.y === y);
+    if (!cell) {
+      throw new Error('Cell not found');
+    }
+    return cell;
+  }
+
+  private getChessById(id: number): { chess: Chess; index: number } {
+    const chessIndex = this.chesses.findIndex((c) => c.id === id);
+    if (chessIndex === -1) {
+      throw new Error('Chess not found');
+    }
+    return {
+      chess: this.chesses[chessIndex],
+      index: chessIndex,
+    };
+  }
+
+  // 清除選取 UI
   private clearSelectedChessUI() {
     this.tweens.killAll();
 
@@ -369,22 +354,24 @@ export default class Hidden extends Phaser.Scene {
     this.yourTurnText?.destroy();
     this.yourTurnText = undefined;
     if (this.server.playerInfo.playerIndex === playerIndex) {
-      const { width } = this.scale;
       this.yourTurnText = this.add
-        .text(width * 0.5, 50, '你的回合', {
+        .text(GAME_PADDING, GAME_PADDING, '你的回合', {
           fontSize: '30px',
-          align: 'center',
           padding: {
             top: 5,
           },
         })
-        .setOrigin(0.5, 0.5);
+        .setOrigin(0, 0);
     }
   }
 
   // 組別更新並顯示
   private handlePlayerGroupChanged(groupCount: number) {
-    if (groupCount === MAX_PLAYERS) {
+    if (!this.isGameStart && groupCount === MAX_PLAYERS) {
+      this.isGameStart = true;
+      // 因為要知道組別決定如何劃出棋盤
+      this.createBoard();
+
       const { width, height } = this.scale;
       this.server.allPlayers.forEach(({ id, group }) => {
         if (id === this.server.playerInfo.id) {
@@ -432,7 +419,6 @@ export default class Hidden extends Phaser.Scene {
       this.add
         .text(width / 2, 50, '按 ESC 關閉離開', {
           fontSize: '30px',
-          align: 'center',
           padding: {
             top: 5,
           },

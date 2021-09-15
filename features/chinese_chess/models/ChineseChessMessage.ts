@@ -3,4 +3,5 @@ export enum ChineseChessMessage {
   MoveChess = 'move-chess',
   EatChess = 'eat-chess',
   Surrender = 'surrender',
+  UpdatePlayerGroupByStandardMode = 'update-player-group-by-standard-mode',
 }
