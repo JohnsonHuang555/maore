@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import Layout from 'components/Layout';
 import { Game, GameList } from 'models/Game';
 import { useRouter } from 'next/router';
-import Grid from '@material-ui/core/Grid';
-import { Info } from '@material-ui/icons';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
 import useSWR from 'swr';
 import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 import { createdRoomIdSelector, roomsSelector } from 'selectors/roomSelector';
-import { Button } from '@material-ui/core';
 import CreateRoom from 'components/games/CreateRoom';
 import { setShowLoginModal, setSnackbar } from 'actions/AppAction';
 import { initialClient, createRoom, getAllRooms } from 'actions/ServerAction';
@@ -17,6 +16,8 @@ import styles from 'styles/pages/game.module.scss';
 import { clientSelector } from 'selectors/serverSelector';
 import { userInfoSelector } from 'selectors/appSelector';
 import { fetcher } from 'pages/api/base/Fetcher';
+import IconButton from '@mui/material/IconButton';
+import Info from '@mui/icons-material/Info';
 
 const Games = () => {
   const router = useRouter();
@@ -111,7 +112,7 @@ const Games = () => {
       <Grid container spacing={3} style={{ height: '100%' }}>
         <Grid item lg={3} xs={4} className={styles.gameDetail}>
           <Image
-            src={game.homeImg}
+            src={game.imgPath}
             alt={game.name}
             height={350}
             width={500}

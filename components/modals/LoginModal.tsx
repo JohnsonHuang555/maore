@@ -6,7 +6,7 @@ import {
   TextField,
   DialogActions,
   Button,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useRouter } from 'next/router';
 
 type LoginModalProps = {
@@ -25,7 +25,7 @@ const LoginModal = (props: LoginModalProps) => {
       open={show}
       onClose={onClose}
       aria-labelledby="login-dialog-title"
-      disableBackdropClick={router.pathname.substr(1, 5) === 'rooms'}
+      // disableBackdropClick={router.pathname.substr(1, 5) === 'rooms'}
       fullWidth
     >
       <DialogTitle id="login-dialog-title">Login</DialogTitle>

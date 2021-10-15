@@ -1,9 +1,11 @@
-import { AppBar, Toolbar, Typography } from '@material-ui/core';
-import { useRouter } from 'next/router';
-import Toast from 'components/Toast';
-import { Button } from '@material-ui/core';
 import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Toast from 'components/Toast';
 import {
   showLoginModalSelector,
   userInfoSelector,

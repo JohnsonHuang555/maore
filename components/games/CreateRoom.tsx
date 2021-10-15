@@ -6,13 +6,13 @@ import {
   TextField,
   DialogActions,
   Button,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from 'actions/AppAction';
 import { Game } from 'models/Game';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import styles from 'styles/components/createRoom.module.scss';
-import { CheckCircleOutline } from '@material-ui/icons';
+import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
 
 type CreateRoomProps = {
   show: boolean;

@@ -1,7 +1,7 @@
-import { Button } from '@material-ui/core';
+import Button from '@mui/material/Button';
 import Icon from 'components/Icon';
-import Grid from '@material-ui/core/Grid';
-import { People } from '@material-ui/icons';
+import Grid from '@mui/material/Grid';
+import People from '@mui/icons-material/People';
 import styles from 'styles/components/roomCard.module.scss';
 
 type RoomCardProps = {
