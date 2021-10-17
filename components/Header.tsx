@@ -18,8 +18,7 @@ import {
   setSnackbar,
   setUserInfo,
 } from 'actions/AppAction';
-// import styles from 'styles/components/header.module.scss';
-import LoginModal from './modals/LoginModal';
+import LoginModal from 'components/modals/LoginModal';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -89,7 +88,6 @@ const Header = () => {
                     size="large"
                     color="secondary"
                     onClick={() => logout()}
-                    sx={{ color: '#fff' }}
                   >
                     登出
                   </Button>
@@ -101,7 +99,6 @@ const Header = () => {
                 size="large"
                 color="secondary"
                 onClick={() => dispatch(setShowLoginModal(true))}
-                sx={{ color: '#fff' }}
               >
                 登入
               </Button>

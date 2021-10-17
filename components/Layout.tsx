@@ -22,7 +22,7 @@ const Layout = (props: LayoutProps) => {
         />
       </Head>
       <Header />
-      <main style={{ marginTop: '20px' }}>{children}</main>
+      <main>{children}</main>
       {/* <Footer /> */}
     </>
   );

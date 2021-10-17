@@ -12,12 +12,13 @@ import CreateRoom from 'components/games/CreateRoom';
 import { setShowLoginModal, setSnackbar } from 'actions/AppAction';
 import { initialClient, createRoom, getAllRooms } from 'actions/ServerAction';
 import RoomCard from 'components/games/RoomCard';
-import styles from 'styles/pages/game.module.scss';
+// import styles from 'styles/pages/game.module.scss';
 import { clientSelector } from 'selectors/serverSelector';
 import { userInfoSelector } from 'selectors/appSelector';
 import { fetcher } from 'pages/api/base/Fetcher';
-import IconButton from '@mui/material/IconButton';
 import Info from '@mui/icons-material/Info';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
 
 const Games = () => {
   const router = useRouter();
@@ -108,9 +109,42 @@ const Games = () => {
         onClose={() => setShowCreateRoomModal(false)}
         onCreateRoom={onCreateRoom}
       />
+      <Box sx={{ position: 'relative' }}>
+        <Box
+          sx={{
+            backgroundImage: `url(${game.imgPath})`,
+            height: '400px',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+          }}
+        />
+        <Container maxWidth={false} sx={{ position: 'absolute', top: '40px' }}>
+          <Box component="label" sx={{ fontSize: '48px' }}>
+            {game.name}
+          </Box>
+          <Box component="p" sx={{ fontSize: '24px' }}>
+            {game.description}
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Button
+                size="medium"
+                variant="contained"
+                sx={{ marginBottom: '20px' }}
+              >
+                建立房間
+              </Button>
+              <Button size="medium" variant="contained">
+                遊戲規則
+              </Button>
+            </Box>
+          </Box>
+        </Container>
+      </Box>
+      {/*
       <h2 className="title">{game.name}</h2>
       <Grid container spacing={3} style={{ height: '100%' }}>
-        <Grid item lg={3} xs={4} className={styles.gameDetail}>
+        <Grid item lg={3} xs={4}>
           <Image
             src={game.imgPath}
             alt={game.name}
@@ -118,10 +152,9 @@ const Games = () => {
             width={500}
             layout="responsive"
           />
-          <p className={styles.description}>{game.description}</p>
+          <p>{game.description}</p>
           <Button
             size="large"
-            className={styles.createRoom}
             variant="contained"
             color="secondary"
             onClick={() => {
@@ -152,7 +185,7 @@ const Games = () => {
           <>
             {!rooms.length && (
               <Grid item xs={12}>
-                <div className={styles.noRooms}>
+                <div>
                   <Info />
                   查無房間
                 </div>
@@ -169,7 +202,7 @@ const Games = () => {
             ))}
           </>
         </Grid>
-      </Grid>
+      </Grid> */}
     </Layout>
   );
 };
