@@ -1,8 +1,8 @@
 import Button from '@mui/material/Button';
-import Icon from 'components/Icon';
 import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import People from '@mui/icons-material/People';
-import styles from 'styles/components/roomCard.module.scss';
+import VideogameAsset from '@mui/icons-material/VideogameAsset';
 
 type RoomCardProps = {
   title: string;
@@ -14,29 +14,37 @@ type RoomCardProps = {
 const RoomCard = (props: RoomCardProps) => {
   const { title, maxPlayers, nowPlayers, joinRoom } = props;
   return (
-    <Grid item lg={6} xs={12}>
-      <div className={styles.room}>
-        <div className={styles.header}>
-          <span className={styles.title}>{title}</span>
-        </div>
-        <div className={styles.info}>
-          <span className={styles.nowPlayers}>
-            <Icon title={`${nowPlayers} / ${maxPlayers}`} fontSize="16px">
-              <People htmlColor="#fff" />
-            </Icon>
-          </span>
-          <span className={styles.mode}>一般模式</span>
-          <Button
-            variant="outlined"
-            size="large"
-            className={styles.joinRoom}
-            onClick={() => joinRoom()}
-          >
-            加入
-          </Button>
-        </div>
-      </div>
-    </Grid>
+    <Box sx={{ padding: '15px', borderRadius: '10px', border: '1px solid' }}>
+      <Box sx={{ fontSize: '24px', marginBottom: '5px' }}>{title}</Box>
+      <Box sx={{ display: 'flex' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            flex: 1,
+          }}
+        >
+          <People />
+          <Box
+            sx={{ fontSize: '16px', marginLeft: '5px' }}
+          >{`${nowPlayers} / ${maxPlayers}`}</Box>
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            flex: 1,
+          }}
+        >
+          <VideogameAsset />
+          <Box sx={{ fontSize: '16px', marginLeft: '5px' }}>暗棋</Box>
+        </Box>
+        <Box sx={{ flex: 1 }}></Box>
+        <Button sx={{ flex: 1 }} variant="contained" onClick={joinRoom}>
+          加入
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

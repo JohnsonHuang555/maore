@@ -1,6 +1,6 @@
 import { GameMode } from 'models/Game';
 import { RoomInfo } from 'models/Room';
-import { MenuItem, Select } from '@material-ui/core';
+import { MenuItem, Select } from '@mui/material';
 import styles from 'styles/components/gameSetting.module.scss';
 
 type GameSettingProps = {

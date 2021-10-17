@@ -1,5 +1,5 @@
-import { Stars, AccountCircle } from '@material-ui/icons';
-import Icon from 'components/Icon';
+import { Stars, AccountCircle } from '@mui/icons-material';
+import Icon from 'components/IconLabel';
 import { Player } from 'models/Player';
 import styles from 'styles/components/playerList.module.scss';
 

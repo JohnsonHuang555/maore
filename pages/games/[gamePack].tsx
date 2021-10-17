@@ -101,6 +101,20 @@ const Games = () => {
     router.push(`/rooms/${roomId}`);
   };
 
+  const handleCreateRoom = () => {
+    if (!userInfo) {
+      dispatch(setShowLoginModal(true));
+      dispatch(
+        setSnackbar({
+          show: true,
+          message: '請先登入',
+        })
+      );
+      return;
+    }
+    setShowCreateRoomModal(true);
+  };
+
   return (
     <Layout>
       <CreateRoom
@@ -109,7 +123,7 @@ const Games = () => {
         onClose={() => setShowCreateRoomModal(false)}
         onCreateRoom={onCreateRoom}
       />
-      <Box sx={{ position: 'relative' }}>
+      <Box sx={{ position: 'relative', marginBottom: '24px' }}>
         <Box
           sx={{
             backgroundImage: `url(${game.imgPath})`,
@@ -126,11 +140,14 @@ const Games = () => {
             {game.description}
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Box
+              sx={{ display: 'flex', flexDirection: 'column', width: '150px' }}
+            >
               <Button
                 size="medium"
                 variant="contained"
                 sx={{ marginBottom: '20px' }}
+                onClick={handleCreateRoom}
               >
                 建立房間
               </Button>
@@ -141,6 +158,21 @@ const Games = () => {
           </Box>
         </Container>
       </Box>
+      <Container maxWidth={false}>
+        <Grid container spacing={3}>
+          <Grid item lg={3} xs={1}>
+            {rooms.map(({ roomId, metadata, maxClients, clients }) => (
+              <RoomCard
+                key={roomId}
+                title={metadata?.roomTitle as string}
+                maxPlayers={maxClients}
+                nowPlayers={clients}
+                joinRoom={() => onJoinRoom(roomId)}
+              />
+            ))}
+          </Grid>
+        </Grid>
+      </Container>
       {/*
       <h2 className="title">{game.name}</h2>
       <Grid container spacing={3} style={{ height: '100%' }}>

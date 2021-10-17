@@ -8,9 +8,9 @@ import {
   roomInfoSelector,
   showGameScreenSelector,
 } from 'selectors/roomSelector';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import { useRouter } from 'next/router';
-import { Button, InputAdornment, TextField } from '@material-ui/core';
+import { Button, InputAdornment, TextField } from '@mui/material';
 import PlayerList from 'components/rooms/PlayerCard';
 import {
   initialClient,
@@ -28,7 +28,7 @@ import { clientSelector } from 'selectors/serverSelector';
 import dynamic from 'next/dynamic';
 import { isLoginSelector, userInfoSelector } from 'selectors/appSelector';
 import { setShowLoginModal } from 'actions/AppAction';
-import { Send } from '@material-ui/icons';
+import Send from '@mui/icons-material/Send';
 import GameSetting from 'components/rooms/GameSetting';
 import { Game } from 'models/Game';
 import useSWR from 'swr';
