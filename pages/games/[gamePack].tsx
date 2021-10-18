@@ -133,25 +133,25 @@ const Games = () => {
           }}
         />
         <Container maxWidth={false} sx={{ position: 'absolute', top: '40px' }}>
-          <Box component="label" sx={{ fontSize: '48px' }}>
+          <Box component="label" sx={{ fontSize: '48px', color: '#fff' }}>
             {game.name}
           </Box>
-          <Box component="p" sx={{ fontSize: '24px' }}>
+          <Box component="p" sx={{ fontSize: '24px', color: '#fff' }}>
             {game.description}
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Box
-              sx={{ display: 'flex', flexDirection: 'column', width: '150px' }}
+              sx={{ display: 'flex', flexDirection: 'column', width: '200px' }}
             >
               <Button
-                size="medium"
+                size="large"
                 variant="contained"
                 sx={{ marginBottom: '20px' }}
                 onClick={handleCreateRoom}
               >
                 建立房間
               </Button>
-              <Button size="medium" variant="contained">
+              <Button size="large" variant="contained">
                 遊戲規則
               </Button>
             </Box>

@@ -22,7 +22,7 @@ const Layout = (props: LayoutProps) => {
         />
       </Head>
       <Header />
-      <main>{children}</main>
+      <main style={{ flex: '1 0 auto' }}>{children}</main>
       {/* <Footer /> */}
     </>
   );

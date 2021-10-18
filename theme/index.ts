@@ -1,8 +1,7 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@mui/material/styles';
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
-    type: 'dark',
     primary: {
       // light: will be calculated from palette.primary.main,
       main: '#121314',
