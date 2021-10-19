@@ -132,11 +132,20 @@ const Games = () => {
             backgroundSize: 'cover',
           }}
         />
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '0',
+            height: '100%',
+            width: '100%',
+            backgroundColor: 'rgba(0,0,0,0.4)',
+          }}
+        />
         <Container maxWidth={false} sx={{ position: 'absolute', top: '40px' }}>
-          <Box component="label" sx={{ fontSize: '48px', color: '#fff' }}>
+          <Box component="label" color="white" sx={{ fontSize: '48px' }}>
             {game.name}
           </Box>
-          <Box component="p" sx={{ fontSize: '24px', color: '#fff' }}>
+          <Box component="p" color="white" sx={{ fontSize: '24px' }}>
             {game.description}
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -147,6 +156,7 @@ const Games = () => {
                 size="large"
                 variant="contained"
                 sx={{ marginBottom: '20px' }}
+                color="secondary"
                 onClick={handleCreateRoom}
               >
                 建立房間
@@ -160,81 +170,35 @@ const Games = () => {
       </Box>
       <Container maxWidth={false}>
         <Grid container spacing={3}>
-          <Grid item lg={3} xs={1}>
-            {rooms.map(({ roomId, metadata, maxClients, clients }) => (
-              <RoomCard
-                key={roomId}
-                title={metadata?.roomTitle as string}
-                maxPlayers={maxClients}
-                nowPlayers={clients}
-                joinRoom={() => onJoinRoom(roomId)}
-              />
-            ))}
-          </Grid>
+          {rooms.length ? (
+            <Grid item lg={3} md={4} xs={2}>
+              {rooms.map(({ roomId, metadata, maxClients, clients }) => (
+                <RoomCard
+                  key={roomId}
+                  title={metadata?.roomTitle as string}
+                  maxPlayers={maxClients}
+                  nowPlayers={clients}
+                  joinRoom={() => onJoinRoom(roomId)}
+                />
+              ))}
+            </Grid>
+          ) : (
+            <Grid item xs={12}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0 5px',
+                }}
+              >
+                <Info />
+                <Box sx={{ fontSize: '20px', marginLeft: '5px' }}>查無房間</Box>
+              </Box>
+            </Grid>
+          )}
         </Grid>
       </Container>
-      {/*
-      <h2 className="title">{game.name}</h2>
-      <Grid container spacing={3} style={{ height: '100%' }}>
-        <Grid item lg={3} xs={4}>
-          <Image
-            src={game.imgPath}
-            alt={game.name}
-            height={350}
-            width={500}
-            layout="responsive"
-          />
-          <p>{game.description}</p>
-          <Button
-            size="large"
-            variant="contained"
-            color="secondary"
-            onClick={() => {
-              if (!userInfo) {
-                dispatch(setShowLoginModal(true));
-                dispatch(
-                  setSnackbar({
-                    show: true,
-                    message: '請先登入',
-                  })
-                );
-                return;
-              }
-              setShowCreateRoomModal(true);
-            }}
-          >
-            建立房間
-          </Button>
-        </Grid>
-        <Grid
-          item
-          lg={9}
-          xs={8}
-          container
-          spacing={3}
-          style={{ alignContent: 'flex-start' }}
-        >
-          <>
-            {!rooms.length && (
-              <Grid item xs={12}>
-                <div>
-                  <Info />
-                  查無房間
-                </div>
-              </Grid>
-            )}
-            {rooms.map((room) => (
-              <RoomCard
-                key={room.roomId}
-                title={room.metadata?.roomTitle as string}
-                maxPlayers={room.maxClients}
-                nowPlayers={room.clients}
-                joinRoom={() => onJoinRoom(room.roomId)}
-              />
-            ))}
-          </>
-        </Grid>
-      </Grid> */}
     </Layout>
   );
 };

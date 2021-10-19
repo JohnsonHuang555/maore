@@ -1,6 +1,8 @@
 
 html, body {
   height: 100%;
+  background-color: #121314 !important;
+  color: #fff !important;
 }
 
 #__next {
@@ -9,14 +11,14 @@ html, body {
   flex-direction: column;
 }
 
-// .MuiFormLabel-root.Mui-focused {
-//   color: rgba(255, 255, 255, 0.8) !important;
-// }
+.MuiFormLabel-root.Mui-focused {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
 
-// .MuiOutlinedInput-notchedOutline {
-//   border-color: rgba(255, 255, 255, 0.23) !important;
-// }
+.MuiOutlinedInput-notchedOutline {
+  border-color: rgba(255, 255, 255, 0.23) !important;
+}
 
-// .MuiSelect-root {
-//   background-color: $grey-4 !important;
-// }
+.MuiSelect-root {
+  background-color: #3b3b3b !important;
+}

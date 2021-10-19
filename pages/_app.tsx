@@ -1,7 +1,6 @@
 import type { AppProps } from 'next/app';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-// import CssBaseline from '@material-ui/core/CssBaseline';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import theme from 'theme';
 import rootReducer from 'reducers/rootReducer';

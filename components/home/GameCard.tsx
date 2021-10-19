@@ -14,7 +14,7 @@ const GameCard = (props: GameCardProp) => {
   return (
     <Card>
       <CardActionArea>
-        <CardMedia component="img" height="400" image={game.imgPath} />
+        <CardMedia component="img" height="350" image={game.imgPath} />
       </CardActionArea>
     </Card>
   );

@@ -69,7 +69,7 @@ const Header = () => {
       />
       <Toast />
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar sx={{ backgroundColor: '#121314' }}>
           {/* TODO: LOGO */}
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             <Box onClick={() => router.push('/')} sx={{ cursor: 'pointer' }}>

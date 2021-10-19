@@ -14,14 +14,35 @@ type RoomCardProps = {
 const RoomCard = (props: RoomCardProps) => {
   const { title, maxPlayers, nowPlayers, joinRoom } = props;
   return (
-    <Box sx={{ padding: '15px', borderRadius: '10px', border: '1px solid' }}>
-      <Box sx={{ fontSize: '24px', marginBottom: '5px' }}>{title}</Box>
+    <Box
+      sx={{
+        padding: '15px',
+        borderRadius: '10px',
+        backgroundColor: 'primary.light',
+      }}
+    >
+      <Box
+        sx={{
+          fontSize: '24px',
+          marginBottom: '15px',
+          backgroundColor: 'primary.dark',
+          borderRadius: '5px',
+          padding: '2px 15px',
+        }}
+      >
+        {title}
+      </Box>
       <Box sx={{ display: 'flex' }}>
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '10px',
             flex: 1,
+            backgroundColor: 'primary.dark',
+            borderRadius: '5px',
+            padding: '0 5px',
           }}
         >
           <People />
@@ -33,14 +54,23 @@ const RoomCard = (props: RoomCardProps) => {
           sx={{
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'center',
             flex: 1,
+            backgroundColor: 'primary.dark',
+            borderRadius: '5px',
+            padding: '0 5px',
           }}
         >
           <VideogameAsset />
           <Box sx={{ fontSize: '16px', marginLeft: '5px' }}>暗棋</Box>
         </Box>
-        <Box sx={{ flex: 1 }}></Box>
-        <Button sx={{ flex: 1 }} variant="contained" onClick={joinRoom}>
+        <Box sx={{ flex: 0.5 }}></Box>
+        <Button
+          sx={{ flex: 1 }}
+          color="secondary"
+          variant="contained"
+          onClick={joinRoom}
+        >
           加入
         </Button>
       </Box>
