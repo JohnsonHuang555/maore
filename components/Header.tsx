@@ -72,8 +72,15 @@ const Header = () => {
         <Toolbar sx={{ backgroundColor: '#121314' }}>
           {/* TODO: LOGO */}
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            <Box onClick={() => router.push('/')} sx={{ cursor: 'pointer' }}>
-              cookuya
+            <Box
+              onClick={() => router.push('/')}
+              sx={{
+                cursor: 'pointer',
+                color: 'secondary.main',
+                fontSize: '24px',
+              }}
+            >
+              Cookuya
             </Box>
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>

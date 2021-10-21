@@ -21,7 +21,7 @@ type CreateRoomProps = {
   onClose: () => void;
 };
 
-const CreateRoom = (props: CreateRoomProps) => {
+const CreateRoomModal = (props: CreateRoomProps) => {
   const dispatch = useDispatch();
   const { show, selectedGame, onCreateRoom, onClose } = props;
   const [roomTitle, setRoomTitle] = useState('');
@@ -106,8 +106,15 @@ const CreateRoom = (props: CreateRoomProps) => {
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>取消</Button>
-        <Button disabled={isCreating} onClick={() => onConfirm()}>
+        <Button variant="contained" color="primary" onClick={onClose}>
+          取消
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          disabled={isCreating}
+          onClick={onConfirm}
+        >
           建立
         </Button>
       </DialogActions>
@@ -115,4 +122,4 @@ const CreateRoom = (props: CreateRoomProps) => {
   );
 };
 
-export default CreateRoom;
+export default CreateRoomModal;

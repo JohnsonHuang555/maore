@@ -1,5 +1,4 @@
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import People from '@mui/icons-material/People';
 import VideogameAsset from '@mui/icons-material/VideogameAsset';

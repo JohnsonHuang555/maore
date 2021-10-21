@@ -42,6 +42,7 @@ export default function Home() {
               item
               lg={2}
               md={4}
+              sm={6}
               xs={12}
               onClick={() => router.push(`/games/${game.gamePack}`)}
             >
