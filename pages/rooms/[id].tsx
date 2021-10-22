@@ -33,6 +33,8 @@ import GameSetting from 'components/rooms/GameSetting';
 import { Game } from 'models/Game';
 import useSWR from 'swr';
 import { fetcher } from 'pages/api/base/Fetcher';
+import PlayerArea from 'components/rooms/PlayerArea';
+import ChatArea from 'components/rooms/ChatArea';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('components/rooms/GameScreen'),
@@ -53,9 +55,6 @@ const Rooms = () => {
   const showGameScreen = useSelector(showGameScreenSelector);
   const messages = useSelector(messagesSelector);
 
-  const [currentMessage, setCurrentMessage] = useState('');
-  const messageRef = useRef<any>(null);
-
   useWarningOnExit({
     shouldWarn: true,
     leaveRoom,
@@ -66,13 +65,6 @@ const Rooms = () => {
     const userInfo = localStorage.getItem('userInfo');
     if (!userInfo) {
       dispatch(setShowLoginModal(true));
-    }
-    if (messageRef && messageRef.current) {
-      messageRef.current.addEventListener('DOMNodeInserted', () => {
-        const scroll =
-          messageRef.current.scrollHeight - messageRef.current.clientHeight;
-        messageRef.current.scrollTo(0, scroll);
-      });
     }
   }, []);
 
@@ -123,64 +115,12 @@ const Rooms = () => {
     return false;
   };
 
-  const onSendMessage = () => {
-    if (!currentMessage) {
-      return;
-    }
-    dispatch(sendMessage(currentMessage));
-    setCurrentMessage('');
-  };
-
   return (
     <Layout>
-      <h2 className="title">{roomInfo.roomTitle}</h2>
-      <Grid container spacing={3} style={{ height: '100%' }}>
+      <Grid container spacing={3} sx={{ height: '100%' }}>
         <Grid item lg={9} xs={9} className={styles.leftArea}>
-          <div className={`${styles.playerList} ${styles.block}`}>
-            <div className={styles.playerContent}>
-              <PlayerList players={players} yourPlayerId={yourPlayerId} />
-            </div>
-          </div>
-          <div className={`${styles.messages} ${styles.block}`}>
-            <div className={styles.contentWrapper}>
-              <div className={styles.overflowContainer} ref={messageRef}>
-                <div className={styles.overflowContent}>
-                  {messages.map((message, index) => (
-                    <span key={index} className={styles.message}>
-                      {message}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <TextField
-              id="outlined-basic"
-              label="說點什麼吧..."
-              variant="outlined"
-              size="small"
-              value={currentMessage}
-              InputProps={{
-                onKeyDown: (e) => {
-                  if (e.key === 'Enter') {
-                    onSendMessage();
-                  }
-                },
-                onChange: (e) => {
-                  setCurrentMessage(e.target.value);
-                },
-                endAdornment: (
-                  <InputAdornment position="start">
-                    <div
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => onSendMessage()}
-                    >
-                      <Send />
-                    </div>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </div>
+          <PlayerArea players={players} yourPlayerId={yourPlayerId} />
+          <ChatArea messages={messages} />
         </Grid>
         <Grid item lg={3} xs={3}>
           <div className={`${styles.block} ${styles.rightArea}`}>
