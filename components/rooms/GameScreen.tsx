@@ -3,7 +3,6 @@ import { TicTacToeConfig } from 'features/tictactoe/TicTacToeConfig';
 import { ChineseChessConfig } from 'features/chinese_chess/ChineseChessConfig';
 import { IonPhaser, GameInstance } from '@ion-phaser/react';
 import React, { useEffect, useRef, useState } from 'react';
-import styles from 'styles/components/gameScreen.module.scss';
 
 type GameScreenProps = {
   gamePack: GameList | '';
@@ -37,7 +36,14 @@ const GameScreen = (props: GameScreenProps) => {
 
   return (
     <IonPhaser
-      className={styles.gameScreen}
+      style={{
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+        zIndex: '1200',
+      }}
       ref={gameRef}
       initialize={initialize}
       game={game}

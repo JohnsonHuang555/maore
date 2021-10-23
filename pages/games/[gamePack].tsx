@@ -125,7 +125,7 @@ const Games = () => {
         <Box
           sx={{
             backgroundImage: `url(${game.imgPath})`,
-            height: '400px',
+            height: '350px',
             backgroundPosition: 'center',
             backgroundSize: 'cover',
           }}
@@ -139,11 +139,11 @@ const Games = () => {
             backgroundColor: 'rgba(0,0,0,0.4)',
           }}
         />
-        <Container maxWidth={false} sx={{ position: 'absolute', top: '40px' }}>
-          <Box component="label" color="white" sx={{ fontSize: '48px' }}>
+        <Container maxWidth={false} sx={{ position: 'absolute', top: '20px' }}>
+          <Box component="label" color="white" sx={{ fontSize: '36px' }}>
             {game.name}
           </Box>
-          <Box component="p" color="white" sx={{ fontSize: '24px' }}>
+          <Box component="p" color="white" sx={{ fontSize: '22px' }}>
             {game.description}
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>

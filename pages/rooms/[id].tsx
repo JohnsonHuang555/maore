@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import Layout from 'components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -10,15 +10,13 @@ import {
 } from 'selectors/roomSelector';
 import Grid from '@mui/material/Grid';
 import { useRouter } from 'next/router';
-import { Button, Container, InputAdornment, TextField } from '@mui/material';
+import Container from '@mui/material/Container';
 import {
   initialClient,
   joinRoom,
   leaveRoom,
   readyGame,
-  sendMessage,
   startGame,
-  updateRoomInfo,
 } from 'actions/ServerAction';
 import { playerIdSelector } from 'selectors/roomSelector';
 import { useWarningOnExit } from 'customhooks/useWarningOnExit';
@@ -26,8 +24,6 @@ import { clientSelector } from 'selectors/serverSelector';
 import dynamic from 'next/dynamic';
 import { isLoginSelector, userInfoSelector } from 'selectors/appSelector';
 import { setShowLoginModal } from 'actions/AppAction';
-import Send from '@mui/icons-material/Send';
-import GameSetting from 'components/rooms/GameSetting';
 import { Game } from 'models/Game';
 import useSWR from 'swr';
 import { fetcher } from 'pages/api/base/Fetcher';
