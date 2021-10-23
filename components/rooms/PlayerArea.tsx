@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import { Player } from 'models/Player';
 import { Stars, AccountCircle } from '@mui/icons-material';
-import styles from 'styles/components/playerList.module.scss';
 
 type PlayerAreaProps = {
   players: Player[];
@@ -16,13 +15,21 @@ const PlayerArea = (props: PlayerAreaProps) => {
   };
 
   return (
-    <Box sx={{ flex: '1', marginBottom: '15px' }}>
+    <Box
+      sx={{
+        flex: '300px',
+        marginBottom: '15px',
+        backgroundColor: 'primary.dark',
+        padding: '10px',
+        borderRadius: '10px',
+        overflowY: 'auto',
+      }}
+    >
       <Box
         sx={{
           display: 'flex',
           flexWrap: 'wrap',
           alignContent: 'flex-start',
-          backgroundColor: '#121314',
           width: '100%',
         }}
       >
@@ -36,7 +43,7 @@ const PlayerArea = (props: PlayerAreaProps) => {
               marginBottom: '10px',
               ':nth-of-type(odd)': {
                 marginRight: '10px',
-                width: 'calc(100% / 2 - 10px)',
+                width: 'calc(100% / 2)',
               },
               ':nth-of-type(even)': {
                 width: 'calc(100% / 2 - 10px)',
@@ -44,7 +51,7 @@ const PlayerArea = (props: PlayerAreaProps) => {
               backgroundColor: isNowPlayer(player.id) ? '#64584b' : '#3b3b3b',
             }}
           >
-            <AccountCircle htmlColor="#cccccc" />
+            <AccountCircle sx={{ fontSize: '52px' }} htmlColor="#cccccc" />
             <Box
               sx={{
                 display: 'flex',
@@ -71,8 +78,8 @@ const PlayerArea = (props: PlayerAreaProps) => {
               {!player.isMaster ? (
                 <Box
                   sx={{
-                    fontSize: '26px',
-                    color: player.isReady ? '#e2c138' : '#342f29',
+                    fontSize: '24px',
+                    color: player.isReady ? 'warning.light' : '#342f29',
                   }}
                 >
                   Ready
@@ -83,11 +90,10 @@ const PlayerArea = (props: PlayerAreaProps) => {
                     display: 'flex',
                     alignItems: 'center',
                     padding: '0 5px',
-                    fontSize: '28px',
                   }}
                 >
-                  <Stars htmlColor="#e2c138" />
-                  <Box sx={{ fontSize: '20px', marginLeft: '5px' }}>房主</Box>
+                  <Stars sx={{ color: 'warning.light' }} />
+                  <Box sx={{ fontSize: '24px', marginLeft: '5px' }}>房主</Box>
                 </Box>
               )}
             </Box>

@@ -11,7 +11,6 @@ import {
 import Grid from '@mui/material/Grid';
 import { useRouter } from 'next/router';
 import { Button, Container, InputAdornment, TextField } from '@mui/material';
-import PlayerList from 'components/rooms/PlayerCard';
 import {
   initialClient,
   joinRoom,
@@ -118,7 +117,7 @@ const Rooms = () => {
   return (
     <Layout>
       <Container maxWidth={false} sx={{ height: '100%' }}>
-        <Grid container spacing={3} sx={{ marginTop: '0', height: '100%' }}>
+        <Grid container spacing={2} sx={{ marginTop: '0', height: '100%' }}>
           <Grid
             item
             lg={9}
