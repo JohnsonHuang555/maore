@@ -1,4 +1,5 @@
 import { Send } from '@mui/icons-material';
+import Box from '@mui/material/Box';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import { sendMessage } from 'actions/ServerAction';
@@ -35,7 +36,7 @@ const ChatArea = (props: ChatAreaProps) => {
   };
 
   return (
-    <div>
+    <Box sx={{ flex: '0.4' }}>
       <div>
         <div ref={messageRef}>
           <div>
@@ -72,7 +73,7 @@ const ChatArea = (props: ChatAreaProps) => {
           ),
         }}
       />
-    </div>
+    </Box>
   );
 };
 

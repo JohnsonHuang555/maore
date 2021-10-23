@@ -10,7 +10,7 @@ import {
 } from 'selectors/roomSelector';
 import Grid from '@mui/material/Grid';
 import { useRouter } from 'next/router';
-import { Button, InputAdornment, TextField } from '@mui/material';
+import { Button, Container, InputAdornment, TextField } from '@mui/material';
 import PlayerList from 'components/rooms/PlayerCard';
 import {
   initialClient,
@@ -22,7 +22,6 @@ import {
   updateRoomInfo,
 } from 'actions/ServerAction';
 import { playerIdSelector } from 'selectors/roomSelector';
-import styles from 'styles/pages/rooms.module.scss';
 import { useWarningOnExit } from 'customhooks/useWarningOnExit';
 import { clientSelector } from 'selectors/serverSelector';
 import dynamic from 'next/dynamic';
@@ -35,6 +34,7 @@ import useSWR from 'swr';
 import { fetcher } from 'pages/api/base/Fetcher';
 import PlayerArea from 'components/rooms/PlayerArea';
 import ChatArea from 'components/rooms/ChatArea';
+import SettingArea from 'components/rooms/SettingArea';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('components/rooms/GameScreen'),
@@ -99,7 +99,7 @@ const Rooms = () => {
     return false;
   };
 
-  const isReadyGame = () => {
+  const getIsReadyGameText = () => {
     const isReady = players.find((p) => p.isReady && p.id === yourPlayerId);
     if (isReady) {
       return '取消準備';
@@ -107,7 +107,7 @@ const Rooms = () => {
     return '準備遊戲';
   };
 
-  const disabledStartGame = () => {
+  const checkDisabledStartGame = () => {
     const isAnyPlayerNotReady = players.filter((p) => !p.isReady);
     if (roomInfo.maxPlayers > players.length || isAnyPlayerNotReady.length) {
       return true;
@@ -117,53 +117,31 @@ const Rooms = () => {
 
   return (
     <Layout>
-      <Grid container spacing={3} sx={{ height: '100%' }}>
-        <Grid item lg={9} xs={9} className={styles.leftArea}>
-          <PlayerArea players={players} yourPlayerId={yourPlayerId} />
-          <ChatArea messages={messages} />
+      <Container maxWidth={false} sx={{ height: '100%' }}>
+        <Grid container spacing={3} sx={{ marginTop: '0', height: '100%' }}>
+          <Grid
+            item
+            lg={9}
+            xs={9}
+            sx={{ display: 'flex', flexDirection: 'column' }}
+          >
+            <PlayerArea players={players} yourPlayerId={yourPlayerId} />
+            <ChatArea messages={messages} />
+          </Grid>
+          <Grid item lg={3} xs={3}>
+            <SettingArea
+              roomInfo={roomInfo}
+              gameModes={game?.modes || []}
+              isMaster={checkIsMaster()}
+              disabledStartGame={checkDisabledStartGame()}
+              isReadyGame={getIsReadyGameText()}
+              onLeaveRoom={() => router.push('/')}
+              onStartGame={() => dispatch(startGame())}
+              onReadyGame={() => dispatch(readyGame())}
+            />
+          </Grid>
         </Grid>
-        <Grid item lg={3} xs={3}>
-          <div className={`${styles.block} ${styles.rightArea}`}>
-            <div className={`${styles.content} ${styles.settings}`}>
-              <GameSetting
-                roomInfo={roomInfo}
-                gameModes={game?.modes}
-                isMaster={checkIsMaster()}
-                onChangeRoomInfo={() => {}}
-              />
-            </div>
-            {checkIsMaster() ? (
-              <Button
-                variant="contained"
-                color="secondary"
-                size="large"
-                disabled={disabledStartGame()}
-                className={styles.startGame}
-                onClick={() => dispatch(startGame())}
-              >
-                開始遊戲
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                size="large"
-                className={styles.readyGame}
-                onClick={() => dispatch(readyGame())}
-              >
-                {isReadyGame()}
-              </Button>
-            )}
-            <Button
-              variant="outlined"
-              size="large"
-              className={styles.leaveRoom}
-              onClick={() => router.push('/')}
-            >
-              離開房間
-            </Button>
-          </div>
-        </Grid>
-      </Grid>
+      </Container>
       {showGameScreen && (
         <DynamicGameScreenWithNoSSR gamePack={roomInfo.gamePack} />
       )}
