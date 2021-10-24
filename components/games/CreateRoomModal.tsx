@@ -74,7 +74,11 @@ const CreateRoomModal = (props: CreateRoomProps) => {
         {selectedGame.modes && (
           <>
             <div className={styles.gameModeText}>遊戲模式</div>
-            <Grid container spacing={3}>
+            <Grid
+              container
+              spacing={3}
+              sx={{ overflowY: 'auto', maxHeight: '380px' }}
+            >
               {selectedGame.modes.map((mode) => (
                 <Grid
                   key={mode.value}
