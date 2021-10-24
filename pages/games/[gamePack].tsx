@@ -2,21 +2,21 @@ import { useEffect, useState } from 'react';
 import Layout from 'components/Layout';
 import { Game, GameList } from 'models/Game';
 import { useRouter } from 'next/router';
-import Grid from '@material-ui/core/Grid';
-import { Info } from '@material-ui/icons';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
 import useSWR from 'swr';
-import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 import { createdRoomIdSelector, roomsSelector } from 'selectors/roomSelector';
-import { Button } from '@material-ui/core';
-import CreateRoom from 'components/games/CreateRoom';
+import CreateRoom from 'components/games/CreateRoomModal';
 import { setShowLoginModal, setSnackbar } from 'actions/AppAction';
 import { initialClient, createRoom, getAllRooms } from 'actions/ServerAction';
 import RoomCard from 'components/games/RoomCard';
-import styles from 'styles/pages/game.module.scss';
 import { clientSelector } from 'selectors/serverSelector';
 import { userInfoSelector } from 'selectors/appSelector';
 import { fetcher } from 'pages/api/base/Fetcher';
+import Info from '@mui/icons-material/Info';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
 
 const Games = () => {
   const router = useRouter();
@@ -99,6 +99,20 @@ const Games = () => {
     router.push(`/rooms/${roomId}`);
   };
 
+  const handleCreateRoom = () => {
+    if (!userInfo) {
+      dispatch(setShowLoginModal(true));
+      dispatch(
+        setSnackbar({
+          show: true,
+          message: '請先登入',
+        })
+      );
+      return;
+    }
+    setShowCreateRoomModal(true);
+  };
+
   return (
     <Layout>
       <CreateRoom
@@ -107,68 +121,82 @@ const Games = () => {
         onClose={() => setShowCreateRoomModal(false)}
         onCreateRoom={onCreateRoom}
       />
-      <h2 className="title">{game.name}</h2>
-      <Grid container spacing={3} style={{ height: '100%' }}>
-        <Grid item lg={3} xs={4} className={styles.gameDetail}>
-          <Image
-            src={game.homeImg}
-            alt={game.name}
-            height={350}
-            width={500}
-            layout="responsive"
-          />
-          <p className={styles.description}>{game.description}</p>
-          <Button
-            size="large"
-            className={styles.createRoom}
-            variant="contained"
-            color="secondary"
-            onClick={() => {
-              if (!userInfo) {
-                dispatch(setShowLoginModal(true));
-                dispatch(
-                  setSnackbar({
-                    show: true,
-                    message: '請先登入',
-                  })
-                );
-                return;
-              }
-              setShowCreateRoomModal(true);
-            }}
-          >
-            建立房間
-          </Button>
+      <Box sx={{ position: 'relative', marginBottom: '24px' }}>
+        <Box
+          sx={{
+            backgroundImage: `url(${game.imgPath})`,
+            height: '350px',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '0',
+            height: '100%',
+            width: '100%',
+            backgroundColor: 'rgba(0,0,0,0.4)',
+          }}
+        />
+        <Container maxWidth={false} sx={{ position: 'absolute', top: '20px' }}>
+          <Box component="label" color="white" sx={{ fontSize: '36px' }}>
+            {game.name}
+          </Box>
+          <Box component="p" color="white" sx={{ fontSize: '22px' }}>
+            {game.description}
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Box
+              sx={{ display: 'flex', flexDirection: 'column', width: '200px' }}
+            >
+              <Button
+                size="large"
+                variant="contained"
+                sx={{ marginBottom: '20px' }}
+                color="secondary"
+                onClick={handleCreateRoom}
+              >
+                建立房間
+              </Button>
+              <Button size="large" variant="contained">
+                遊戲規則
+              </Button>
+            </Box>
+          </Box>
+        </Container>
+      </Box>
+      <Container maxWidth={false}>
+        <Grid container spacing={3}>
+          {rooms.length ? (
+            <Grid item lg={3} md={4} xs={2}>
+              {rooms.map(({ roomId, metadata, maxClients, clients }) => (
+                <RoomCard
+                  key={roomId}
+                  title={metadata?.roomTitle as string}
+                  maxPlayers={maxClients}
+                  nowPlayers={clients}
+                  joinRoom={() => onJoinRoom(roomId)}
+                />
+              ))}
+            </Grid>
+          ) : (
+            <Grid item xs={12}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0 5px',
+                }}
+              >
+                <Info />
+                <Box sx={{ fontSize: '20px', marginLeft: '5px' }}>查無房間</Box>
+              </Box>
+            </Grid>
+          )}
         </Grid>
-        <Grid
-          item
-          lg={9}
-          xs={8}
-          container
-          spacing={3}
-          style={{ alignContent: 'flex-start' }}
-        >
-          <>
-            {!rooms.length && (
-              <Grid item xs={12}>
-                <div className={styles.noRooms}>
-                  <Info />
-                  查無房間
-                </div>
-              </Grid>
-            )}
-            {rooms.map((room) => (
-              <RoomCard
-                key={room.roomId}
-                title={room.metadata?.roomTitle as string}
-                maxPlayers={room.maxClients}
-                nowPlayers={room.clients}
-                joinRoom={() => onJoinRoom(room.roomId)}
-              />
-            ))}
-          </>
-        </Grid>
-      </Grid>
+      </Container>
     </Layout>
   );
 };

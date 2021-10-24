@@ -6,13 +6,13 @@ import {
   TextField,
   DialogActions,
   Button,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from 'actions/AppAction';
 import { Game } from 'models/Game';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import styles from 'styles/components/createRoom.module.scss';
-import { CheckCircleOutline } from '@material-ui/icons';
+import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
 
 type CreateRoomProps = {
   show: boolean;
@@ -21,7 +21,7 @@ type CreateRoomProps = {
   onClose: () => void;
 };
 
-const CreateRoom = (props: CreateRoomProps) => {
+const CreateRoomModal = (props: CreateRoomProps) => {
   const dispatch = useDispatch();
   const { show, selectedGame, onCreateRoom, onClose } = props;
   const [roomTitle, setRoomTitle] = useState('');
@@ -74,7 +74,11 @@ const CreateRoom = (props: CreateRoomProps) => {
         {selectedGame.modes && (
           <>
             <div className={styles.gameModeText}>遊戲模式</div>
-            <Grid container spacing={3}>
+            <Grid
+              container
+              spacing={3}
+              sx={{ overflowY: 'auto', maxHeight: '380px' }}
+            >
               {selectedGame.modes.map((mode) => (
                 <Grid
                   key={mode.value}
@@ -106,8 +110,15 @@ const CreateRoom = (props: CreateRoomProps) => {
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>取消</Button>
-        <Button disabled={isCreating} onClick={() => onConfirm()}>
+        <Button variant="contained" color="primary" onClick={onClose}>
+          取消
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          disabled={isCreating}
+          onClick={onConfirm}
+        >
           建立
         </Button>
       </DialogActions>
@@ -115,4 +126,4 @@ const CreateRoom = (props: CreateRoomProps) => {
   );
 };
 
-export default CreateRoom;
+export default CreateRoomModal;

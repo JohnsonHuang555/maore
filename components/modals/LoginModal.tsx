@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  DialogActions,
-  Button,
-} from '@material-ui/core';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 import { useRouter } from 'next/router';
 
 type LoginModalProps = {
@@ -20,29 +18,52 @@ const LoginModal = (props: LoginModalProps) => {
   const [userName, setUserName] = useState('');
   const router = useRouter();
 
+  const handleOnClose = () => {
+    if (router.pathname.substr(1, 5) === 'rooms') {
+      return;
+    }
+    onClose();
+  };
+
   return (
     <Dialog
       open={show}
-      onClose={onClose}
+      onClose={handleOnClose}
       aria-labelledby="login-dialog-title"
-      disableBackdropClick={router.pathname.substr(1, 5) === 'rooms'}
       fullWidth
     >
-      <DialogTitle id="login-dialog-title">Login</DialogTitle>
+      <DialogTitle id="login-dialog-title">登入</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
           margin="dense"
           id="user-name"
-          label="Your name"
+          label="遊戲暱稱"
           type="text"
           fullWidth
-          onChange={(e) => setUserName(e.target.value)}
+          InputProps={{
+            onKeyDown: (e) => {
+              if (e.key === 'Enter') {
+                onConfirm(userName);
+              }
+            },
+            onChange: (e) => {
+              setUserName(e.target.value);
+            },
+          }}
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>取消</Button>
-        <Button onClick={() => onConfirm(userName)}>確定</Button>
+        <Button variant="contained" color="primary" onClick={onClose}>
+          取消
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => onConfirm(userName)}
+        >
+          確定
+        </Button>
       </DialogActions>
     </Dialog>
   );

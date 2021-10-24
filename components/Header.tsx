@@ -1,9 +1,12 @@
-import { AppBar, Toolbar, Typography } from '@material-ui/core';
-import { useRouter } from 'next/router';
-import Toast from 'components/Toast';
-import { Button } from '@material-ui/core';
 import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Toast from 'components/Toast';
 import {
   showLoginModalSelector,
   userInfoSelector,
@@ -15,8 +18,7 @@ import {
   setSnackbar,
   setUserInfo,
 } from 'actions/AppAction';
-import styles from 'styles/components/header.module.scss';
-import LoginModal from './modals/LoginModal';
+import LoginModal from 'components/modals/LoginModal';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -67,20 +69,24 @@ const Header = () => {
       />
       <Toast />
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar sx={{ backgroundColor: '#121314' }}>
           {/* TODO: LOGO */}
-          <Typography variant="h6" style={{ flexGrow: 1 }}>
-            <span
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            <Box
               onClick={() => router.push('/')}
-              style={{ cursor: 'pointer' }}
+              sx={{
+                cursor: 'pointer',
+                color: 'secondary.main',
+                fontSize: '24px',
+              }}
             >
-              cookuya
-            </span>
+              Cookuya
+            </Box>
           </Typography>
-          <div className={styles.userInfo}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {userInfo ? (
               <>
-                <Typography className={styles.userName} variant="h6">
+                <Typography variant="h6" sx={{ mr: '15px' }}>
                   歡迎！{userInfo.name}
                 </Typography>
                 {router.pathname.substr(1, 5) !== 'rooms' && (
@@ -89,7 +95,6 @@ const Header = () => {
                     size="large"
                     color="secondary"
                     onClick={() => logout()}
-                    style={{ color: '#fff' }}
                   >
                     登出
                   </Button>
@@ -101,12 +106,11 @@ const Header = () => {
                 size="large"
                 color="secondary"
                 onClick={() => dispatch(setShowLoginModal(true))}
-                style={{ color: '#fff' }}
               >
                 登入
               </Button>
             )}
-          </div>
+          </Box>
         </Toolbar>
       </AppBar>
     </>

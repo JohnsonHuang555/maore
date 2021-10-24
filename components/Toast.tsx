@@ -1,10 +1,10 @@
 import React from 'react';
-import Snackbar from '@material-ui/core/Snackbar';
+import Snackbar from '@mui/material/Snackbar';
 import { snackbarSelector } from 'selectors/appSelector';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSnackbar } from 'actions/AppAction';
-import { IconButton } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import IconButton from '@mui/material/IconButton';
+import Close from '@mui/icons-material/Close';
 
 const Toast = () => {
   const dispatch = useDispatch();

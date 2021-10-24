@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import Container from '@material-ui/core/Container';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 
@@ -16,21 +15,14 @@ const Layout = (props: LayoutProps) => {
       <Head>
         <title>{title}</title>
         <link rel="icon" href="/favicon.ico" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+        />
       </Head>
       <Header />
-      <Container maxWidth={false} style={{ flex: '1 0 auto' }}>
-        <main
-          style={{
-            height: '100%',
-            display: 'flex',
-            alignItems: 'flex-start',
-            flexDirection: 'column',
-          }}
-        >
-          {children}
-        </main>
-      </Container>
-      <Footer />
+      <main style={{ flex: '1 0 auto' }}>{children}</main>
+      {/* <Footer /> */}
     </>
   );
 };

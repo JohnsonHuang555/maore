@@ -1,15 +1,15 @@
 import useSWR from 'swr';
-import GameCard from 'components/home/GameCard';
-import Layout from 'components/Layout';
-import { Game } from 'models/Game';
-import Grid from '@material-ui/core/Grid';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import GameCard from 'components/home/GameCard';
+import Layout from 'components/Layout';
+import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
+import { Game } from 'models/Game';
 import { initialClient } from 'actions/ServerAction';
 import { clientSelector } from 'selectors/serverSelector';
-import { fetcher } from './api/base/Fetcher';
-import styles from 'styles/pages/home.module.scss';
+import { fetcher } from 'pages/api/base/Fetcher';
 
 export default function Home() {
   const router = useRouter();
@@ -34,21 +34,23 @@ export default function Home() {
 
   return (
     <Layout>
-      <h2 className="title">推薦遊戲</h2>
-      <Grid container spacing={3}>
-        {games.map((game) => (
-          <Grid
-            key={game.id}
-            item
-            lg={2}
-            md={3}
-            xs={6}
-            onClick={() => router.push(`/games/${game.gamePack}`)}
-          >
-            <GameCard game={game} />
-          </Grid>
-        ))}
-      </Grid>
+      <Container maxWidth={false} style={{ marginTop: '20px' }}>
+        <Grid container spacing={2}>
+          {games.map((game) => (
+            <Grid
+              key={game.id}
+              item
+              lg={2}
+              md={4}
+              sm={6}
+              xs={12}
+              onClick={() => router.push(`/games/${game.gamePack}`)}
+            >
+              <GameCard game={game} />
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
     </Layout>
   );
 }

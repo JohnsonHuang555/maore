@@ -11,7 +11,7 @@ export type Game = {
   minPlayers?: number; // 該遊戲沒有模式時有值
   brief: string;
   description: string;
-  homeImg: string;
+  imgPath: string;
   estimateTime: number;
   gamePack: GameList;
   modes?: GameMode[];
