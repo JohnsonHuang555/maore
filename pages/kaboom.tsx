@@ -14,18 +14,24 @@ export default function Kaboom() {
     const canvas = document.getElementById('aa') as HTMLCanvasElement;
     kaboom({
       canvas,
+      background: [255, 255, 255],
     });
+
+    // loadSprite('bg', '/chinese_chess/standard.png');
+    loadSprite('bean', 'Dexter.png');
     createGameScene();
     createLostScene();
     go('game');
   };
 
   const createGameScene = () => {
-    loadBean('bean');
+    // loadBean('bean');
 
     scene('game', () => {
       // define gravity
       gravity(2400);
+
+      // add([sprite('bg', { width: width(), height: height() })]);
 
       // add a game object to screen
       const player = add([
@@ -34,6 +40,7 @@ export default function Kaboom() {
         pos(80, 40),
         area(),
         body(),
+        scale(2),
       ]);
 
       // floor
@@ -100,12 +107,12 @@ export default function Kaboom() {
 
   const createLostScene = () => {
     scene('lose', (score) => {
-      add([
-        sprite('bean'),
-        pos(width() / 2, height() / 2 - 80),
-        scale(2),
-        origin('center'),
-      ]);
+      // add([
+      //   sprite('bean'),
+      //   pos(width() / 2, height() / 2 - 80),
+      //   scale(2),
+      //   origin('center'),
+      // ]);
 
       // display score
       add([
