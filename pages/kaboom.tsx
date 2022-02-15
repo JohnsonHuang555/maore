@@ -17,7 +17,6 @@ export default function Kaboom() {
       background: [255, 255, 255],
     });
 
-    // loadSprite('bg', '/chinese_chess/standard.png');
     loadSprite('bean', 'Dexter.png');
     createGameScene();
     createLostScene();
@@ -88,7 +87,7 @@ export default function Kaboom() {
       player.collides('tree', () => {
         // go to "lose" scene and pass the score
         go('lose', score);
-        burp();
+        // burp();
         addKaboom(player.pos);
       });
 
@@ -107,13 +106,6 @@ export default function Kaboom() {
 
   const createLostScene = () => {
     scene('lose', (score) => {
-      // add([
-      //   sprite('bean'),
-      //   pos(width() / 2, height() / 2 - 80),
-      //   scale(2),
-      //   origin('center'),
-      // ]);
-
       // display score
       add([
         text(score),

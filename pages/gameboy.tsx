@@ -53,8 +53,8 @@ export default function GameBoy() {
 
     loadSprite('game-boy', 'gameboy-origin.png');
     loadSprite('card', 'card.png');
-    add([sprite('game-boy'), scale(10)]);
-    add([sprite('card'), scale(10), pos(900, 40), area(), drag()]);
+    add([sprite('game-boy'), scale(8)]);
+    add([sprite('card'), scale(8), pos(900, 40), area(), drag()]);
 
     action(() => cursor('default'));
   };
