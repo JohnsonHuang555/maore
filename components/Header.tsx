@@ -71,7 +71,7 @@ const Header = () => {
       <AppBar position="static">
         <Toolbar sx={{ backgroundColor: '#121314' }}>
           {/* TODO: LOGO */}
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" sx={{ flexGrow: 0.1 }}>
             <Box
               onClick={() => router.push('/')}
               sx={{
@@ -81,6 +81,17 @@ const Header = () => {
               }}
             >
               Cookuya
+            </Box>
+          </Typography>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            <Box
+              onClick={() => router.push('/gameboy')}
+              sx={{
+                cursor: 'pointer',
+                fontSize: '24px',
+              }}
+            >
+              Gameboy
             </Box>
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>

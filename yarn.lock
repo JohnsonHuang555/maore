@@ -2018,6 +2018,11 @@ json5@^1.0.1:
   dependencies:
     minimist "^1.2.0"
 
+kaboom@^2000.2.8:
+  version "2000.2.8"
+  resolved "https://registry.yarnpkg.com/kaboom/-/kaboom-2000.2.8.tgz#2f6f107da4864af6cc2e295ecf9ad6f57f5f37ef"
+  integrity sha512-Uqv/RxLoEmUEeXfCv8aTEfw7kb4FAcq1PuXiRaNCr//iogKrDXCQFNQeG6dJA1fe+B4SswZ34/tp7LjC1b/y/w==
+
 kareem@2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/kareem/-/kareem-2.3.2.tgz#78c4508894985b8d38a0dc15e1a8e11078f2ca93"
