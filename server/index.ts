@@ -18,6 +18,7 @@ nextApp.prepare().then(() => {
   gameServer
     .define(GameList.ChineseChess, ChineseChess)
     .enableRealtimeListing();
+
   app.use('/colyseus', monitor());
 
   app.all('*', (req, res) => {

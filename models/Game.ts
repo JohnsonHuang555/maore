@@ -2,6 +2,7 @@
 export enum GameList {
   TicTacToe = 'tic-tac-toe',
   ChineseChess = 'chinese-chess',
+  MathFormulaCard = 'math-formula-card',
 }
 
 export type Game = {

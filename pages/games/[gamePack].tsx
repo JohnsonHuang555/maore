@@ -76,7 +76,7 @@ const Games = () => {
           gamePack: gamePack as GameList,
         })
       );
-    } catch (err) {
+    } catch (err: any) {
       const error = new Error(err);
       dispatch(
         setSnackbar({

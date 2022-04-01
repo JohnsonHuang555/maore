@@ -41,4 +41,14 @@ export const games: Game[] = [
       },
     ],
   },
+  {
+    id: 3,
+    name: '忠誠數字牌',
+    brief: '原創遊戲',
+    description:
+      '考驗你的邏輯能力，組合出符合答案的算式，與對手一較高下吧！',
+    imgPath: '/chinese_chess/home.png',
+    estimateTime: 30,
+    gamePack: GameList.MathFormulaCard,
+  },
 ];
