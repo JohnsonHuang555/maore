@@ -24,6 +24,7 @@ export const games: Game[] = [
     imgPath: '/chinese_chess/home.png',
     estimateTime: 5,
     gamePack: GameList.ChineseChess,
+    createAt: 'September 14, 2021',
     modes: [
       {
         label: '標準(大盤)',
@@ -46,9 +47,11 @@ export const games: Game[] = [
     name: '忠誠數字牌',
     brief: '原創遊戲',
     description:
-      '考驗你的邏輯能力，組合出符合答案的算式，與對手一較高下吧！',
+      '考驗你的邏輯能力，組合出符合答案的算式，與對手一較高下吧！考驗你的邏輯能力，組合出符合答案的算式，與對手一較高下吧！考驗你的邏輯能力，組合出符合答案的算式，與對手一較高下吧！考驗你的邏輯能力，組合出符合答案的算式，與對手一較高下吧！',
     imgPath: '/chinese_chess/home.png',
     estimateTime: 30,
     gamePack: GameList.MathFormulaCard,
+    createAt: 'September 14, 2022',
+    maxPlayers: 4,
   },
 ];

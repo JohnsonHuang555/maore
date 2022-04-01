@@ -16,6 +16,7 @@ export type Game = {
   estimateTime: number;
   gamePack: GameList;
   modes?: GameMode[];
+  createAt: string;
 };
 
 export type GameMode = {

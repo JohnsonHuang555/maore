@@ -1,21 +1,49 @@
-import React from 'react';
-import Card from '@mui/material/Card';
-import CardActionArea from '@mui/material/CardActionArea';
-import CardMedia from '@mui/material/CardMedia';
-import { Game } from 'models/Game';
+import React from "react";
+import Card from "@mui/material/Card";
+import CardMedia from "@mui/material/CardMedia";
+import { Game } from "models/Game";
+import CardHeader from "@mui/material/CardHeader";
+import CardContent from "@mui/material/CardContent";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
+import { red } from "@mui/material/colors";
+import { Button, CardActions } from "@mui/material";
 
 type GameCardProp = {
   game: Game;
+  onSelectGame: () => void;
 };
 
 const GameCard = (props: GameCardProp) => {
-  const { game } = props;
+  const { game, onSelectGame } = props;
 
   return (
-    <Card>
-      <CardActionArea>
-        <CardMedia component="img" height="350" image={game.imgPath} />
-      </CardActionArea>
+    <Card sx={{ maxWidth: 345 }}>
+      <CardHeader
+        avatar={
+          <Avatar sx={{ bgcolor: red[500] }} aria-label="name">
+            J
+          </Avatar>
+        }
+        title={game.name}
+        subheader={game.createAt}
+      />
+      <CardMedia
+        component="img"
+        height="194"
+        image={game.imgPath}
+        alt={game.name}
+      />
+      <CardContent>
+        <Typography variant="body2" color="text.secondary">
+          {game.description}
+        </Typography>
+      </CardContent>
+      <CardActions sx={{ justifyContent: "flex-end" }}>
+        <Button size="large" color="secondary" onClick={onSelectGame}>
+          Play
+        </Button>
+      </CardActions>
     </Card>
   );
 };

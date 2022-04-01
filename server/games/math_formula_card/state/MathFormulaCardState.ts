@@ -7,10 +7,5 @@ export default class MathFormulaCardState
   implements MathFormulaCard
 {
   @type('number')
-  answer: number;
-
-  constructor({ answer }: MathFormulaCard) {
-    super();
-    this.answer = answer;
-  }
+  answer: number = 0;
 }

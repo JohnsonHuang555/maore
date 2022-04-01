@@ -1,22 +1,22 @@
-import { useEffect, useState } from 'react';
-import Layout from 'components/Layout';
-import { Game, GameList } from 'models/Game';
-import { useRouter } from 'next/router';
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
-import useSWR from 'swr';
-import { useDispatch, useSelector } from 'react-redux';
-import { createdRoomIdSelector, roomsSelector } from 'selectors/roomSelector';
-import CreateRoom from 'components/games/CreateRoomModal';
-import { setShowLoginModal, setSnackbar } from 'actions/AppAction';
-import { initialClient, createRoom, getAllRooms } from 'actions/ServerAction';
-import RoomCard from 'components/games/RoomCard';
-import { clientSelector } from 'selectors/serverSelector';
-import { userInfoSelector } from 'selectors/appSelector';
-import { fetcher } from 'pages/api/base/Fetcher';
-import Info from '@mui/icons-material/Info';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
+import { useEffect, useState } from "react";
+import Layout from "components/Layout";
+import { Game, GameList } from "models/Game";
+import { useRouter } from "next/router";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
+import useSWR from "swr";
+import { useDispatch, useSelector } from "react-redux";
+import { createdRoomIdSelector, roomsSelector } from "selectors/roomSelector";
+import CreateRoom from "components/games/CreateRoomModal";
+import { setShowLoginModal, setSnackbar } from "actions/AppAction";
+import { initialClient, createRoom, getAllRooms } from "actions/ServerAction";
+import RoomCard from "components/games/RoomCard";
+import { clientSelector } from "selectors/serverSelector";
+import { userInfoSelector } from "selectors/appSelector";
+import { fetcher } from "pages/api/base/Fetcher";
+import Info from "@mui/icons-material/Info";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
 
 const Games = () => {
   const router = useRouter();
@@ -62,7 +62,7 @@ const Games = () => {
       dispatch(
         setSnackbar({
           show: true,
-          message: '請先登入',
+          message: "請先登入",
         })
       );
       return;
@@ -92,7 +92,7 @@ const Games = () => {
       dispatch(setShowLoginModal(true));
       setSnackbar({
         show: true,
-        message: '請先登入',
+        message: "請先登入",
       });
       return;
     }
@@ -105,7 +105,7 @@ const Games = () => {
       dispatch(
         setSnackbar({
           show: true,
-          message: '請先登入',
+          message: "請先登入",
         })
       );
       return;
@@ -121,39 +121,39 @@ const Games = () => {
         onClose={() => setShowCreateRoomModal(false)}
         onCreateRoom={onCreateRoom}
       />
-      <Box sx={{ position: 'relative', marginBottom: '24px' }}>
+      <Box sx={{ position: "relative", marginBottom: "24px" }}>
         <Box
           sx={{
             backgroundImage: `url(${game.imgPath})`,
-            height: '350px',
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
+            height: "350px",
+            backgroundPosition: "center",
+            backgroundSize: "cover",
           }}
         />
         <Box
           sx={{
-            position: 'absolute',
-            top: '0',
-            height: '100%',
-            width: '100%',
-            backgroundColor: 'rgba(0,0,0,0.4)',
+            position: "absolute",
+            top: "0",
+            height: "100%",
+            width: "100%",
+            backgroundColor: "rgba(0,0,0,0.4)",
           }}
         />
-        <Container maxWidth={false} sx={{ position: 'absolute', top: '20px' }}>
-          <Box component="label" color="white" sx={{ fontSize: '36px' }}>
+        <Container maxWidth={false} sx={{ position: "absolute", top: "20px" }}>
+          <Box component="label" color="white" sx={{ fontSize: "36px" }}>
             {game.name}
           </Box>
-          <Box component="p" color="white" sx={{ fontSize: '22px' }}>
+          <Box component="p" color="white" sx={{ fontSize: "22px" }}>
             {game.description}
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Box
-              sx={{ display: 'flex', flexDirection: 'column', width: '200px' }}
+              sx={{ display: "flex", flexDirection: "column", width: "200px" }}
             >
               <Button
                 size="large"
                 variant="contained"
-                sx={{ marginBottom: '20px' }}
+                sx={{ marginBottom: "20px" }}
                 color="secondary"
                 onClick={handleCreateRoom}
               >
@@ -184,14 +184,14 @@ const Games = () => {
             <Grid item xs={12}>
               <Box
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '0 5px',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 5px",
                 }}
               >
                 <Info />
-                <Box sx={{ fontSize: '20px', marginLeft: '5px' }}>查無房間</Box>
+                <Box sx={{ fontSize: "20px", marginLeft: "5px" }}>查無房間</Box>
               </Box>
             </Grid>
           )}
