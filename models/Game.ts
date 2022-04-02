@@ -1,6 +1,6 @@
 // 遊戲列表
 export enum GameList {
-  TicTacToe = 'tic-tac-toe',
+  TicTacToe = 'tic-tac-toe', // deprecated
   ChineseChess = 'chinese-chess',
   MathFormulaCard = 'math-formula-card',
 }

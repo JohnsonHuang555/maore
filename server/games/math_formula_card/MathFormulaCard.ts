@@ -10,7 +10,7 @@ import ResetCommand from './commands/ResetCommand';
 export default class MathFormulaCard extends Room<MathFormulaCardState, Metadata> {
   private dispatcher = new Dispatcher(this);
   private baseRoom = new BaseRoom(this);
-  private game: Game = GameUseCase.getGameByGamePack(GameList.ChineseChess);
+  private game: Game = GameUseCase.getGameByGamePack(GameList.MathFormulaCard);
 
   onCreate(option: Metadata) {
     this.baseRoom.onCreate(option);

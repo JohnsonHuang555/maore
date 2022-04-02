@@ -117,13 +117,13 @@ const Rooms = () => {
           <Grid
             item
             lg={9}
-            xs={9}
+            xs={12}
             sx={{ display: 'flex', flexDirection: 'column' }}
           >
             <PlayerArea players={players} yourPlayerId={yourPlayerId} />
             <ChatArea messages={messages} />
           </Grid>
-          <Grid item lg={3} xs={3}>
+          <Grid item lg={3} xs={12}>
             <SettingArea
               roomInfo={roomInfo}
               gameModes={game?.modes || []}

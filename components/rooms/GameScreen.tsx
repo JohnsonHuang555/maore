@@ -1,54 +1,34 @@
 import { GameList } from 'models/Game';
-import { TicTacToeConfig } from 'features/tictactoe/TicTacToeConfig';
-import { ChineseChessConfig } from 'features/chinese_chess/ChineseChessConfig';
-import { IonPhaser, GameInstance } from '@ion-phaser/react';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
+import { RenderMethod } from 'models/Room';
+import Phaser from './render_methods/Phaser';
 
-type GameScreenProps = {
+export type GameScreenProps = {
   gamePack: GameList | '';
+};
+
+const gameRenderFunction: { [key: string]: RenderMethod } = {
+  [GameList.ChineseChess]: RenderMethod.Phaser,
+  [GameList.MathFormulaCard]: RenderMethod.WithoutFramework,
 };
 
 /** 決定要使用的遊戲 */
 const GameScreen = (props: GameScreenProps) => {
   const { gamePack } = props;
-  const gameRef = useRef<HTMLIonPhaserElement>(null);
-  const [game, setGame] = useState<GameInstance>();
-  const [initialize, setInitialize] = useState(false);
 
-  const playingGame: { [key: string]: GameInstance } = {
-    [GameList.TicTacToe]: TicTacToeConfig,
-    [GameList.ChineseChess]: ChineseChessConfig,
+  const renderGameScreen = () => {
+    const renderMethod = gameRenderFunction[gamePack];
+    switch (renderMethod) {
+      case RenderMethod.Phaser:
+        return <Phaser gamePack={gamePack} />;
+      case RenderMethod.WithoutFramework:
+        return <div></div>;
+      case RenderMethod.Kaboom:
+        return <div></div>;
+    }
   };
 
-  const destroy = () => {
-    gameRef.current?.destroy();
-    setInitialize(false);
-    setGame(undefined);
-  };
-
-  useEffect(() => {
-    setInitialize(true);
-    setGame(Object.assign({}, playingGame[gamePack]));
-    return () => {
-      destroy();
-    };
-  }, []);
-
-  return (
-    <IonPhaser
-      style={{
-        position: 'fixed',
-        top: '0',
-        left: '0',
-        width: '100%',
-        height: '100%',
-        zIndex: '1200',
-      }}
-      ref={gameRef}
-      initialize={initialize}
-      game={game}
-    />
-  );
+  return renderGameScreen();
 };
 
 export default GameScreen;

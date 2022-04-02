@@ -20,3 +20,10 @@ export type RoomInfo = {
   gameMode?: string;
   extraSettings?: string; // JSON.stringify
 };
+
+// 渲染畫面方式
+export enum RenderMethod {
+  Phaser = 'phaser',
+  WithoutFramework = 'without_framework',
+  Kaboom = 'kaboom',
+}

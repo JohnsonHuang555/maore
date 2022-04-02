@@ -125,7 +125,7 @@ const Games = () => {
         <Box
           sx={{
             backgroundImage: `url(${game.imgPath})`,
-            height: "350px",
+            height: "450px",
             backgroundPosition: "center",
             backgroundSize: "cover",
           }}
@@ -191,7 +191,7 @@ const Games = () => {
                 }}
               >
                 <Info />
-                <Box sx={{ fontSize: "20px", marginLeft: "5px" }}>查無房間</Box>
+                <Box sx={{ fontSize: "30px", marginLeft: "5px" }}>查無房間</Box>
               </Box>
             </Grid>
           )}
