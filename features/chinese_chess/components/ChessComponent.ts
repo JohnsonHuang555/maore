@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 import { IComponent } from 'features/base/services/ComponentService';
 import ChineseChessServer from '../ChineseChessServer';
-import { ChessInfo } from '../models/ChineseChessState';
-import { ChineseChessGroupMap } from '../models/ChineseChessGroup';
-import { ChineseChessMessage } from '../models/ChineseChessMessage';
-import { GameMode } from '../models/ChinesChessMode';
+import { ChessInfo } from '../@models/ChineseChessState';
+import { ChineseChessGroupMap } from '../@models/ChineseChessGroup';
+import { ChineseChessMessage } from '../@models/ChineseChessMessage';
+import { GameMode } from '../@models/ChinesChessMode';
 
 export class ChessComponent implements IComponent {
   private gameObject!: Phaser.GameObjects.GameObject;

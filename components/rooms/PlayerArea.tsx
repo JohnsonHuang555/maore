@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import { Player } from 'models/Player';
+import { Player } from '@models/Player';
 import { Stars, AccountCircle } from '@mui/icons-material';
 
 type PlayerAreaProps = {

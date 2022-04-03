@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import Server from 'features/chinese_chess/ChineseChessServer';
-import { GameSceneData } from 'features/chinese_chess/models/ChineseChessScene';
-import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
+import { GameSceneData } from 'features/chinese_chess/@models/ChineseChessScene';
+import { ChessInfo } from 'features/chinese_chess/@models/ChineseChessState';
 import { ChessComponent } from 'features/chinese_chess/components/ChessComponent';
 import { CellComponent } from 'features/chinese_chess/components/CellComponent';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
@@ -12,7 +12,7 @@ import {
   Cell,
   Chess,
   GAME_PADDING,
-} from 'features/chinese_chess/models/ChineseChessUI';
+} from 'features/chinese_chess/@models/ChineseChessUI';
 
 const MAX_PLAYERS = 2;
 export default class Hidden extends Phaser.Scene {

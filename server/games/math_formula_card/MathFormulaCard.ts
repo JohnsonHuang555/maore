@@ -16,6 +16,7 @@ export default class MathFormulaCard extends Room<MathFormulaCardState, Metadata
     this.baseRoom.onCreate(option);
     this.baseRoom.setMaxClient(this.game.maxPlayers as number);
     this.setState(new MathFormulaCardState());
+
   }
 
   onJoin(client: Client, option: Metadata) {

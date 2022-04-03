@@ -1,14 +1,14 @@
 import BaseServer from 'features/base/BaseServer';
-import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
-import { ChineseChessMessage } from 'features/chinese_chess/models/ChineseChessMessage';
-import { GameMode } from './models/ChinesChessMode';
-import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
+import { ChessInfo } from 'features/chinese_chess/@models/ChineseChessState';
+import { ChineseChessMessage } from 'features/chinese_chess/@models/ChineseChessMessage';
+import { GameMode } from './@models/ChinesChessMode';
+import { ChineseChessGroup } from 'features/chinese_chess/@models/ChineseChessGroup';
 import { sharedInstance as events } from 'features/base/EventCenter';
-import { RoomMessage } from 'models/Message';
+import { RoomMessage } from '@models/Message';
 import ChangedChessInfoFactory, {
   ChangedChessInfo,
 } from './factories/ChangedChessInfoFactory';
-import { ChessNameBlack, ChessNameRed } from './models/ChineseChessName';
+import { ChessNameBlack, ChessNameRed } from './@models/ChineseChessName';
 import { CheckMoveRange, Range } from './utils/CheckMoveRange';
 
 enum ChessInfoChangeList {

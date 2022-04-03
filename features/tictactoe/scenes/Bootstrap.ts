@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import Server from 'features/tictactoe/TicTacToeServer';
-import { GameOverSceneData } from 'models/Scenes';
+import { GameOverSceneData } from '@models/Scenes';
 
 export default class Bootstrap extends Phaser.Scene {
   private server!: Server;

@@ -1,4 +1,4 @@
-import { reset } from 'actions/RoomAction';
+import { reset } from '@actions/RoomAction';
 import Router from 'next/router';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';

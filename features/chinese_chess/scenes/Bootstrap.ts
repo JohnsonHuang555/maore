@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import Server from 'features/chinese_chess/ChineseChessServer';
-import { ChessInfo } from '../models/ChineseChessState';
-import { GameMode } from '../models/ChinesChessMode';
+import { ChessInfo } from '../@models/ChineseChessState';
+import { GameMode } from '../@models/ChinesChessMode';
 
 /** 決定要使用哪個場景 */
 export default class Bootstrap extends Phaser.Scene {

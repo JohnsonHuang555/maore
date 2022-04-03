@@ -1,4 +1,4 @@
-import { GameSceneData } from 'features/chinese_chess/models/ChineseChessScene';
+import { GameSceneData } from 'features/chinese_chess/@models/ChineseChessScene';
 import Phaser from 'phaser';
 import YesOrNoModal from 'features/base/ui/YesOrNoModal';
 import Server from 'features/chinese_chess/ChineseChessServer';
@@ -7,13 +7,13 @@ import {
   Cell,
   Chess,
   GAME_PADDING,
-} from 'features/chinese_chess/models/ChineseChessUI';
+} from 'features/chinese_chess/@models/ChineseChessUI';
 import Dialog from 'phaser3-rex-plugins/templates/ui/dialog/Dialog';
-import { ChessInfo } from 'features/chinese_chess/models/ChineseChessState';
+import { ChessInfo } from 'features/chinese_chess/@models/ChineseChessState';
 import { CellComponent } from 'features/chinese_chess/components/CellComponent';
 import { ChessComponent } from 'features/chinese_chess/components/ChessComponent';
 import InfoModal from 'features/base/ui/InfoModal';
-import { ChessSide } from 'features/chinese_chess/models/ChineseChessSide';
+import { ChessSide } from 'features/chinese_chess/@models/ChineseChessSide';
 
 const MAX_PLAYERS = 2;
 export default class Standard extends Phaser.Scene {

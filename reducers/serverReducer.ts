@@ -1,4 +1,4 @@
-import { ActionType } from 'actions/ServerAction';
+import { ActionType } from '@actions/ServerAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { Room } from 'middleware/services/RoomServer';
 

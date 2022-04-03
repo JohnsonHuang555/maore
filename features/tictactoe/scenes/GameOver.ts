@@ -1,4 +1,4 @@
-import { GameOverSceneData } from 'models/Scenes';
+import { GameOverSceneData } from '@models/Scenes';
 import Phaser from 'phaser';
 
 export default class GameOver extends Phaser.Scene {

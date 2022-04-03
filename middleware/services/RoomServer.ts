@@ -11,17 +11,17 @@ import {
   updateActivePlayer,
   setPlayerInfo,
   setMessage,
-} from 'actions/RoomAction';
+} from '@actions/RoomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
-import { GameList } from 'models/Game';
-import { RoomMessage } from 'models/Message';
-import { GameStatus, Metadata, RoomInfo } from 'models/Room';
+import { GameList } from '@models/Game';
+import { RoomMessage } from '@models/Message';
+import { GameStatus, Metadata, RoomInfo } from '@models/Room';
 import { AnyAction, Dispatch } from 'redux';
 import { Schema, ArraySchema } from '@colyseus/schema';
 import { PlayerState } from 'server/room/state/PlayerState';
-import { setClient, setRoom } from 'actions/ServerAction';
-import { TicTacToeState } from 'features/tictactoe/models/TicTacToeState';
-import { ChineseChessState } from 'features/chinese_chess/models/ChineseChessState';
+import { setClient, setRoom } from '@actions/ServerAction';
+import { TicTacToeState } from 'features/tictactoe/@models/TicTacToeState';
+import { ChineseChessState } from 'features/chinese_chess/@models/ChineseChessState';
 
 enum RoomStateChangeList {
   RoomInfo = 'roomInfo',

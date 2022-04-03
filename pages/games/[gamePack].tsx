@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import Layout from "components/Layout";
-import { Game, GameList } from "models/Game";
+import { Game, GameList } from "@models/Game";
 import { useRouter } from "next/router";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import useSWR from "swr";
 import { useDispatch, useSelector } from "react-redux";
-import { createdRoomIdSelector, roomsSelector } from "selectors/roomSelector";
+import { createdRoomIdSelector, roomsSelector } from "@selectors/roomSelector";
 import CreateRoom from "components/games/CreateRoomModal";
-import { setShowLoginModal, setSnackbar } from "actions/AppAction";
-import { initialClient, createRoom, getAllRooms } from "actions/ServerAction";
+import { setShowLoginModal, setSnackbar } from "@actions/AppAction";
+import { initialClient, createRoom, getAllRooms } from "@actions/ServerAction";
 import RoomCard from "components/games/RoomCard";
-import { clientSelector } from "selectors/serverSelector";
-import { userInfoSelector } from "selectors/appSelector";
+import { clientSelector } from "@selectors/serverSelector";
+import { userInfoSelector } from "@selectors/appSelector";
 import { fetcher } from "pages/api/base/Fetcher";
 import Info from "@mui/icons-material/Info";
 import Box from "@mui/material/Box";
@@ -125,7 +125,7 @@ const Games = () => {
         <Box
           sx={{
             backgroundImage: `url(${game.imgPath})`,
-            height: "450px",
+            height: "350px",
             backgroundPosition: "center",
             backgroundSize: "cover",
           }}

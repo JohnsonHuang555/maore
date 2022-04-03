@@ -6,19 +6,19 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import Toast from 'components/Toast';
+import Toast from '@components/Toast';
 import {
   showLoginModalSelector,
   userInfoSelector,
-} from 'selectors/appSelector';
-import { User } from 'models/User';
+} from '@selectors/appSelector';
+import { User } from '@models/User';
 import {
   removeUserInfo,
   setShowLoginModal,
   setSnackbar,
   setUserInfo,
-} from 'actions/AppAction';
-import LoginModal from 'components/modals/LoginModal';
+} from '@actions/AppAction';
+import LoginModal from '@components/modals/LoginModal';
 
 const Header = () => {
   const dispatch = useDispatch();

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import Layout from 'components/Layout';
+import Layout from '@components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createdRoomIdSelector,
@@ -7,7 +7,7 @@ import {
   playersSelector,
   roomInfoSelector,
   showGameScreenSelector,
-} from 'selectors/roomSelector';
+} from '@selectors/roomSelector';
 import Grid from '@mui/material/Grid';
 import { useRouter } from 'next/router';
 import Container from '@mui/material/Container';
@@ -17,22 +17,22 @@ import {
   leaveRoom,
   readyGame,
   startGame,
-} from 'actions/ServerAction';
-import { playerIdSelector } from 'selectors/roomSelector';
+} from '@actions/ServerAction';
+import { playerIdSelector } from '@selectors/roomSelector';
 import { useWarningOnExit } from 'customhooks/useWarningOnExit';
-import { clientSelector } from 'selectors/serverSelector';
+import { clientSelector } from '@selectors/serverSelector';
 import dynamic from 'next/dynamic';
-import { isLoginSelector, userInfoSelector } from 'selectors/appSelector';
-import { setShowLoginModal } from 'actions/AppAction';
-import { Game } from 'models/Game';
+import { isLoginSelector, userInfoSelector } from '@selectors/appSelector';
+import { setShowLoginModal } from '@actions/AppAction';
+import { Game } from '@models/Game';
 import useSWR from 'swr';
 import { fetcher } from 'pages/api/base/Fetcher';
-import PlayerArea from 'components/rooms/PlayerArea';
-import ChatArea from 'components/rooms/ChatArea';
-import SettingArea from 'components/rooms/SettingArea';
+import PlayerArea from '@components/rooms/PlayerArea';
+import ChatArea from '@components/rooms/ChatArea';
+import SettingArea from '@components/rooms/SettingArea';
 
 const DynamicGameScreenWithNoSSR = dynamic(
-  () => import('components/rooms/GameScreen'),
+  () => import('@components/rooms/GameScreen'),
   { ssr: false }
 );
 

@@ -1,6 +1,6 @@
-import { ChessNameBlack, ChessNameRed } from '../models/ChineseChessName';
-import { ChineseChessMessage } from '../models/ChineseChessMessage';
-import { ChessInfo } from '../models/ChineseChessState';
+import { ChessNameBlack, ChessNameRed } from '../@models/ChineseChessName';
+import { ChineseChessMessage } from '../@models/ChineseChessMessage';
+import { ChessInfo } from '../@models/ChineseChessState';
 
 type ChessInfoResponse = {
   id?: number;

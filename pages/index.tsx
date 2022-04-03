@@ -6,9 +6,9 @@ import GameCard from "components/home/GameCard";
 import Layout from "components/Layout";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
-import { Game } from "models/Game";
-import { initialClient } from "actions/ServerAction";
-import { clientSelector } from "selectors/serverSelector";
+import { Game } from "@models/Game";
+import { initialClient } from "@actions/ServerAction";
+import { clientSelector } from "@selectors/serverSelector";
 import { fetcher } from "pages/api/base/Fetcher";
 
 export default function Home() {
