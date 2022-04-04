@@ -6,6 +6,10 @@ import { Server } from 'colyseus';
 import { monitor } from '@colyseus/monitor';
 import ChineseChess from './features/chinese_chess/ChineseChess';
 import MathFormulaCard from './features/math_formula_card/MathFormulaCard';
+import GameRepository from './features/game/repository/GemeRepository';
+import { Games } from './data/Game';
+import GameUseCase from './features/game/usecase/GameUseCase';
+import GameDelivery from './features/game/delivery/GameDelivery';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev = process.env.NODE_ENV !== 'production';
@@ -18,9 +22,9 @@ nextApp.prepare().then(() => {
   const server = http.createServer(app);
   const gameServer = new Server({ server });
 
-  app.get('/game/yo', function (req, res) {
-    res.send('Hello World!');
-  });
+  const gameRepo = new GameRepository(Games);
+  const gameUseCase = new GameUseCase(gameRepo);
+  new GameDelivery(app, gameUseCase);
 
   // 載入所有遊戲 instance
   gameServer

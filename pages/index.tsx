@@ -11,11 +11,11 @@ import { initialClient } from "@actions/ServerAction";
 import { clientSelector } from "@selectors/serverSelector";
 import { fetcher } from "pages/api/base/Fetcher";
 
-export default function Home() {
+const Home = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const client = useSelector(clientSelector);
-  const { data: games, error } = useSWR<Game[], Error>("/api/game", fetcher);
+  const { data: games, error } = useSWR<Game[], Error>("/api/games", fetcher);
 
   useEffect(() => {
     if (client) {
@@ -49,3 +49,5 @@ export default function Home() {
     </Layout>
   );
 }
+
+export default Home;

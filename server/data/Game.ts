@@ -2,7 +2,7 @@ import { Game } from '../domain/Game';
 import { GameMode as ChineseChessMode } from '../../features/chinese_chess/models/ChinesChessMode';
 
 // TODO: 假資料之後寫入資料庫
-export const games: Game[] = [
+export const Games: Game[] = [
   // {
   //   id: 1,
   //   name: '圈圈叉叉',
