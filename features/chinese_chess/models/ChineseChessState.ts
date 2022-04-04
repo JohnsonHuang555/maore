@@ -1,6 +1,6 @@
 import { ArraySchema } from '@colyseus/schema';
 import { ChessNameBlack, ChessNameRed } from './ChineseChessName';
-import { ChessInfoState } from 'server/games/chinese_chess/state/ChessInfoState';
+import { ChessInfoState } from 'server/features/chinese_chess/state/ChessInfoState';
 import { ChessSide } from './ChineseChessSide';
 
 export interface ChessInfo {
