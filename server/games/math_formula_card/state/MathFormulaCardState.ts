@@ -8,4 +8,6 @@ export default class MathFormulaCardState
 {
   @type('number')
   answer: number = 0;
+
+  @type()
 }

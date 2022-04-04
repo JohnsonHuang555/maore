@@ -20,8 +20,8 @@ import { AnyAction, Dispatch } from 'redux';
 import { Schema, ArraySchema } from '@colyseus/schema';
 import { PlayerState } from 'server/room/state/PlayerState';
 import { setClient, setRoom } from '@actions/ServerAction';
-import { TicTacToeState } from 'features/tictactoe/@models/TicTacToeState';
-import { ChineseChessState } from 'features/chinese_chess/@models/ChineseChessState';
+import { TicTacToeState } from 'features/tictactoe/models/TicTacToeState';
+import { ChineseChessState } from 'features/chinese_chess/models/ChineseChessState';
 
 enum RoomStateChangeList {
   RoomInfo = 'roomInfo',

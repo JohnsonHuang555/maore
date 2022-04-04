@@ -88,7 +88,7 @@ export default class BaseServer {
   }
 
   createPlayerOrder() {
-    this.room.send(RoomMessage.CreatePlyayerOrder);
+    this.room.send(RoomMessage.CreatePlayerOrder);
   }
 
   finishGame() {

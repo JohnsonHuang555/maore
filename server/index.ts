@@ -1,10 +1,10 @@
 import { GameList } from '../models/Game';
-import ChineseChess from './games/chinese_chess/ChineseChess';
 import express from 'express';
 import next from 'next';
 import http from 'http';
 import { Server } from 'colyseus';
 import { monitor } from '@colyseus/monitor';
+import ChineseChess from './games/chinese_chess/ChineseChess';
 import MathFormulaCard from './games/math_formula_card/MathFormulaCard';
 
 const port = parseInt(process.env.PORT || '3000', 10);

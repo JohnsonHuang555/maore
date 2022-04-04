@@ -35,7 +35,7 @@ export default class BaseRoom {
       this.dispatcher.dispatch(new StartGameCommand());
     });
 
-    this.room.onMessage(RoomMessage.CreatePlyayerOrder, () => {
+    this.room.onMessage(RoomMessage.CreatePlayerOrder, () => {
       this.dispatcher.dispatch(new CreatePlayerOrderCommand());
     });
 

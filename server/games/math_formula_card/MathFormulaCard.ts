@@ -6,6 +6,8 @@ import { Metadata } from '../../../models/Room';
 import MathFormulaCardState from './state/MathFormulaCardState';
 import GameUseCase from '../../usecases/GameUseCase';
 import ResetCommand from './commands/ResetCommand';
+import { RoomMessage } from '../../../models/Message';
+import CreateGameCommand from './commands/CreateGameCommand';
 
 export default class MathFormulaCard extends Room<MathFormulaCardState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -17,6 +19,9 @@ export default class MathFormulaCard extends Room<MathFormulaCardState, Metadata
     this.baseRoom.setMaxClient(this.game.maxPlayers as number);
     this.setState(new MathFormulaCardState());
 
+    this.onMessage(RoomMessage.CreateGame, () => {
+      this.dispatcher.dispatch(new CreateGameCommand());
+    });
   }
 
   onJoin(client: Client, option: Metadata) {
