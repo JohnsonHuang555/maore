@@ -9,11 +9,18 @@ export default class GameDelivery {
     this.gameUseCase = gameUseCase;
     this.app = app;
 
-    this.app.get('/api/games', this.FetchGames.bind(this));
+    this.app.get('/api/games', this.fetchGames.bind(this));
+    this.app.get('/api/game/:gamePack', this.fetchGame.bind(this));
   }
 
-  public FetchGames(_req: any, res: any) {
+  private fetchGames(_req: any, res: any) {
     const games = this.gameUseCase.GetGames();
     return res.status(200).json(games);
+  }
+
+  private fetchGame(req: any, res: any) {
+    const gamePack = req.params.gamePack;
+    const game = this.gameUseCase.GetGameInfo(gamePack);
+    return res.status(200).json(game);
   }
 }

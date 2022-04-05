@@ -28,10 +28,10 @@ export type GameMode = {
 
 export interface IGameRepository {
   FindAll: () => Game[];
-  FindById: (id: number) => Game;
+  FindByGamePack: (gamePack: GameList) => Game;
 }
 
 export interface IGameUseCase {
   GetGames: () => Game[];
-  GetGameInfo: (id: number) => Game;
+  GetGameInfo: (gamePack: GameList) => Game;
 }

@@ -1,4 +1,4 @@
-import { Game, IGameRepository, IGameUseCase } from "../../../domain/Game";
+import { Game, GameList, IGameRepository, IGameUseCase } from "../../../domain/Game";
 
 export default class GameUseCase implements IGameUseCase {
   private gameRepo: IGameRepository;
@@ -11,7 +11,7 @@ export default class GameUseCase implements IGameUseCase {
     return this.gameRepo.FindAll();
   }
 
-  public GetGameInfo(id: number): Game {
-    return this.gameRepo.FindById(id);
+  public GetGameInfo(gamePack: GameList): Game {
+    return this.gameRepo.FindByGamePack(gamePack);
   }
 }

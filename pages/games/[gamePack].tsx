@@ -13,10 +13,10 @@ import { initialClient, createRoom, getAllRooms } from "@actions/ServerAction";
 import RoomCard from "components/games/RoomCard";
 import { clientSelector } from "@selectors/serverSelector";
 import { userInfoSelector } from "@selectors/appSelector";
-import { fetcher } from "pages/api/base/Fetcher";
 import Info from "@mui/icons-material/Info";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
+import { fetchGame } from "@actions/FetchAction";
 
 const Games = () => {
   const router = useRouter();
@@ -31,7 +31,7 @@ const Games = () => {
   // get current game
   const { data: game, error } = useSWR<Game, Error>(
     gamePack ? `/api/game/${gamePack}` : null,
-    fetcher
+    fetchGame
   );
 
   useEffect(() => {
@@ -124,7 +124,7 @@ const Games = () => {
       <Box sx={{ position: "relative", marginBottom: "24px" }}>
         <Box
           sx={{
-            backgroundImage: `url(${game.imgPath})`,
+            backgroundImage: `url(${game.imageUrl})`,
             height: "350px",
             backgroundPosition: "center",
             backgroundSize: "cover",
