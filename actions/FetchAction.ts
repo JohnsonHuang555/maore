@@ -1,4 +1,4 @@
-import { Game, GameList } from 'domain/models/Game';
+import { Game } from 'domain/models/Game';
 import { Game as NetGame } from 'server/domain/Game';
 import axios from 'axios';
 import GameFactory from 'domain/factories/GameFactory';

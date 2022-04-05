@@ -1,7 +1,7 @@
 import { Client, Room } from 'colyseus';
 import ChineseChessState from './state/ChineseChessState';
 import { Dispatcher } from '@colyseus/command';
-import BaseRoom from '../room';
+import BaseRoom from '../base';
 import { Metadata } from '../../../domain/models/Room';
 // import GameUseCase from '../../domain/usecases/GameUseCase';
 import { Game, GameList } from '../../../domain/models/Game';
@@ -14,7 +14,7 @@ import CreateGameCommand from './commands/CreateGameCommand';
 import ResetCommand from './commands/ResetCommand';
 import EatChessCommand from './commands/EatChessCommand';
 import MoveChessCommand from './commands/MoveChessCommand';
-import UpdatePlayerGroupCommand from '../room/commands/UpdatePlayerGroupCommand';
+import UpdatePlayerGroupCommand from '../base/commands/UpdatePlayerGroupCommand';
 import { RoomMessage } from '../../../domain/models/Message';
 import CheckWinnerCommand from './commands/CheckWinnerCommand';
 import SurrenderCommand from './commands/SurrenderCommand';

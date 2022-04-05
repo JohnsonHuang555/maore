@@ -1,7 +1,7 @@
 import { Command } from '@colyseus/command';
 import { Cell } from '../../../../features/tictactoe/models/Cell';
 import TicTacToeState from '../state/TicTacToeState';
-import ResetGameCommand from '../../room/commands/ResetGameCommand';
+import ResetGameCommand from '../../base/commands/ResetGameCommand';
 
 export default class ResetCommand extends Command<TicTacToeState> {
   execute() {

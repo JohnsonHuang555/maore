@@ -1,6 +1,6 @@
 import { Client, Room } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
-import BaseRoom from '../room';
+import BaseRoom from '../base';
 import { Game, GameList } from '../../../domain/models/Game';
 import { Metadata } from '../../../domain/models/Room';
 import MathFormulaCardState from './state/MathFormulaCardState';

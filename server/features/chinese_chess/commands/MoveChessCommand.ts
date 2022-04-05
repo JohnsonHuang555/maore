@@ -1,5 +1,5 @@
 import { Command } from '@colyseus/command';
-import NextTurnCommand from '../../room/commands/NextTurnCommand';
+import NextTurnCommand from '../../base/commands/NextTurnCommand';
 import ChineseChessState from '../state/ChineseChessState';
 
 type Payload = {
