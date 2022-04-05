@@ -1,12 +1,12 @@
 import { Client, Room } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
 import BaseRoom from '../room';
-import { Game, GameList } from '../../../models/Game';
-import { Metadata } from '../../../models/Room';
+import { Game, GameList } from '../../../domain/models/Game';
+import { Metadata } from '../../../domain/models/Room';
 import MathFormulaCardState from './state/MathFormulaCardState';
 // import GameUseCase from '../../domain/usecases/GameUseCase';
 import ResetCommand from './commands/ResetCommand';
-import { RoomMessage } from '../../../models/Message';
+import { RoomMessage } from '../../../domain/models/Message';
 import CreateGameCommand from './commands/CreateGameCommand';
 
 export default class MathFormulaCard extends Room<MathFormulaCardState, Metadata> {

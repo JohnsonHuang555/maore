@@ -1,7 +1,7 @@
 import { Schema, ArraySchema, type } from '@colyseus/schema';
 import { PlayerState } from './PlayerState';
 import { RoomInfoState } from './RoomInfoState';
-import { GameStatus } from '../../../../models/Room';
+import { GameStatus } from '../../../../domain/models/Room';
 
 export interface Room extends Schema {
   players: ArraySchema<PlayerState>;

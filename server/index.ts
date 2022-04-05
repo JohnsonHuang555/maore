@@ -1,4 +1,4 @@
-import { GameList } from '../models/Game';
+import { GameList } from '../domain/models/Game';
 import express from 'express';
 import next from 'next';
 import http from 'http';

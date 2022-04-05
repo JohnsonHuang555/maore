@@ -1,4 +1,4 @@
-import { Game } from '../domain/Game';
+import { Game, GameList } from '../domain/Game';
 import { GameMode as ChineseChessMode } from '../../features/chinese_chess/models/ChinesChessMode';
 
 // TODO: 假資料之後寫入資料庫
@@ -38,6 +38,7 @@ export const Games: Game[] = [
         max_players: 2,
       },
     ],
+    game_pack: GameList.ChineseChess,
   },
   {
     id: 3,
@@ -49,5 +50,6 @@ export const Games: Game[] = [
     estimate_time: 30,
     create_at: 'September 14, 2022',
     max_players: 4,
+    game_pack: GameList.MathFormulaCard,
   },
 ];

@@ -1,9 +1,9 @@
 // FIXME: 從 DB 來 => 遊戲列表
-// export enum GameList {
-//   TicTacToe = 'tic-tac-toe', // deprecated
-//   ChineseChess = 'chinese-chess',
-//   MathFormulaCard = 'math-formula-card',
-// }
+export enum GameList {
+  TicTacToe = 'tic-tac-toe', // deprecated
+  ChineseChess = 'chinese-chess',
+  MathFormulaCard = 'math-formula-card',
+}
 
 export type Game = {
   id: number;
@@ -16,6 +16,7 @@ export type Game = {
   estimate_time: number;
   modes?: GameMode[];
   create_at: string;
+  game_pack: GameList;
 };
 
 export type GameMode = {

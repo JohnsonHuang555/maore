@@ -1,6 +1,6 @@
 import { Command } from '@colyseus/command';
 import RoomState from '../state/RoomState';
-import { GameStatus } from '../../../../models/Room';
+import { GameStatus } from '../../../../domain/models/Room';
 
 export default class ResetGameCommand extends Command<RoomState> {
   execute() {

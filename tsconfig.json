@@ -24,7 +24,7 @@
       "@components/*": ["components/*"],
       "@selectors/*": ["selectors/*"],
       "@actions/*": ["actions/*"],
-      "@models/*": ["models/*"],
+      "@models/*": ["domain/models/*"],
       "@styles/*": ["styles/*"],
     }
   },

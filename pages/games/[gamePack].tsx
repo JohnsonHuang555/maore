@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "components/Layout";
-import { Game, GameList } from "@models/Game";
+import { Game, GameList } from "domain/models/Game";
 import { useRouter } from "next/router";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";

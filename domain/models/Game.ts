@@ -12,17 +12,17 @@ export type Game = {
   minPlayers?: number; // 該遊戲沒有模式時有值
   brief: string;
   description: string;
-  imgPath: string;
+  imageUrl: string;
   estimateTime: number;
-  gamePack: GameList;
   modes?: GameMode[];
   createAt: string;
+  gamePack: GameList;
 };
 
 export type GameMode = {
   label: string;
   value: string;
-  image: string;
   maxPlayers: number;
   minPlayers: number;
+  imageUrl: string;
 };

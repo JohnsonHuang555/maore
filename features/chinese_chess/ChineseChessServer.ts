@@ -4,7 +4,7 @@ import { ChineseChessMessage } from 'features/chinese_chess/models/ChineseChessM
 import { GameMode } from './models/ChinesChessMode';
 import { ChineseChessGroup } from 'features/chinese_chess/models/ChineseChessGroup';
 import { sharedInstance as events } from 'features/base/EventCenter';
-import { RoomMessage } from '@models/Message';
+import { RoomMessage } from 'domain/models/Message';
 import ChangedChessInfoFactory, {
   ChangedChessInfo,
 } from './factories/ChangedChessInfoFactory';

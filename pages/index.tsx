@@ -6,16 +6,16 @@ import GameCard from "components/home/GameCard";
 import Layout from "components/Layout";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
-import { Game } from "@models/Game";
+import { Game } from "domain/models/Game";
 import { initialClient } from "@actions/ServerAction";
 import { clientSelector } from "@selectors/serverSelector";
-import { fetcher } from "pages/api/base/Fetcher";
+import { fetchGames } from "@actions/FetchAction";
 
 const Home = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const client = useSelector(clientSelector);
-  const { data: games, error } = useSWR<Game[], Error>("/api/games", fetcher);
+  const { data: games, error } = useSWR<Game[], Error>("/api/games", fetchGames);
 
   useEffect(() => {
     if (client) {

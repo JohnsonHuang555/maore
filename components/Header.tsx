@@ -11,7 +11,7 @@ import {
   showLoginModalSelector,
   userInfoSelector,
 } from '@selectors/appSelector';
-import { User } from '@models/User';
+import { User } from 'domain/models/User';
 import {
   removeUserInfo,
   setShowLoginModal,

@@ -24,7 +24,7 @@ import { clientSelector } from '@selectors/serverSelector';
 import dynamic from 'next/dynamic';
 import { isLoginSelector, userInfoSelector } from '@selectors/appSelector';
 import { setShowLoginModal } from '@actions/AppAction';
-import { Game } from '@models/Game';
+import { Game } from 'domain/models/Game';
 import useSWR from 'swr';
 import { fetcher } from 'pages/api/base/Fetcher';
 import PlayerArea from '@components/rooms/PlayerArea';

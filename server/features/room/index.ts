@@ -1,8 +1,8 @@
 import { Dispatcher } from '@colyseus/command';
 import { Client, Room } from 'colyseus';
 import RoomState from './state/RoomState';
-import { RoomMessage } from '../../../models/Message';
-import { Metadata, RoomInfo } from '../../../models/Room';
+import { RoomMessage } from '../../../domain/models/Message';
+import { Metadata, RoomInfo } from '../../../domain/models/Room';
 import PlayerLeftCommand from './commands/PlayerLeftCommand';
 import ReadyGameCommand from './commands/ReadyGameCommand';
 import StartGameCommand from './commands/StartGameCommand';
