@@ -87,7 +87,7 @@ const CreateRoomModal = (props: CreateRoomProps) => {
                   onClick={() => setSelectedMode(mode.value)}
                 >
                   <div className={styles.content}>
-                    <img src={mode.image} className={styles.image} />
+                    <img src={mode.imageUrl} className={styles.image} />
                     <div
                       className={`${styles.background} ${
                         selectedMode === mode.value ? styles.selectedMode : ''

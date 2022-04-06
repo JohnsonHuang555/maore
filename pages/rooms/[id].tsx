@@ -26,10 +26,10 @@ import { isLoginSelector, userInfoSelector } from '@selectors/appSelector';
 import { setShowLoginModal } from '@actions/AppAction';
 import { Game } from 'domain/models/Game';
 import useSWR from 'swr';
-import { fetcher } from 'pages/api/base/Fetcher';
 import PlayerArea from '@components/rooms/PlayerArea';
 import ChatArea from '@components/rooms/ChatArea';
 import SettingArea from '@components/rooms/SettingArea';
+import { fetchGame } from '@actions/FetchAction';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('@components/rooms/GameScreen'),
@@ -79,7 +79,7 @@ const Rooms = () => {
 
   const { data: game, error } = useSWR<Game, Error>(
     `/api/game/${roomInfo.gamePack}`,
-    fetcher
+    fetchGame
   );
 
   if (error) {

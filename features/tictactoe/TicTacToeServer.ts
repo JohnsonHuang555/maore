@@ -1,4 +1,4 @@
-import { TicTacToeMessage } from 'features/tictactoe/@models/TicTacToeMessage';
+import { TicTacToeMessage } from 'features/tictactoe/models/TicTacToeMessage';
 import BaseServer from 'features/base/BaseServer';
 import { sharedInstance as events } from 'features/base/EventCenter';
 

@@ -1,8 +1,8 @@
 import { GameOverSceneData } from 'domain/models/Scenes';
 import Phaser from 'phaser';
-import { Cell } from 'features/tictactoe/@models/Cell';
+import { Cell } from 'features/tictactoe/models/Cell';
 import Server from 'features/tictactoe/TicTacToeServer';
-import { GameSceneData } from '../@models/TicTacToeScene';
+import { GameSceneData } from '../models/TicTacToeScene';
 
 export default class Game extends Phaser.Scene {
   private server!: Server;
