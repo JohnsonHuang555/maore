@@ -1,4 +1,4 @@
-import { ActionType } from '@actions/ServerAction';
+import { ActionType } from '@actions/serverAction';
 import Server from './services/RoomServer';
 import { Dispatch, Middleware, MiddlewareAPI } from 'redux';
 

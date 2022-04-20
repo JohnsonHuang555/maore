@@ -1,15 +1,15 @@
-import useSWR from 'swr';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { useDispatch, useSelector } from 'react-redux';
-import GameCard from 'components/home/GameCard';
-import Layout from 'components/Layout';
-import Grid from '@mui/material/Grid';
-import Container from '@mui/material/Container';
-import { Game } from 'domain/models/Game';
-import { initialClient } from '@actions/ServerAction';
-import { clientSelector } from '@selectors/serverSelector';
-import { fetchGames } from '@actions/FetchAction';
+import useSWR from "swr";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import GameCard from "components/home/GameCard";
+import Layout from "components/Layout";
+import Grid from "@mui/material/Grid";
+import Container from "@mui/material/Container";
+import { Game } from "domain/models/Game";
+import { initialClient } from "@actions/serverAction";
+import { clientSelector } from "@selectors/serverSelector";
+import { fetchGames } from "@actions/fetchAction";
 
 const Home = () => {
   const router = useRouter();

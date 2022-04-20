@@ -2,7 +2,7 @@ import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import { snackbarSelector } from '@selectors/appSelector';
 import { useDispatch, useSelector } from 'react-redux';
-import { setSnackbar } from '@actions/AppAction';
+import { setSnackbar } from '@actions/appAction';
 import IconButton from '@mui/material/IconButton';
 import Close from '@mui/icons-material/Close';
 

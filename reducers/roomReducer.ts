@@ -1,4 +1,4 @@
-import { ActionType } from '@actions/RoomAction';
+import { ActionType } from '@actions/roomAction';
 import { RoomAvailable } from 'colyseus.js';
 import { Player } from 'domain/models/Player';
 import { GameStatus, Metadata, RoomInfo } from 'domain/models/Room';

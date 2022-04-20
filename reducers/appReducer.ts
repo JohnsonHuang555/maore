@@ -1,4 +1,4 @@
-import { ActionType } from '@actions/AppAction';
+import { ActionType } from '@actions/appAction';
 import { User } from 'domain/models/User';
 
 export type State = {

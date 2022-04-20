@@ -2,7 +2,7 @@ import { Send } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
-import { sendMessage } from '@actions/ServerAction';
+import { sendMessage } from '@actions/serverAction';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import IconButton from '@mui/material/IconButton';

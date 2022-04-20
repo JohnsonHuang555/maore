@@ -17,7 +17,7 @@ import {
   setShowLoginModal,
   setSnackbar,
   setUserInfo,
-} from '@actions/AppAction';
+} from '@actions/appAction';
 import LoginModal from '@components/modals/LoginModal';
 
 const Header = () => {
