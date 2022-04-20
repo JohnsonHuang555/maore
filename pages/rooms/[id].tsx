@@ -29,7 +29,7 @@ import useSWR from 'swr';
 import PlayerArea from '@components/rooms/PlayerArea';
 import ChatArea from '@components/rooms/ChatArea';
 import SettingArea from '@components/rooms/SettingArea';
-import { fetchGame } from '@actions/FetchAction';
+import { fetchGame } from '@actions/fetchAction';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('@components/rooms/GameScreen'),
