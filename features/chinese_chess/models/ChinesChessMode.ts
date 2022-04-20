@@ -3,7 +3,7 @@ export enum GameMode {
   Hidden = 'hidden',
 }
 
-export const enhanceGameModes: { [key: string]: string } = {
+export const EnhanceGameModes: { [key: string]: string } = {
   [GameMode.Standard]: '標準(大盤)',
   [GameMode.Hidden]: '暗棋(小盤)',
 };

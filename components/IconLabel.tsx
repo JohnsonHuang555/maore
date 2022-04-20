@@ -6,7 +6,7 @@ type IconProps = {
   fontSize?: '14px' | '16px' | '18px' | '22px' | '24px' | '26px';
 };
 
-const IconLable = (props: IconProps) => {
+const IconLabel = (props: IconProps) => {
   const { title = '', children, fontSize = '20px' } = props;
   return (
     <Box
@@ -18,4 +18,4 @@ const IconLable = (props: IconProps) => {
   );
 };
 
-export default IconLable;
+export default IconLabel;

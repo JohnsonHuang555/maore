@@ -1,10 +1,10 @@
 import { Game, GameMode } from "@models/Game";
-import { enhanceGameModes } from "features/chinese_chess/models/ChinesChessMode";
+import { EnhanceGameModes as ChinesChessMode } from "features/chinese_chess/models/ChinesChessMode";
 import { Game as NetGame } from "server/domain/Game";
 import { toJsCaseObject } from 'utils/AjaxDataCase';
 
 const combinedEnhanceGameModes = {
-  ...enhanceGameModes,
+  ...ChinesChessMode,
 }
 
 export default class GameFactory {
