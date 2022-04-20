@@ -1,5 +1,5 @@
 import { ActionType } from '@actions/appAction';
-import { User } from 'domain/models/User';
+import { User } from '@domain/models/User';
 
 export type State = {
   snackbar: {

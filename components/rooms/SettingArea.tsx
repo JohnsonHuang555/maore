@@ -1,7 +1,7 @@
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import { GameMode } from 'domain/models/Game';
-import { RoomInfo } from 'domain/models/Room';
+import { GameMode } from '@domain/models/Game';
+import { RoomInfo } from '@domain/models/Room';
 import GameSetting from '@components/rooms/GameSetting';
 
 type SettingAreaProps = {

@@ -1,5 +1,5 @@
-import { GameMode } from 'domain/models/Game';
-import { RoomInfo } from 'domain/models/Room';
+import { GameMode } from '@domain/models/Game';
+import { RoomInfo } from '@domain/models/Room';
 import { MenuItem, Select } from '@mui/material';
 import styles from '@styles/components/gameSetting.module.scss';
 

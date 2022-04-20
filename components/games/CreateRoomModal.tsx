@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from '@actions/appAction';
-import { Game } from 'domain/models/Game';
+import { Game } from '@domain/models/Game';
 import Grid from '@mui/material/Grid';
 import styles from '@styles/components/createRoom.module.scss';
 import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';

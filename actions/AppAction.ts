@@ -1,4 +1,4 @@
-import { User } from 'domain/models/User';
+import { User } from '@domain/models/User';
 
 export enum ActionType {
   SET_SNACKBAR = 'SET_SNACKBAR',

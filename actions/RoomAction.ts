@@ -1,6 +1,6 @@
 import { RoomAvailable } from 'colyseus.js';
-import { Player } from 'domain/models/Player';
-import { GameStatus, Metadata, RoomInfo } from 'domain/models/Room';
+import { Player } from '@domain/models/Player';
+import { GameStatus, Metadata, RoomInfo } from '@domain/models/Room';
 
 export enum ActionType {
   LOADED_ROOMS = 'LOADED_ROOMS',

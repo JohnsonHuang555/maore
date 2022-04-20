@@ -1,6 +1,6 @@
-import { GameList } from 'domain/models/Game';
 import React from 'react';
-import { RenderMethod } from 'domain/models/Room';
+import { GameList } from '@domain/models/Game';
+import { RenderMethod } from '@domain/models/Room';
 import Phaser from './render_methods/Phaser';
 
 export type GameScreenProps = {

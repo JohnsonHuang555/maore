@@ -1,7 +1,7 @@
 import { ActionType } from '@actions/roomAction';
 import { RoomAvailable } from 'colyseus.js';
-import { Player } from 'domain/models/Player';
-import { GameStatus, Metadata, RoomInfo } from 'domain/models/Room';
+import { Player } from '@domain/models/Player';
+import { GameStatus, Metadata, RoomInfo } from '@domain/models/Room';
 
 export type State = {
   isConnected: boolean;

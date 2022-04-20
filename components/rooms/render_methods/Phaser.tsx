@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { IonPhaser, GameInstance } from '@ion-phaser/react';
-import { GameList } from 'domain/models/Game';
+import { GameList } from '@domain/models/Game';
 import { TicTacToeConfig } from 'features/tictactoe/TicTacToeConfig';
 import { ChineseChessConfig } from 'features/chinese_chess/ChineseChessConfig';
 import { GameScreenProps } from '../GameScreen';

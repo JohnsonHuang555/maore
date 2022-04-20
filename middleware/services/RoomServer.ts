@@ -13,9 +13,9 @@ import {
   setMessage,
 } from '@actions/roomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
-import { GameList } from 'domain/models/Game';
-import { RoomMessage } from 'domain/models/Message';
-import { GameStatus, Metadata, RoomInfo } from 'domain/models/Room';
+import { GameList } from '@domain/models/Game';
+import { RoomMessage } from '@domain/models/Message';
+import { GameStatus, Metadata, RoomInfo } from '@domain/models/Room';
 import { AnyAction, Dispatch } from 'redux';
 import { Schema, ArraySchema } from '@colyseus/schema';
 import { PlayerState } from 'server/features/base/state/PlayerState';
