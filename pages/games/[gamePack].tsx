@@ -20,12 +20,16 @@ import { fetchGame } from '@actions/fetchAction';
 
 const Games = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const { gamePack } = router.query;
+  const dispatch = useDispatch();
+
+  // selectors
   const createdRoomId = useSelector(createdRoomIdSelector);
   const rooms = useSelector(roomsSelector);
   const client = useSelector(clientSelector);
   const userInfo = useSelector(userInfoSelector);
+
+  // useState
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
 
   // get current game

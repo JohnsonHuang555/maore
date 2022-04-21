@@ -40,6 +40,8 @@ const Rooms = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const roomId = router.query.id;
+
+  // selectors
   const createdRoomId = useSelector(createdRoomIdSelector);
   const players = useSelector(playersSelector);
   const roomInfo = useSelector(roomInfoSelector);
