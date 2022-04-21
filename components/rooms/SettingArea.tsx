@@ -38,12 +38,12 @@ const SettingArea = (props: SettingAreaProps) => {
       }}
     >
       <Box sx={{ flex: '1' }}>
-        <GameSetting
+        {/* <GameSetting
           roomInfo={roomInfo}
           gameModes={gameModes}
           isMaster={isMaster}
           onChangeRoomInfo={() => {}}
-        />
+        /> */}
       </Box>
       {isMaster ? (
         <Button

@@ -76,9 +76,9 @@ const Rooms = () => {
     }
   }, [roomId, createdRoomId, isLogin]);
   // use effect end
-
+  console.log(roomInfo);
   const { data: game, error } = useSWR<Game, Error>(
-    `/api/game/${roomInfo.gamePack}`,
+    roomInfo ? `/api/game/${roomInfo.gamePack}` : null,
     fetchGame
   );
 
