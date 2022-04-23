@@ -48,7 +48,7 @@ const Rooms = () => {
   const yourPlayerId = useSelector(playerIdSelector);
   const client = useSelector(clientSelector);
   const userInfo = useSelector(userInfoSelector);
-  const isLogin = useSelector(isLoginSelector);
+  // const isLogin = useSelector(isLoginSelector);
   const showGameScreen = useSelector(showGameScreenSelector);
   const messages = useSelector(messagesSelector);
 
@@ -73,20 +73,21 @@ const Rooms = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (roomId && !createdRoomId && isLogin && userInfo) {
+    if (roomId && !createdRoomId && userInfo) {
       dispatch(joinRoom(String(roomId), userInfo.name));
     }
-  }, [roomId, createdRoomId, isLogin]);
+  }, [roomId, createdRoomId]);
   // use effect end
-  console.log(roomInfo);
-  const { data: game, error } = useSWR<Game, Error>(
-    roomInfo ? `/api/game/${roomInfo.gamePack}` : null,
-    fetchGame
-  );
 
-  if (error) {
-    throw new Error('Game not loaded');
-  }
+  // console.log(roomInfo);
+  // const { data: game, error } = useSWR<Game, Error>(
+  //   roomInfo ? `/api/game/${roomInfo.gamePack}` : null,
+  //   fetchGame
+  // );
+
+  // if (error) {
+  //   throw new Error('Game not loaded');
+  // }
 
   const checkIsMaster = (): boolean => {
     const player = players.find((p) => p.isMaster && p.id === yourPlayerId);
@@ -128,7 +129,7 @@ const Rooms = () => {
           <Grid item lg={3} xs={12}>
             <SettingArea
               roomInfo={roomInfo}
-              gameModes={game?.modes || []}
+              // gameModes={game?.modes || []}
               isMaster={checkIsMaster()}
               disabledStartGame={checkDisabledStartGame()}
               isReadyGame={getIsReadyGameText()}

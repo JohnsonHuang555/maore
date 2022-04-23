@@ -6,7 +6,7 @@ import GameSetting from '@components/rooms/GameSetting';
 
 type SettingAreaProps = {
   roomInfo: RoomInfo;
-  gameModes: GameMode[];
+  // gameModes: GameMode[];
   isMaster: boolean;
   disabledStartGame: boolean;
   isReadyGame: string;
@@ -18,7 +18,7 @@ type SettingAreaProps = {
 const SettingArea = (props: SettingAreaProps) => {
   const {
     roomInfo,
-    gameModes,
+    // gameModes,
     isMaster,
     disabledStartGame,
     isReadyGame,
