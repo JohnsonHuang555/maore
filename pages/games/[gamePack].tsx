@@ -173,7 +173,7 @@ const Games = () => {
       <Container maxWidth={false}>
         <Grid container spacing={3}>
           {rooms.length ? (
-            <Grid item lg={3} md={4} xs={2}>
+            <Grid item lg={4} md={6} xs={2}>
               {rooms.map(({ roomId, metadata, maxClients, clients }) => (
                 <RoomCard
                   key={roomId}

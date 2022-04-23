@@ -3,8 +3,6 @@ import ChineseChessState from './state/ChineseChessState';
 import { Dispatcher } from '@colyseus/command';
 import BaseRoom from '../base';
 import { Metadata } from '../../../domain/models/Room';
-// import GameUseCase from '../../domain/usecases/GameUseCase';
-import { Game, GameList } from '../../../domain/models/Game';
 import { GameMode } from '../../../features/chinese_chess/models/ChinesChessMode';
 import { ChineseChessMessage } from '../../../features/chinese_chess/models/ChineseChessMessage';
 import { ChineseChessGroup } from '../../../features/chinese_chess/models/ChineseChessGroup';
@@ -22,7 +20,6 @@ import SurrenderCommand from './commands/SurrenderCommand';
 export default class ChineseChess extends Room<ChineseChessState, Metadata> {
   private dispatcher = new Dispatcher(this);
   private baseRoom = new BaseRoom(this);
-  // private game: Game = GameUseCase.getGameByGamePack(GameList.ChineseChess);
 
   onCreate(option: Metadata) {
     this.baseRoom.onCreate(option);
@@ -30,10 +27,7 @@ export default class ChineseChess extends Room<ChineseChessState, Metadata> {
       throw new Error('game mode not found');
     }
 
-    // const maxPlayers = this.game.modes?.find(
-    //   (m) => m.value === option.gameMode
-    // )?.maxPlayers;
-    // this.baseRoom.setMaxClient(maxPlayers as number);
+    this.baseRoom.setMaxClient(2);
     this.setState(new ChineseChessState());
 
     this.onMessage(RoomMessage.CreateGame, () => {

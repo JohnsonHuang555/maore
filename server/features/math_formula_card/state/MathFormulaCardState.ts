@@ -1,7 +1,11 @@
 import { Schema, ArraySchema, type } from '@colyseus/schema';
-import { MathFormulaCard } from '../../../../features/math_formula_card/models/MathFormulaCard';
 import RoomState from '../../base/state/RoomState';
 import { PlayerCardState } from './PlayerCardState';
+
+interface MathFormulaCard extends Schema {
+  answer: number;
+  playerCards: ArraySchema<PlayerCardState>;
+}
 
 export default class MathFormulaCardState
   extends RoomState
