@@ -13,10 +13,10 @@ import {
 } from '@selectors/appSelector';
 import { User } from '@domain/models/User';
 import {
-  removeUserInfo,
+  login,
+  logout,
   setShowLoginModal,
   setSnackbar,
-  setUserInfo,
 } from '@actions/appAction';
 import LoginModal from '@components/modals/LoginModal';
 import { alpha, Badge, IconButton, styled } from '@mui/material';
@@ -75,7 +75,7 @@ const Header = () => {
     const userInfo = localStorage.getItem('userInfo');
     if (userInfo) {
       const obj: User = JSON.parse(userInfo);
-      dispatch(setUserInfo(obj));
+      dispatch(login(obj));
     }
   }, [dispatch]);
 
@@ -84,7 +84,7 @@ const Header = () => {
       name,
     };
     localStorage.setItem('userInfo', JSON.stringify(userInfo));
-    dispatch(setUserInfo(userInfo));
+    dispatch(login(userInfo));
     dispatch(setShowLoginModal(false));
     dispatch(
       setSnackbar({
@@ -96,7 +96,7 @@ const Header = () => {
 
   const logout = () => {
     localStorage.removeItem('userInfo');
-    dispatch(removeUserInfo());
+    dispatch(logout());
     dispatch(
       setSnackbar({
         show: true,

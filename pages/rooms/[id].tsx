@@ -22,10 +22,8 @@ import { playerIdSelector } from '@selectors/roomSelector';
 import { useWarningOnExit } from 'customhooks/useWarningOnExit';
 import { clientSelector } from '@selectors/serverSelector';
 import dynamic from 'next/dynamic';
-import { isLoginSelector, userInfoSelector } from '@selectors/appSelector';
+import { userInfoSelector } from '@selectors/appSelector';
 import { setShowLoginModal } from '@actions/appAction';
-import { Game } from '@domain/models/Game';
-import useSWR from 'swr';
 import PlayerArea from '@components/rooms/PlayerArea';
 import ChatArea from '@components/rooms/ChatArea';
 import SettingArea from '@components/rooms/SettingArea';
@@ -48,7 +46,6 @@ const Rooms = () => {
   const yourPlayerId = useSelector(playerIdSelector);
   const client = useSelector(clientSelector);
   const userInfo = useSelector(userInfoSelector);
-  // const isLogin = useSelector(isLoginSelector);
   const showGameScreen = useSelector(showGameScreenSelector);
   const messages = useSelector(messagesSelector);
 
@@ -107,7 +104,7 @@ const Rooms = () => {
 
   const checkDisabledStartGame = () => {
     const isAnyPlayerNotReady = players.filter((p) => !p.isReady);
-    if (roomInfo.maxPlayers > players.length || isAnyPlayerNotReady.length) {
+    if (isAnyPlayerNotReady.length) {
       return true;
     }
     return false;
@@ -141,7 +138,7 @@ const Rooms = () => {
         </Grid>
       </Container>
       {showGameScreen && (
-        <DynamicGameScreenWithNoSSR gamePack={roomInfo.gamePack} />
+        <DynamicGameScreenWithNoSSR />
       )}
     </Layout>
   );

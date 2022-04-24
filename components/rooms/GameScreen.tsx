@@ -2,10 +2,9 @@ import React from 'react';
 import { GameList } from '@domain/models/Game';
 import { RenderMethod } from '@domain/models/Room';
 import Phaser from './render_methods/Phaser';
-
-export type GameScreenProps = {
-  gamePack: GameList | '';
-};
+import { useSelector } from 'react-redux';
+import { clientRoomSelector } from '@selectors/serverSelector';
+import WithoutFramework from './render_methods/WithoutFramework';
 
 const gameRenderFunction: { [key: string]: RenderMethod } = {
   [GameList.ChineseChess]: RenderMethod.Phaser,
@@ -13,18 +12,26 @@ const gameRenderFunction: { [key: string]: RenderMethod } = {
 };
 
 /** 決定要使用的遊戲 */
-const GameScreen = (props: GameScreenProps) => {
-  const { gamePack } = props;
+const GameScreen = () => {
+  const clientRoom = useSelector(clientRoomSelector);
+  if (!clientRoom) {
+    return null;
+  }
 
   const renderGameScreen = () => {
-    const renderMethod = gameRenderFunction[gamePack];
+    const renderMethod = gameRenderFunction[clientRoom.name];
     switch (renderMethod) {
-      case RenderMethod.Phaser:
-        return <Phaser gamePack={gamePack} />;
-      case RenderMethod.WithoutFramework:
+      case RenderMethod.Phaser: {
+        return <Phaser gamePack={clientRoom.name as GameList} />;
+      }
+      case RenderMethod.WithoutFramework: {
+        return (
+          <WithoutFramework gamePack={clientRoom.name as GameList}/>
+        );
+      }
+      case RenderMethod.Kaboom: {
         return <div></div>;
-      case RenderMethod.Kaboom:
-        return <div></div>;
+      }
     }
   };
 

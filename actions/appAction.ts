@@ -1,10 +1,10 @@
 import { User } from '@domain/models/User';
 
 export enum ActionType {
-  SET_SNACKBAR = 'SET_SNACKBAR',
-  SET_USER_INFO = 'SET_USER_INFO',
-  REMOVE_USER_INFO = 'REMOVE_USER_INFO',
-  SHOW_LOGIN_MODAL = 'SHOW_LOGIN_MODAL',
+  SetSnackbar = 'SetSnackbar',
+  ShowLoginModal = 'ShowLoginModal',
+  Login = 'Login',
+  Logout = 'Logout',
 }
 
 type snackbar = {
@@ -14,28 +14,28 @@ type snackbar = {
 
 export const setSnackbar = ({ show, message }: snackbar) => {
   return {
-    type: ActionType.SET_SNACKBAR,
+    type: ActionType.SetSnackbar,
     show,
     message,
   };
 };
 
-export const setUserInfo = (userInfo: User) => {
-  return {
-    type: ActionType.SET_USER_INFO,
-    userInfo,
-  };
-};
-
-export const removeUserInfo = () => {
-  return {
-    type: ActionType.REMOVE_USER_INFO,
-  };
-};
-
 export const setShowLoginModal = (show: boolean) => {
   return {
-    type: ActionType.SHOW_LOGIN_MODAL,
+    type: ActionType.ShowLoginModal,
     show,
   };
 };
+
+export const login = (userInfo: User) => {
+  return {
+    type: ActionType.Login,
+    userInfo,
+  }
+}
+
+export const logout = () => {
+  return {
+    type: ActionType.Logout,
+  }
+}

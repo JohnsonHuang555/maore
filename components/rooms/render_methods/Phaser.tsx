@@ -3,7 +3,6 @@ import { IonPhaser, GameInstance } from '@ion-phaser/react';
 import { GameList } from '@domain/models/Game';
 import { TicTacToeConfig } from 'features/tictactoe/TicTacToeConfig';
 import { ChineseChessConfig } from 'features/chinese_chess/ChineseChessConfig';
-import { GameScreenProps } from '../GameScreen';
 import { Box } from '@mui/material';
 
 const playingGame: { [key: string]: GameInstance } = {
@@ -11,7 +10,11 @@ const playingGame: { [key: string]: GameInstance } = {
   [GameList.ChineseChess]: ChineseChessConfig,
 };
 
-const Phaser = (props: GameScreenProps) => {
+type PhaserProps = {
+  gamePack: GameList;
+}
+
+const Phaser = (props: PhaserProps) => {
   const { gamePack } = props;
   const gameRef = useRef<HTMLIonPhaserElement>(null);
   const [game, setGame] = useState<GameInstance>();
