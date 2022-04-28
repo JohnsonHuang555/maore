@@ -7,12 +7,16 @@ import ResetCommand from './commands/ResetCommand';
 import { RoomMessage } from '../../../domain/models/Message';
 import CreateGameCommand from './commands/CreateGameCommand';
 
-export default class MathFormulaCard extends Room<MathFormulaCardState, Metadata> {
+export default class MathFormulaCard extends Room<
+  MathFormulaCardState,
+  Metadata
+> {
   private dispatcher = new Dispatcher(this);
   private baseRoom = new BaseRoom(this);
 
   onCreate(option: Metadata) {
     this.baseRoom.onCreate(option);
+    // 最多四人
     this.baseRoom.setMaxClient(4);
     this.setState(new MathFormulaCardState());
 

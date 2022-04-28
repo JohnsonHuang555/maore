@@ -22,6 +22,7 @@ import { PlayerState } from 'server/games/base/state/PlayerState';
 import { setClient, setRoom } from '@actions/serverAction';
 import { TicTacToeState } from 'features/tictactoe/models/TicTacToeState';
 import { ChineseChessState } from 'features/chinese_chess/models/ChineseChessState';
+import { MathFormulaCard } from 'server/games/math_formula_card/state/MathFormulaCardState';
 
 enum RoomStateChangeList {
   RoomInfo = 'roomInfo',
@@ -39,7 +40,11 @@ enum PlayerStateChangeList {
   Group = 'group',
 }
 
-export interface Room extends Schema, TicTacToeState, ChineseChessState {
+export interface Room
+  extends Schema,
+    TicTacToeState,
+    ChineseChessState, // FIXME: 有的重構囉
+    MathFormulaCard {
   players: ArraySchema<PlayerState>;
   gameStatus: GameStatus; // 遊戲狀態
   activePlayer: number; // 當前玩家
