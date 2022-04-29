@@ -1,19 +1,20 @@
 import { Schema, ArraySchema, MapSchema, type } from '@colyseus/schema';
 import RoomState from '../../base/state/RoomState';
 import { PlayerCardState } from './PlayerCardState';
+import { PlayerInfoState } from './PlayerInfoState';
 
-export interface MathFormulaCard extends Schema {
+export interface IMathFormulaCard extends Schema {
   answer: number;
-  playerCards: MapSchema<PlayerCardState>;
+  playerInfos: MapSchema<PlayerInfoState>;
 }
 
 export default class MathFormulaCardState
   extends RoomState
-  implements MathFormulaCard
+  implements IMathFormulaCard
 {
   @type('number')
   answer: number = 0;
 
-  @type({ map: PlayerCardState })
-  playerCards = new MapSchema<PlayerCardState>();
+  @type({ map: PlayerInfoState })
+  playerInfos = new MapSchema<PlayerInfoState>();
 }

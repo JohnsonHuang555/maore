@@ -10,3 +10,5 @@ export const playerIdSelector = (store: StoreState) => store.room.yourPlayerId;
 export const showGameScreenSelector = (store: StoreState) =>
   store.room.showGameScreen;
 export const messagesSelector = (store: StoreState) => store.room.messages;
+export const isAllPlayersLoadedSelector = (store: StoreState) =>
+  store.room.isAllPlayersLoaded;

@@ -1,11 +1,8 @@
+import { IPlayerCard } from 'server/games/math_formula_card/state/PlayerCardState';
 import { ActionType } from '../actions/playerCardAction';
-import { PlayerCard } from '../models/MathFormulaState';
 
 export type State = {
-  player1?: PlayerCard[];
-  player2?: PlayerCard[];
-  player3?: PlayerCard[];
-  player4?: PlayerCard[];
+  yourHandCards?: IPlayerCard[];
 };
 
 export const initialState: State = {};

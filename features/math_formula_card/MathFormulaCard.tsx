@@ -1,6 +1,9 @@
 import { RoomMessage } from '@domain/models/Message';
-import { Button } from '@mui/material';
-import { playersSelector } from '@selectors/roomSelector';
+import {
+  playersSelector,
+  isAllPlayersLoadedSelector,
+  playerIdSelector,
+} from '@selectors/roomSelector';
 import { clientRoomSelector } from '@selectors/serverSelector';
 import { useEffect, useReducer, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -11,6 +14,8 @@ import playerCardsReducer, {
 const MathFormulaCard = () => {
   const clientRoom = useSelector(clientRoomSelector);
   const players = useSelector(playersSelector);
+  const yourPlayerId = useSelector(playerIdSelector);
+  const isAllPlayerLoaded = useSelector(isAllPlayersLoadedSelector);
   const [state, dispatch] = useReducer(playerCardsReducer, initialState);
 
   useEffect(() => {
@@ -18,22 +23,40 @@ const MathFormulaCard = () => {
       throw new Error('client room not found...');
     }
 
-    console.log(players);
+    clientRoom.onMessage('message', (message) => {
+      console.log('message received from server');
+      console.log(message);
+    });
 
     // 監聽抽牌
-    clientRoom.state.playerCards.onAdd = (changes) => {
-      console.log(changes);
+    clientRoom.state.playerInfos.onAdd = (playerInfo, key) => {
+      if (key === yourPlayerId) {
+        playerInfo.cards.onAdd = (card) => {
+          console.log(card);
+        };
+      }
     };
     // 監聽出牌
-    clientRoom.state.playerCards.onRemove = (changes) => {
-      console.log(changes);
+    // clientRoom.state.playerCards.onRemove = (changes) => {
+    //   console.log(changes);
+    // };
+
+    clientRoom.send(RoomMessage.LoadedGame);
+
+    return () => {
+      clientRoom.removeAllListeners();
     };
-    // clientRoom.send(RoomMessage.CreateGame);
   }, []);
 
-  // useEffect(() => {
+  useEffect(() => {
+    if (!clientRoom) {
+      throw new Error('client room not found...');
+    }
 
-  // }, [])
+    if (isAllPlayerLoaded) {
+      clientRoom.send(RoomMessage.CreateGame);
+    }
+  }, [isAllPlayerLoaded]);
 
   return <div>123</div>;
 };
