@@ -3,11 +3,14 @@ import { Box } from '@mui/material';
 import {
   isAllPlayersLoadedSelector,
   playerIdSelector,
+  playersSelector,
+  activePlayerSelector,
 } from '@selectors/roomSelector';
 import { clientRoomSelector } from '@selectors/serverSelector';
 import { useEffect, useReducer } from 'react';
 import { useSelector } from 'react-redux';
 import Card from './components/Card';
+import OtherPlayer from './components/OtherPlayer';
 import playerCardsReducer, {
   ActionType,
   initialState,
@@ -16,6 +19,8 @@ import playerCardsReducer, {
 const MathFormulaCard = () => {
   const clientRoom = useSelector(clientRoomSelector);
   const yourPlayerId = useSelector(playerIdSelector);
+  const players = useSelector(playersSelector);
+  const activePlayer = useSelector(activePlayerSelector);
   const isAllPlayerLoaded = useSelector(isAllPlayersLoadedSelector);
   const [state, dispatch] = useReducer(playerCardsReducer, initialState);
 
@@ -40,15 +45,22 @@ const MathFormulaCard = () => {
           });
         };
       } else {
-        playerInfo.cards.onAdd = (playerCard) => {
-          dispatch({ type: ActionType.DrawOthersCard, playerId, playerCard });
+        const player = players.find((p) => p.id === playerId);
+        if (!player) {
+          throw new Error('player not found');
+        }
+        // 初始化玩家資訊
+        dispatch({
+          type: ActionType.InitOthersPlayerInfo,
+          playerId,
+          name: player.name,
+        });
+
+        playerInfo.cards.onAdd = () => {
+          dispatch({ type: ActionType.DrawOthersCard, playerId });
         };
       }
     };
-    // 監聽出牌
-    // clientRoom.state.playerCards.onRemove = (changes) => {
-    //   console.log(changes);
-    // };
 
     clientRoom.send(RoomMessage.LoadedGame);
 
@@ -68,6 +80,21 @@ const MathFormulaCard = () => {
     }
   }, [isAllPlayerLoaded]);
 
+  const renderOtherPlayer = (other: string) => {
+    const obj = state.otherPlayerDict[other];
+    return (
+      <Box sx={{ flex: 'calc(1/3)' }}>
+        <OtherPlayer
+          key={other}
+          remainCardCount={obj.remainCardCount}
+          name={obj.name}
+          point={obj.point}
+          isNowTurn={obj.isNowTurn}
+        />
+      </Box>
+    );
+  };
+
   return (
     <Box
       sx={{
@@ -78,7 +105,11 @@ const MathFormulaCard = () => {
       }}
     >
       {/* 其他玩家區塊 */}
-      <Box sx={{ flexBasis: '250px' }}></Box>
+      <Box sx={{ flexBasis: '250px', display: 'flex', alignItems: 'center' }}>
+        {Object.keys(state.otherPlayerDict).map((other) =>
+          renderOtherPlayer(other)
+        )}
+      </Box>
       {/* 答案區塊 */}
       <Box
         sx={{
@@ -88,14 +119,21 @@ const MathFormulaCard = () => {
           alignItems: 'center',
         }}
       >
-        6666
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ fontSize: '26px' }}>目標</Box>
+          <Box sx={{ fontSize: '120px' }}>66</Box>
+        </Box>
       </Box>
       {/* 自己手牌 */}
       <Box
         sx={{ flexBasis: '250px', display: 'flex', justifyContent: 'center' }}
       >
         {state.yourCards.map((card) => (
-          <Card key={card.id} value={card.cardNumber} />
+          <Card
+            key={card.id}
+            cardNumber={card.cardNumber}
+            cardSymbol={card.cardSymbol}
+          />
         ))}
       </Box>
     </Box>

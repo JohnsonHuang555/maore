@@ -1,5 +1,5 @@
 import { IPlayerCard } from 'server/games/math_formula_card/state/PlayerCardState';
-import { OtherPlayerCard } from '../models/OtherPlayerCard';
+import { OtherPlayerDict, OthersPlayerInfo } from '../models/OtherPlayerCard';
 
 export enum ActionType {
   DrawCard = 'DrawCard',
@@ -7,18 +7,22 @@ export enum ActionType {
   // 其他玩家手牌只記剩餘數量就可以
   DrawOthersCard = 'DrawOthersCard',
   UseOthersCard = 'UseOthersCard',
+  InitOthersPlayerInfo = 'InitOthersPlayerInfo',
+  UpdateOthersPlayerInfo = 'UpdateOthersPlayerInfo',
 }
 
 export type State = {
   // 你的手牌
   yourCards: IPlayerCard[];
+  yourPoint: number;
   // 其他玩家手牌
-  otherPlayerCard: OtherPlayerCard;
+  otherPlayerDict: OtherPlayerDict;
 };
 
 export const initialState: State = {
   yourCards: [],
-  otherPlayerCard: {},
+  yourPoint: 0,
+  otherPlayerDict: {},
 };
 
 type DrawCardAction = {
@@ -34,7 +38,6 @@ type UseCardAction = {
 type DrawOthersCardAction = {
   type: ActionType.DrawOthersCard;
   playerId: string;
-  playerCard: IPlayerCard;
 };
 
 type UseOthersCardAction = {
@@ -42,11 +45,25 @@ type UseOthersCardAction = {
   playerId: string;
 };
 
+type InitOthersInfoAction = {
+  type: ActionType.InitOthersPlayerInfo;
+  playerId: string;
+  name: string;
+};
+
+type UpdateOthersInfoAction = {
+  type: ActionType.UpdateOthersPlayerInfo;
+  playerId: string;
+  playerInfo: Partial<OthersPlayerInfo>;
+};
+
 type Action =
   | DrawCardAction
   | UseCardAction
   | DrawOthersCardAction
-  | UseOthersCardAction;
+  | UseOthersCardAction
+  | InitOthersInfoAction
+  | UpdateOthersInfoAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -64,29 +81,48 @@ const reducer = (state = initialState, action: Action): State => {
       };
     }
     case ActionType.DrawOthersCard: {
-      // 新增其他玩家的牌數
-      const newState = { ...state.otherPlayerCard };
-      if (state.otherPlayerCard.hasOwnProperty(action.playerId)) {
-        const newValue = newState[action.playerId];
-        newState[action.playerId] = newValue + 1;
-      } else {
-        newState[action.playerId] = 1;
-      }
-
+      // 其他玩家抽牌
+      const newState = { ...state.otherPlayerDict };
+      newState[action.playerId].remainCardCount++;
       return {
         ...state,
-        otherPlayerCard: newState,
+        otherPlayerDict: newState,
       };
     }
     case ActionType.UseOthersCard: {
-      // 扣除其他玩家的牌數
-      const newState = { ...state.otherPlayerCard };
-      const newValue = newState[action.playerId];
-      newState[action.playerId] = newValue - 1;
+      // 其他玩家出牌
+      const newState = { ...state.otherPlayerDict };
+      newState[action.playerId].remainCardCount--;
+      return {
+        ...state,
+        otherPlayerDict: newState,
+      };
+    }
+    case ActionType.InitOthersPlayerInfo: {
+      // 初始化玩家資訊
+      const newState = { ...state.otherPlayerDict };
+      newState[action.playerId] = {
+        remainCardCount: 0,
+        name: action.name,
+        point: 0,
+        isNowTurn: false,
+      };
+      return {
+        ...state,
+        otherPlayerDict: newState,
+      };
+    }
+    case ActionType.UpdateOthersPlayerInfo: {
+      // 更新其他玩家的資訊
+      const newState = { ...state.otherPlayerDict };
+      newState[action.playerId] = {
+        ...newState[action.playerId],
+        ...action.playerInfo,
+      };
 
       return {
         ...state,
-        otherPlayerCard: newState,
+        otherPlayerDict: newState,
       };
     }
     default: {

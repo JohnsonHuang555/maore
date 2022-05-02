@@ -33,6 +33,12 @@ export default class CreateGameCommand extends Command<MathFormulaCardState> {
           cardSymbol: CardSymbol.Plus,
         })
       );
+      cards.push(
+        new PlayerCardState({
+          id: '4',
+          cardSymbol: CardSymbol.Divide,
+        })
+      );
       this.room.state.playerInfos.set(id, new PlayerInfoState({ cards }));
     });
   }
