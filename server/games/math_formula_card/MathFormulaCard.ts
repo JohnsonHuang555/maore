@@ -20,8 +20,8 @@ export default class MathFormulaCard extends Room<
     this.baseRoom.setMaxClient(4);
     this.setState(new MathFormulaCardState());
 
-    this.onMessage(RoomMessage.CreateGame, (client) => {
-      this.dispatcher.dispatch(new CreateGameCommand(), { client });
+    this.onMessage(RoomMessage.CreateGame, () => {
+      this.dispatcher.dispatch(new CreateGameCommand());
     });
   }
 
