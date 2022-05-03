@@ -40,7 +40,7 @@ const Home = () => {
       <Container maxWidth={false} style={{ marginTop: '20px' }}>
         <Grid container spacing={2}>
           {games.map((game) => (
-            <Grid key={game.id} item lg={3} md={4} sm={6} xs={12}>
+            <Grid key={game.id} item xl={2} lg={3} md={4} sm={6} xs={12}>
               <GameCard
                 game={game}
                 onSelectGame={() => router.push(`/games/${game.gamePack}`)}

@@ -12,7 +12,9 @@ export default class CreateGameCommand extends Command<MathFormulaCardState> {
     const answer = Random.getRangeNumbers(0, 100, 1);
     this.room.state.answer = answer[0];
     const playerIds = this.room.state.players.map((p) => p.id);
+    console.log(this.state.players.length);
     playerIds.forEach((id) => {
+      console.log('in', id);
       const cards = new ArraySchema<PlayerCardState>();
       // FIXME: 假資料
       cards.push(

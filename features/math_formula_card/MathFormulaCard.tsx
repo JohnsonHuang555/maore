@@ -16,7 +16,12 @@ import playerCardsReducer, {
   initialState,
 } from './reducers/playerCardsReducer';
 
-const MathFormulaCard = () => {
+type MathFormulaCardProps = {
+  isMaster: boolean;
+};
+
+const MathFormulaCard = (props: MathFormulaCardProps) => {
+  const { isMaster } = props;
   const clientRoom = useSelector(clientRoomSelector);
   const yourPlayerId = useSelector(playerIdSelector);
   const players = useSelector(playersSelector);
@@ -75,7 +80,7 @@ const MathFormulaCard = () => {
     }
 
     // 當所有玩家載入完成，即打建立遊戲事件
-    if (isAllPlayerLoaded) {
+    if (isAllPlayerLoaded && isMaster) {
       clientRoom.send(RoomMessage.CreateGame);
     }
   }, [isAllPlayerLoaded]);
@@ -83,9 +88,8 @@ const MathFormulaCard = () => {
   const renderOtherPlayer = (other: string) => {
     const obj = state.otherPlayerDict[other];
     return (
-      <Box sx={{ flex: 'calc(1/3)' }}>
+      <Box sx={{ flex: 'calc(1/3)' }} key={other}>
         <OtherPlayer
-          key={other}
           remainCardCount={obj.remainCardCount}
           name={obj.name}
           point={obj.point}

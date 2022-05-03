@@ -76,8 +76,6 @@ const Rooms = () => {
   }, [roomId, createdRoomId]);
   // use effect end
 
-  console.log('rerender');
-
   // console.log(roomInfo);
   // const { data: game, error } = useSWR<Game, Error>(
   //   roomInfo ? `/api/game/${roomInfo.gamePack}` : null,
@@ -139,7 +137,9 @@ const Rooms = () => {
           </Grid>
         </Grid>
       </Container>
-      {showGameScreen && <DynamicGameScreenWithNoSSR />}
+      {showGameScreen && (
+        <DynamicGameScreenWithNoSSR isMaster={checkIsMaster()} />
+      )}
     </Layout>
   );
 };

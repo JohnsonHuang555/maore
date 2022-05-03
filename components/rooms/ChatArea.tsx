@@ -44,6 +44,8 @@ const ChatArea = (props: ChatAreaProps) => {
         backgroundColor: 'primary.dark',
         padding: '10px',
         borderRadius: '10px',
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
       <Box
