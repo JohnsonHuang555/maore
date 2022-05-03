@@ -1,7 +1,7 @@
 const DivideIcon = () => {
   return (
     <svg
-      style={{ width: '1em', height: '1em', fontSize: '2rem', fill: 'white' }}
+      style={{ width: '1em', height: '1em', fontSize: '1.8rem', fill: 'white' }}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 448 512"
     >

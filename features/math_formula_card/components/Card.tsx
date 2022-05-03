@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, Paper } from '@mui/material';
 import { CardSymbol } from 'server/games/math_formula_card/state/PlayerCardState';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -33,32 +33,27 @@ const symbolDict: { [key: string]: React.ReactNode } = {
 
 type CardProps = {
   size?: 'medium' | 'small';
-  cardNumber?: number;
-  cardSymbol?: CardSymbol;
+  value?: number | CardSymbol;
   hideCard?: boolean;
+  onSelect: (val: number | CardSymbol) => void;
 };
 
 const Card = (props: CardProps) => {
-  const { cardNumber, cardSymbol, hideCard = false, size = 'medium' } = props;
+  const { value, hideCard = false, size = 'medium', onSelect } = props;
+
+  if (!value) {
+    return null;
+  }
 
   const getLabel = () => {
-    if (cardNumber) {
-      return cardNumber;
-    } else if (cardSymbol) {
-      return symbolDict[cardSymbol];
-    } else {
-      return null;
+    if (!isNaN(value as number)) {
+      return value;
     }
+    return symbolDict[value];
   };
 
   const getBrief = () => {
-    if (cardNumber) {
-      return labelDict[cardNumber];
-    } else if (cardSymbol) {
-      return labelDict[cardSymbol];
-    } else {
-      return null;
-    }
+    return labelDict[value];
   };
 
   const getSize = () => {
@@ -75,7 +70,8 @@ const Card = (props: CardProps) => {
   };
 
   return (
-    <Box
+    <Paper
+      elevation={4}
       sx={{
         width: getSize().width,
         height: getSize().height,
@@ -83,12 +79,19 @@ const Card = (props: CardProps) => {
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column',
-        backgroundColor: 'black',
+        backgroundColor: '#1d1d1d',
         margin: '0 10px',
+        cursor: 'pointer',
+        transition: 'all 0.2s',
+        pointerEvents: hideCard ? 'none' : 'auto',
+        ':hover': {
+          backgroundColor: 'rgba(0,0,0,0.25)',
+        },
       }}
+      onClick={() => onSelect(value)}
     >
       {hideCard ? (
-        <Box sx={{ backgroundColor: 'black' }} />
+        <Box />
       ) : (
         <>
           <Box sx={{ fontSize: '50px', marginBottom: '10px' }}>
@@ -97,7 +100,7 @@ const Card = (props: CardProps) => {
           <Box>{getBrief()}</Box>
         </>
       )}
-    </Box>
+    </Paper>
   );
 };
 

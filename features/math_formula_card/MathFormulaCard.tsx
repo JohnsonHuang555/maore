@@ -9,6 +9,7 @@ import {
 import { clientRoomSelector } from '@selectors/serverSelector';
 import { useEffect, useReducer } from 'react';
 import { useSelector } from 'react-redux';
+import { CardSymbol } from 'server/games/math_formula_card/state/PlayerCardState';
 import Card from './components/Card';
 import OtherPlayer from './components/OtherPlayer';
 import playerCardsReducer, {
@@ -99,6 +100,10 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     );
   };
 
+  const handleSelectCard = (val: number | CardSymbol) => {
+    console.log(val);
+  };
+
   return (
     <Box
       sx={{
@@ -130,13 +135,23 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
       </Box>
       {/* 自己手牌 */}
       <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginBottom: '30px',
+          fontSize: '40px',
+        }}
+      >
+        1+2+3
+      </Box>
+      <Box
         sx={{ flexBasis: '250px', display: 'flex', justifyContent: 'center' }}
       >
         {state.yourCards.map((card) => (
           <Card
             key={card.id}
-            cardNumber={card.cardNumber}
-            cardSymbol={card.cardSymbol}
+            value={card.cardNumber || card.cardSymbol}
+            onSelect={handleSelectCard}
           />
         ))}
       </Box>

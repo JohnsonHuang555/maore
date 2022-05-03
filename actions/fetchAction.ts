@@ -18,8 +18,6 @@ export const fetchGame = async (url: string): Promise<Game> => {
   const res = await axios.get<NetGame>(url);
   const game = GameFactory.createFromNet(res.data);
 
-  console.log(game);
-
   if (res.status !== 200) {
     throw new Error('Get game failed');
   }
