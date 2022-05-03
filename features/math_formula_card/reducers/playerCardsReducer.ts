@@ -1,9 +1,13 @@
-import { IPlayerCard } from 'server/games/math_formula_card/state/PlayerCardState';
+import {
+  CardSymbol,
+  IPlayerCard,
+} from 'server/games/math_formula_card/state/PlayerCardState';
 import { OtherPlayerDict, OthersPlayerInfo } from '../models/OtherPlayerCard';
 
 export enum ActionType {
   DrawCard = 'DrawCard',
   UseCard = 'UseCard',
+  SelectCard = 'SelectCard',
   // 其他玩家手牌只記剩餘數量就可以
   DrawOthersCard = 'DrawOthersCard',
   UseOthersCard = 'UseOthersCard',
@@ -11,10 +15,16 @@ export enum ActionType {
   UpdateOthersPlayerInfo = 'UpdateOthersPlayerInfo',
 }
 
+type SelectedCard = {
+  id: string;
+  value: number | CardSymbol;
+};
+
 export type State = {
   // 你的手牌
   yourCards: IPlayerCard[];
   yourPoint: number;
+  selectedCards: SelectedCard[];
   // 其他玩家手牌
   otherPlayerDict: OtherPlayerDict;
 };
@@ -22,6 +32,7 @@ export type State = {
 export const initialState: State = {
   yourCards: [],
   yourPoint: 0,
+  selectedCards: [],
   otherPlayerDict: {},
 };
 
@@ -57,13 +68,20 @@ type UpdateOthersInfoAction = {
   playerInfo: Partial<OthersPlayerInfo>;
 };
 
+type SelectCardAction = {
+  type: ActionType.SelectCard;
+  id: string;
+  value: number | CardSymbol;
+};
+
 type Action =
   | DrawCardAction
   | UseCardAction
   | DrawOthersCardAction
   | UseOthersCardAction
   | InitOthersInfoAction
-  | UpdateOthersInfoAction;
+  | UpdateOthersInfoAction
+  | SelectCardAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -123,6 +141,19 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         otherPlayerDict: newState,
+      };
+    }
+    case ActionType.SelectCard: {
+      let newCards = [...state.selectedCards];
+      const hasExist = newCards.findIndex((card) => card.id === action.id);
+      if (hasExist !== -1) {
+        newCards.splice(hasExist, 1);
+      } else {
+        newCards = [...newCards, { id: action.id, value: action.value }];
+      }
+      return {
+        ...state,
+        selectedCards: newCards,
       };
     }
     default: {

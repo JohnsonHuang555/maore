@@ -1,3 +1,4 @@
+import { setSnackbar } from '@actions/appAction';
 import { RoomMessage } from '@domain/models/Message';
 import { Box } from '@mui/material';
 import {
@@ -8,7 +9,7 @@ import {
 } from '@selectors/roomSelector';
 import { clientRoomSelector } from '@selectors/serverSelector';
 import { useEffect, useReducer } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { CardSymbol } from 'server/games/math_formula_card/state/PlayerCardState';
 import Card from './components/Card';
 import OtherPlayer from './components/OtherPlayer';
@@ -23,12 +24,13 @@ type MathFormulaCardProps = {
 
 const MathFormulaCard = (props: MathFormulaCardProps) => {
   const { isMaster } = props;
+  const dispatch = useDispatch();
   const clientRoom = useSelector(clientRoomSelector);
   const yourPlayerId = useSelector(playerIdSelector);
   const players = useSelector(playersSelector);
   const activePlayer = useSelector(activePlayerSelector);
   const isAllPlayerLoaded = useSelector(isAllPlayersLoadedSelector);
-  const [state, dispatch] = useReducer(playerCardsReducer, initialState);
+  const [state, localDispatch] = useReducer(playerCardsReducer, initialState);
 
   useEffect(() => {
     if (!clientRoom) {
@@ -45,7 +47,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
       if (playerId === yourPlayerId) {
         playerInfo.cards.onAdd = (playerCard) => {
           const { id, cardNumber, cardSymbol } = playerCard;
-          dispatch({
+          localDispatch({
             type: ActionType.DrawCard,
             playerCard: { id, cardNumber, cardSymbol },
           });
@@ -56,14 +58,14 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           throw new Error('player not found');
         }
         // 初始化玩家資訊
-        dispatch({
+        localDispatch({
           type: ActionType.InitOthersPlayerInfo,
           playerId,
           name: player.name,
         });
 
         playerInfo.cards.onAdd = () => {
-          dispatch({ type: ActionType.DrawOthersCard, playerId });
+          localDispatch({ type: ActionType.DrawOthersCard, playerId });
         };
       }
     };
@@ -83,6 +85,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     // 當所有玩家載入完成，即打建立遊戲事件
     if (isAllPlayerLoaded && isMaster) {
       clientRoom.send(RoomMessage.CreateGame);
+      clientRoom.send(RoomMessage.CreatePlayerOrder);
     }
   }, [isAllPlayerLoaded]);
 
@@ -100,8 +103,22 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     );
   };
 
-  const handleSelectCard = (val: number | CardSymbol) => {
-    console.log(val);
+  const handleSelectCard = (id: string, value: number | CardSymbol) => {
+    const player = players.find((p) => p.id === yourPlayerId);
+    if (!player) {
+      throw new Error('player not found');
+    }
+    // 還沒輪到你
+    if (player.playerIndex !== activePlayer) {
+      dispatch(
+        setSnackbar({
+          show: true,
+          message: '還沒輪到你',
+        })
+      );
+      return;
+    }
+    localDispatch({ type: ActionType.SelectCard, id, value });
   };
 
   return (
@@ -134,22 +151,31 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
         </Box>
       </Box>
       {/* 自己手牌 */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: '30px',
-          fontSize: '40px',
-        }}
-      >
-        1+2+3
-      </Box>
+      {state.selectedCards.length > 0 && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginBottom: '30px',
+            fontSize: '40px',
+            background: 'rgba(0,0,0,0.2)',
+            padding: '10px',
+          }}
+        >
+          {state.selectedCards.map((selectedCard, index) => (
+            <Box key={index} sx={{ display: 'flex', alignItems: 'center' }}>
+              {Card.getLabel(selectedCard.value)}
+            </Box>
+          ))}
+        </Box>
+      )}
       <Box
         sx={{ flexBasis: '250px', display: 'flex', justifyContent: 'center' }}
       >
         {state.yourCards.map((card) => (
           <Card
             key={card.id}
+            id={card.id}
             value={card.cardNumber || card.cardSymbol}
             onSelect={handleSelectCard}
           />

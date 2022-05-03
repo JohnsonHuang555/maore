@@ -32,25 +32,19 @@ const symbolDict: { [key: string]: React.ReactNode } = {
 };
 
 type CardProps = {
+  id: string;
   size?: 'medium' | 'small';
   value?: number | CardSymbol;
   hideCard?: boolean;
-  onSelect: (val: number | CardSymbol) => void;
+  onSelect: (id: string, val: number | CardSymbol) => void;
 };
 
 const Card = (props: CardProps) => {
-  const { value, hideCard = false, size = 'medium', onSelect } = props;
+  const { id, value, hideCard = false, size = 'medium', onSelect } = props;
 
   if (!value) {
     return null;
   }
-
-  const getLabel = () => {
-    if (!isNaN(value as number)) {
-      return value;
-    }
-    return symbolDict[value];
-  };
 
   const getBrief = () => {
     return labelDict[value];
@@ -88,20 +82,27 @@ const Card = (props: CardProps) => {
           backgroundColor: 'rgba(0,0,0,0.25)',
         },
       }}
-      onClick={() => onSelect(value)}
+      onClick={() => onSelect(id, value)}
     >
       {hideCard ? (
         <Box />
       ) : (
         <>
           <Box sx={{ fontSize: '50px', marginBottom: '10px' }}>
-            {getLabel()}
+            {Card.getLabel(value)}
           </Box>
           <Box>{getBrief()}</Box>
         </>
       )}
     </Paper>
   );
+};
+
+Card.getLabel = (value: number | CardSymbol) => {
+  if (!isNaN(value as number)) {
+    return value;
+  }
+  return symbolDict[value];
 };
 
 export default Card;
