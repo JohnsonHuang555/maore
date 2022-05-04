@@ -89,6 +89,18 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     }
   }, [isAllPlayerLoaded]);
 
+  useEffect(() => {
+    if (state.errorMsg) {
+      dispatch(
+        setSnackbar({
+          show: true,
+          message: state.errorMsg,
+        })
+      );
+      localDispatch({ type: ActionType.ClearErrorMsg });
+    }
+  }, [state.errorMsg]);
+
   const renderOtherPlayer = (other: string) => {
     const obj = state.otherPlayerDict[other];
     return (
