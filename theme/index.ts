@@ -25,9 +25,6 @@ const theme = createTheme({
     error: {
       main: '#de6f6f',
     },
-    background: {
-      default: '#121314',
-    },
   },
 });
 

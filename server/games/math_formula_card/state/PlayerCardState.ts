@@ -1,11 +1,18 @@
 import { Schema, type } from '@colyseus/schema';
 
 export enum CardSymbol {
-  Plus = 'plus',
-  Minus = 'minus',
-  Times = 'times',
-  Divide = 'divide',
+  Plus = '+',
+  Minus = '-',
+  Times = '*',
+  Divide = '/',
 }
+
+export const CardSymbols = [
+  CardSymbol.Plus,
+  CardSymbol.Minus,
+  CardSymbol.Times,
+  CardSymbol.Divide,
+];
 
 // 可能為 數字牌、運算符號牌、功能牌等等
 export interface IPlayerCard {

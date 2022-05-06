@@ -25,6 +25,7 @@
     "express": "^4.17.1",
     "kaboom": "^2000.2.8",
     "lodash": "^4.17.21",
+    "mathjs": "^10.5.1",
     "next": "10.0.9",
     "phaser": "^3.54.0",
     "phaser3-rex-plugins": "^1.1.59",

@@ -1,6 +1,6 @@
 import { setSnackbar } from '@actions/appAction';
 import { RoomMessage } from '@domain/models/Message';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import {
   isAllPlayersLoadedSelector,
   playerIdSelector,
@@ -10,9 +10,13 @@ import {
 import { clientRoomSelector } from '@selectors/serverSelector';
 import { useEffect, useReducer } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { CardSymbol } from 'server/games/math_formula_card/state/PlayerCardState';
+import {
+  CardSymbol,
+  IPlayerCard,
+} from 'server/games/math_formula_card/state/PlayerCardState';
 import Card from './components/Card';
 import OtherPlayer from './components/OtherPlayer';
+import { MathFormulaCardMessage } from './models/MathFormulaCardMessage';
 import playerCardsReducer, {
   ActionType,
   initialState,
@@ -32,15 +36,29 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
   const isAllPlayerLoaded = useSelector(isAllPlayersLoadedSelector);
   const [state, localDispatch] = useReducer(playerCardsReducer, initialState);
 
-  useEffect(() => {
-    if (!clientRoom) {
-      throw new Error('client room not found...');
-    }
+  if (!clientRoom) {
+    throw new Error('client room not found...');
+  }
 
-    // clientRoom.onMessage('message', (message) => {
-    //   console.log('message received from server');
-    //   console.log(message);
-    // });
+  useEffect(() => {
+    // listening message from server
+    clientRoom.onMessage('UseCardsFailed', ({ message }) => {
+      dispatch(
+        setSnackbar({
+          show: true,
+          message,
+        })
+      );
+    });
+
+    clientRoom.onMessage(MathFormulaCardMessage.AnswerCorrectly, () => {
+      dispatch(
+        setSnackbar({
+          show: true,
+          message: '答對了',
+        })
+      );
+    });
 
     // 監聽抽牌
     clientRoom.state.playerInfos.onAdd = (playerInfo, playerId) => {
@@ -78,10 +96,6 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
   }, []);
 
   useEffect(() => {
-    if (!clientRoom) {
-      throw new Error('client room not found...');
-    }
-
     // 當所有玩家載入完成，即打建立遊戲事件
     if (isAllPlayerLoaded && isMaster) {
       clientRoom.send(RoomMessage.CreateGame);
@@ -102,14 +116,15 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
   }, [state.errorMsg]);
 
   const renderOtherPlayer = (other: string) => {
-    const obj = state.otherPlayerDict[other];
+    const { remainCardCount, name, point, isNowTurn } =
+      state.otherPlayerDict[other];
     return (
-      <Box sx={{ flex: 'calc(1/3)' }} key={other}>
+      <Box sx={{ flex: 1 }} key={other}>
         <OtherPlayer
-          remainCardCount={obj.remainCardCount}
-          name={obj.name}
-          point={obj.point}
-          isNowTurn={obj.isNowTurn}
+          remainCardCount={remainCardCount}
+          name={name}
+          point={point}
+          isNowTurn={isNowTurn}
         />
       </Box>
     );
@@ -133,6 +148,22 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     localDispatch({ type: ActionType.SelectCard, id, value });
   };
 
+  const useCards = () => {
+    const netCards: IPlayerCard[] = state.selectedCards.map((card) => {
+      if (!isNaN(card.value as number)) {
+        return {
+          id: card.id,
+          cardNumber: card.value as number,
+        };
+      }
+      return {
+        id: card.id,
+        cardSymbol: card.value as CardSymbol,
+      };
+    });
+    clientRoom.send(MathFormulaCardMessage.UseCards, { cards: netCards });
+  };
+
   return (
     <Box
       sx={{
@@ -143,7 +174,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
       }}
     >
       {/* 其他玩家區塊 */}
-      <Box sx={{ flexBasis: '250px', display: 'flex', alignItems: 'center' }}>
+      <Box sx={{ flexBasis: '220px', display: 'flex', alignItems: 'center' }}>
         {Object.keys(state.otherPlayerDict).map((other) =>
           renderOtherPlayer(other)
         )}
@@ -155,32 +186,36 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          position: 'relative',
         }}
       >
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ fontSize: '26px' }}>目標</Box>
           <Box sx={{ fontSize: '120px' }}>66</Box>
         </Box>
+        {state.selectedCards.length > 0 && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: '30px',
+              fontSize: '40px',
+              background: 'rgba(0,0,0,0.2)',
+              padding: '10px 20px',
+              position: 'absolute',
+              bottom: 0,
+              minWidth: '200px',
+            }}
+          >
+            {state.selectedCards.map((selectedCard, index) => (
+              <Box key={index} sx={{ display: 'flex', alignItems: 'center' }}>
+                {Card.getLabel(selectedCard.value)}
+              </Box>
+            ))}
+          </Box>
+        )}
       </Box>
       {/* 自己手牌 */}
-      {state.selectedCards.length > 0 && (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginBottom: '30px',
-            fontSize: '40px',
-            background: 'rgba(0,0,0,0.2)',
-            padding: '10px',
-          }}
-        >
-          {state.selectedCards.map((selectedCard, index) => (
-            <Box key={index} sx={{ display: 'flex', alignItems: 'center' }}>
-              {Card.getLabel(selectedCard.value)}
-            </Box>
-          ))}
-        </Box>
-      )}
       <Box
         sx={{ flexBasis: '250px', display: 'flex', justifyContent: 'center' }}
       >
@@ -188,10 +223,54 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           <Card
             key={card.id}
             id={card.id}
-            value={card.cardNumber || card.cardSymbol}
+            value={card.cardSymbol || card.cardNumber}
             onSelect={handleSelectCard}
           />
         ))}
+      </Box>
+      {/* 操作 */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: '20px',
+          gap: '15px',
+        }}
+      >
+        <Button
+          sx={{
+            minWidth: '100px',
+            backgroundColor: '#555454',
+            ':hover': { backgroundColor: '#454444' },
+          }}
+          variant="contained"
+          size="large"
+          onClick={() => {}}
+        >
+          排序
+        </Button>
+        <Button
+          sx={{
+            minWidth: '100px',
+            backgroundColor: '#555454',
+            ':hover': { backgroundColor: '#454444' },
+          }}
+          variant="contained"
+          size="large"
+          onClick={() => {}}
+        >
+          重選
+        </Button>
+        <Button
+          sx={{ minWidth: '150px' }}
+          variant="contained"
+          size="large"
+          color="secondary"
+          onClick={() => useCards()}
+        >
+          出牌
+        </Button>
       </Box>
     </Box>
   );

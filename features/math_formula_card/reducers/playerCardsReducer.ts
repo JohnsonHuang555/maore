@@ -193,6 +193,18 @@ const reducer = (state = initialState, action: Action): State => {
           errorMsg: '符號不能排第一張',
         };
       }
+
+      if (
+        newCards.length > 2 &&
+        CardSymbols.includes(action.value as CardSymbol) &&
+        CardSymbols.includes(newCards[newCards.length - 2].value as CardSymbol)
+      ) {
+        return {
+          ...state,
+          errorMsg: '不能連續兩個符號',
+        };
+      }
+
       return {
         ...state,
         selectedCards: newCards,

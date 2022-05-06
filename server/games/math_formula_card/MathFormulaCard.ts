@@ -6,6 +6,9 @@ import MathFormulaCardState from './state/MathFormulaCardState';
 import ResetCommand from './commands/ResetCommand';
 import { RoomMessage } from '../../../domain/models/Message';
 import CreateGameCommand from './commands/CreateGameCommand';
+import { MathFormulaCardMessage } from '../../../features/math_formula_card/models/MathFormulaCardMessage';
+import UseCardsCommand from './commands/UseCardsCommand';
+import { IPlayerCard } from './state/PlayerCardState';
 
 export default class MathFormulaCard extends Room<
   MathFormulaCardState,
@@ -23,6 +26,16 @@ export default class MathFormulaCard extends Room<
     this.onMessage(RoomMessage.CreateGame, () => {
       this.dispatcher.dispatch(new CreateGameCommand());
     });
+
+    this.onMessage(
+      MathFormulaCardMessage.UseCards,
+      (client, message: { cards: IPlayerCard[] }) => {
+        this.dispatcher.dispatch(new UseCardsCommand(), {
+          client,
+          cards: message.cards,
+        });
+      }
+    );
   }
 
   onJoin(client: Client, option: Metadata) {

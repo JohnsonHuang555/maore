@@ -8,16 +8,16 @@ import DivideIcon from '@components/icons/DivideIcon';
 
 // TODO: 之後要做多國
 const labelDict: { [key: string]: string } = {
-  0: '零',
-  1: '一',
-  2: '二',
-  3: '三',
-  4: '四',
-  5: '五',
-  6: '六',
-  7: '七',
-  8: '八',
-  9: '九',
+  '0': '零',
+  '1': '一',
+  '2': '二',
+  '3': '三',
+  '4': '四',
+  '5': '五',
+  '6': '六',
+  '7': '七',
+  '8': '八',
+  '9': '九',
   [CardSymbol.Plus]: '加',
   [CardSymbol.Minus]: '減',
   [CardSymbol.Times]: '乘',
@@ -32,22 +32,18 @@ const symbolDict: { [key: string]: React.ReactNode } = {
 };
 
 type CardProps = {
-  id: string;
+  id?: string;
   size?: 'medium' | 'small';
   value?: number | CardSymbol;
   hideCard?: boolean;
-  onSelect: (id: string, val: number | CardSymbol) => void;
+  onSelect?: (id: string, val: number | CardSymbol) => void;
 };
 
 const Card = (props: CardProps) => {
   const { id, value, hideCard = false, size = 'medium', onSelect } = props;
 
-  if (!value) {
-    return null;
-  }
-
   const getBrief = () => {
-    return labelDict[value];
+    return labelDict[value as number | CardSymbol];
   };
 
   const getSize = () => {
@@ -82,14 +78,18 @@ const Card = (props: CardProps) => {
           backgroundColor: 'rgba(0,0,0,0.25)',
         },
       }}
-      onClick={() => onSelect(id, value)}
+      onClick={() => {
+        if (id && onSelect && value !== undefined) {
+          onSelect(id, value);
+        }
+      }}
     >
       {hideCard ? (
         <Box />
       ) : (
         <>
           <Box sx={{ fontSize: '50px', marginBottom: '10px' }}>
-            {Card.getLabel(value)}
+            {Card.getLabel(value as number | CardSymbol)}
           </Box>
           <Box>{getBrief()}</Box>
         </>
@@ -98,6 +98,7 @@ const Card = (props: CardProps) => {
   );
 };
 
+// 開給外面 function call
 Card.getLabel = (value: number | CardSymbol) => {
   if (!isNaN(value as number)) {
     return value;

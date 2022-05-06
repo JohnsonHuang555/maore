@@ -7,6 +7,14 @@ type OtherPlayerProps = OthersPlayerInfo;
 
 const OtherPlayer = (props: OtherPlayerProps) => {
   const { remainCardCount, name, point, isNowTurn } = props;
+  const renderCards = () => {
+    const cards = [];
+    for (let i = 0; i < remainCardCount; i++) {
+      cards.push(<Card key={i} hideCard={true} size="small" />);
+    }
+    return cards;
+  };
+
   return (
     <Box sx={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
       <Box
@@ -29,11 +37,17 @@ const OtherPlayer = (props: OtherPlayerProps) => {
       <Box
         sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
-        <Card hideCard={true} size="small" />
-        <CloseIcon />
-        <Box sx={{ fontSize: '40px', marginLeft: '10px' }}>
-          {remainCardCount}
-        </Box>
+        {remainCardCount <= 5 ? (
+          renderCards()
+        ) : (
+          <>
+            <Card hideCard={true} size="small" />
+            <CloseIcon />
+            <Box sx={{ fontSize: '40px', marginLeft: '10px' }}>
+              {remainCardCount}
+            </Box>
+          </>
+        )}
       </Box>
     </Box>
   );

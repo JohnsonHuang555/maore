@@ -9,7 +9,7 @@ export default class Random {
   }
 
   /** 隨機排序 使用 Fisher-Yates Shuffling 演算法 */
-  static getShuffleNumbers(min: number = 0, max: number) {
+  static getShuffleNumbers(min: number = 0, max: number): number[] {
     const arr = [];
     for (let i = min; i <= max; i++) {
       arr.push(i);
@@ -21,6 +21,16 @@ export default class Random {
       temp = arr[i];
       arr[i] = arr[j];
       arr[j] = temp;
+    }
+    return arr;
+  }
+
+  /** 在指定的陣列中隨機抽取任幾個元素 */
+  static getRandomValuesByArray<T>(data: T[], count: number): T[] {
+    const arr: T[] = [];
+    for (let i = 0; i < count; i++) {
+      const randomIndex = Math.floor(Math.random() * data.length);
+      arr.push(data[randomIndex]);
     }
     return arr;
   }
