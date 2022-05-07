@@ -8,7 +8,7 @@ import {
   activePlayerSelector,
 } from '@selectors/roomSelector';
 import { clientRoomSelector } from '@selectors/serverSelector';
-import { useEffect, useReducer } from 'react';
+import { useEffect, useMemo, useReducer } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   CardSymbol,
@@ -133,8 +133,8 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
   }, []);
 
   useEffect(() => {
-    // 當所有玩家載入完成，即打建立遊戲事件
-    if (isAllPlayerLoaded && isMaster) {
+    // 當所有玩家載入完成，即打建立遊戲事件並判斷只打一次
+    if (isAllPlayerLoaded && isMaster && state.answers.length === 0) {
       clientRoom.send(RoomMessage.CreateGame);
       clientRoom.send(RoomMessage.CreatePlayerOrder);
     }
@@ -256,12 +256,16 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           justifyContent: 'center',
           alignItems: 'center',
           position: 'relative',
+          flexDirection: 'column',
         }}
       >
         {state.answers.map((answer) => (
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Box
+            key={`answer-${answer}`}
+            sx={{ display: 'flex', flexDirection: 'column' }}
+          >
             <Box sx={{ fontSize: '26px' }}>題目</Box>
-            <Box sx={{ fontSize: '120px' }}>{answer}</Box>
+            <Box sx={{ fontSize: '120px' }}>={answer}</Box>
           </Box>
         ))}
         {state.selectedCards.length > 0 && (
