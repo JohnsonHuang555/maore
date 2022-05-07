@@ -34,7 +34,10 @@ export default class CreateGameCommand extends Command<MathFormulaCardState> {
           })
         );
       });
-      this.room.state.playerInfos.set(id, new PlayerInfoState({ cards }));
+      this.room.state.playerInfos.set(
+        id,
+        new PlayerInfoState({ cards, point: 0 })
+      );
     });
   }
 }

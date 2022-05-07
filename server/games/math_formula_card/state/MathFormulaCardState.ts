@@ -12,7 +12,7 @@ export default class MathFormulaCardState
   implements IMathFormulaCard
 {
   @type('number')
-  answer: number = 4;
+  answer: number = -999;
 
   @type({ map: PlayerInfoState })
   playerInfos = new MapSchema<PlayerInfoState>();

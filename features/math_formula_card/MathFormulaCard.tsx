@@ -63,6 +63,20 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     // 監聽抽牌
     clientRoom.state.playerInfos.onAdd = (playerInfo, playerId) => {
       if (playerId === yourPlayerId) {
+        playerInfo.onChange = (changes) => {
+          changes.forEach((change) => {
+            const { field, value } = change;
+            switch (field) {
+              case 'point': {
+                localDispatch({
+                  type: ActionType.UpdateYourPoint,
+                  point: value,
+                });
+                break;
+              }
+            }
+          });
+        };
         playerInfo.cards.onAdd = (playerCard) => {
           const { id, cardNumber, cardSymbol } = playerCard;
           localDispatch({
@@ -81,6 +95,24 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           playerId,
           name: player.name,
         });
+
+        playerInfo.onChange = (changes) => {
+          changes.forEach((change) => {
+            const { field, value } = change;
+            switch (field) {
+              case 'point': {
+                localDispatch({
+                  type: ActionType.UpdateOthersPlayerInfo,
+                  playerId,
+                  playerInfo: {
+                    point: value,
+                  },
+                });
+                break;
+              }
+            }
+          });
+        };
 
         playerInfo.cards.onAdd = () => {
           localDispatch({ type: ActionType.DrawOthersCard, playerId });
@@ -238,6 +270,9 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           gap: '15px',
         }}
       >
+        <Box sx={{ marginRight: '20px', fontSize: '26px' }}>
+          你的分數: {state.yourPoint}
+        </Box>
         <Button
           sx={{
             minWidth: '100px',

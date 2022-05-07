@@ -9,6 +9,7 @@ export enum ActionType {
   DrawCard = 'DrawCard',
   UseCard = 'UseCard',
   SelectCard = 'SelectCard',
+  UpdateYourPoint = 'UpdateYourPoint',
   // 其他玩家手牌只記剩餘數量就可以
   DrawOthersCard = 'DrawOthersCard',
   UseOthersCard = 'UseOthersCard',
@@ -82,6 +83,11 @@ type ClearErrorMsgAction = {
   type: ActionType.ClearErrorMsg;
 };
 
+type UpdateYourPointAction = {
+  type: ActionType.UpdateYourPoint;
+  point: number;
+};
+
 type Action =
   | DrawCardAction
   | UseCardAction
@@ -90,7 +96,8 @@ type Action =
   | InitOthersInfoAction
   | UpdateOthersInfoAction
   | SelectCardAction
-  | ClearErrorMsgAction;
+  | ClearErrorMsgAction
+  | UpdateYourPointAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -214,6 +221,12 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         errorMsg: '',
+      };
+    }
+    case ActionType.UpdateYourPoint: {
+      return {
+        ...state,
+        yourPoint: action.point,
       };
     }
     default: {
