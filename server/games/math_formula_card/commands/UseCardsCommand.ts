@@ -41,8 +41,8 @@ export default class UseCardsCommand extends Command<MathFormulaCardState> {
       .join('');
     const answer: number = evaluate(combinedFormula);
 
-    // 判斷是否為正解
-    if (answer === this.room.state.answer) {
+    // 判斷是否為正解 FIXME: 之後要判斷他是選哪個題目
+    if (answer === this.room.state.answers[0]) {
       this.room.broadcast(MathFormulaCardMessage.AnswerCorrectly);
     }
   }

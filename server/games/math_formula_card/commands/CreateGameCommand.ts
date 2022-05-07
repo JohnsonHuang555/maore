@@ -10,7 +10,8 @@ export default class CreateGameCommand extends Command<MathFormulaCardState> {
   execute() {
     // 產隨機答案後寫入
     const answer = Random.getRangeNumbers(0, 100, 1);
-    this.room.state.answer = answer[0];
+    // 依照模式去產幾個答案，目前先產一個
+    this.room.state.answers.push(answer[0]);
 
     // 發牌 產四張數字牌、三張符號牌
     const playerIds = this.room.state.players.map((p) => p.id);

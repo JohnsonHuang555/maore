@@ -70,7 +70,6 @@ const Card = (props: CardProps) => {
         justifyContent: 'center',
         flexDirection: 'column',
         backgroundColor: '#1d1d1d',
-        margin: '0 10px',
         cursor: 'pointer',
         transition: 'all 0.2s',
         pointerEvents: hideCard ? 'none' : 'auto',

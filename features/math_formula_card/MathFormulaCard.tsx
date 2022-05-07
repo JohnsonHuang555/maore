@@ -21,6 +21,7 @@ import playerCardsReducer, {
   ActionType,
   initialState,
 } from './reducers/playerCardsReducer';
+import Badge from '@mui/material/Badge';
 
 type MathFormulaCardProps = {
   isMaster: boolean;
@@ -59,6 +60,10 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
         })
       );
     });
+
+    clientRoom.state.answers.onAdd = (answer) => {
+      localDispatch({ type: ActionType.CreateAnswers, answer });
+    };
 
     // 監聽抽牌
     clientRoom.state.playerInfos.onAdd = (playerInfo, playerId) => {
@@ -162,6 +167,31 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     );
   };
 
+  const renderYourCard = (card: IPlayerCard) => {
+    const isSelected = state.selectedCards.findIndex((s) => s.id === card.id);
+    if (isSelected !== -1) {
+      return (
+        <Badge key={card.id} badgeContent={isSelected + 1} color="secondary">
+          <Card
+            key={card.id}
+            id={card.id}
+            value={card.cardSymbol || card.cardNumber}
+            onSelect={handleSelectCard}
+          />
+        </Badge>
+      );
+    } else {
+      return (
+        <Card
+          key={card.id}
+          id={card.id}
+          value={card.cardSymbol || card.cardNumber}
+          onSelect={handleSelectCard}
+        />
+      );
+    }
+  };
+
   const handleSelectCard = (id: string, value: number | CardSymbol) => {
     const player = players.find((p) => p.id === yourPlayerId);
     if (!player) {
@@ -206,7 +236,14 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
       }}
     >
       {/* 其他玩家區塊 */}
-      <Box sx={{ flexBasis: '220px', display: 'flex', alignItems: 'center' }}>
+      <Box
+        sx={{
+          flexBasis: '220px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '20px',
+        }}
+      >
         {Object.keys(state.otherPlayerDict).map((other) =>
           renderOtherPlayer(other)
         )}
@@ -221,10 +258,12 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           position: 'relative',
         }}
       >
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ fontSize: '26px' }}>目標</Box>
-          <Box sx={{ fontSize: '120px' }}>66</Box>
-        </Box>
+        {state.answers.map((answer) => (
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ fontSize: '26px' }}>題目</Box>
+            <Box sx={{ fontSize: '120px' }}>{answer}</Box>
+          </Box>
+        ))}
         {state.selectedCards.length > 0 && (
           <Box
             sx={{
@@ -249,16 +288,14 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
       </Box>
       {/* 自己手牌 */}
       <Box
-        sx={{ flexBasis: '250px', display: 'flex', justifyContent: 'center' }}
+        sx={{
+          flexBasis: '250px',
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '20px',
+        }}
       >
-        {state.yourCards.map((card) => (
-          <Card
-            key={card.id}
-            id={card.id}
-            value={card.cardSymbol || card.cardNumber}
-            onSelect={handleSelectCard}
-          />
-        ))}
+        {state.yourCards.map((card) => renderYourCard(card))}
       </Box>
       {/* 操作 */}
       <Box

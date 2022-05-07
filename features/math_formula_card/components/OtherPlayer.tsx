@@ -30,8 +30,8 @@ const OtherPlayer = (props: OtherPlayerProps) => {
             margin: '0 30px',
           }}
         >
-          <Box sx={{ fontSize: '20px', marginBottom: '5px' }}>{name}</Box>
-          <Box sx={{ fontSize: '16px' }}>{point} 分</Box>
+          <Box sx={{ fontSize: '26px', marginBottom: '5px' }}>{name}</Box>
+          <Box sx={{ fontSize: '24px' }}>{point} 分</Box>
         </Box>
       </Box>
       <Box

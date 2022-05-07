@@ -5,17 +5,18 @@ import {
 import { CardSymbols } from '../models/CardSymbols';
 import { OtherPlayerDict, OthersPlayerInfo } from '../models/OtherPlayerCard';
 
+// 其他玩家手牌只記剩餘數量就可以
 export enum ActionType {
   DrawCard = 'DrawCard',
   UseCard = 'UseCard',
   SelectCard = 'SelectCard',
   UpdateYourPoint = 'UpdateYourPoint',
-  // 其他玩家手牌只記剩餘數量就可以
   DrawOthersCard = 'DrawOthersCard',
   UseOthersCard = 'UseOthersCard',
   InitOthersPlayerInfo = 'InitOthersPlayerInfo',
   UpdateOthersPlayerInfo = 'UpdateOthersPlayerInfo',
   ClearErrorMsg = 'ClearErrorMsg',
+  CreateAnswers = 'CreateAnswers',
 }
 
 type SelectedCard = {
@@ -24,16 +25,19 @@ type SelectedCard = {
 };
 
 export type State = {
+  answers: number[]; // 先挖洞，之後答案可能有好幾種
   // 你的手牌
   yourCards: IPlayerCard[];
   yourPoint: number;
   selectedCards: SelectedCard[];
   // 其他玩家手牌
   otherPlayerDict: OtherPlayerDict;
+  // 錯誤訊息
   errorMsg: string;
 };
 
 export const initialState: State = {
+  answers: [],
   yourCards: [],
   yourPoint: 0,
   selectedCards: [],
@@ -88,6 +92,11 @@ type UpdateYourPointAction = {
   point: number;
 };
 
+type CreateAnswersAction = {
+  type: ActionType.CreateAnswers;
+  answer: number;
+};
+
 type Action =
   | DrawCardAction
   | UseCardAction
@@ -97,7 +106,8 @@ type Action =
   | UpdateOthersInfoAction
   | SelectCardAction
   | ClearErrorMsgAction
-  | UpdateYourPointAction;
+  | UpdateYourPointAction
+  | CreateAnswersAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -227,6 +237,12 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         yourPoint: action.point,
+      };
+    }
+    case ActionType.CreateAnswers: {
+      return {
+        ...state,
+        answers: [...state.answers, action.answer],
       };
     }
     default: {
