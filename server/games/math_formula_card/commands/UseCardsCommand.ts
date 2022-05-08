@@ -5,6 +5,7 @@ import { IPlayerCard } from '../state/PlayerCardState';
 import { evaluate } from 'mathjs';
 import { MathFormulaCardMessage } from '../../../../features/math_formula_card/models/MathFormulaCardMessage';
 import DrawCardCommand from './DrawCardCommand';
+import Random from '../../../utils/Random';
 
 type Payload = {
   client: Client;
@@ -49,14 +50,14 @@ export default class UseCardsCommand extends Command<MathFormulaCardState> {
     const answer: number = evaluate(combinedFormula);
 
     // 判斷是否為正解 FIXME: 之後要判斷他是選哪個題目
-    if (answer === this.room.state.answers[0]) {
+    if (answer === this.room.state.answer) {
       this.room.broadcast(MathFormulaCardMessage.AnswerCorrectly);
       const playerInfo = this.room.state.playerInfos.get(client.id);
       if (!playerInfo) {
         throw new Error('playerInfo not found...');
       }
       // 加分
-      playerInfo.point = cards.length;
+      playerInfo.point += cards.length;
 
       // 用完卡片即移除
       for (let i = 0; i < cards.length; i++) {
@@ -65,6 +66,11 @@ export default class UseCardsCommand extends Command<MathFormulaCardState> {
         );
         playerInfo.cards.splice(cardIndex, 1);
       }
+
+      // 產隨機答案後寫入
+      const answer = Random.getRangeNumbers(0, 100, 1);
+      // 依照模式去產幾個答案，目前先產一個
+      this.room.state.answer = answer[0];
 
       // 抽牌
       return [new DrawCardCommand().setPayload({ client })];

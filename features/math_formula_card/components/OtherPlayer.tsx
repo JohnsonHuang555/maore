@@ -38,9 +38,15 @@ const OtherPlayer = (props: OtherPlayerProps) => {
         </Box>
       </Box>
       <Box
-        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '10px',
+        }}
       >
-        {playerCount <= 3 ? (
+        {/* 兩位玩家才全秀 */}
+        {playerCount === 2 ? (
           renderCards()
         ) : (
           <>

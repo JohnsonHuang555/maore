@@ -5,7 +5,7 @@ import {
   isAllPlayersLoadedSelector,
   playerIdSelector,
   playersSelector,
-  activePlayerSelector,
+  isYourTurnSelector,
 } from '@selectors/roomSelector';
 import { clientRoomSelector } from '@selectors/serverSelector';
 import { useEffect, useReducer, useState } from 'react';
@@ -33,8 +33,8 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
   const clientRoom = useSelector(clientRoomSelector);
   const yourPlayerId = useSelector(playerIdSelector);
   const players = useSelector(playersSelector);
-  const activePlayer = useSelector(activePlayerSelector);
   const isAllPlayerLoaded = useSelector(isAllPlayersLoadedSelector);
+  const isYourTurn = useSelector(isYourTurnSelector);
   const [state, localDispatch] = useReducer(playerCardsReducer, initialState);
   // 為了做抽牌的動畫，只有第一載入完成時要延遲，用 state 控制
   const [noDrawCardDelay, setNoDrawCardDelay] = useState(false);
@@ -75,9 +75,12 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
       );
     });
 
-    clientRoom.state.answers.onAdd = (answer) => {
-      localDispatch({ type: ActionType.CreateAnswers, answer });
-    };
+    clientRoom.state.listen('answer', (currentValue) => {
+      localDispatch({
+        type: ActionType.CreateAnswer,
+        answer: currentValue as number,
+      });
+    });
 
     // 監聽玩家資訊更新
     clientRoom.state.playerInfos.onAdd = (playerInfo, playerId) => {
@@ -162,7 +165,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
 
   useEffect(() => {
     // 當所有玩家載入完成，即打建立遊戲事件並判斷只打一次
-    if (isAllPlayerLoaded && isMaster && state.answers.length === 0) {
+    if (isAllPlayerLoaded && isMaster && state.answer === undefined) {
       clientRoom.send(RoomMessage.CreateGame);
       clientRoom.send(RoomMessage.CreatePlayerOrder);
     }
@@ -233,12 +236,8 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
   };
 
   const handleSelectCard = (id: string, value: number | CardSymbol) => {
-    const player = players.find((p) => p.id === yourPlayerId);
-    if (!player) {
-      throw new Error('player not found');
-    }
     // 還沒輪到你
-    if (player.playerIndex !== activePlayer) {
+    if (!isYourTurn) {
       dispatch(
         setSnackbar({
           show: true,
@@ -332,15 +331,10 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           )}
         </Box>
         <Box sx={{ flex: 1 }}>
-          {state.answers.map((answer) => (
-            <Box
-              key={`answer-${answer}`}
-              sx={{ display: 'flex', flexDirection: 'column' }}
-            >
-              <Box sx={{ fontSize: '26px' }}>題目</Box>
-              <Box sx={{ fontSize: '120px' }}>={answer}</Box>
-            </Box>
-          ))}
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ fontSize: '26px' }}>題目</Box>
+            <Box sx={{ fontSize: '120px' }}>={state.answer}</Box>
+          </Box>
         </Box>
       </Box>
       {/* 自己手牌 */}
@@ -349,10 +343,18 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           flexBasis: '250px',
           display: 'flex',
           justifyContent: 'center',
-          gap: '20px',
+          alignItems: 'center',
         }}
       >
-        {state.yourCards.map((card, index) => renderYourCard(card, index))}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '15px',
+          }}
+        >
+          {state.yourCards.map((card, index) => renderYourCard(card, index))}
+        </Box>
       </Box>
       {/* 操作 */}
       <Box
@@ -415,6 +417,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           variant="contained"
           size="large"
           color="secondary"
+          disabled={!isYourTurn}
           onClick={() => useCards()}
         >
           出牌

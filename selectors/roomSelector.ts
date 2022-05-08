@@ -14,3 +14,9 @@ export const isAllPlayersLoadedSelector = (store: StoreState) =>
   store.room.isAllPlayersLoaded;
 export const activePlayerSelector = (store: StoreState) =>
   store.room.activePlayer;
+export const isYourTurnSelector = (store: StoreState) => {
+  const player = store.room.players.find(
+    (p) => p.id === store.room.yourPlayerId
+  );
+  return player?.playerIndex === store.room.activePlayer;
+};

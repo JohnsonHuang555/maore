@@ -16,7 +16,7 @@ export enum ActionType {
   InitOthersPlayerInfo = 'InitOthersPlayerInfo',
   UpdateOthersPlayerInfo = 'UpdateOthersPlayerInfo',
   ClearErrorMsg = 'ClearErrorMsg',
-  CreateAnswers = 'CreateAnswers',
+  CreateAnswer = 'CreateAnswer',
   ClearSelectedCards = 'ClearSelectedCards',
   SortCard = 'SortCard',
 }
@@ -27,7 +27,7 @@ type SelectedCard = {
 };
 
 export type State = {
-  answers: number[]; // 先挖洞，之後答案可能有好幾種
+  answer?: number;
   // 你的手牌
   yourCards: IPlayerCard[];
   yourPoint: number;
@@ -39,7 +39,6 @@ export type State = {
 };
 
 export const initialState: State = {
-  answers: [],
   yourCards: [],
   yourPoint: 0,
   selectedCards: [],
@@ -95,7 +94,7 @@ type UpdateYourPointAction = {
 };
 
 type CreateAnswersAction = {
-  type: ActionType.CreateAnswers;
+  type: ActionType.CreateAnswer;
   answer: number;
 };
 
@@ -255,10 +254,10 @@ const reducer = (state = initialState, action: Action): State => {
         yourPoint: action.point,
       };
     }
-    case ActionType.CreateAnswers: {
+    case ActionType.CreateAnswer: {
       return {
         ...state,
-        answers: [...state.answers, action.answer],
+        answer: action.answer,
       };
     }
     case ActionType.ClearSelectedCards: {
@@ -269,7 +268,7 @@ const reducer = (state = initialState, action: Action): State => {
     }
     case ActionType.SortCard: {
       const sortedNumbers = state.yourCards
-        .filter((card) => card.cardNumber)
+        .filter((card) => !isNaN(Number(card.cardNumber)))
         .sort((a, b) => {
           const numberA = a.cardNumber as number;
           const numberB = b.cardNumber as number;
@@ -294,6 +293,8 @@ const reducer = (state = initialState, action: Action): State => {
           }
           return 0;
         });
+
+      console.log(sortedNumbers);
       return {
         ...state,
         yourCards: sortedNumbers.concat(sortedSymbols),
