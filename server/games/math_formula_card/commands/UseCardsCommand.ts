@@ -31,7 +31,9 @@ export default class UseCardsCommand extends Command<MathFormulaCardState> {
     });
 
     if (isIllegalFormula) {
-      client.send('UseCardsFailed', { message: '算式不合法' });
+      client.send(MathFormulaCardMessage.UseCardsFailed, {
+        message: '算式不合法',
+      });
       return;
     }
 
@@ -44,6 +46,8 @@ export default class UseCardsCommand extends Command<MathFormulaCardState> {
     // 判斷是否為正解 FIXME: 之後要判斷他是選哪個題目
     if (answer === this.room.state.answers[0]) {
       this.room.broadcast(MathFormulaCardMessage.AnswerCorrectly);
+    } else {
+      client.send(MathFormulaCardMessage.AnsweredWrong);
     }
   }
 }

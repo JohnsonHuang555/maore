@@ -3,10 +3,13 @@ import { OthersPlayerInfo } from '../models/OtherPlayerCard';
 import Card from './Card';
 import CloseIcon from '@mui/icons-material/Close';
 
-type OtherPlayerProps = OthersPlayerInfo;
+type OtherPlayerProps = OthersPlayerInfo & {
+  playerCount: number;
+};
 
 const OtherPlayer = (props: OtherPlayerProps) => {
-  const { remainCardCount, name, point, isNowTurn } = props;
+  const { remainCardCount, name, point, isNowTurn, playerCount } = props;
+
   const renderCards = () => {
     const cards = [];
     for (let i = 0; i < remainCardCount; i++) {
@@ -37,7 +40,7 @@ const OtherPlayer = (props: OtherPlayerProps) => {
       <Box
         sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
-        {remainCardCount <= 5 ? (
+        {playerCount <= 3 ? (
           renderCards()
         ) : (
           <>

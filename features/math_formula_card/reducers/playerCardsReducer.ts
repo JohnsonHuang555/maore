@@ -17,6 +17,7 @@ export enum ActionType {
   UpdateOthersPlayerInfo = 'UpdateOthersPlayerInfo',
   ClearErrorMsg = 'ClearErrorMsg',
   CreateAnswers = 'CreateAnswers',
+  ClearSelectedCards = 'ClearSelectedCards',
 }
 
 type SelectedCard = {
@@ -97,6 +98,10 @@ type CreateAnswersAction = {
   answer: number;
 };
 
+type ClearSelectedCardsAction = {
+  type: ActionType.ClearSelectedCards;
+};
+
 type Action =
   | DrawCardAction
   | UseCardAction
@@ -107,7 +112,8 @@ type Action =
   | SelectCardAction
   | ClearErrorMsgAction
   | UpdateYourPointAction
-  | CreateAnswersAction;
+  | CreateAnswersAction
+  | ClearSelectedCardsAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -243,6 +249,12 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         answers: [...state.answers, action.answer],
+      };
+    }
+    case ActionType.ClearSelectedCards: {
+      return {
+        ...state,
+        selectedCards: [],
       };
     }
     default: {
