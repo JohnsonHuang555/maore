@@ -4,6 +4,7 @@ import { Client } from 'colyseus';
 import { IPlayerCard } from '../state/PlayerCardState';
 import { evaluate } from 'mathjs';
 import { MathFormulaCardMessage } from '../../../../features/math_formula_card/models/MathFormulaCardMessage';
+import DrawCardCommand from './DrawCardCommand';
 
 type Payload = {
   client: Client;
@@ -15,6 +16,7 @@ export default class UseCardsCommand extends Command<MathFormulaCardState> {
     const { client, cards } = data;
     let isIllegalFormula = false;
     let isPreviousSymbol = false;
+
     cards.forEach((card, index) => {
       if (
         (index === 0 && card.cardSymbol) ||
@@ -30,7 +32,10 @@ export default class UseCardsCommand extends Command<MathFormulaCardState> {
       }
     });
 
-    if (isIllegalFormula) {
+    // 算式裡沒有用到符號為不合法
+    const notIncludeSymbols = cards.filter((card) => card.cardSymbol);
+
+    if (isIllegalFormula || notIncludeSymbols.length === 0) {
       client.send(MathFormulaCardMessage.UseCardsFailed, {
         message: '算式不合法',
       });
@@ -46,6 +51,23 @@ export default class UseCardsCommand extends Command<MathFormulaCardState> {
     // 判斷是否為正解 FIXME: 之後要判斷他是選哪個題目
     if (answer === this.room.state.answers[0]) {
       this.room.broadcast(MathFormulaCardMessage.AnswerCorrectly);
+      const playerInfo = this.room.state.playerInfos.get(client.id);
+      if (!playerInfo) {
+        throw new Error('playerInfo not found...');
+      }
+      // 加分
+      playerInfo.point = cards.length;
+
+      // 用完卡片即移除
+      for (let i = 0; i < cards.length; i++) {
+        const cardIndex = playerInfo.cards.findIndex(
+          (card) => card.id === cards[i].id
+        );
+        playerInfo.cards.splice(cardIndex, 1);
+      }
+
+      // 抽牌
+      return [new DrawCardCommand().setPayload({ client })];
     } else {
       client.send(MathFormulaCardMessage.AnsweredWrong);
     }

@@ -18,6 +18,7 @@ export enum ActionType {
   ClearErrorMsg = 'ClearErrorMsg',
   CreateAnswers = 'CreateAnswers',
   ClearSelectedCards = 'ClearSelectedCards',
+  SortCard = 'SortCard',
 }
 
 type SelectedCard = {
@@ -102,6 +103,10 @@ type ClearSelectedCardsAction = {
   type: ActionType.ClearSelectedCards;
 };
 
+type SortCardAction = {
+  type: ActionType.SortCard;
+};
+
 type Action =
   | DrawCardAction
   | UseCardAction
@@ -113,7 +118,8 @@ type Action =
   | ClearErrorMsgAction
   | UpdateYourPointAction
   | CreateAnswersAction
-  | ClearSelectedCardsAction;
+  | ClearSelectedCardsAction
+  | SortCardAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -126,8 +132,12 @@ const reducer = (state = initialState, action: Action): State => {
     }
     case ActionType.UseCard: {
       // 使用一張牌
+      const newCards = state.yourCards.filter(
+        (card) => card.id !== action.cardId
+      );
       return {
         ...state,
+        yourCards: newCards,
       };
     }
     case ActionType.DrawOthersCard: {
@@ -255,6 +265,38 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         selectedCards: [],
+      };
+    }
+    case ActionType.SortCard: {
+      const sortedNumbers = state.yourCards
+        .filter((card) => card.cardNumber)
+        .sort((a, b) => {
+          const numberA = a.cardNumber as number;
+          const numberB = b.cardNumber as number;
+          if (numberA < numberB) {
+            return -1;
+          }
+          if (numberA > numberB) {
+            return 1;
+          }
+          return 0;
+        });
+      const sortedSymbols = state.yourCards
+        .filter((card) => card.cardSymbol)
+        .sort((a, b) => {
+          const symbolA = a.cardSymbol as CardSymbol;
+          const symbolB = b.cardSymbol as CardSymbol;
+          if (symbolA < symbolB) {
+            return -1;
+          }
+          if (symbolA > symbolB) {
+            return 1;
+          }
+          return 0;
+        });
+      return {
+        ...state,
+        yourCards: sortedNumbers.concat(sortedSymbols),
       };
     }
     default: {

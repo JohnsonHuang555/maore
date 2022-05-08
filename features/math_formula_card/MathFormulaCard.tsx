@@ -61,7 +61,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
       dispatch(
         setSnackbar({
           show: true,
-          message: '答對了',
+          message: '你答對了',
         })
       );
     });
@@ -79,7 +79,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
       localDispatch({ type: ActionType.CreateAnswers, answer });
     };
 
-    // 監聽抽牌
+    // 監聽玩家資訊更新
     clientRoom.state.playerInfos.onAdd = (playerInfo, playerId) => {
       if (playerId === yourPlayerId) {
         playerInfo.onChange = (changes) => {
@@ -101,6 +101,13 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           localDispatch({
             type: ActionType.DrawCard,
             playerCard: { id, cardNumber, cardSymbol },
+          });
+        };
+
+        playerInfo.cards.onRemove = (card) => {
+          localDispatch({
+            type: ActionType.UseCard,
+            cardId: card.id,
           });
         };
       } else {
@@ -135,6 +142,13 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
 
         playerInfo.cards.onAdd = () => {
           localDispatch({ type: ActionType.DrawOthersCard, playerId });
+        };
+
+        playerInfo.cards.onRemove = (card) => {
+          localDispatch({
+            type: ActionType.UseOthersCard,
+            playerId,
+          });
         };
       }
     };
@@ -202,6 +216,9 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
               height: '30px',
               borderRadius: '50%',
             },
+            '.MuiPaper-elevation': {
+              border: isSelected !== -1 ? '1px solid' : 'none',
+            },
           }}
         >
           <Card
@@ -252,6 +269,12 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
       };
     });
     clientRoom.send(MathFormulaCardMessage.UseCards, { cards: netCards });
+  };
+
+  const drawCard = () => {
+    // 代表已經載入完成，改無延遲時間
+    setNoDrawCardDelay(true);
+    clientRoom.send(MathFormulaCardMessage.DrawCard);
   };
 
   return (
@@ -352,7 +375,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           }}
           variant="contained"
           size="large"
-          onClick={() => {}}
+          onClick={() => localDispatch({ type: ActionType.SortCard })}
         >
           排序
         </Button>
@@ -371,6 +394,21 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           }}
         >
           重選
+        </Button>
+        <Button
+          sx={{
+            minWidth: '150px',
+            backgroundColor: '#095858',
+            ':hover': {
+              backgroundColor: '#044040',
+            },
+          }}
+          variant="contained"
+          size="large"
+          color="secondary"
+          onClick={() => drawCard()}
+        >
+          抽牌並結束回合
         </Button>
         <Button
           sx={{ minWidth: '150px' }}

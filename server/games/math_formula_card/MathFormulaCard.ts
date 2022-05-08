@@ -9,6 +9,7 @@ import CreateGameCommand from './commands/CreateGameCommand';
 import { MathFormulaCardMessage } from '../../../features/math_formula_card/models/MathFormulaCardMessage';
 import UseCardsCommand from './commands/UseCardsCommand';
 import { IPlayerCard } from './state/PlayerCardState';
+import DrawCardCommand from './commands/DrawCardCommand';
 
 export default class MathFormulaCard extends Room<
   MathFormulaCardState,
@@ -36,6 +37,12 @@ export default class MathFormulaCard extends Room<
         });
       }
     );
+
+    this.onMessage(MathFormulaCardMessage.DrawCard, (client) => {
+      this.dispatcher.dispatch(new DrawCardCommand(), {
+        client,
+      });
+    });
   }
 
   onJoin(client: Client, option: Metadata) {
