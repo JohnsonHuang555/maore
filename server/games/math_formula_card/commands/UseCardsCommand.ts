@@ -18,11 +18,13 @@ export default class UseCardsCommand extends Command<MathFormulaCardState> {
     let isIllegalFormula = false;
     let isPreviousSymbol = false;
 
+    // 第一張是 0、符號，最後一張是符號，連續兩張是符號
     cards.forEach((card, index) => {
       if (
         (index === 0 && card.cardSymbol) ||
         (index === cards.length - 1 && card.cardSymbol) ||
-        (isPreviousSymbol && card.cardSymbol)
+        (isPreviousSymbol && card.cardSymbol) ||
+        (index === 0 && card.cardNumber === 0)
       ) {
         isIllegalFormula = true;
       }
@@ -73,7 +75,9 @@ export default class UseCardsCommand extends Command<MathFormulaCardState> {
       this.room.state.answer = answer[0];
 
       // 抽牌
-      return [new DrawCardCommand().setPayload({ client })];
+      setTimeout(() => {
+        return [new DrawCardCommand().setPayload({ client })];
+      }, 1000);
     } else {
       client.send(MathFormulaCardMessage.AnsweredWrong);
     }

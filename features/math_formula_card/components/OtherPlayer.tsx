@@ -13,7 +13,7 @@ const OtherPlayer = (props: OtherPlayerProps) => {
   const renderCards = () => {
     const cards = [];
     for (let i = 0; i < remainCardCount; i++) {
-      cards.push(<Card key={i} hideCard={true} size="small" />);
+      cards.push(<Card key={i} hideCard={true} width="90px" height="130px" />);
     }
     return cards;
   };
@@ -50,7 +50,7 @@ const OtherPlayer = (props: OtherPlayerProps) => {
           renderCards()
         ) : (
           <>
-            <Card hideCard={true} size="small" />
+            <Card hideCard={true} width="90px" height="130px" />
             <CloseIcon />
             <Box sx={{ fontSize: '40px', marginLeft: '10px' }}>
               {remainCardCount}

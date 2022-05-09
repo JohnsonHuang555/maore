@@ -33,38 +33,26 @@ const symbolDict: { [key: string]: React.ReactNode } = {
 
 type CardProps = {
   id?: string;
-  size?: 'medium' | 'small';
   value?: number | CardSymbol;
   hideCard?: boolean;
+  width: string;
+  height: string;
   onSelect?: (id: string, val: number | CardSymbol) => void;
 };
 
 const Card = (props: CardProps) => {
-  const { id, value, hideCard = false, size = 'medium', onSelect } = props;
+  const { id, value, hideCard = false, width, height, onSelect } = props;
 
   const getBrief = () => {
     return labelDict[value as number | CardSymbol];
-  };
-
-  const getSize = () => {
-    let width = '140px';
-    let height = '220px';
-    if (size === 'small') {
-      width = '90px';
-      height = '130px';
-    }
-    return {
-      width,
-      height,
-    };
   };
 
   return (
     <Paper
       elevation={4}
       sx={{
-        width: getSize().width,
-        height: getSize().height,
+        width,
+        height,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

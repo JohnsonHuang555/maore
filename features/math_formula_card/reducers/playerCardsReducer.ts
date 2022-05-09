@@ -187,15 +187,15 @@ const reducer = (state = initialState, action: Action): State => {
     case ActionType.SelectCard: {
       let newCards = [...state.selectedCards];
       // 第一張不能選符號
-      if (
-        newCards.length === 0 &&
-        CardSymbols.includes(action.value as CardSymbol)
-      ) {
-        return {
-          ...state,
-          errorMsg: '第一張不能選符號',
-        };
-      }
+      // if (
+      //   newCards.length === 0 &&
+      //   CardSymbols.includes(action.value as CardSymbol)
+      // ) {
+      //   return {
+      //     ...state,
+      //     errorMsg: '第一張不能選符號',
+      //   };
+      // }
 
       const hasExist = newCards.findIndex((card) => card.id === action.id);
       if (hasExist !== -1) {
@@ -205,37 +205,37 @@ const reducer = (state = initialState, action: Action): State => {
       }
 
       // 只剩選取符號
-      const onlySymbolsLeft = newCards.find(
-        (card) => typeof card.value === 'number'
-      );
-      if (newCards.length !== 0 && !onlySymbolsLeft) {
-        return {
-          ...state,
-          errorMsg: '至少要有數字',
-        };
-      }
+      // const onlySymbolsLeft = newCards.find(
+      //   (card) => typeof card.value === 'number'
+      // );
+      // if (newCards.length !== 0 && !onlySymbolsLeft) {
+      //   return {
+      //     ...state,
+      //     errorMsg: '至少要有數字',
+      //   };
+      // }
 
-      // 第一張不能是符號
-      if (
-        newCards.length !== 0 &&
-        CardSymbols.includes(newCards[0].value as CardSymbol)
-      ) {
-        return {
-          ...state,
-          errorMsg: '符號不能排第一張',
-        };
-      }
+      // // 第一張不能是符號
+      // if (
+      //   newCards.length !== 0 &&
+      //   CardSymbols.includes(newCards[0].value as CardSymbol)
+      // ) {
+      //   return {
+      //     ...state,
+      //     errorMsg: '符號不能排第一張',
+      //   };
+      // }
 
-      if (
-        newCards.length > 2 &&
-        CardSymbols.includes(action.value as CardSymbol) &&
-        CardSymbols.includes(newCards[newCards.length - 2].value as CardSymbol)
-      ) {
-        return {
-          ...state,
-          errorMsg: '不能連續兩個符號',
-        };
-      }
+      // if (
+      //   newCards.length > 2 &&
+      //   CardSymbols.includes(action.value as CardSymbol) &&
+      //   CardSymbols.includes(newCards[newCards.length - 2].value as CardSymbol)
+      // ) {
+      //   return {
+      //     ...state,
+      //     errorMsg: '不能連續兩個符號',
+      //   };
+      // }
 
       return {
         ...state,
@@ -294,7 +294,6 @@ const reducer = (state = initialState, action: Action): State => {
           return 0;
         });
 
-      console.log(sortedNumbers);
       return {
         ...state,
         yourCards: sortedNumbers.concat(sortedSymbols),

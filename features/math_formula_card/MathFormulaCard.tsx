@@ -58,6 +58,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     );
 
     clientRoom.onMessage(MathFormulaCardMessage.AnswerCorrectly, () => {
+      localDispatch({ type: ActionType.ClearSelectedCards });
       dispatch(
         setSnackbar({
           show: true,
@@ -228,6 +229,8 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
             key={card.id}
             id={card.id}
             value={card.cardSymbol || card.cardNumber}
+            width="120px"
+            height="100%"
             onSelect={handleSelectCard}
           />
         </Badge>
@@ -288,7 +291,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
       {/* 其他玩家區塊 */}
       <Box
         sx={{
-          flexBasis: '220px',
+          flexBasis: '15%',
           display: 'flex',
           alignItems: 'center',
           gap: '20px',
@@ -337,13 +340,17 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           </Box>
         </Box>
       </Box>
+      <Box sx={{ textAlign: 'center', marginBottom: '20px', fontSize: '36px' }}>
+        {isYourTurn ? '你的回合' : ''}
+      </Box>
       {/* 自己手牌 */}
       <Box
         sx={{
-          flexBasis: '250px',
+          flexBasis: '15%',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          marginBottom: '20px',
         }}
       >
         <Box
@@ -351,6 +358,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
             display: 'flex',
             justifyContent: 'center',
             gap: '15px',
+            height: '100%',
           }}
         >
           {state.yourCards.map((card, index) => renderYourCard(card, index))}
