@@ -28,9 +28,9 @@ nextApp.prepare().then(() => {
   new GameDelivery(app, gameUseCase);
 
   // 載入所有遊戲 instance
-  gameServer
-    .define(GameList.ChineseChess, ChineseChess)
-    .enableRealtimeListing();
+  // gameServer
+  //   .define(GameList.ChineseChess, ChineseChess)
+  //   .enableRealtimeListing();
 
   gameServer
     .define(GameList.MathFormulaCard, MathFormulaCard)

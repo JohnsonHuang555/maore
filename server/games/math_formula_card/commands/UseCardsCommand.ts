@@ -1,18 +1,18 @@
 import { Command } from '@colyseus/command';
-import MathFormulaCardState from '../state/MathFormulaCardState';
 import { Client } from 'colyseus';
 import { IPlayerCard } from '../state/PlayerCardState';
 import { evaluate } from 'mathjs';
 import { MathFormulaCardMessage } from '../../../../features/math_formula_card/models/MathFormulaCardMessage';
 import DrawCardCommand from './DrawCardCommand';
 import Random from '../../../utils/Random';
+import RoomState from '../../../room/state/RoomState';
 
 type Payload = {
   client: Client;
   cards: IPlayerCard[];
 };
 
-export default class UseCardsCommand extends Command<MathFormulaCardState> {
+export default class UseCardsCommand extends Command<RoomState> {
   execute(data: Payload) {
     const { client, cards } = data;
     let isIllegalFormula = false;
@@ -52,9 +52,11 @@ export default class UseCardsCommand extends Command<MathFormulaCardState> {
     const answer: number = evaluate(combinedFormula);
 
     // 判斷是否為正解 FIXME: 之後要判斷他是選哪個題目
-    if (answer === this.room.state.answer) {
+    if (answer === this.room.state.mathFormulaCard.answer) {
       this.room.broadcast(MathFormulaCardMessage.AnswerCorrectly);
-      const playerInfo = this.room.state.playerInfos.get(client.id);
+      const playerInfo = this.room.state.mathFormulaCard.playerInfos.get(
+        client.id
+      );
       if (!playerInfo) {
         throw new Error('playerInfo not found...');
       }
@@ -72,12 +74,10 @@ export default class UseCardsCommand extends Command<MathFormulaCardState> {
       // 產隨機答案後寫入
       const answer = Random.getRangeNumbers(0, 100, 1);
       // 依照模式去產幾個答案，目前先產一個
-      this.room.state.answer = answer[0];
+      this.room.state.mathFormulaCard.answer = answer[0];
 
       // 抽牌
-      setTimeout(() => {
-        return [new DrawCardCommand().setPayload({ client })];
-      }, 1000);
+      return [new DrawCardCommand().setPayload({ client })];
     } else {
       client.send(MathFormulaCardMessage.AnsweredWrong);
     }

@@ -1,17 +1,17 @@
 import { Command } from '@colyseus/command';
 import { ArraySchema } from '@colyseus/schema';
 import Random from '../../../utils/Random';
-import MathFormulaCardState from '../state/MathFormulaCardState';
 import { CardSymbols, PlayerCardState } from '../state/PlayerCardState';
 import { PlayerInfoState } from '../state/PlayerInfoState';
 import short from 'short-uuid';
+import RoomState from '../../../room/state/RoomState';
 
-export default class CreateGameCommand extends Command<MathFormulaCardState> {
+export default class CreateGameCommand extends Command<RoomState> {
   execute() {
     // 產隨機答案後寫入
     const answer = Random.getRangeNumbers(0, 100, 1);
     // 依照模式去產幾個答案，目前先產一個
-    this.room.state.answer = answer[0];
+    this.room.state.mathFormulaCard.answer = answer[0];
 
     // 發牌 產四張數字牌、三張符號牌
     const playerIds = this.room.state.players.map((p) => p.id);
@@ -35,7 +35,7 @@ export default class CreateGameCommand extends Command<MathFormulaCardState> {
           })
         );
       });
-      this.room.state.playerInfos.set(
+      this.room.state.mathFormulaCard.playerInfos.set(
         id,
         new PlayerInfoState({ cards, point: 0 })
       );

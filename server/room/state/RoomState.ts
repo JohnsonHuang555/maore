@@ -1,7 +1,8 @@
 import { Schema, ArraySchema, type } from '@colyseus/schema';
 import { PlayerState } from './PlayerState';
 import { RoomInfoState } from './RoomInfoState';
-import { GameStatus } from '../../../../domain/models/Room';
+import { GameStatus } from '../../../domain/models/Room';
+import MathFormulaCardState from '../../games/math_formula_card/state/MathFormulaCardState';
 
 export interface Room extends Schema {
   players: ArraySchema<PlayerState>;
@@ -9,16 +10,18 @@ export interface Room extends Schema {
   gameStatus: GameStatus;
   activePlayer: number;
   winningPlayer: number;
+  // 各個遊戲的 mapSchema
+  mathFormulaCard: MathFormulaCardState;
 }
 
 export default class RoomState extends Schema implements Room {
   // 當前玩家
   @type([PlayerState])
-  players: ArraySchema<PlayerState>;
+  players: ArraySchema<PlayerState> = new ArraySchema<PlayerState>();
 
   // 房間額外資訊
   @type(RoomInfoState)
-  roomInfo: RoomInfoState;
+  roomInfo: RoomInfoState = new RoomInfoState();
 
   // 房間狀態
   @type('number')
@@ -32,9 +35,7 @@ export default class RoomState extends Schema implements Room {
   @type('number')
   winningPlayer = -1;
 
-  constructor() {
-    super();
-    this.players = new ArraySchema<PlayerState>();
-    this.roomInfo = new RoomInfoState();
-  }
+  // 數學牌
+  @type(MathFormulaCardState)
+  mathFormulaCard = new MathFormulaCardState();
 }

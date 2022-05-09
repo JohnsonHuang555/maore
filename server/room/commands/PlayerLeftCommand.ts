@@ -1,5 +1,5 @@
 import { Command } from '@colyseus/command';
-import { GameStatus } from '../../../../domain/models/Room';
+import { GameStatus } from '../../../domain/models/Room';
 import RoomState from '../state/RoomState';
 
 type Payload = {

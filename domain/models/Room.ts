@@ -18,7 +18,6 @@ export type RoomInfo = {
   maxPlayers: number;
   gamePack: GameList | '';
   gameMode?: string;
-  extraSettings?: string; // JSON.stringify
 };
 
 // 渲染畫面方式

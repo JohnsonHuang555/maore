@@ -1,6 +1,5 @@
 import { Command } from '@colyseus/command';
-import NextTurnCommand from '../../base/commands/NextTurnCommand';
-import MathFormulaCardState from '../state/MathFormulaCardState';
+import NextTurnCommand from '../../../room/commands/NextTurnCommand';
 import { Client } from 'colyseus';
 import {
   CardSymbol,
@@ -9,14 +8,17 @@ import {
 } from '../state/PlayerCardState';
 import short from 'short-uuid';
 import Random from '../../../utils/Random';
+import RoomState from '../../../room/state/RoomState';
 
 type Payload = {
   client: Client;
 };
 
-export default class DrawCardCommand extends Command<MathFormulaCardState> {
+export default class DrawCardCommand extends Command<RoomState> {
   execute(data: Payload) {
-    const playerInfo = this.room.state.playerInfos.get(data.client.id);
+    const playerInfo = this.room.state.mathFormulaCard.playerInfos.get(
+      data.client.id
+    );
     if (!playerInfo) {
       throw new Error('playerInfo not found...');
     }

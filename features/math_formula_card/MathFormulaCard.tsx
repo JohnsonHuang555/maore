@@ -76,7 +76,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
       );
     });
 
-    clientRoom.state.listen('answer', (currentValue) => {
+    clientRoom.state.mathFormulaCard.listen('answer', (currentValue) => {
       localDispatch({
         type: ActionType.CreateAnswer,
         answer: currentValue as number,
@@ -84,7 +84,10 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     });
 
     // 監聽玩家資訊更新
-    clientRoom.state.playerInfos.onAdd = (playerInfo, playerId) => {
+    clientRoom.state.mathFormulaCard.playerInfos.onAdd = (
+      playerInfo,
+      playerId
+    ) => {
       if (playerId === yourPlayerId) {
         playerInfo.onChange = (changes) => {
           changes.forEach((change) => {

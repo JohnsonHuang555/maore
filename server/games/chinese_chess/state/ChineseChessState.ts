@@ -1,6 +1,6 @@
 import { Schema, ArraySchema, type } from '@colyseus/schema';
 import { ChessInfoState } from './ChessInfoState';
-import RoomState from '../../base/state/RoomState';
+import RoomState from '../../../room/state/RoomState';
 
 interface ChineseChess extends Schema {
   chineseChesses: ArraySchema<ChessInfoState>;

@@ -17,12 +17,8 @@ import { GameList } from '@domain/models/Game';
 import { RoomMessage } from '@domain/models/Message';
 import { GameStatus, Metadata, RoomInfo } from '@domain/models/Room';
 import { AnyAction, Dispatch } from 'redux';
-import { Schema, ArraySchema } from '@colyseus/schema';
-import { PlayerState } from 'server/games/base/state/PlayerState';
 import { setClient, setRoom } from '@actions/serverAction';
-import { TicTacToeState } from 'features/tictactoe/models/TicTacToeState';
-import { ChineseChessState } from 'features/chinese_chess/models/ChineseChessState';
-import { IMathFormulaCard } from 'server/games/math_formula_card/state/MathFormulaCardState';
+import { Room } from 'server/room/state/RoomState';
 
 enum RoomStateChangeList {
   RoomInfo = 'roomInfo',
@@ -38,18 +34,6 @@ enum PlayerStateChangeList {
   PlayerOrder = 'playerOrder',
   GameLoaded = 'gameLoaded',
   Group = 'group',
-}
-
-export interface Room
-  extends Schema,
-    TicTacToeState,
-    ChineseChessState, // FIXME: 有的重構囉
-    IMathFormulaCard {
-  players: ArraySchema<PlayerState>;
-  gameStatus: GameStatus; // 遊戲狀態
-  activePlayer: number; // 當前玩家
-  winningPlayer: number; // 勝利玩家
-  playerIndex: number; // 玩家順序號
 }
 
 export default class RoomServer {
@@ -191,7 +175,6 @@ export default class RoomServer {
                 maxPlayers: value.maxPlayers,
                 gamePack: value.gamePack,
                 gameMode: value.gameMode,
-                extraSettings: value.extraSettings,
               })
             );
             break;

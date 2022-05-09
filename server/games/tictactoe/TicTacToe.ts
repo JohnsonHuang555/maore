@@ -6,7 +6,7 @@ import { RoomMessage } from '../../../domain/models/Message';
 import { TicTacToeMessage } from '../../../features/tictactoe/models/TicTacToeMessage';
 import PlayerSelectionCommand from './commands/PlayerSelectionCommand';
 import ResetCommand from './commands/ResetCommand';
-import BaseRoom from '../base';
+import BaseRoom from '../../room';
 // import GameUseCase from '../../domain/usecases/GameUseCase';
 import { Game, GameList } from '../../../domain/models/Game';
 

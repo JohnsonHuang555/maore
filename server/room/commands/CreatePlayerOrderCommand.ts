@@ -1,5 +1,5 @@
 import { Command } from '@colyseus/command';
-import Random from '../../../utils/Random';
+import Random from '../../utils/Random';
 import RoomState from '../state/RoomState';
 
 const FIRST_PLAYER_ORDER = 0;
