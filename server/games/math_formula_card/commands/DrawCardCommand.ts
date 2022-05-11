@@ -9,6 +9,8 @@ import {
 import short from 'short-uuid';
 import Random from '../../../utils/Random';
 import RoomState from '../../../room/state/RoomState';
+import { ArraySchema } from '@colyseus/schema';
+import ClearSelectedCardsCommand from './ClearSelectedCardsCommand';
 
 type Payload = {
   client: Client;
@@ -43,6 +45,6 @@ export default class DrawCardCommand extends Command<RoomState> {
       );
     }
     // 抽完牌換下一位玩家
-    return [new NextTurnCommand()];
+    return [new ClearSelectedCardsCommand(), new NextTurnCommand()];
   }
 }

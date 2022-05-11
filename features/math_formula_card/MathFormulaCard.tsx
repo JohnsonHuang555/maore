@@ -10,10 +10,7 @@ import {
 import { clientRoomSelector } from '@selectors/serverSelector';
 import { useEffect, useReducer, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  CardSymbol,
-  IPlayerCard,
-} from 'server/games/math_formula_card/state/PlayerCardState';
+import { IPlayerCard } from 'server/games/math_formula_card/state/PlayerCardState';
 import Card from './components/Card';
 import OtherPlayer from './components/OtherPlayer';
 import { MathFormulaCardMessage } from './models/MathFormulaCardMessage';
@@ -22,6 +19,7 @@ import playerCardsReducer, {
   initialState,
 } from './reducers/playerCardsReducer';
 import Badge from '@mui/material/Badge';
+import { getSelectedCardLabel } from './components/SelectedCardDict';
 
 type MathFormulaCardProps = {
   isMaster: boolean;
@@ -58,7 +56,6 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     );
 
     clientRoom.onMessage(MathFormulaCardMessage.AnswerCorrectly, () => {
-      localDispatch({ type: ActionType.ClearSelectedCards });
       dispatch(
         setSnackbar({
           show: true,
@@ -151,12 +148,30 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           localDispatch({ type: ActionType.DrawOthersCard, playerId });
         };
 
-        playerInfo.cards.onRemove = (card) => {
+        playerInfo.cards.onRemove = () => {
           localDispatch({
             type: ActionType.UseOthersCard,
             playerId,
           });
         };
+      }
+    };
+
+    clientRoom.state.mathFormulaCard.selectedCards.onAdd = (playerCard) => {
+      const { id, cardNumber, cardSymbol } = playerCard;
+      console.log(cardSymbol);
+      const value = cardSymbol || cardNumber;
+      if (value !== undefined) {
+        localDispatch({ type: ActionType.SelectCard, id, value });
+      }
+    };
+
+    clientRoom.state.mathFormulaCard.selectedCards.onRemove = (playerCard) => {
+      const { id, cardNumber, cardSymbol } = playerCard;
+      console.log(cardSymbol);
+      const value = cardSymbol || cardNumber;
+      if (value !== undefined) {
+        localDispatch({ type: ActionType.SelectCard, id, value });
       }
     };
 
@@ -232,7 +247,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
             key={card.id}
             id={card.id}
             value={card.cardSymbol || card.cardNumber}
-            width="120px"
+            width="6rem"
             height="100%"
             onSelect={handleSelectCard}
           />
@@ -241,7 +256,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     );
   };
 
-  const handleSelectCard = (id: string, value: number | CardSymbol) => {
+  const handleSelectCard = (id: string) => {
     // 還沒輪到你
     if (!isYourTurn) {
       dispatch(
@@ -252,7 +267,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
       );
       return;
     }
-    localDispatch({ type: ActionType.SelectCard, id, value });
+    clientRoom.send(MathFormulaCardMessage.SelectCard, { id });
   };
 
   const useCards = () => {
@@ -261,19 +276,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     if (!state.selectedCards.length) {
       return;
     }
-    const netCards: IPlayerCard[] = state.selectedCards.map((card) => {
-      if (!isNaN(card.value as number)) {
-        return {
-          id: card.id,
-          cardNumber: card.value as number,
-        };
-      }
-      return {
-        id: card.id,
-        cardSymbol: card.value as CardSymbol,
-      };
-    });
-    clientRoom.send(MathFormulaCardMessage.UseCards, { cards: netCards });
+    clientRoom.send(MathFormulaCardMessage.UseCards);
   };
 
   const drawCard = () => {
@@ -330,7 +333,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
             >
               {state.selectedCards.map((selectedCard, index) => (
                 <Box key={index} sx={{ display: 'flex', alignItems: 'center' }}>
-                  {Card.getLabel(selectedCard.value)}
+                  {getSelectedCardLabel(selectedCard.value)}
                 </Box>
               ))}
             </Box>
@@ -343,13 +346,13 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           </Box>
         </Box>
       </Box>
-      <Box sx={{ textAlign: 'center', marginBottom: '20px', fontSize: '36px' }}>
-        {isYourTurn ? '你的回合' : ''}
+      <Box sx={{ textAlign: 'center', marginBottom: '20px', fontSize: '30px' }}>
+        {isYourTurn ? '你的回合' : '其他玩家回合'}
       </Box>
       {/* 自己手牌 */}
       <Box
         sx={{
-          flexBasis: '15%',
+          flexBasis: '14%',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -378,8 +381,30 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
         }}
       >
         <Box sx={{ marginRight: '20px', fontSize: '26px' }}>
-          你的分數: {state.yourPoint}
+          得分: {state.yourPoint}
         </Box>
+        <Button
+          sx={{
+            minWidth: '60px',
+            backgroundColor: '#555454',
+            ':hover': { backgroundColor: '#454444' },
+          }}
+          variant="contained"
+          size="large"
+        >
+          {'('}
+        </Button>
+        <Button
+          sx={{
+            minWidth: '60px',
+            backgroundColor: '#555454',
+            ':hover': { backgroundColor: '#454444' },
+          }}
+          variant="contained"
+          size="large"
+        >
+          {')'}
+        </Button>
         <Button
           sx={{
             minWidth: '100px',
@@ -400,9 +425,10 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           }}
           variant="contained"
           size="large"
+          disabled={!isYourTurn}
           onClick={() => {
-            if (state.selectedCards.length) {
-              localDispatch({ type: ActionType.ClearSelectedCards });
+            if (state.selectedCards.length !== 0) {
+              clientRoom.send(MathFormulaCardMessage.ClearSelectedCards);
             }
           }}
         >
@@ -419,6 +445,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           variant="contained"
           size="large"
           color="secondary"
+          disabled={!isYourTurn}
           onClick={() => drawCard()}
         >
           抽牌並結束回合

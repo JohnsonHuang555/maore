@@ -114,7 +114,7 @@ const Header = () => {
       />
       <Toast />
       <AppBar position="static">
-        <Toolbar sx={{ backgroundColor: '#121314' }}>
+        <Toolbar sx={{ backgroundColor: '#1d1d1d' }}>
           <Typography
             variant="h6"
             noWrap
@@ -135,7 +135,11 @@ const Header = () => {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+            <IconButton
+              size="large"
+              aria-label="show 4 new mails"
+              color="inherit"
+            >
               <Badge badgeContent={4} color="error">
                 <MailIcon />
               </Badge>

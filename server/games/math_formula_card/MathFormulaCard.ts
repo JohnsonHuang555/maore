@@ -2,15 +2,16 @@ import { Client, Room } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
 import BaseRoom from '../../room';
 import { Metadata } from '../../../domain/models/Room';
-import MathFormulaCardState from './state/MathFormulaCardState';
 import ResetCommand from './commands/ResetCommand';
 import { RoomMessage } from '../../../domain/models/Message';
 import CreateGameCommand from './commands/CreateGameCommand';
 import { MathFormulaCardMessage } from '../../../features/math_formula_card/models/MathFormulaCardMessage';
 import UseCardsCommand from './commands/UseCardsCommand';
-import { IPlayerCard } from './state/PlayerCardState';
 import DrawCardCommand from './commands/DrawCardCommand';
 import RoomState from '../../room/state/RoomState';
+import SelectCardCommand from './commands/SelectCardCommand';
+import ClearSelectedCardsCommand from './commands/ClearSelectedCardsCommand';
+import { ISelectCard } from './state/SelectedCardState';
 
 export default class MathFormulaCard extends Room<RoomState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -26,20 +27,30 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
       this.dispatcher.dispatch(new CreateGameCommand());
     });
 
-    this.onMessage(
-      MathFormulaCardMessage.UseCards,
-      (client, message: { cards: IPlayerCard[] }) => {
-        this.dispatcher.dispatch(new UseCardsCommand(), {
-          client,
-          cards: message.cards,
-        });
-      }
-    );
+    this.onMessage(MathFormulaCardMessage.UseCards, (client) => {
+      this.dispatcher.dispatch(new UseCardsCommand(), {
+        client,
+      });
+    });
 
     this.onMessage(MathFormulaCardMessage.DrawCard, (client) => {
       this.dispatcher.dispatch(new DrawCardCommand(), {
         client,
       });
+    });
+
+    this.onMessage(
+      MathFormulaCardMessage.SelectCard,
+      (client, message: { id: string }) => {
+        this.dispatcher.dispatch(new SelectCardCommand(), {
+          playerId: client.id,
+          cardId: message.id,
+        });
+      }
+    );
+
+    this.onMessage(MathFormulaCardMessage.ClearSelectedCards, () => {
+      this.dispatcher.dispatch(new ClearSelectedCardsCommand());
     });
   }
 

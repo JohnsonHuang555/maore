@@ -22,6 +22,7 @@ const labelDict: { [key: string]: string } = {
   [CardSymbol.Minus]: '減',
   [CardSymbol.Times]: '乘',
   [CardSymbol.Divide]: '除',
+  [CardSymbol.Parentheses]: '括號',
 };
 
 const symbolDict: { [key: string]: React.ReactNode } = {
@@ -29,6 +30,7 @@ const symbolDict: { [key: string]: React.ReactNode } = {
   [CardSymbol.Minus]: <RemoveIcon fontSize="large" />,
   [CardSymbol.Times]: <ClearIcon fontSize="large" />,
   [CardSymbol.Divide]: <DivideIcon />,
+  [CardSymbol.Parentheses]: '()',
 };
 
 type CardProps = {
@@ -37,11 +39,18 @@ type CardProps = {
   hideCard?: boolean;
   width: string;
   height: string;
-  onSelect?: (id: string, val: number | CardSymbol) => void;
+  onSelect?: (id: string) => void;
 };
 
 const Card = (props: CardProps) => {
   const { id, value, hideCard = false, width, height, onSelect } = props;
+
+  const getLabel = (value: number | CardSymbol) => {
+    if (!isNaN(value as number)) {
+      return value;
+    }
+    return symbolDict[value];
+  };
 
   const getBrief = () => {
     return labelDict[value as number | CardSymbol];
@@ -64,10 +73,11 @@ const Card = (props: CardProps) => {
         ':hover': {
           backgroundColor: 'rgba(0,0,0,0.25)',
         },
+        padding: '10px',
       }}
       onClick={() => {
-        if (id && onSelect && value !== undefined) {
-          onSelect(id, value);
+        if (id && onSelect) {
+          onSelect(id);
         }
       }}
     >
@@ -76,21 +86,13 @@ const Card = (props: CardProps) => {
       ) : (
         <>
           <Box sx={{ fontSize: '50px', marginBottom: '10px' }}>
-            {Card.getLabel(value as number | CardSymbol)}
+            {getLabel(value as number | CardSymbol)}
           </Box>
           <Box>{getBrief()}</Box>
         </>
       )}
     </Paper>
   );
-};
-
-// 開給外面 function call
-Card.getLabel = (value: number | CardSymbol) => {
-  if (!isNaN(value as number)) {
-    return value;
-  }
-  return symbolDict[value];
 };
 
 export default Card;

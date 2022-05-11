@@ -1,7 +1,7 @@
 import { Client, Room as ClientRoom } from 'colyseus.js';
-import { Room } from 'middleware/services/RoomServer';
 import { GameList } from '@domain/models/Game';
 import { RoomInfo } from '@domain/models/Room';
+import { Room } from 'server/room/state/RoomState';
 
 export enum ActionType {
   INITIAL_CLIENT = 'INITIAL_CLIENT',

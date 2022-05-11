@@ -2,7 +2,8 @@ import {
   CardSymbol,
   IPlayerCard,
 } from 'server/games/math_formula_card/state/PlayerCardState';
-import { CardSymbols } from '../models/CardSymbols';
+import { SelectCardSymbol } from 'server/games/math_formula_card/state/SelectedCardState';
+import { Helper } from 'utils/Helper';
 import { OtherPlayerDict, OthersPlayerInfo } from '../models/OtherPlayerCard';
 
 // 其他玩家手牌只記剩餘數量就可以
@@ -17,13 +18,12 @@ export enum ActionType {
   UpdateOthersPlayerInfo = 'UpdateOthersPlayerInfo',
   ClearErrorMsg = 'ClearErrorMsg',
   CreateAnswer = 'CreateAnswer',
-  ClearSelectedCards = 'ClearSelectedCards',
   SortCard = 'SortCard',
 }
 
 type SelectedCard = {
   id: string;
-  value: number | CardSymbol;
+  value: number | SelectCardSymbol;
 };
 
 export type State = {
@@ -81,7 +81,7 @@ type UpdateOthersInfoAction = {
 type SelectCardAction = {
   type: ActionType.SelectCard;
   id: string;
-  value: number | CardSymbol;
+  value: number | SelectCardSymbol;
 };
 
 type ClearErrorMsgAction = {
@@ -96,10 +96,6 @@ type UpdateYourPointAction = {
 type CreateAnswersAction = {
   type: ActionType.CreateAnswer;
   answer: number;
-};
-
-type ClearSelectedCardsAction = {
-  type: ActionType.ClearSelectedCards;
 };
 
 type SortCardAction = {
@@ -117,7 +113,6 @@ type Action =
   | ClearErrorMsgAction
   | UpdateYourPointAction
   | CreateAnswersAction
-  | ClearSelectedCardsAction
   | SortCardAction;
 
 const reducer = (state = initialState, action: Action): State => {
@@ -185,61 +180,32 @@ const reducer = (state = initialState, action: Action): State => {
       };
     }
     case ActionType.SelectCard: {
-      let newCards = [...state.selectedCards];
-      // 第一張不能選符號
-      // if (
-      //   newCards.length === 0 &&
-      //   CardSymbols.includes(action.value as CardSymbol)
-      // ) {
-      //   return {
-      //     ...state,
-      //     errorMsg: '第一張不能選符號',
-      //   };
-      // }
-
-      const hasExist = newCards.findIndex((card) => card.id === action.id);
-      if (hasExist !== -1) {
-        newCards.splice(hasExist, 1);
-      } else {
-        newCards = [...newCards, { id: action.id, value: action.value }];
-      }
-
-      // 只剩選取符號
-      // const onlySymbolsLeft = newCards.find(
-      //   (card) => typeof card.value === 'number'
-      // );
-      // if (newCards.length !== 0 && !onlySymbolsLeft) {
-      //   return {
-      //     ...state,
-      //     errorMsg: '至少要有數字',
-      //   };
-      // }
-
-      // // 第一張不能是符號
-      // if (
-      //   newCards.length !== 0 &&
-      //   CardSymbols.includes(newCards[0].value as CardSymbol)
-      // ) {
-      //   return {
-      //     ...state,
-      //     errorMsg: '符號不能排第一張',
-      //   };
-      // }
-
-      // if (
-      //   newCards.length > 2 &&
-      //   CardSymbols.includes(action.value as CardSymbol) &&
-      //   CardSymbols.includes(newCards[newCards.length - 2].value as CardSymbol)
-      // ) {
-      //   return {
-      //     ...state,
-      //     errorMsg: '不能連續兩個符號',
-      //   };
+      // let newCards = [...state.selectedCards];
+      // const cardIndex = newCards.findIndex((card) => card.id === action.id);
+      // console.log(action.value);
+      // if (action.value === SelectCardSymbol.RightParentheses) {
+      //   if (cardIndex !== -1) {
+      //     newCards.splice(cardIndex, 1);
+      //     const leftIndex = newCards.findIndex((card) => card.id === action.id);
+      //     newCards.splice(leftIndex, 1);
+      //   } else {
+      //     newCards = [
+      //       { id: action.id, value: SelectCardSymbol.LeftParentheses },
+      //       ...newCards,
+      //       { id: action.id, value: action.value },
+      //     ];
+      //   }
+      // } else {
+      //   if (cardIndex !== -1) {
+      //     newCards.splice(cardIndex, 1);
+      //   } else {
+      //     newCards = [...newCards, { id: action.id, value: action.value }];
+      //   }
       // }
 
       return {
         ...state,
-        selectedCards: newCards,
+        selectedCards: [],
       };
     }
     case ActionType.ClearErrorMsg: {
@@ -258,12 +224,6 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         answer: action.answer,
-      };
-    }
-    case ActionType.ClearSelectedCards: {
-      return {
-        ...state,
-        selectedCards: [],
       };
     }
     case ActionType.SortCard: {

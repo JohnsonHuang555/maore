@@ -1,29 +1,22 @@
 import { Schema, type } from '@colyseus/schema';
 
-export enum CardSymbol {
+export enum SelectCardSymbol {
   Plus = '+',
   Minus = '-',
   Times = '*',
   Divide = '/',
-  Parentheses = '(,)',
+  LeftParentheses = '(',
+  RightParentheses = ')',
 }
-
-export const CardSymbols = [
-  CardSymbol.Plus,
-  CardSymbol.Minus,
-  CardSymbol.Times,
-  CardSymbol.Divide,
-  CardSymbol.Parentheses,
-];
 
 // 可能為 數字牌、運算符號牌、功能牌等等
-export interface IPlayerCard {
+export interface ISelectCard {
   id: string;
   cardNumber?: number;
-  cardSymbol?: CardSymbol;
+  cardSymbol?: SelectCardSymbol;
 }
 
-export class PlayerCardState extends Schema implements IPlayerCard {
+export class SelectedCardState extends Schema implements ISelectCard {
   @type('string')
   id: string;
 
@@ -31,9 +24,9 @@ export class PlayerCardState extends Schema implements IPlayerCard {
   cardNumber?: number;
 
   @type('string')
-  cardSymbol?: CardSymbol;
+  cardSymbol?: SelectCardSymbol;
 
-  constructor({ id, cardNumber, cardSymbol }: IPlayerCard) {
+  constructor({ id, cardNumber, cardSymbol }: ISelectCard) {
     super();
     this.id = id;
     this.cardNumber = cardNumber;
