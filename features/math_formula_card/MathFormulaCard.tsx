@@ -159,8 +159,9 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
 
     clientRoom.state.mathFormulaCard.selectedCards.onAdd = (playerCard) => {
       const { id, cardNumber, cardSymbol } = playerCard;
-      console.log(cardSymbol);
       const value = cardSymbol || cardNumber;
+      console.log(cardNumber, cardSymbol);
+
       if (value !== undefined) {
         localDispatch({ type: ActionType.SelectCard, id, value });
       }
@@ -168,8 +169,9 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
 
     clientRoom.state.mathFormulaCard.selectedCards.onRemove = (playerCard) => {
       const { id, cardNumber, cardSymbol } = playerCard;
-      console.log(cardSymbol);
       const value = cardSymbol || cardNumber;
+      console.log(cardNumber, cardSymbol);
+
       if (value !== undefined) {
         localDispatch({ type: ActionType.SelectCard, id, value });
       }
@@ -267,6 +269,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
       );
       return;
     }
+    console.log(id);
     clientRoom.send(MathFormulaCardMessage.SelectCard, { id });
   };
 
@@ -383,28 +386,6 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
         <Box sx={{ marginRight: '20px', fontSize: '26px' }}>
           得分: {state.yourPoint}
         </Box>
-        <Button
-          sx={{
-            minWidth: '60px',
-            backgroundColor: '#555454',
-            ':hover': { backgroundColor: '#454444' },
-          }}
-          variant="contained"
-          size="large"
-        >
-          {'('}
-        </Button>
-        <Button
-          sx={{
-            minWidth: '60px',
-            backgroundColor: '#555454',
-            ':hover': { backgroundColor: '#454444' },
-          }}
-          variant="contained"
-          size="large"
-        >
-          {')'}
-        </Button>
         <Button
           sx={{
             minWidth: '100px',

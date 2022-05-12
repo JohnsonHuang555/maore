@@ -11,15 +11,16 @@ import Random from '../../../utils/Random';
 import RoomState from '../../../room/state/RoomState';
 import { ArraySchema } from '@colyseus/schema';
 import ClearSelectedCardsCommand from './ClearSelectedCardsCommand';
+import MathFormulaCard from '../MathFormulaCard';
 
 type Payload = {
   client: Client;
 };
 
-export default class DrawCardCommand extends Command<RoomState> {
-  execute(data: Payload) {
+export default class DrawCardCommand extends Command<MathFormulaCard, Payload> {
+  execute({ client }: Payload) {
     const playerInfo = this.room.state.mathFormulaCard.playerInfos.get(
-      data.client.id
+      client.id
     );
     if (!playerInfo) {
       throw new Error('playerInfo not found...');

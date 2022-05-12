@@ -12,7 +12,7 @@ import CreatePlayerOrderCommand from './commands/CreatePlayerOrderCommand';
 import LoadedGameCommand from './commands/LoadedGameCommand';
 
 export default class BaseRoom {
-  private dispatcher;
+  private dispatcher: Dispatcher<Room<RoomState, Metadata>>;
   private room: Room<RoomState, Metadata>;
   constructor(room: Room<RoomState, Metadata>) {
     this.room = room;

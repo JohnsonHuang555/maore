@@ -180,32 +180,47 @@ const reducer = (state = initialState, action: Action): State => {
       };
     }
     case ActionType.SelectCard: {
-      // let newCards = [...state.selectedCards];
-      // const cardIndex = newCards.findIndex((card) => card.id === action.id);
-      // console.log(action.value);
-      // if (action.value === SelectCardSymbol.RightParentheses) {
-      //   if (cardIndex !== -1) {
-      //     newCards.splice(cardIndex, 1);
-      //     const leftIndex = newCards.findIndex((card) => card.id === action.id);
-      //     newCards.splice(leftIndex, 1);
-      //   } else {
-      //     newCards = [
-      //       { id: action.id, value: SelectCardSymbol.LeftParentheses },
-      //       ...newCards,
-      //       { id: action.id, value: action.value },
-      //     ];
-      //   }
-      // } else {
-      //   if (cardIndex !== -1) {
-      //     newCards.splice(cardIndex, 1);
-      //   } else {
-      //     newCards = [...newCards, { id: action.id, value: action.value }];
-      //   }
-      // }
+      let newCards = [...state.selectedCards];
+      if (action.value === SelectCardSymbol.LeftParentheses) {
+        const leftParentheses = newCards.findIndex(
+          (card) =>
+            card.id === action.id &&
+            card.value === SelectCardSymbol.LeftParentheses
+        );
+        if (leftParentheses !== -1) {
+          newCards.splice(leftParentheses, 1);
+        } else {
+          newCards = [
+            { id: action.id, value: SelectCardSymbol.LeftParentheses },
+            ...newCards,
+          ];
+        }
+      } else if (action.value === SelectCardSymbol.RightParentheses) {
+        const rightParentheses = newCards.findIndex(
+          (card) =>
+            card.id === action.id &&
+            card.value === SelectCardSymbol.RightParentheses
+        );
+        if (rightParentheses !== -1) {
+          newCards.splice(rightParentheses, 1);
+        } else {
+          newCards = [
+            ...newCards,
+            { id: action.id, value: SelectCardSymbol.RightParentheses },
+          ];
+        }
+      } else {
+        const cardIndex = newCards.findIndex((card) => card.id === action.id);
+        if (cardIndex !== -1) {
+          newCards.splice(cardIndex, 1);
+        } else {
+          newCards = [...newCards, { id: action.id, value: action.value }];
+        }
+      }
 
       return {
         ...state,
-        selectedCards: [],
+        selectedCards: newCards,
       };
     }
     case ActionType.ClearErrorMsg: {

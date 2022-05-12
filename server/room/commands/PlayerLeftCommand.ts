@@ -1,12 +1,16 @@
 import { Command } from '@colyseus/command';
 import { GameStatus } from '../../../domain/models/Room';
 import RoomState from '../state/RoomState';
+import { Metadata } from '../../../domain/models/Room';
+import { Room } from 'colyseus';
 
 type Payload = {
   playerId: string;
 };
 
-export default class PlayerLeftCommand extends Command<RoomState> {
+export default class PlayerLeftCommand extends Command<
+  Room<RoomState, Metadata>
+> {
   execute(data: Payload) {
     const idx = this.room.state.players.findIndex(
       (player) => player.id === data.playerId

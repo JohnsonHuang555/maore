@@ -1,8 +1,12 @@
 import { Command } from '@colyseus/command';
 import RoomState from '../state/RoomState';
 import { GameStatus } from '../../../domain/models/Room';
+import { Metadata } from '../../../domain/models/Room';
+import { Room } from 'colyseus';
 
-export default class ResetGameCommand extends Command<RoomState> {
+export default class ResetGameCommand extends Command<
+  Room<RoomState, Metadata>
+> {
   execute() {
     const playerCount = this.state.players.length;
     for (let i = 0; i < playerCount; i++) {

@@ -5,8 +5,9 @@ import { CardSymbols, PlayerCardState } from '../state/PlayerCardState';
 import { PlayerInfoState } from '../state/PlayerInfoState';
 import short from 'short-uuid';
 import RoomState from '../../../room/state/RoomState';
+import MathFormulaCard from '../MathFormulaCard';
 
-export default class CreateGameCommand extends Command<RoomState> {
+export default class CreateGameCommand extends Command<MathFormulaCard> {
   execute() {
     // 產隨機答案後寫入
     const answer = Random.getRangeNumbers(0, 100, 1);

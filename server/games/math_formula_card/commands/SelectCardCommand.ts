@@ -5,14 +5,14 @@ import {
   SelectCardSymbol,
   SelectedCardState,
 } from '../state/SelectedCardState';
-import { ArraySchema } from '@colyseus/schema';
+import MathFormulaCard from '../MathFormulaCard';
 
 type Payload = {
   playerId: string;
   cardId: string;
 };
 
-export default class SelectCardCommand extends Command<RoomState> {
+export default class SelectCardCommand extends Command<MathFormulaCard> {
   execute(data: Payload) {
     const { playerId, cardId } = data;
     const cards = this.state.mathFormulaCard.playerInfos.get(playerId)?.cards;
@@ -44,12 +44,9 @@ export default class SelectCardCommand extends Command<RoomState> {
         );
         this.state.mathFormulaCard.selectedCards.splice(leftIndex, 1);
       } else {
-        this.state.mathFormulaCard.selectedCards.unshift(
-          new SelectedCardState({
-            id: playerCard.id,
-            cardSymbol: SelectCardSymbol.LeftParentheses,
-          })
-        );
+        this.state.mathFormulaCard.selectedCards =
+          this.state.mathFormulaCard.selectedCards.clone(true);
+
         this.state.mathFormulaCard.selectedCards.push(
           new SelectedCardState({
             id: playerCard.id,
@@ -57,18 +54,23 @@ export default class SelectCardCommand extends Command<RoomState> {
           })
         );
 
-        console.log(
-          this.state.mathFormulaCard.selectedCards[0].cardSymbol,
-          this.state.mathFormulaCard.selectedCards[1].cardSymbol
+        this.state.mathFormulaCard.selectedCards.unshift(
+          new SelectedCardState({
+            id: playerCard.id,
+            cardSymbol: SelectCardSymbol.LeftParentheses,
+          })
         );
+
+        this.state.mathFormulaCard.selectedCards.forEach((item) => {
+          console.log(item.cardSymbol);
+        });
+        return;
       }
-      return;
     }
 
     if (isExistIndex !== -1) {
       this.state.mathFormulaCard.selectedCards.splice(isExistIndex, 1);
     } else {
-      const cardLength = this.state.mathFormulaCard.selectedCards.length;
       this.state.mathFormulaCard.selectedCards.push(
         new SelectedCardState({
           id: playerCard.id,

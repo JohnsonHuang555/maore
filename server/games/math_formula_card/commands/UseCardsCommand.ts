@@ -5,12 +5,13 @@ import { MathFormulaCardMessage } from '../../../../features/math_formula_card/m
 import DrawCardCommand from './DrawCardCommand';
 import Random from '../../../utils/Random';
 import RoomState from '../../../room/state/RoomState';
+import MathFormulaCard from '../MathFormulaCard';
 
 type Payload = {
   client: Client;
 };
 
-export default class UseCardsCommand extends Command<RoomState> {
+export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
   execute(data: Payload) {
     const { client } = data;
     let isIllegalFormula = false;

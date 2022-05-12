@@ -1,6 +1,8 @@
 import { Command } from '@colyseus/command';
 import { GameList } from '../../../domain/models/Game';
 import RoomState from '../state/RoomState';
+import { Metadata } from '../../../domain/models/Room';
+import { Room } from 'colyseus';
 
 export type Payload = {
   maxPlayers: number;
@@ -9,7 +11,9 @@ export type Payload = {
   gameMode?: string;
 };
 
-export default class UpdateRoomInfoCommand extends Command<RoomState> {
+export default class UpdateRoomInfoCommand extends Command<
+  Room<RoomState, Metadata>
+> {
   execute(data: Payload) {
     const { maxPlayers, roomTitle, gamePack, gameMode } = data;
     this.room.state.roomInfo.roomTitle = roomTitle;
