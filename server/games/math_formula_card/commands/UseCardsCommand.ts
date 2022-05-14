@@ -4,7 +4,6 @@ import { evaluate } from 'mathjs';
 import { MathFormulaCardMessage } from '../../../../features/math_formula_card/models/MathFormulaCardMessage';
 import DrawCardCommand from './DrawCardCommand';
 import Random from '../../../utils/Random';
-import RoomState from '../../../room/state/RoomState';
 import MathFormulaCard from '../MathFormulaCard';
 
 type Payload = {
@@ -17,7 +16,10 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
     let isIllegalFormula = false;
     let isPreviousNumberZero = false;
     const cards = this.room.state.mathFormulaCard.selectedCards;
-    console.log(cards);
+    console.log('-----------USE CARD-----------');
+    cards.forEach((card) => {
+      console.log(card.cardNumber, card.cardSymbol);
+    });
     // 第一張是 0、符號，最後一張是符號，連續兩張是符號
     cards.forEach((card) => {
       if (isPreviousNumberZero && card.cardNumber !== undefined) {

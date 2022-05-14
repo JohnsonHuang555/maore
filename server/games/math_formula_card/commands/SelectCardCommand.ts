@@ -21,6 +21,9 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
       throw new Error('playerCard not found');
     }
 
+    this.state.mathFormulaCard.selectedCards =
+      this.state.mathFormulaCard.selectedCards.clone(true);
+
     const isExistIndex = this.state.mathFormulaCard.selectedCards.findIndex(
       (card) => card.id === playerCard.id
     );
@@ -44,9 +47,6 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
         );
         this.state.mathFormulaCard.selectedCards.splice(leftIndex, 1);
       } else {
-        this.state.mathFormulaCard.selectedCards =
-          this.state.mathFormulaCard.selectedCards.clone(true);
-
         this.state.mathFormulaCard.selectedCards.push(
           new SelectedCardState({
             id: playerCard.id,
@@ -60,12 +60,8 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
             cardSymbol: SelectCardSymbol.LeftParentheses,
           })
         );
-
-        this.state.mathFormulaCard.selectedCards.forEach((item) => {
-          console.log(item.cardSymbol);
-        });
-        return;
       }
+      return;
     }
 
     if (isExistIndex !== -1) {

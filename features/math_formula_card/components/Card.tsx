@@ -73,7 +73,7 @@ const Card = (props: CardProps) => {
         ':hover': {
           backgroundColor: 'rgba(0,0,0,0.25)',
         },
-        padding: '10px',
+        padding: '20px',
       }}
       onClick={() => {
         if (id && onSelect) {
