@@ -11,7 +11,6 @@ import DrawCardCommand from './commands/DrawCardCommand';
 import RoomState from '../../room/state/RoomState';
 import SelectCardCommand from './commands/SelectCardCommand';
 import ClearSelectedCardsCommand from './commands/ClearSelectedCardsCommand';
-import { ISelectCard } from './state/SelectedCardState';
 
 export default class MathFormulaCard extends Room<RoomState, Metadata> {
   private dispatcher = new Dispatcher(this);

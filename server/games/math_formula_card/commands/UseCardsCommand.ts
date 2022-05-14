@@ -16,10 +16,7 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
     let isIllegalFormula = false;
     let isPreviousNumberZero = false;
     const cards = this.room.state.mathFormulaCard.selectedCards;
-    console.log('-----------USE CARD-----------');
-    cards.forEach((card) => {
-      console.log(card.cardNumber, card.cardSymbol);
-    });
+
     // 第一張是 0、符號，最後一張是符號，連續兩張是符號
     cards.forEach((card) => {
       if (isPreviousNumberZero && card.cardNumber !== undefined) {
@@ -52,8 +49,6 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
         }
       })
       .join('');
-
-    console.log(combinedFormula);
 
     try {
       const answer: number = evaluate(combinedFormula);

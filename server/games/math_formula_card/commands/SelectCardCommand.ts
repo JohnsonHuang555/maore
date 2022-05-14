@@ -1,5 +1,4 @@
 import { Command } from '@colyseus/command';
-import RoomState from '../../../room/state/RoomState';
 import { CardSymbol } from '../state/PlayerCardState';
 import {
   SelectCardSymbol,

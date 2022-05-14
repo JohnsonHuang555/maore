@@ -18,7 +18,6 @@ import playerCardsReducer, {
   ActionType,
   initialState,
 } from './reducers/playerCardsReducer';
-import Badge from '@mui/material/Badge';
 import { getSelectedCardLabel } from './components/SelectedCardDict';
 
 type MathFormulaCardProps = {
@@ -160,8 +159,6 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     clientRoom.state.mathFormulaCard.selectedCards.onAdd = (playerCard) => {
       const { id, cardNumber, cardSymbol } = playerCard;
       const value = cardSymbol || cardNumber;
-      console.log(cardNumber, cardSymbol);
-
       if (value !== undefined) {
         localDispatch({ type: ActionType.SelectCard, id, value });
       }
@@ -170,8 +167,6 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     clientRoom.state.mathFormulaCard.selectedCards.onRemove = (playerCard) => {
       const { id, cardNumber, cardSymbol } = playerCard;
       const value = cardSymbol || cardNumber;
-      console.log(cardNumber, cardSymbol);
-
       if (value !== undefined) {
         localDispatch({ type: ActionType.SelectCard, id, value });
       }
@@ -230,18 +225,11 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
           transitionDelay: noDrawCardDelay ? '0ms' : `${index * 100}ms`,
         }}
       >
-        <Badge
-          invisible={isSelected === -1}
-          badgeContent={isSelected + 1}
-          color="secondary"
+        <Box
           sx={{
-            span: {
-              width: '30px',
-              height: '30px',
-              borderRadius: '50%',
-            },
             '.MuiPaper-elevation': {
-              border: isSelected !== -1 ? '1px solid' : 'none',
+              border:
+                isSelected !== -1 ? '5px solid #b95e47' : '5px solid #525252',
             },
           }}
         >
@@ -253,7 +241,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
             height="100%"
             onSelect={handleSelectCard}
           />
-        </Badge>
+        </Box>
       </Zoom>
     );
   };
@@ -269,7 +257,6 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
       );
       return;
     }
-    console.log(id);
     clientRoom.send(MathFormulaCardMessage.SelectCard, { id });
   };
 
@@ -277,6 +264,12 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     // 代表已經載入完成，改無延遲時間
     setNoDrawCardDelay(true);
     if (!state.selectedCards.length) {
+      dispatch(
+        setSnackbar({
+          show: true,
+          message: '請選牌',
+        })
+      );
       return;
     }
     clientRoom.send(MathFormulaCardMessage.UseCards);

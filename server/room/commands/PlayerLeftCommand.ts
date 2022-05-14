@@ -16,7 +16,11 @@ export default class PlayerLeftCommand extends Command<
       (player) => player.id === data.playerId
     );
     this.room.state.players.splice(idx, 1);
-    this.state.gameStatus = GameStatus.WaitingForPlayers;
+
+    // 如果房間剩下一人就切狀態
+    if (this.room.state.players.length === 1) {
+      this.state.gameStatus = GameStatus.WaitingForPlayers;
+    }
 
     // 房間沒人
     if (!this.room.state.players.length) {

@@ -4,7 +4,6 @@ import Random from '../../../utils/Random';
 import { CardSymbols, PlayerCardState } from '../state/PlayerCardState';
 import { PlayerInfoState } from '../state/PlayerInfoState';
 import short from 'short-uuid';
-import RoomState from '../../../room/state/RoomState';
 import MathFormulaCard from '../MathFormulaCard';
 
 export default class CreateGameCommand extends Command<MathFormulaCard> {
