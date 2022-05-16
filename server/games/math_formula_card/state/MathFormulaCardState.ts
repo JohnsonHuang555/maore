@@ -1,4 +1,5 @@
 import { Schema, ArraySchema, MapSchema, type } from '@colyseus/schema';
+import { GameSettingsState } from './GameSettingsState';
 import { PlayerInfoState } from './PlayerInfoState';
 import { SelectedCardState } from './SelectedCardState';
 
@@ -6,6 +7,7 @@ interface IMathFormulaCard {
   answer?: number;
   playerInfos: MapSchema<PlayerInfoState>;
   selectedCards: ArraySchema<SelectedCardState>;
+  gameSettings: GameSettingsState;
 }
 
 export default class MathFormulaCardState
@@ -20,4 +22,7 @@ export default class MathFormulaCardState
 
   @type([SelectedCardState])
   selectedCards = new ArraySchema<SelectedCardState>();
+
+  @type(GameSettingsState)
+  gameSettings = new GameSettingsState();
 }

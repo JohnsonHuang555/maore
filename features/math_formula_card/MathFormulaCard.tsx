@@ -358,9 +358,11 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'center',
+            justifyContent: 'flex-start',
             gap: '15px',
             height: '100%',
+            flexWrap: 'wrap',
+            width: '90vw',
           }}
         >
           {state.yourCards.map((card, index) => renderYourCard(card, index))}

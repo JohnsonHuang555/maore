@@ -19,12 +19,17 @@ import { GameStatus, Metadata, RoomInfo } from '@domain/models/Room';
 import { AnyAction, Dispatch } from 'redux';
 import { setClient, setRoom } from '@actions/serverAction';
 import { Room } from 'server/room/state/RoomState';
+import {
+  updateGameSettings,
+  updateGameSettings as updateMathFormulaSettings,
+} from '@actions/game_settings/mathFormulaAction';
 
 enum RoomStateChangeList {
   RoomInfo = 'roomInfo',
   GameStatus = 'gameStatus',
   WinningPlayer = 'winningPlayer',
   ActivePlayer = 'activePlayer',
+  MathFormulaCard = 'mathFormulaCard',
 }
 
 enum PlayerStateChangeList {
@@ -193,6 +198,20 @@ export default class RoomServer {
           }
           case RoomStateChangeList.WinningPlayer: {
             this.dispatch(updateWinningPlayer(value));
+            break;
+          }
+          case RoomStateChangeList.MathFormulaCard: {
+            room.state.mathFormulaCard.gameSettings.onChange = (changes) => {
+              changes.forEach((c) => {
+                const { field, value } = c;
+                switch (field) {
+                  case 'winnerPoint': {
+                    this.dispatch(updateGameSettings({ winnerPoint: value }));
+                    break;
+                  }
+                }
+              });
+            };
             break;
           }
         }
