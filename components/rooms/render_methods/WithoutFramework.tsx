@@ -1,6 +1,6 @@
-import { GameList } from '@domain/models/Game';
 import { Box } from '@mui/system';
 import MathFormulaCard from 'features/math_formula_card/MathFormulaCard';
+import { GameList } from 'server/domain/Game';
 
 type WithoutFrameworkProps = {
   gamePack: GameList;

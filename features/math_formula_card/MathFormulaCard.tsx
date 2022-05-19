@@ -358,7 +358,7 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'flex-start',
+            justifyContent: 'center',
             gap: '15px',
             height: '100%',
             flexWrap: 'wrap',

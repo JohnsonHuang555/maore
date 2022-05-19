@@ -1,10 +1,10 @@
 import React from 'react';
-import { GameList } from '@domain/models/Game';
 import { RenderMethod } from '@domain/models/Room';
 import Phaser from './render_methods/Phaser';
 import { useSelector } from 'react-redux';
 import { clientRoomSelector } from '@selectors/serverSelector';
 import WithoutFramework from './render_methods/WithoutFramework';
+import { GameList } from 'server/domain/Game';
 
 const gameRenderFunction: { [key: string]: RenderMethod } = {
   [GameList.ChineseChess]: RenderMethod.Phaser,

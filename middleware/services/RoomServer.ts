@@ -13,16 +13,13 @@ import {
   setMessage,
 } from '@actions/roomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
-import { GameList } from '@domain/models/Game';
 import { RoomMessage } from '@domain/models/Message';
 import { GameStatus, Metadata, RoomInfo } from '@domain/models/Room';
 import { AnyAction, Dispatch } from 'redux';
 import { setClient, setRoom } from '@actions/serverAction';
 import { Room } from 'server/room/state/RoomState';
-import {
-  updateGameSettings,
-  updateGameSettings as updateMathFormulaSettings,
-} from '@actions/game_settings/mathFormulaAction';
+import { updateGameSettings as updateMathFormulaSettings } from '@actions/game_settings/mathFormulaAction';
+import { GameList } from 'server/domain/Game';
 
 enum RoomStateChangeList {
   RoomInfo = 'roomInfo',
@@ -30,15 +27,6 @@ enum RoomStateChangeList {
   WinningPlayer = 'winningPlayer',
   ActivePlayer = 'activePlayer',
   MathFormulaCard = 'mathFormulaCard',
-}
-
-enum PlayerStateChangeList {
-  IsReady = 'isReady',
-  IsMaster = 'isMaster',
-  PlayerIndex = 'playerIndex',
-  PlayerOrder = 'playerOrder',
-  GameLoaded = 'gameLoaded',
-  Group = 'group',
 }
 
 export default class RoomServer {
@@ -109,56 +97,11 @@ export default class RoomServer {
       player.onChange = (changes) => {
         changes.forEach((change) => {
           const { field, value } = change;
-          switch (field) {
-            case PlayerStateChangeList.IsReady: {
-              this.dispatch(
-                setPlayerInfo(player.id, {
-                  isReady: value,
-                })
-              );
-              break;
-            }
-            case PlayerStateChangeList.IsMaster: {
-              this.dispatch(
-                setPlayerInfo(player.id, {
-                  isMaster: value,
-                })
-              );
-              break;
-            }
-            case PlayerStateChangeList.PlayerIndex: {
-              this.dispatch(
-                setPlayerInfo(player.id, {
-                  playerIndex: value,
-                })
-              );
-              break;
-            }
-            case PlayerStateChangeList.PlayerOrder: {
-              this.dispatch(
-                setPlayerInfo(player.id, {
-                  playerOrder: value,
-                })
-              );
-              break;
-            }
-            case PlayerStateChangeList.GameLoaded: {
-              this.dispatch(
-                setPlayerInfo(player.id, {
-                  gameLoaded: value,
-                })
-              );
-              break;
-            }
-            case PlayerStateChangeList.Group: {
-              this.dispatch(
-                setPlayerInfo(player.id, {
-                  group: value,
-                })
-              );
-              break;
-            }
-          }
+          this.dispatch(
+            setPlayerInfo(player.id, {
+              [field]: value,
+            })
+          );
         });
       };
     };
@@ -204,12 +147,7 @@ export default class RoomServer {
             room.state.mathFormulaCard.gameSettings.onChange = (changes) => {
               changes.forEach((c) => {
                 const { field, value } = c;
-                switch (field) {
-                  case 'winnerPoint': {
-                    this.dispatch(updateGameSettings({ winnerPoint: value }));
-                    break;
-                  }
-                }
+                this.dispatch(updateMathFormulaSettings({ [field]: value }));
               });
             };
             break;

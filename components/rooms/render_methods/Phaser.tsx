@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { IonPhaser, GameInstance } from '@ion-phaser/react';
-import { GameList } from '@domain/models/Game';
 import { TicTacToeConfig } from 'features/tictactoe/TicTacToeConfig';
 import { ChineseChessConfig } from 'features/chinese_chess/ChineseChessConfig';
 import { Box } from '@mui/material';
+import { GameList } from 'server/domain/Game';
 
 const playingGame: { [key: string]: GameInstance } = {
   [GameList.TicTacToe]: TicTacToeConfig,
@@ -12,7 +12,7 @@ const playingGame: { [key: string]: GameInstance } = {
 
 type PhaserProps = {
   gamePack: GameList;
-}
+};
 
 const Phaser = (props: PhaserProps) => {
   const { gamePack } = props;

@@ -1,5 +1,5 @@
 import { Schema, type } from '@colyseus/schema';
-import { GameList } from '../../../domain/models/Game';
+import { GameList } from 'server/domain/Game';
 
 // An abstract roomInfo object
 export class RoomInfoState extends Schema {

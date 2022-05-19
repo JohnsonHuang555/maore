@@ -125,7 +125,7 @@ const Rooms = () => {
           </Grid>
           <Grid item lg={3} xs={12}>
             <SettingArea
-              roomInfo={roomInfo}
+              gamePack={roomInfo.gamePack}
               // gameModes={game?.modes || []}
               isMaster={checkIsMaster()}
               disabledStartGame={checkDisabledStartGame()}

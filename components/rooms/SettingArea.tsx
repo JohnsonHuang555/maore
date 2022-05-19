@@ -1,12 +1,16 @@
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import { GameMode } from '@domain/models/Game';
-import { RoomInfo } from '@domain/models/Room';
-import GameSetting from '@components/rooms/GameSetting';
+import { GameList } from 'server/domain/Game';
+import MathFormulaGameSettings from './game_settings/MathFormulaGameSettings';
+import React from 'react';
+
+const gameSettings: { [key: string]: React.ReactNode } = {
+  [GameList.MathFormulaCard]: <MathFormulaGameSettings />,
+};
 
 type SettingAreaProps = {
-  roomInfo: RoomInfo;
   // gameModes: GameMode[];
+  gamePack: GameList;
   isMaster: boolean;
   disabledStartGame: boolean;
   isReadyGame: string;
@@ -17,8 +21,8 @@ type SettingAreaProps = {
 
 const SettingArea = (props: SettingAreaProps) => {
   const {
-    roomInfo,
     // gameModes,
+    gamePack,
     isMaster,
     disabledStartGame,
     isReadyGame,
@@ -26,6 +30,7 @@ const SettingArea = (props: SettingAreaProps) => {
     onStartGame,
     onReadyGame,
   } = props;
+
   return (
     <Box
       sx={{
@@ -37,14 +42,7 @@ const SettingArea = (props: SettingAreaProps) => {
         flexDirection: 'column',
       }}
     >
-      <Box sx={{ flex: '1' }}>
-        {/* <GameSetting
-          roomInfo={roomInfo}
-          gameModes={gameModes}
-          isMaster={isMaster}
-          onChangeRoomInfo={() => {}}
-        /> */}
-      </Box>
+      <Box sx={{ flex: '1' }}>{gameSettings[gamePack]}</Box>
       {isMaster ? (
         <Button
           variant="contained"

@@ -1,4 +1,3 @@
-import { GameList } from '../domain/models/Game';
 import express from 'express';
 import next from 'next';
 import http from 'http';
@@ -10,6 +9,7 @@ import GameRepository from './services/game/repository/GemeRepository';
 import { Games } from './data/Game';
 import GameUseCase from './services/game/usecase/GameUseCase';
 import GameDelivery from './services/game/delivery/GameDelivery';
+import { GameList } from './domain/Game';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev = process.env.NODE_ENV !== 'production';

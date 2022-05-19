@@ -1,4 +1,4 @@
-import { GameList } from './Game';
+import { GameList } from 'server/domain/Game';
 
 export enum GameStatus {
   WaitingForPlayers,
@@ -6,6 +6,7 @@ export enum GameStatus {
   // Finished
 }
 
+// RoomAvailable 使用存放到 RoomInfo
 export type Metadata = {
   roomTitle?: string;
   playerName: string;
@@ -13,10 +14,11 @@ export type Metadata = {
   gameMode?: string;
 };
 
+// 房間頁使用
 export type RoomInfo = {
   roomTitle: string;
   maxPlayers: number;
-  gamePack: GameList | '';
+  gamePack: GameList;
   gameMode?: string;
 };
 

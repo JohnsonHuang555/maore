@@ -11,6 +11,7 @@ import DrawCardCommand from './commands/DrawCardCommand';
 import RoomState from '../../room/state/RoomState';
 import SelectCardCommand from './commands/SelectCardCommand';
 import ClearSelectedCardsCommand from './commands/ClearSelectedCardsCommand';
+import UpdateGameSettingsCommand from './commands/UpdateGameSettingsCommand';
 
 export default class MathFormulaCard extends Room<RoomState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -25,6 +26,15 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
     this.onMessage(RoomMessage.CreateGame, () => {
       this.dispatcher.dispatch(new CreateGameCommand());
     });
+
+    this.onMessage(
+      RoomMessage.UpdateGameSettings,
+      (_c, message: { winnerPoint: number }) => {
+        this.dispatcher.dispatch(new UpdateGameSettingsCommand(), {
+          winnerPoint: message.winnerPoint,
+        });
+      }
+    );
 
     this.onMessage(MathFormulaCardMessage.UseCards, (client) => {
       this.dispatcher.dispatch(new UseCardsCommand(), {

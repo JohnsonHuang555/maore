@@ -1,8 +1,8 @@
 import { Command } from '@colyseus/command';
-import { GameList } from '../../../domain/models/Game';
 import RoomState from '../state/RoomState';
 import { Metadata } from '../../../domain/models/Room';
 import { Room } from 'colyseus';
+import { GameList } from 'server/domain/Game';
 
 export type Payload = {
   maxPlayers: number;

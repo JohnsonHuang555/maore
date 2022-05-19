@@ -12,4 +12,6 @@ export enum RoomMessage {
   // messages
   SendMessage = 'send-message',
   GetMessages = 'get-messages',
+  // game settings
+  UpdateGameSettings = 'update-game-settings',
 }
