@@ -28,6 +28,7 @@ import PlayerArea from '@components/rooms/PlayerArea';
 import ChatArea from '@components/rooms/ChatArea';
 import SettingArea from '@components/rooms/SettingArea';
 import { fetchGame } from '@actions/fetchAction';
+import { GameList } from 'server/domain/Game';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('@components/rooms/GameScreen'),
@@ -86,14 +87,6 @@ const Rooms = () => {
   //   throw new Error('Game not loaded');
   // }
 
-  const checkIsMaster = (): boolean => {
-    const player = players.find((p) => p.isMaster && p.id === yourPlayerId);
-    if (player) {
-      return true;
-    }
-    return false;
-  };
-
   const getIsReadyGameText = () => {
     const isReady = players.find((p) => p.isReady && p.id === yourPlayerId);
     if (isReady) {
@@ -125,9 +118,8 @@ const Rooms = () => {
           </Grid>
           <Grid item lg={3} xs={12}>
             <SettingArea
-              gamePack={roomInfo.gamePack}
+              gamePack={roomInfo.gamePack as GameList}
               // gameModes={game?.modes || []}
-              isMaster={checkIsMaster()}
               disabledStartGame={checkDisabledStartGame()}
               isReadyGame={getIsReadyGameText()}
               onLeaveRoom={() => router.push('/')}
@@ -137,9 +129,7 @@ const Rooms = () => {
           </Grid>
         </Grid>
       </Container>
-      {showGameScreen && (
-        <DynamicGameScreenWithNoSSR isMaster={checkIsMaster()} />
-      )}
+      {showGameScreen && <DynamicGameScreenWithNoSSR />}
     </Layout>
   );
 };

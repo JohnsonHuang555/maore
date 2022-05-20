@@ -11,13 +11,8 @@ const gameRenderFunction: { [key: string]: RenderMethod } = {
   [GameList.MathFormulaCard]: RenderMethod.WithoutFramework,
 };
 
-type GameScreenProps = {
-  isMaster: boolean;
-};
-
 /** 決定要使用的遊戲 */
-const GameScreen = (props: GameScreenProps) => {
-  const { isMaster } = props;
+const GameScreen = () => {
   const clientRoom = useSelector(clientRoomSelector);
   if (!clientRoom) {
     return null;
@@ -30,12 +25,7 @@ const GameScreen = (props: GameScreenProps) => {
         return <Phaser gamePack={clientRoom.name as GameList} />;
       }
       case RenderMethod.WithoutFramework: {
-        return (
-          <WithoutFramework
-            gamePack={clientRoom.name as GameList}
-            isMaster={isMaster}
-          />
-        );
+        return <WithoutFramework gamePack={clientRoom.name as GameList} />;
       }
       case RenderMethod.Kaboom: {
         return <div></div>;

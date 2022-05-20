@@ -4,16 +4,15 @@ import { GameList } from 'server/domain/Game';
 
 type WithoutFrameworkProps = {
   gamePack: GameList;
-  isMaster: boolean;
 };
 
 const WithoutFramework = (props: WithoutFrameworkProps) => {
-  const { gamePack, isMaster } = props;
+  const { gamePack } = props;
 
   const renderGame = () => {
     switch (gamePack) {
       case GameList.MathFormulaCard: {
-        return <MathFormulaCard isMaster={isMaster} />;
+        return <MathFormulaCard />;
       }
     }
   };

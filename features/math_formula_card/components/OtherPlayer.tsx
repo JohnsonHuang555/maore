@@ -46,7 +46,7 @@ const OtherPlayer = (props: OtherPlayerProps) => {
         }}
       >
         {/* 兩位玩家才全秀 */}
-        {playerCount === 2 ? (
+        {playerCount === 2 && remainCardCount <= 10 ? (
           renderCards()
         ) : (
           <>

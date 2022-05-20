@@ -61,6 +61,11 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
     this.onMessage(MathFormulaCardMessage.ClearSelectedCards, () => {
       this.dispatcher.dispatch(new ClearSelectedCardsCommand());
     });
+
+    // 結束遊戲
+    this.onMessage(RoomMessage.FinishGame, () => {
+      this.dispatcher.dispatch(new ResetCommand());
+    });
   }
 
   onJoin(client: Client, option: Metadata) {

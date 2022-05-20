@@ -3,6 +3,8 @@ import Box from '@mui/material/Box';
 import { GameList } from 'server/domain/Game';
 import MathFormulaGameSettings from './game_settings/MathFormulaGameSettings';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { isMasterSelector } from '@selectors/roomSelector';
 
 const gameSettings: { [key: string]: React.ReactNode } = {
   [GameList.MathFormulaCard]: <MathFormulaGameSettings />,
@@ -11,7 +13,6 @@ const gameSettings: { [key: string]: React.ReactNode } = {
 type SettingAreaProps = {
   // gameModes: GameMode[];
   gamePack: GameList;
-  isMaster: boolean;
   disabledStartGame: boolean;
   isReadyGame: string;
   onLeaveRoom: () => void;
@@ -20,10 +21,11 @@ type SettingAreaProps = {
 };
 
 const SettingArea = (props: SettingAreaProps) => {
+  const isMaster = useSelector(isMasterSelector);
+
   const {
     // gameModes,
     gamePack,
-    isMaster,
     disabledStartGame,
     isReadyGame,
     onLeaveRoom,
@@ -42,7 +44,8 @@ const SettingArea = (props: SettingAreaProps) => {
         flexDirection: 'column',
       }}
     >
-      <Box sx={{ flex: '1' }}>{gameSettings[gamePack]}</Box>
+      <Box sx={{ fontSize: '26px' }}>遊戲設定</Box>
+      <Box sx={{ flex: '1', overflowX: 'auto' }}>{gameSettings[gamePack]}</Box>
       {isMaster ? (
         <Button
           variant="contained"

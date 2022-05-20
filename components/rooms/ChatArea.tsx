@@ -39,7 +39,7 @@ const ChatArea = (props: ChatAreaProps) => {
   return (
     <Box
       sx={{
-        flex: '0.4',
+        flex: '0.6',
         marginBottom: '15px',
         backgroundColor: 'primary.dark',
         padding: '10px',

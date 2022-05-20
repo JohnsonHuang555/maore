@@ -6,6 +6,8 @@ import {
   playerIdSelector,
   playersSelector,
   isYourTurnSelector,
+  winnerIndexSelector,
+  isMasterSelector,
 } from '@selectors/roomSelector';
 import { clientRoomSelector } from '@selectors/serverSelector';
 import { useEffect, useReducer, useState } from 'react';
@@ -19,19 +21,20 @@ import playerCardsReducer, {
   initialState,
 } from './reducers/playerCardsReducer';
 import { getSelectedCardLabel } from './components/SelectedCardDict';
+import GameOverModal from './components/GameOverModal';
+import { setShowGameScreen } from '@actions/roomAction';
+import { gameSettingsSelector } from '@selectors/game_settings/mathFormulaSelector';
 
-type MathFormulaCardProps = {
-  isMaster: boolean;
-};
-
-const MathFormulaCard = (props: MathFormulaCardProps) => {
-  const { isMaster } = props;
+const MathFormulaCard = () => {
   const dispatch = useDispatch();
+  const gameSettings = useSelector(gameSettingsSelector);
   const clientRoom = useSelector(clientRoomSelector);
   const yourPlayerId = useSelector(playerIdSelector);
   const players = useSelector(playersSelector);
   const isAllPlayerLoaded = useSelector(isAllPlayersLoadedSelector);
   const isYourTurn = useSelector(isYourTurnSelector);
+  const winnerIndex = useSelector(winnerIndexSelector);
+  const isMaster = useSelector(isMasterSelector);
   const [state, localDispatch] = useReducer(playerCardsReducer, initialState);
   // 為了做抽牌的動畫，只有第一載入完成時要延遲，用 state 控制
   const [noDrawCardDelay, setNoDrawCardDelay] = useState(false);
@@ -199,6 +202,16 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     }
   }, [state.errorMsg]);
 
+  useEffect(() => {
+    if (winnerIndex !== -1) {
+      localDispatch({ type: ActionType.SetWinnerIndex, winnerIndex });
+      // 由 master 結束遊戲
+      if (isMaster) {
+        clientRoom.send(RoomMessage.FinishGame);
+      }
+    }
+  }, [winnerIndex]);
+
   const renderOtherPlayer = (other: string) => {
     const { remainCardCount, name, point, isNowTurn } =
       state.otherPlayerDict[other];
@@ -281,163 +294,191 @@ const MathFormulaCard = (props: MathFormulaCardProps) => {
     clientRoom.send(MathFormulaCardMessage.DrawCard);
   };
 
+  const getIsWinner = () => {
+    const player = players.find((p) => p.id === yourPlayerId);
+    if (player?.playerIndex === state.winnerIndex) {
+      return true;
+    }
+    return false;
+  };
+
   return (
-    <Box
-      sx={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      {/* 其他玩家區塊 */}
+    <>
+      <GameOverModal
+        show={state.winnerIndex !== -1}
+        isWinner={getIsWinner()}
+        onConfirm={() => dispatch(setShowGameScreen(false))}
+      />
       <Box
         sx={{
-          flexBasis: '15%',
+          width: '100%',
+          height: '100%',
           display: 'flex',
-          alignItems: 'center',
-          gap: '20px',
+          flexDirection: 'column',
         }}
       >
-        {Object.keys(state.otherPlayerDict).map((other) =>
-          renderOtherPlayer(other)
-        )}
-      </Box>
-      {/* 答案區塊 */}
-      <Box
-        sx={{
-          flex: 1,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'relative',
-        }}
-      >
-        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
-          {state.selectedCards.length > 0 && (
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                fontSize: '80px',
-                background: 'rgba(0,0,0,0.2)',
-                padding: '10px 20px',
-                marginTop: '50px',
-                marginRight: '20px',
-                gap: '10px',
-              }}
-            >
-              {state.selectedCards.map((selectedCard, index) => (
-                <Box key={index} sx={{ display: 'flex', alignItems: 'center' }}>
-                  {getSelectedCardLabel(selectedCard.value)}
-                </Box>
-              ))}
-            </Box>
+        {/* 其他玩家區塊 */}
+        <Box
+          sx={{
+            flexBasis: '15%',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '20px',
+          }}
+        >
+          {Object.keys(state.otherPlayerDict).map((other) =>
+            renderOtherPlayer(other)
           )}
         </Box>
-        <Box sx={{ flex: 1 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Box sx={{ fontSize: '26px' }}>題目</Box>
-            <Box sx={{ fontSize: '120px' }}>={state.answer}</Box>
+        {/* 答案區塊 */}
+        <Box
+          sx={{
+            flex: 1,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'relative',
+          }}
+        >
+          <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+            {state.selectedCards.length > 0 && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  fontSize: '80px',
+                  background: 'rgba(0,0,0,0.2)',
+                  padding: '10px 20px',
+                  marginTop: '50px',
+                  marginRight: '20px',
+                  gap: '10px',
+                }}
+              >
+                {state.selectedCards.map((selectedCard, index) => (
+                  <Box
+                    key={index}
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                  >
+                    {getSelectedCardLabel(selectedCard.value)}
+                  </Box>
+                ))}
+              </Box>
+            )}
+          </Box>
+          <Box sx={{ flex: 1 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ fontSize: '26px' }}>題目</Box>
+              <Box sx={{ fontSize: '120px' }}>={state.answer}</Box>
+            </Box>
           </Box>
         </Box>
-      </Box>
-      <Box sx={{ textAlign: 'center', marginBottom: '20px', fontSize: '30px' }}>
-        {isYourTurn ? '你的回合' : '其他玩家回合'}
-      </Box>
-      {/* 自己手牌 */}
-      <Box
-        sx={{
-          flexBasis: '14%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginBottom: '20px',
-        }}
-      >
+        <Box
+          sx={{ textAlign: 'center', marginBottom: '20px', fontSize: '30px' }}
+        >
+          {isYourTurn ? '你的回合' : '其他玩家回合'}
+        </Box>
+        {/* 自己手牌 */}
+        <Box
+          sx={{
+            flexBasis: '14%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginBottom: '20px',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '15px',
+              height: '100%',
+              flexWrap: 'wrap',
+              width: '90vw',
+            }}
+          >
+            {state.yourCards.map((card, index) => renderYourCard(card, index))}
+          </Box>
+        </Box>
+        {/* 操作 */}
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'center',
+            alignItems: 'center',
+            marginBottom: '20px',
             gap: '15px',
-            height: '100%',
-            flexWrap: 'wrap',
-            width: '90vw',
           }}
         >
-          {state.yourCards.map((card, index) => renderYourCard(card, index))}
+          <Box sx={{ marginRight: '20px', fontSize: '26px' }}>
+            勝利條件: {gameSettings?.winnerPoint} 分
+          </Box>
+          <Box sx={{ marginRight: '20px', fontSize: '26px' }}>
+            分數:{' '}
+            <Box component="span" sx={{ color: 'secondary.light' }}>
+              {state.yourPoint}
+            </Box>{' '}
+            分
+          </Box>
+          <Button
+            sx={{
+              minWidth: '100px',
+              backgroundColor: '#555454',
+              ':hover': { backgroundColor: '#454444' },
+            }}
+            variant="contained"
+            size="large"
+            disabled={state.winnerIndex !== -1}
+            onClick={() => localDispatch({ type: ActionType.SortCard })}
+          >
+            排序
+          </Button>
+          <Button
+            sx={{
+              minWidth: '100px',
+              backgroundColor: '#555454',
+              ':hover': { backgroundColor: '#454444' },
+            }}
+            variant="contained"
+            size="large"
+            disabled={!isYourTurn || state.winnerIndex !== -1}
+            onClick={() => {
+              if (state.selectedCards.length !== 0) {
+                clientRoom.send(MathFormulaCardMessage.ClearSelectedCards);
+              }
+            }}
+          >
+            重選
+          </Button>
+          <Button
+            sx={{
+              minWidth: '150px',
+              backgroundColor: '#095858',
+              ':hover': {
+                backgroundColor: '#044040',
+              },
+            }}
+            variant="contained"
+            size="large"
+            color="secondary"
+            disabled={!isYourTurn || state.winnerIndex !== -1}
+            onClick={() => drawCard()}
+          >
+            抽牌並結束回合
+          </Button>
+          <Button
+            sx={{ minWidth: '150px' }}
+            variant="contained"
+            size="large"
+            color="secondary"
+            disabled={!isYourTurn || state.winnerIndex !== -1}
+            onClick={() => useCards()}
+          >
+            出牌
+          </Button>
         </Box>
       </Box>
-      {/* 操作 */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginBottom: '20px',
-          gap: '15px',
-        }}
-      >
-        <Box sx={{ marginRight: '20px', fontSize: '26px' }}>
-          得分: {state.yourPoint}
-        </Box>
-        <Button
-          sx={{
-            minWidth: '100px',
-            backgroundColor: '#555454',
-            ':hover': { backgroundColor: '#454444' },
-          }}
-          variant="contained"
-          size="large"
-          onClick={() => localDispatch({ type: ActionType.SortCard })}
-        >
-          排序
-        </Button>
-        <Button
-          sx={{
-            minWidth: '100px',
-            backgroundColor: '#555454',
-            ':hover': { backgroundColor: '#454444' },
-          }}
-          variant="contained"
-          size="large"
-          disabled={!isYourTurn}
-          onClick={() => {
-            if (state.selectedCards.length !== 0) {
-              clientRoom.send(MathFormulaCardMessage.ClearSelectedCards);
-            }
-          }}
-        >
-          重選
-        </Button>
-        <Button
-          sx={{
-            minWidth: '150px',
-            backgroundColor: '#095858',
-            ':hover': {
-              backgroundColor: '#044040',
-            },
-          }}
-          variant="contained"
-          size="large"
-          color="secondary"
-          disabled={!isYourTurn}
-          onClick={() => drawCard()}
-        >
-          抽牌並結束回合
-        </Button>
-        <Button
-          sx={{ minWidth: '150px' }}
-          variant="contained"
-          size="large"
-          color="secondary"
-          disabled={!isYourTurn}
-          onClick={() => useCards()}
-        >
-          出牌
-        </Button>
-      </Box>
-    </Box>
+    </>
   );
 };
 

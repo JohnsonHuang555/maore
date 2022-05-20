@@ -20,3 +20,14 @@ export const isYourTurnSelector = (store: StoreState) => {
   );
   return player?.playerIndex === store.room.activePlayer;
 };
+export const winnerIndexSelector = (store: StoreState) =>
+  store.room.winningPlayer;
+export const isMasterSelector = (store: StoreState) => {
+  const player = store.room.players.find(
+    (p) => p.isMaster && p.id === store.room.yourPlayerId
+  );
+  if (player) {
+    return true;
+  }
+  return false;
+};

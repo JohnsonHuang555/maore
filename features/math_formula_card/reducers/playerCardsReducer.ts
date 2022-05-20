@@ -19,6 +19,7 @@ export enum ActionType {
   ClearErrorMsg = 'ClearErrorMsg',
   CreateAnswer = 'CreateAnswer',
   SortCard = 'SortCard',
+  SetWinnerIndex = 'SetWinnerIndex',
 }
 
 type SelectedCard = {
@@ -36,6 +37,7 @@ export type State = {
   otherPlayerDict: OtherPlayerDict;
   // 錯誤訊息
   errorMsg: string;
+  winnerIndex: number;
 };
 
 export const initialState: State = {
@@ -44,6 +46,7 @@ export const initialState: State = {
   selectedCards: [],
   otherPlayerDict: {},
   errorMsg: '',
+  winnerIndex: -1,
 };
 
 type DrawCardAction = {
@@ -102,6 +105,11 @@ type SortCardAction = {
   type: ActionType.SortCard;
 };
 
+type SetWinnerIndexAction = {
+  type: ActionType.SetWinnerIndex;
+  winnerIndex: number;
+};
+
 type Action =
   | DrawCardAction
   | UseCardAction
@@ -113,7 +121,8 @@ type Action =
   | ClearErrorMsgAction
   | UpdateYourPointAction
   | CreateAnswersAction
-  | SortCardAction;
+  | SortCardAction
+  | SetWinnerIndexAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -272,6 +281,12 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         yourCards: sortedNumbers.concat(sortedSymbols),
+      };
+    }
+    case ActionType.SetWinnerIndex: {
+      return {
+        ...state,
+        winnerIndex: action.winnerIndex,
       };
     }
     default: {

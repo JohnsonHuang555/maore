@@ -73,6 +73,14 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
           playerInfo.cards.splice(cardIndex, 1);
         }
 
+        // 判斷勝利
+        if (
+          playerInfo.point >=
+          this.state.mathFormulaCard.gameSettings.winnerPoint
+        ) {
+          this.state.winningPlayer = this.state.activePlayer;
+        }
+
         // 產隨機答案後寫入
         const answer = Random.getRangeNumbers(0, 100, 1);
         // 依照模式去產幾個答案，目前先產一個

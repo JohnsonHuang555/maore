@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import { Player } from '@domain/models/Player';
-import { Stars, AccountCircle } from '@mui/icons-material';
+import { Stars } from '@mui/icons-material';
+import { Avatar } from '@mui/material';
 
 type PlayerAreaProps = {
   players: Player[];
@@ -51,7 +52,9 @@ const PlayerArea = (props: PlayerAreaProps) => {
               backgroundColor: isNowPlayer(player.id) ? '#64584b' : '#3b3b3b',
             }}
           >
-            <AccountCircle sx={{ fontSize: '52px' }} htmlColor="#cccccc" />
+            <Avatar sx={{ width: 70, height: 70, color: '#fff' }}>
+              {player.name.substring(0, 1)}
+            </Avatar>
             <Box
               sx={{
                 display: 'flex',
