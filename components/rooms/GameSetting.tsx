@@ -1,7 +1,7 @@
-import { GameMode } from 'models/Game';
-import { RoomInfo } from 'models/Room';
+import { GameMode } from '@domain/models/Game';
+import { RoomInfo } from '@domain/models/Room';
 import { MenuItem, Select } from '@mui/material';
-import styles from 'styles/components/gameSetting.module.scss';
+import styles from '@styles/components/gameSetting.module.scss';
 
 type GameSettingProps = {
   roomInfo: RoomInfo;

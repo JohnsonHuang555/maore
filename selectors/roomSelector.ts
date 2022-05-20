@@ -10,3 +10,24 @@ export const playerIdSelector = (store: StoreState) => store.room.yourPlayerId;
 export const showGameScreenSelector = (store: StoreState) =>
   store.room.showGameScreen;
 export const messagesSelector = (store: StoreState) => store.room.messages;
+export const isAllPlayersLoadedSelector = (store: StoreState) =>
+  store.room.isAllPlayersLoaded;
+export const activePlayerSelector = (store: StoreState) =>
+  store.room.activePlayer;
+export const isYourTurnSelector = (store: StoreState) => {
+  const player = store.room.players.find(
+    (p) => p.id === store.room.yourPlayerId
+  );
+  return player?.playerIndex === store.room.activePlayer;
+};
+export const winnerIndexSelector = (store: StoreState) =>
+  store.room.winningPlayer;
+export const isMasterSelector = (store: StoreState) => {
+  const player = store.room.players.find(
+    (p) => p.isMaster && p.id === store.room.yourPlayerId
+  );
+  if (player) {
+    return true;
+  }
+  return false;
+};

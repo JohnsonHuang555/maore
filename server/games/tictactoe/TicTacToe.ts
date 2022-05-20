@@ -1,23 +1,23 @@
 import { Client, Room } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
-import { Metadata } from '../../../models/Room';
+import { Metadata } from '../../../domain/models/Room';
 import TicTacToeState from './state/TicTacToeState';
-import { RoomMessage } from '../../../models/Message';
+import { RoomMessage } from '../../../domain/models/Message';
 import { TicTacToeMessage } from '../../../features/tictactoe/models/TicTacToeMessage';
 import PlayerSelectionCommand from './commands/PlayerSelectionCommand';
 import ResetCommand from './commands/ResetCommand';
 import BaseRoom from '../../room';
-import GameUseCase from '../../usecases/GameUseCase';
-import { Game, GameList } from '../../../models/Game';
+// import GameUseCase from '../../domain/usecases/GameUseCase';
+import { Game, GameList } from '../../../domain/models/Game';
 
 export default class TicTacToe extends Room<TicTacToeState, Metadata> {
   private dispatcher = new Dispatcher(this);
   private baseRoom = new BaseRoom(this);
-  private game: Game = GameUseCase.getGameByGamePack(GameList.TicTacToe);
+  // private game: Game = GameUseCase.getGameByGamePack(GameList.TicTacToe);
 
   onCreate(option: Metadata) {
     this.baseRoom.onCreate(option);
-    this.baseRoom.setMaxClient(this.game.maxPlayers as number);
+    // this.baseRoom.setMaxClient(this.game.maxPlayers as number);
     this.setState(new TicTacToeState());
 
     // 監聽前端的選擇事件

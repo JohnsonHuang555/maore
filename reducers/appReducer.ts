@@ -1,5 +1,5 @@
-import { ActionType } from 'actions/AppAction';
-import { User } from 'models/User';
+import { ActionType } from '@actions/appAction';
+import { User } from '@domain/models/User';
 
 export type State = {
   snackbar: {
@@ -8,7 +8,6 @@ export type State = {
   };
   userInfo?: User;
   showLoginModal: boolean;
-  isLogin: boolean;
 };
 
 const initialState: State = {
@@ -17,38 +16,37 @@ const initialState: State = {
     message: '',
   },
   showLoginModal: false,
-  isLogin: false,
 };
 
 type SetSnackbarAction = {
-  type: ActionType.SET_SNACKBAR;
+  type: ActionType.SetSnackbar;
   show: boolean;
   message: string;
 };
 
-type SetUserInfoAction = {
-  type: ActionType.SET_USER_INFO;
+type LoginAction = {
+  type: ActionType.Login;
   userInfo: User;
 };
 
-type RemoveUserInfoAction = {
-  type: ActionType.REMOVE_USER_INFO;
+type LogoutAction = {
+  type: ActionType.Logout;
 };
 
 type ShowLoginModalAction = {
-  type: ActionType.SHOW_LOGIN_MODAL;
+  type: ActionType.ShowLoginModal;
   show: boolean;
 };
 
 type Action =
   | SetSnackbarAction
-  | SetUserInfoAction
-  | RemoveUserInfoAction
+  | LoginAction
+  | LogoutAction
   | ShowLoginModalAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
-    case ActionType.SET_SNACKBAR: {
+    case ActionType.SetSnackbar: {
       return {
         ...state,
         snackbar: {
@@ -57,21 +55,19 @@ const reducer = (state = initialState, action: Action): State => {
         },
       };
     }
-    case ActionType.SET_USER_INFO: {
+    case ActionType.Login: {
       return {
         ...state,
         userInfo: action.userInfo,
-        isLogin: true,
       };
     }
-    case ActionType.REMOVE_USER_INFO: {
+    case ActionType.Logout: {
       return {
         ...state,
         userInfo: undefined,
-        isLogin: false,
       };
     }
-    case ActionType.SHOW_LOGIN_MODAL: {
+    case ActionType.ShowLoginModal: {
       return {
         ...state,
         showLoginModal: action.show,

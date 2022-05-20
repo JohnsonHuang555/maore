@@ -8,10 +8,10 @@ import {
   Button,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { setSnackbar } from 'actions/AppAction';
-import { Game } from 'models/Game';
+import { setSnackbar } from '@actions/appAction';
+import { Game } from '@domain/models/Game';
 import Grid from '@mui/material/Grid';
-import styles from 'styles/components/createRoom.module.scss';
+import styles from '@styles/components/createRoom.module.scss';
 import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
 
 type CreateRoomProps = {
@@ -87,7 +87,7 @@ const CreateRoomModal = (props: CreateRoomProps) => {
                   onClick={() => setSelectedMode(mode.value)}
                 >
                   <div className={styles.content}>
-                    <img src={mode.image} className={styles.image} />
+                    <img src={mode.imageUrl} className={styles.image} />
                     <div
                       className={`${styles.background} ${
                         selectedMode === mode.value ? styles.selectedMode : ''

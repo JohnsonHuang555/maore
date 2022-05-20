@@ -7,7 +7,7 @@ import rootReducer from 'reducers/rootReducer';
 import ServerMiddleware from 'middleware/ServerMiddleware';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
-import '../styles/globals.scss';
+import '@styles/globals.scss';
 
 export const store = createStore(
   rootReducer,

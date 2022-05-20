@@ -1,37 +1,41 @@
 import { useEffect, useState } from 'react';
 import Layout from 'components/Layout';
-import { Game, GameList } from 'models/Game';
+import { Game, GameList } from '@domain/models/Game';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import useSWR from 'swr';
 import { useDispatch, useSelector } from 'react-redux';
-import { createdRoomIdSelector, roomsSelector } from 'selectors/roomSelector';
+import { createdRoomIdSelector, roomsSelector } from '@selectors/roomSelector';
 import CreateRoom from 'components/games/CreateRoomModal';
-import { setShowLoginModal, setSnackbar } from 'actions/AppAction';
-import { initialClient, createRoom, getAllRooms } from 'actions/ServerAction';
+import { setShowLoginModal, setSnackbar } from '@actions/appAction';
+import { initialClient, createRoom, getAllRooms } from '@actions/serverAction';
 import RoomCard from 'components/games/RoomCard';
-import { clientSelector } from 'selectors/serverSelector';
-import { userInfoSelector } from 'selectors/appSelector';
-import { fetcher } from 'pages/api/base/Fetcher';
+import { clientSelector } from '@selectors/serverSelector';
+import { userInfoSelector } from '@selectors/appSelector';
 import Info from '@mui/icons-material/Info';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import { fetchGame } from '@actions/fetchAction';
 
 const Games = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const { gamePack } = router.query;
+  const dispatch = useDispatch();
+
+  // selectors
   const createdRoomId = useSelector(createdRoomIdSelector);
   const rooms = useSelector(roomsSelector);
   const client = useSelector(clientSelector);
   const userInfo = useSelector(userInfoSelector);
+
+  // useState
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
 
   // get current game
   const { data: game, error } = useSWR<Game, Error>(
     gamePack ? `/api/game/${gamePack}` : null,
-    fetcher
+    fetchGame
   );
 
   useEffect(() => {
@@ -76,7 +80,7 @@ const Games = () => {
           gamePack: gamePack as GameList,
         })
       );
-    } catch (err) {
+    } catch (err: any) {
       const error = new Error(err);
       dispatch(
         setSnackbar({
@@ -124,7 +128,7 @@ const Games = () => {
       <Box sx={{ position: 'relative', marginBottom: '24px' }}>
         <Box
           sx={{
-            backgroundImage: `url(${game.imgPath})`,
+            backgroundImage: `url(${game.imageUrl})`,
             height: '350px',
             backgroundPosition: 'center',
             backgroundSize: 'cover',
@@ -169,7 +173,7 @@ const Games = () => {
       <Container maxWidth={false}>
         <Grid container spacing={3}>
           {rooms.length ? (
-            <Grid item lg={3} md={4} xs={2}>
+            <Grid item lg={4} md={6} xs={2}>
               {rooms.map(({ roomId, metadata, maxClients, clients }) => (
                 <RoomCard
                   key={roomId}
@@ -191,7 +195,7 @@ const Games = () => {
                 }}
               >
                 <Info />
-                <Box sx={{ fontSize: '20px', marginLeft: '5px' }}>查無房間</Box>
+                <Box sx={{ fontSize: '30px', marginLeft: '5px' }}>查無房間</Box>
               </Box>
             </Grid>
           )}

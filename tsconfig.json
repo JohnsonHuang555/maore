@@ -19,7 +19,14 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": ".",
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "paths": {
+      "@components/*": ["components/*"],
+      "@selectors/*": ["selectors/*"],
+      "@actions/*": ["actions/*"],
+      "@domain/*": ["domain/*"],
+      "@styles/*": ["styles/*"],
+    }
   },
   "exclude": [
     "node_modules"

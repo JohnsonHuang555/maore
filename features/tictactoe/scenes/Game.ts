@@ -1,4 +1,4 @@
-import { GameOverSceneData } from 'models/Scenes';
+import { GameOverSceneData } from '@domain/models/Scenes';
 import Phaser from 'phaser';
 import { Cell } from 'features/tictactoe/models/Cell';
 import Server from 'features/tictactoe/TicTacToeServer';

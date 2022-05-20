@@ -1,5 +1,7 @@
 import { Command } from '@colyseus/command';
 import RoomState from '../state/RoomState';
+import { Metadata } from '../../../domain/models/Room';
+import { Room } from 'colyseus';
 
 type Payload = {
   allGroups: string[];
@@ -8,7 +10,9 @@ type Payload = {
 };
 
 const NO_VALUE = '';
-export default class UpdatePlayerGroupCommand extends Command<RoomState> {
+export default class UpdatePlayerGroupCommand extends Command<
+  Room<RoomState, Metadata>
+> {
   execute(data: Payload) {
     const { allGroups, playerId, needSetGroup } = data;
     // 判斷有無未分配組別的玩家

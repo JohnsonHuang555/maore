@@ -1,6 +1,6 @@
-import { ActionType } from 'actions/ServerAction';
+import { ActionType } from '@actions/serverAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
-import { Room } from 'middleware/services/RoomServer';
+import { Room } from 'server/room/state/RoomState';
 
 export type State = {
   client?: Client;

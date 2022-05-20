@@ -1,11 +1,11 @@
 import { store } from 'pages/_app';
 import { Room as ClientRoom } from 'colyseus.js';
 import { Room } from 'middleware/services/RoomServer';
-import { GameStatus, RoomInfo } from 'models/Room';
-import { RoomMessage } from 'models/Message';
-import { Player } from 'models/Player';
-import { setSnackbar } from 'actions/AppAction';
-import { setShowGameScreen } from 'actions/RoomAction';
+import { GameStatus, RoomInfo } from '@domain/models/Room';
+import { RoomMessage } from '@domain/models/Message';
+import { Player } from '@domain/models/Player';
+import { setSnackbar } from '@actions/appAction';
+import { setShowGameScreen } from '@actions/roomAction';
 import { sharedInstance as events } from 'features/base/EventCenter';
 import ComponentService from 'features/base/services/ComponentService';
 
@@ -88,7 +88,7 @@ export default class BaseServer {
   }
 
   createPlayerOrder() {
-    this.room.send(RoomMessage.CreatePlyayerOrder);
+    this.room.send(RoomMessage.CreatePlayerOrder);
   }
 
   finishGame() {

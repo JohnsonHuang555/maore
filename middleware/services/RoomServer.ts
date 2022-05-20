@@ -11,40 +11,22 @@ import {
   updateActivePlayer,
   setPlayerInfo,
   setMessage,
-} from 'actions/RoomAction';
+} from '@actions/roomAction';
 import { Client, Room as ClientRoom } from 'colyseus.js';
-import { GameList } from 'models/Game';
-import { RoomMessage } from 'models/Message';
-import { GameStatus, Metadata, RoomInfo } from 'models/Room';
+import { RoomMessage } from '@domain/models/Message';
+import { GameStatus, Metadata, RoomInfo } from '@domain/models/Room';
 import { AnyAction, Dispatch } from 'redux';
-import { Schema, ArraySchema } from '@colyseus/schema';
-import { PlayerState } from 'server/room/state/PlayerState';
-import { setClient, setRoom } from 'actions/ServerAction';
-import { TicTacToeState } from 'features/tictactoe/models/TicTacToeState';
-import { ChineseChessState } from 'features/chinese_chess/models/ChineseChessState';
+import { setClient, setRoom } from '@actions/serverAction';
+import { Room } from 'server/room/state/RoomState';
+import { updateGameSettings as updateMathFormulaSettings } from '@actions/game_settings/mathFormulaAction';
+import { GameList } from 'server/domain/Game';
 
 enum RoomStateChangeList {
   RoomInfo = 'roomInfo',
   GameStatus = 'gameStatus',
   WinningPlayer = 'winningPlayer',
   ActivePlayer = 'activePlayer',
-}
-
-enum PlayerStateChangeList {
-  IsReady = 'isReady',
-  IsMaster = 'isMaster',
-  PlayerIndex = 'playerIndex',
-  PlayerOrder = 'playerOrder',
-  GameLoaded = 'gameLoaded',
-  Group = 'group',
-}
-
-export interface Room extends Schema, TicTacToeState, ChineseChessState {
-  players: ArraySchema<PlayerState>;
-  gameStatus: GameStatus; // 遊戲狀態
-  activePlayer: number; // 當前玩家
-  winningPlayer: number; // 勝利玩家
-  playerIndex: number; // 玩家順序號
+  MathFormulaCard = 'mathFormulaCard',
 }
 
 export default class RoomServer {
@@ -115,56 +97,11 @@ export default class RoomServer {
       player.onChange = (changes) => {
         changes.forEach((change) => {
           const { field, value } = change;
-          switch (field) {
-            case PlayerStateChangeList.IsReady: {
-              this.dispatch(
-                setPlayerInfo(player.id, {
-                  isReady: value,
-                })
-              );
-              break;
-            }
-            case PlayerStateChangeList.IsMaster: {
-              this.dispatch(
-                setPlayerInfo(player.id, {
-                  isMaster: value,
-                })
-              );
-              break;
-            }
-            case PlayerStateChangeList.PlayerIndex: {
-              this.dispatch(
-                setPlayerInfo(player.id, {
-                  playerIndex: value,
-                })
-              );
-              break;
-            }
-            case PlayerStateChangeList.PlayerOrder: {
-              this.dispatch(
-                setPlayerInfo(player.id, {
-                  playerOrder: value,
-                })
-              );
-              break;
-            }
-            case PlayerStateChangeList.GameLoaded: {
-              this.dispatch(
-                setPlayerInfo(player.id, {
-                  gameLoaded: value,
-                })
-              );
-              break;
-            }
-            case PlayerStateChangeList.Group: {
-              this.dispatch(
-                setPlayerInfo(player.id, {
-                  group: value,
-                })
-              );
-              break;
-            }
-          }
+          this.dispatch(
+            setPlayerInfo(player.id, {
+              [field]: value,
+            })
+          );
         });
       };
     };
@@ -186,7 +123,6 @@ export default class RoomServer {
                 maxPlayers: value.maxPlayers,
                 gamePack: value.gamePack,
                 gameMode: value.gameMode,
-                extraSettings: value.extraSettings,
               })
             );
             break;
@@ -205,6 +141,15 @@ export default class RoomServer {
           }
           case RoomStateChangeList.WinningPlayer: {
             this.dispatch(updateWinningPlayer(value));
+            break;
+          }
+          case RoomStateChangeList.MathFormulaCard: {
+            room.state.mathFormulaCard.gameSettings.onChange = (changes) => {
+              changes.forEach((c) => {
+                const { field, value } = c;
+                this.dispatch(updateMathFormulaSettings({ [field]: value }));
+              });
+            };
             break;
           }
         }

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import Layout from 'components/Layout';
+import Layout from '@components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createdRoomIdSelector,
@@ -7,7 +7,7 @@ import {
   playersSelector,
   roomInfoSelector,
   showGameScreenSelector,
-} from 'selectors/roomSelector';
+} from '@selectors/roomSelector';
 import Grid from '@mui/material/Grid';
 import { useRouter } from 'next/router';
 import Container from '@mui/material/Container';
@@ -17,22 +17,21 @@ import {
   leaveRoom,
   readyGame,
   startGame,
-} from 'actions/ServerAction';
-import { playerIdSelector } from 'selectors/roomSelector';
+} from '@actions/serverAction';
+import { playerIdSelector } from '@selectors/roomSelector';
 import { useWarningOnExit } from 'customhooks/useWarningOnExit';
-import { clientSelector } from 'selectors/serverSelector';
+import { clientSelector } from '@selectors/serverSelector';
 import dynamic from 'next/dynamic';
-import { isLoginSelector, userInfoSelector } from 'selectors/appSelector';
-import { setShowLoginModal } from 'actions/AppAction';
-import { Game } from 'models/Game';
-import useSWR from 'swr';
-import { fetcher } from 'pages/api/base/Fetcher';
-import PlayerArea from 'components/rooms/PlayerArea';
-import ChatArea from 'components/rooms/ChatArea';
-import SettingArea from 'components/rooms/SettingArea';
+import { userInfoSelector } from '@selectors/appSelector';
+import { setShowLoginModal } from '@actions/appAction';
+import PlayerArea from '@components/rooms/PlayerArea';
+import ChatArea from '@components/rooms/ChatArea';
+import SettingArea from '@components/rooms/SettingArea';
+import { fetchGame } from '@actions/fetchAction';
+import { GameList } from 'server/domain/Game';
 
 const DynamicGameScreenWithNoSSR = dynamic(
-  () => import('components/rooms/GameScreen'),
+  () => import('@components/rooms/GameScreen'),
   { ssr: false }
 );
 
@@ -40,13 +39,14 @@ const Rooms = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const roomId = router.query.id;
+
+  // selectors
   const createdRoomId = useSelector(createdRoomIdSelector);
   const players = useSelector(playersSelector);
   const roomInfo = useSelector(roomInfoSelector);
   const yourPlayerId = useSelector(playerIdSelector);
   const client = useSelector(clientSelector);
   const userInfo = useSelector(userInfoSelector);
-  const isLogin = useSelector(isLoginSelector);
   const showGameScreen = useSelector(showGameScreenSelector);
   const messages = useSelector(messagesSelector);
 
@@ -71,28 +71,21 @@ const Rooms = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (roomId && !createdRoomId && isLogin && userInfo) {
+    if (roomId && !createdRoomId && userInfo) {
       dispatch(joinRoom(String(roomId), userInfo.name));
     }
-  }, [roomId, createdRoomId, isLogin]);
+  }, [roomId, createdRoomId]);
   // use effect end
 
-  const { data: game, error } = useSWR<Game, Error>(
-    `/api/game/${roomInfo.gamePack}`,
-    fetcher
-  );
+  // console.log(roomInfo);
+  // const { data: game, error } = useSWR<Game, Error>(
+  //   roomInfo ? `/api/game/${roomInfo.gamePack}` : null,
+  //   fetchGame
+  // );
 
-  if (error) {
-    throw new Error('Game not loaded');
-  }
-
-  const checkIsMaster = (): boolean => {
-    const player = players.find((p) => p.isMaster && p.id === yourPlayerId);
-    if (player) {
-      return true;
-    }
-    return false;
-  };
+  // if (error) {
+  //   throw new Error('Game not loaded');
+  // }
 
   const getIsReadyGameText = () => {
     const isReady = players.find((p) => p.isReady && p.id === yourPlayerId);
@@ -104,7 +97,7 @@ const Rooms = () => {
 
   const checkDisabledStartGame = () => {
     const isAnyPlayerNotReady = players.filter((p) => !p.isReady);
-    if (roomInfo.maxPlayers > players.length || isAnyPlayerNotReady.length) {
+    if (isAnyPlayerNotReady.length) {
       return true;
     }
     return false;
@@ -117,17 +110,16 @@ const Rooms = () => {
           <Grid
             item
             lg={9}
-            xs={9}
+            xs={12}
             sx={{ display: 'flex', flexDirection: 'column' }}
           >
             <PlayerArea players={players} yourPlayerId={yourPlayerId} />
             <ChatArea messages={messages} />
           </Grid>
-          <Grid item lg={3} xs={3}>
+          <Grid item lg={3} xs={12}>
             <SettingArea
-              roomInfo={roomInfo}
-              gameModes={game?.modes || []}
-              isMaster={checkIsMaster()}
+              gamePack={roomInfo.gamePack as GameList}
+              // gameModes={game?.modes || []}
               disabledStartGame={checkDisabledStartGame()}
               isReadyGame={getIsReadyGameText()}
               onLeaveRoom={() => router.push('/')}
@@ -137,9 +129,7 @@ const Rooms = () => {
           </Grid>
         </Grid>
       </Container>
-      {showGameScreen && (
-        <DynamicGameScreenWithNoSSR gamePack={roomInfo.gamePack} />
-      )}
+      {showGameScreen && <DynamicGameScreenWithNoSSR />}
     </Layout>
   );
 };
