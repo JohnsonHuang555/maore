@@ -19,51 +19,51 @@ import {
   setSnackbar,
 } from '@actions/appAction';
 import LoginModal from '@components/modals/LoginModal';
-import { alpha, Badge, IconButton, styled } from '@mui/material';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import MailIcon from '@mui/icons-material/Mail';
-import InputBase from '@mui/material/InputBase';
-import SearchIcon from '@mui/icons-material/Search';
+// import { alpha, Badge, IconButton, styled } from '@mui/material';
+// import NotificationsIcon from '@mui/icons-material/Notifications';
+// import MailIcon from '@mui/icons-material/Mail';
+// import InputBase from '@mui/material/InputBase';
+// import SearchIcon from '@mui/icons-material/Search';
 
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-}));
+// const Search = styled('div')(({ theme }) => ({
+//   position: 'relative',
+//   borderRadius: theme.shape.borderRadius,
+//   backgroundColor: alpha(theme.palette.common.white, 0.15),
+//   '&:hover': {
+//     backgroundColor: alpha(theme.palette.common.white, 0.25),
+//   },
+//   marginRight: theme.spacing(2),
+//   marginLeft: 0,
+//   width: '100%',
+//   [theme.breakpoints.up('sm')]: {
+//     marginLeft: theme.spacing(3),
+//     width: 'auto',
+//   },
+// }));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
+// const SearchIconWrapper = styled('div')(({ theme }) => ({
+//   padding: theme.spacing(0, 2),
+//   height: '100%',
+//   position: 'absolute',
+//   pointerEvents: 'none',
+//   display: 'flex',
+//   alignItems: 'center',
+//   justifyContent: 'center',
+// }));
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
+// const StyledInputBase = styled(InputBase)(({ theme }) => ({
+//   color: 'inherit',
+//   '& .MuiInputBase-input': {
+//     padding: theme.spacing(1, 1, 1, 0),
+//     // vertical padding + font size from searchIcon
+//     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+//     transition: theme.transitions.create('width'),
+//     width: '100%',
+//     [theme.breakpoints.up('md')]: {
+//       width: '20ch',
+//     },
+//   },
+// }));
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -94,7 +94,7 @@ const Header = () => {
     );
   };
 
-  const logout = () => {
+  const onLogout = () => {
     localStorage.removeItem('userInfo');
     dispatch(logout());
     dispatch(
@@ -113,7 +113,7 @@ const Header = () => {
         onConfirm={onConfirm}
       />
       <Toast />
-      <AppBar position="static">
+      {/* <AppBar position="static">
         <Toolbar sx={{ backgroundColor: '#1d1d1d' }}>
           <Typography
             variant="h6"
@@ -155,8 +155,8 @@ const Header = () => {
             </IconButton>
           </Box>
         </Toolbar>
-      </AppBar>
-      {/* <AppBar position="static">
+      </AppBar> */}
+      <AppBar position="static">
         <Toolbar sx={{ backgroundColor: '#121314' }}>
           <Typography variant="h6" sx={{ flexGrow: 0.1 }}>
             <Box
@@ -187,12 +187,12 @@ const Header = () => {
                 <Typography variant="h6" sx={{ mr: '15px' }}>
                   歡迎！{userInfo.name}
                 </Typography>
-                {router.pathname.substr(1, 5) !== 'rooms' && (
+                {router.pathname.substring(1, 5) !== 'rooms' && (
                   <Button
                     variant="contained"
                     size="large"
                     color="secondary"
-                    onClick={() => logout()}
+                    onClick={() => onLogout()}
                   >
                     登出
                   </Button>
@@ -210,7 +210,7 @@ const Header = () => {
             )}
           </Box>
         </Toolbar>
-      </AppBar> */}
+      </AppBar>
     </>
   );
 };
