@@ -24,14 +24,14 @@ import { clientSelector } from '@selectors/serverSelector';
 import dynamic from 'next/dynamic';
 import { userInfoSelector } from '@selectors/appSelector';
 import { setShowLoginModal } from '@actions/appAction';
-import PlayerArea from '@components/rooms/PlayerArea';
-import ChatArea from '@components/rooms/ChatArea';
-import SettingArea from '@components/rooms/SettingArea';
+import PlayerArea from '@components/pages/rooms/PlayerArea';
+import ChatArea from '@components/pages/rooms/ChatArea';
+import SettingArea from '@components/pages/rooms/SettingArea';
 import { fetchGame } from '@actions/fetchAction';
 import { GameList } from 'server/domain/Game';
 
 const DynamicGameScreenWithNoSSR = dynamic(
-  () => import('@components/rooms/GameScreen'),
+  () => import('@components/pages/rooms/GameScreen'),
   { ssr: false }
 );
 
@@ -57,7 +57,6 @@ const Rooms = () => {
 
   // use effects start
   useEffect(() => {
-    const userInfo = localStorage.getItem('userInfo');
     if (!userInfo) {
       dispatch(setShowLoginModal(true));
     }
@@ -76,16 +75,6 @@ const Rooms = () => {
     }
   }, [roomId, createdRoomId]);
   // use effect end
-
-  // console.log(roomInfo);
-  // const { data: game, error } = useSWR<Game, Error>(
-  //   roomInfo ? `/api/game/${roomInfo.gamePack}` : null,
-  //   fetchGame
-  // );
-
-  // if (error) {
-  //   throw new Error('Game not loaded');
-  // }
 
   const getIsReadyGameText = () => {
     const isReady = players.find((p) => p.isReady && p.id === yourPlayerId);

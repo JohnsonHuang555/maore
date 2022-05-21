@@ -428,6 +428,7 @@ const MathFormulaCard = () => {
             }}
             variant="contained"
             size="large"
+            disableElevation
             disabled={state.winnerIndex !== -1}
             onClick={() => localDispatch({ type: ActionType.SortCard })}
           >
@@ -441,6 +442,7 @@ const MathFormulaCard = () => {
             }}
             variant="contained"
             size="large"
+            disableElevation
             disabled={!isYourTurn || state.winnerIndex !== -1}
             onClick={() => {
               if (state.selectedCards.length !== 0) {
@@ -460,6 +462,7 @@ const MathFormulaCard = () => {
             }}
             variant="contained"
             size="large"
+            disableElevation
             color="secondary"
             disabled={!isYourTurn || state.winnerIndex !== -1}
             onClick={() => drawCard()}
@@ -470,6 +473,7 @@ const MathFormulaCard = () => {
             sx={{ minWidth: '150px' }}
             variant="contained"
             size="large"
+            disableElevation
             color="secondary"
             disabled={!isYourTurn || state.winnerIndex !== -1}
             onClick={() => useCards()}

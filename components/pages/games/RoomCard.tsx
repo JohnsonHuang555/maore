@@ -69,6 +69,7 @@ const RoomCard = (props: RoomCardProps) => {
           color="secondary"
           variant="contained"
           onClick={joinRoom}
+          disableElevation
         >
           加入
         </Button>

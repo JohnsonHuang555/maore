@@ -1,11 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
 import Toast from '@components/Toast';
 import {
   showLoginModalSelector,
@@ -19,12 +14,20 @@ import {
   setSnackbar,
 } from '@actions/appAction';
 import LoginModal from '@components/modals/LoginModal';
-// import { alpha, Badge, IconButton, styled } from '@mui/material';
-// import NotificationsIcon from '@mui/icons-material/Notifications';
-// import MailIcon from '@mui/icons-material/Mail';
-// import InputBase from '@mui/material/InputBase';
-// import SearchIcon from '@mui/icons-material/Search';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { createFirebaseApp } from 'firebase/clientApp';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
+import { getAuth, signOut } from 'firebase/auth';
 
+// TODO: search
 // const Search = styled('div')(({ theme }) => ({
 //   position: 'relative',
 //   borderRadius: theme.shape.borderRadius,
@@ -71,38 +74,70 @@ const Header = () => {
   const userInfo = useSelector(userInfoSelector);
   const showLoginModal = useSelector(showLoginModalSelector);
 
+  const app = createFirebaseApp();
+  const auth = getAuth(app);
+  const [user, loading, _error] = useAuthState(auth);
+
   useEffect(() => {
-    const userInfo = localStorage.getItem('userInfo');
-    if (userInfo) {
-      const obj: User = JSON.parse(userInfo);
-      dispatch(login(obj));
+    if (!loading && user) {
+      // 已登入
+      const { uid, displayName, photoURL } = user;
+      const userInfo: User = {
+        id: uid,
+        name: displayName || '',
+        photo: photoURL || '',
+      };
+      dispatch(login(userInfo));
     }
-  }, [dispatch]);
+  }, [loading, user]);
 
   const onConfirm = (name: string) => {
-    const userInfo: User = {
-      name,
-    };
-    localStorage.setItem('userInfo', JSON.stringify(userInfo));
-    dispatch(login(userInfo));
-    dispatch(setShowLoginModal(false));
-    dispatch(
-      setSnackbar({
-        show: true,
-        message: '登入成功',
-      })
-    );
+    // const userInfo: User = {
+    //   id: '123',
+    //   name,
+    //   photo: '',
+    // };
+    // dispatch(login(userInfo));
+    // dispatch(setShowLoginModal(false));
+    // dispatch(
+    //   setSnackbar({
+    //     show: true,
+    //     message: '登入成功',
+    //   })
+    // );
   };
 
   const onLogout = () => {
-    localStorage.removeItem('userInfo');
-    dispatch(logout());
-    dispatch(
-      setSnackbar({
-        show: true,
-        message: '登出成功',
+    setAnchorElUser(null);
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        dispatch(logout());
+        dispatch(
+          setSnackbar({
+            show: true,
+            message: '登出成功',
+          })
+        );
       })
-    );
+      .catch((error) => {
+        dispatch(
+          setSnackbar({
+            show: true,
+            message: error.message,
+          })
+        );
+      });
+  };
+
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+
+  const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
   };
 
   return (
@@ -113,102 +148,115 @@ const Header = () => {
         onConfirm={onConfirm}
       />
       <Toast />
-      {/* <AppBar position="static">
+      <AppBar position="static">
         <Toolbar sx={{ backgroundColor: '#1d1d1d' }}>
           <Typography
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: 'none', sm: 'block', cursor: 'pointer' } }}
+            sx={{
+              display: {
+                xs: 'none',
+                md: 'block',
+                cursor: 'pointer',
+              },
+              color: 'secondary.main',
+              mr: 1,
+            }}
             onClick={() => router.push('/')}
           >
             Cookuya
           </Typography>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1 }}></Box>
+          {/* TODO: 手機板 */}
+          {/* <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
-              aria-label="show 4 new mails"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
               color="inherit"
             >
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
+              <MenuIcon />
             </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar> */}
-      <AppBar position="static">
-        <Toolbar sx={{ backgroundColor: '#121314' }}>
-          <Typography variant="h6" sx={{ flexGrow: 0.1 }}>
-            <Box
-              onClick={() => router.push('/')}
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
               sx={{
-                cursor: 'pointer',
-                color: 'secondary.main',
-                fontSize: '24px',
+                display: { xs: 'block', md: 'none' },
               }}
             >
-              Cookuya
-            </Box>
-          </Typography>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            <Box
-              onClick={() => router.push('/gameboy')}
-              sx={{
-                cursor: 'pointer',
-                fontSize: '24px',
-              }}
-            >
-              Gameboy
-            </Box>
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {userInfo ? (
-              <>
-                <Typography variant="h6" sx={{ mr: '15px' }}>
-                  歡迎！{userInfo.name}
-                </Typography>
-                {router.pathname.substring(1, 5) !== 'rooms' && (
-                  <Button
-                    variant="contained"
-                    size="large"
-                    color="secondary"
-                    onClick={() => onLogout()}
-                  >
-                    登出
-                  </Button>
-                )}
-              </>
-            ) : (
+              {pages.map((page) => (
+                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box> */}
+          {/* TODO: 關於我們 */}
+          {/* <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {pages.map((page) => (
               <Button
-                variant="contained"
-                size="large"
-                color="secondary"
-                onClick={() => dispatch(setShowLoginModal(true))}
+                key={page}
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                登入
+                {page}
               </Button>
-            )}
-          </Box>
+            ))}
+          </Box> */}
+          {!loading && userInfo && (
+            <Box sx={{ flexGrow: 0 }}>
+              {/* <Tooltip title="開啟設定"> */}
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt={userInfo.name} src={userInfo.photo}></Avatar>
+              </IconButton>
+              {/* </Tooltip> */}
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem onClick={onLogout}>
+                  <Typography textAlign="center">登出</Typography>
+                </MenuItem>
+              </Menu>
+            </Box>
+          )}
+          {!loading && !user && !userInfo && (
+            <Button
+              sx={{ minWidth: '100px' }}
+              variant="contained"
+              color="secondary"
+              disableElevation
+              onClick={() => dispatch(setShowLoginModal(true))}
+            >
+              登入
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
     </>

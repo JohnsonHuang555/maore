@@ -2,7 +2,7 @@ import useSWR from 'swr';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import GameCard from 'components/home/GameCard';
+import GameCard from '@components/pages/home/GameCard';
 import Layout from 'components/Layout';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
