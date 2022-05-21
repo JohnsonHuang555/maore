@@ -33,8 +33,12 @@ const ConfirmModal = (props: ConfirmModalProps) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>取消</Button>
-        <Button onClick={onConfirm}>確定</Button>
+        <Button disableElevation onClick={onClose}>
+          取消
+        </Button>
+        <Button disableElevation onClick={onConfirm}>
+          確定
+        </Button>
       </DialogActions>
     </Dialog>
   );

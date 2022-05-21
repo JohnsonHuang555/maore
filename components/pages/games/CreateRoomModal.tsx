@@ -117,6 +117,7 @@ const CreateRoomModal = (props: CreateRoomProps) => {
           variant="contained"
           color="secondary"
           disabled={isCreating}
+          disableElevation
           onClick={onConfirm}
         >
           建立

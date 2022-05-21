@@ -23,3 +23,31 @@ body {
 .MuiSelect-root {
   background-color: #3b3b3b !important;
 }
+
+// firebase custom ui
+.firebaseui-card-content {
+  padding: 0 !important;
+}
+.firebaseui-container {
+  background: rgba(0, 0, 0, 0.05);
+  margin-bottom: 15px;
+  min-height: 150px;
+  padding-top: 10px;
+  border-radius: 20px;
+  box-shadow: none;
+}
+.firebaseui-container.firebaseui-page-provider-sign-in {
+  background: transparent;
+  box-shadow: none;
+  min-height: 0;
+  margin: 0 !important;
+  padding-top: 0;
+  max-width: 100%;
+}
+.firebaseui-idp-button {
+  min-height: 50px !important;
+  max-width: 100% !important;
+}
+.firebaseui-idp-text {
+  font-size: 18px !important;
+}

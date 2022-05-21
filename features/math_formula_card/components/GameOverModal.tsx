@@ -32,7 +32,12 @@ const GameOverModal = (props: GameOverModalProps) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="secondary" onClick={onConfirm}>
+        <Button
+          variant="contained"
+          color="secondary"
+          disableElevation
+          onClick={onConfirm}
+        >
           結束遊戲
         </Button>
       </DialogActions>

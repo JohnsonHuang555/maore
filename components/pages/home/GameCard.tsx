@@ -15,7 +15,7 @@ const GameCard = (props: GameCardProp) => {
   const { game, onSelectGame } = props;
 
   return (
-    <Card>
+    <Card sx={{ bgcolor: '#1d1d1d' }}>
       <CardMedia
         component="img"
         height="194"
@@ -31,7 +31,12 @@ const GameCard = (props: GameCardProp) => {
         </Typography>
       </CardContent>
       <CardActions sx={{ justifyContent: 'flex-end' }}>
-        <Button size="large" color="secondary" onClick={onSelectGame}>
+        <Button
+          size="large"
+          color="secondary"
+          disableElevation
+          onClick={onSelectGame}
+        >
           Play
         </Button>
       </CardActions>

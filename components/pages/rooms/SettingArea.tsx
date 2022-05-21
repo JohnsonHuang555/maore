@@ -61,6 +61,7 @@ const SettingArea = (props: SettingAreaProps) => {
           color="secondary"
           variant="contained"
           size="large"
+          disableElevation
           onClick={onReadyGame}
         >
           {isReadyGame}
@@ -70,6 +71,7 @@ const SettingArea = (props: SettingAreaProps) => {
         color="primary"
         variant="contained"
         size="large"
+        disableElevation
         sx={{ marginTop: '10px' }}
         onClick={onLeaveRoom}
       >

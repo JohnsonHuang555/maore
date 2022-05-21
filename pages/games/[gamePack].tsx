@@ -1,22 +1,23 @@
 import { useEffect, useState } from 'react';
 import Layout from 'components/Layout';
-import { Game, GameList } from '@domain/models/Game';
+import { Game } from '@domain/models/Game';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import useSWR from 'swr';
 import { useDispatch, useSelector } from 'react-redux';
 import { createdRoomIdSelector, roomsSelector } from '@selectors/roomSelector';
-import CreateRoom from 'components/games/CreateRoomModal';
+import CreateRoom from '@components/pages/games/CreateRoomModal';
 import { setShowLoginModal, setSnackbar } from '@actions/appAction';
 import { initialClient, createRoom, getAllRooms } from '@actions/serverAction';
-import RoomCard from 'components/games/RoomCard';
+import RoomCard from '@components/pages/games/RoomCard';
 import { clientSelector } from '@selectors/serverSelector';
 import { userInfoSelector } from '@selectors/appSelector';
 import Info from '@mui/icons-material/Info';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { fetchGame } from '@actions/fetchAction';
+import { GameList } from 'server/domain/Game';
 
 const Games = () => {
   const router = useRouter();
@@ -159,11 +160,12 @@ const Games = () => {
                 variant="contained"
                 sx={{ marginBottom: '20px' }}
                 color="secondary"
+                disableElevation
                 onClick={handleCreateRoom}
               >
                 建立房間
               </Button>
-              <Button size="large" variant="contained">
+              <Button size="large" variant="contained" disableElevation>
                 遊戲規則
               </Button>
             </Box>
