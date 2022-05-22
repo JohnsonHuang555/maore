@@ -58,11 +58,6 @@ const Rooms = () => {
   const auth = getAuth(firebaseApp);
   const [_user, loading, _error] = useAuthState(auth);
 
-  useWarningOnExit({
-    shouldWarn: true,
-    leaveRoom,
-  });
-
   // use effects start
   useEffect(() => {
     if (!loading && !createdRoomId) {
@@ -81,6 +76,11 @@ const Rooms = () => {
     dispatch(initialClient());
   }, [dispatch]);
   // use effect end
+
+  useWarningOnExit({
+    shouldWarn: true,
+    leaveRoom,
+  });
 
   const getIsReadyGameText = () => {
     const isReady = players.find((p) => p.isReady && p.id === yourPlayerId);

@@ -9,6 +9,8 @@ import { Box } from '@mui/material';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { firebaseApp } from 'firebase/clientApp';
+import { setShowLoginModal } from '@actions/appAction';
+import { useDispatch } from 'react-redux';
 
 type LoginModalProps = {
   show: boolean;
@@ -16,17 +18,11 @@ type LoginModalProps = {
   onGuestLogin: (name: string) => void;
 };
 
-// configuration firebase ui
-const config = {
-  signInFlow: 'popup',
-  signInSuccessUrl: '/',
-  signInOptions: [GoogleAuthProvider.PROVIDER_ID],
-};
-
 const LoginModal = (props: LoginModalProps) => {
   const { show, onClose, onGuestLogin } = props;
   const [userName, setUserName] = useState('');
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const auth = getAuth(firebaseApp);
 
@@ -42,6 +38,19 @@ const LoginModal = (props: LoginModalProps) => {
       return;
     }
     onGuestLogin(userName);
+  };
+
+  // configuration firebase ui
+  const config: firebaseui.auth.Config = {
+    signInFlow: 'popup',
+    signInOptions: [GoogleAuthProvider.PROVIDER_ID],
+    callbacks: {
+      // Avoid redirects after sign-in.
+      signInSuccessWithAuthResult: () => {
+        dispatch(setShowLoginModal(false));
+        return false;
+      },
+    },
   };
 
   return (
