@@ -13,7 +13,7 @@ import { firebaseApp } from 'firebase/clientApp';
 type LoginModalProps = {
   show: boolean;
   onClose: () => void;
-  onConfirm: (name: string) => void;
+  onGuestLogin: (name: string) => void;
 };
 
 // configuration firebase ui
@@ -24,7 +24,7 @@ const config = {
 };
 
 const LoginModal = (props: LoginModalProps) => {
-  const { show, onClose, onConfirm } = props;
+  const { show, onClose, onGuestLogin } = props;
   const [userName, setUserName] = useState('');
   const router = useRouter();
 
@@ -41,7 +41,7 @@ const LoginModal = (props: LoginModalProps) => {
     if (!userName) {
       return;
     }
-    onConfirm(userName);
+    onGuestLogin(userName);
   };
 
   return (
@@ -59,7 +59,7 @@ const LoginModal = (props: LoginModalProps) => {
             InputProps={{
               onKeyDown: (e) => {
                 if (e.key === 'Enter') {
-                  onConfirm(userName);
+                  onGuestLogin(userName);
                 }
               },
               onChange: (e) => {

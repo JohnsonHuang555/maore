@@ -48,7 +48,7 @@ const Header = () => {
     }
   }, [loading, user]);
 
-  const onConfirm = (name: string) => {
+  const onGuestLogin = (name: string) => {
     const userInfo: User = {
       name,
     };
@@ -100,7 +100,7 @@ const Header = () => {
       <LoginModal
         show={showLoginModal}
         onClose={() => dispatch(setShowLoginModal(false))}
-        onConfirm={onConfirm}
+        onGuestLogin={onGuestLogin}
       />
       <Toast />
       <AppBar position="static">

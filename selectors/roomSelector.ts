@@ -31,3 +31,4 @@ export const isMasterSelector = (store: StoreState) => {
   }
   return false;
 };
+export const isLoginSelector = (store: StoreState) => !!store.app.userInfo;

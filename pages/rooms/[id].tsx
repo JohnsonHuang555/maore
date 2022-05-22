@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import Layout from '@components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createdRoomIdSelector,
+  isLoginSelector,
   messagesSelector,
   playersSelector,
   roomInfoSelector,
@@ -52,6 +53,7 @@ const Rooms = () => {
   const userInfo = useSelector(userInfoSelector);
   const showGameScreen = useSelector(showGameScreenSelector);
   const messages = useSelector(messagesSelector);
+  const isLogin = useSelector(isLoginSelector);
 
   const auth = getAuth(firebaseApp);
   const [_user, loading, _error] = useAuthState(auth);
@@ -64,13 +66,13 @@ const Rooms = () => {
   // use effects start
   useEffect(() => {
     if (!loading && !createdRoomId) {
-      if (userInfo) {
+      if (userInfo && isLogin) {
         dispatch(joinRoom(String(roomId), userInfo.name));
       } else {
         dispatch(setShowLoginModal(true));
       }
     }
-  }, [loading]);
+  }, [loading, isLogin]);
 
   useEffect(() => {
     if (client) {
@@ -78,22 +80,6 @@ const Rooms = () => {
     }
     dispatch(initialClient());
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   if (!userInfo) {
-  //     dispatch(setShowLoginModal(true));
-  //   } else {
-
-  //   }
-  // if (!loading && roomId && !createdRoomId) {
-  //   if (userInfo) {
-  //     console.log('ininininnin');
-  //     dispatch(joinRoom(String(roomId), userInfo.name));
-  //   } else {
-  //     dispatch(setShowLoginModal(true));
-  //   }
-  // }
-  // }, [userInfo]);
   // use effect end
 
   const getIsReadyGameText = () => {
