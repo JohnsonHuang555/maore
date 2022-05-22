@@ -15,7 +15,7 @@ import {
 } from '@actions/appAction';
 import LoginModal from '@components/modals/LoginModal';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { createFirebaseApp } from 'firebase/clientApp';
+import { firebaseApp } from 'firebase/clientApp';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -27,63 +27,20 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { getAuth, signOut } from 'firebase/auth';
 
-// TODO: search
-// const Search = styled('div')(({ theme }) => ({
-//   position: 'relative',
-//   borderRadius: theme.shape.borderRadius,
-//   backgroundColor: alpha(theme.palette.common.white, 0.15),
-//   '&:hover': {
-//     backgroundColor: alpha(theme.palette.common.white, 0.25),
-//   },
-//   marginRight: theme.spacing(2),
-//   marginLeft: 0,
-//   width: '100%',
-//   [theme.breakpoints.up('sm')]: {
-//     marginLeft: theme.spacing(3),
-//     width: 'auto',
-//   },
-// }));
-
-// const SearchIconWrapper = styled('div')(({ theme }) => ({
-//   padding: theme.spacing(0, 2),
-//   height: '100%',
-//   position: 'absolute',
-//   pointerEvents: 'none',
-//   display: 'flex',
-//   alignItems: 'center',
-//   justifyContent: 'center',
-// }));
-
-// const StyledInputBase = styled(InputBase)(({ theme }) => ({
-//   color: 'inherit',
-//   '& .MuiInputBase-input': {
-//     padding: theme.spacing(1, 1, 1, 0),
-//     // vertical padding + font size from searchIcon
-//     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-//     transition: theme.transitions.create('width'),
-//     width: '100%',
-//     [theme.breakpoints.up('md')]: {
-//       width: '20ch',
-//     },
-//   },
-// }));
-
 const Header = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const userInfo = useSelector(userInfoSelector);
   const showLoginModal = useSelector(showLoginModalSelector);
 
-  const app = createFirebaseApp();
-  const auth = getAuth(app);
+  const auth = getAuth(firebaseApp);
   const [user, loading, _error] = useAuthState(auth);
 
   useEffect(() => {
     if (!loading && user) {
       // 已登入
-      const { uid, displayName, photoURL } = user;
+      const { displayName, photoURL } = user;
       const userInfo: User = {
-        id: uid,
         name: displayName || '',
         photo: photoURL || '',
       };
@@ -92,19 +49,17 @@ const Header = () => {
   }, [loading, user]);
 
   const onConfirm = (name: string) => {
-    // const userInfo: User = {
-    //   id: '123',
-    //   name,
-    //   photo: '',
-    // };
-    // dispatch(login(userInfo));
-    // dispatch(setShowLoginModal(false));
-    // dispatch(
-    //   setSnackbar({
-    //     show: true,
-    //     message: '登入成功',
-    //   })
-    // );
+    const userInfo: User = {
+      name,
+    };
+    dispatch(login(userInfo));
+    dispatch(setShowLoginModal(false));
+    dispatch(
+      setSnackbar({
+        show: true,
+        message: '登入成功',
+      })
+    );
   };
 
   const onLogout = () => {
@@ -219,11 +174,20 @@ const Header = () => {
           </Box> */}
           {!loading && userInfo && (
             <Box sx={{ flexGrow: 0 }}>
-              {/* <Tooltip title="開啟設定"> */}
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={userInfo.name} src={userInfo.photo}></Avatar>
-              </IconButton>
-              {/* </Tooltip> */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                }}
+                onClick={handleOpenUserMenu}
+              >
+                <IconButton sx={{ p: 0, mr: 2 }}>
+                  <Avatar alt={userInfo.name} src={userInfo.photo}></Avatar>
+                </IconButton>
+                <Box sx={{ fontSize: '22px' }}>{userInfo.name}</Box>
+              </Box>
               <Menu
                 sx={{ mt: '45px' }}
                 id="menu-appbar"

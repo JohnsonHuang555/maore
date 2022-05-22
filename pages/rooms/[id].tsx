@@ -29,6 +29,9 @@ import ChatArea from '@components/pages/rooms/ChatArea';
 import SettingArea from '@components/pages/rooms/SettingArea';
 import { fetchGame } from '@actions/fetchAction';
 import { GameList } from 'server/domain/Game';
+import { getAuth } from 'firebase/auth';
+import { firebaseApp } from 'firebase/clientApp';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('@components/pages/rooms/GameScreen'),
@@ -50,6 +53,9 @@ const Rooms = () => {
   const showGameScreen = useSelector(showGameScreenSelector);
   const messages = useSelector(messagesSelector);
 
+  const auth = getAuth(firebaseApp);
+  const [_user, loading, _error] = useAuthState(auth);
+
   useWarningOnExit({
     shouldWarn: true,
     leaveRoom,
@@ -57,10 +63,14 @@ const Rooms = () => {
 
   // use effects start
   useEffect(() => {
-    if (!userInfo) {
-      dispatch(setShowLoginModal(true));
+    if (!loading && !createdRoomId) {
+      if (userInfo) {
+        dispatch(joinRoom(String(roomId), userInfo.name));
+      } else {
+        dispatch(setShowLoginModal(true));
+      }
     }
-  }, []);
+  }, [loading]);
 
   useEffect(() => {
     if (client) {
@@ -69,11 +79,21 @@ const Rooms = () => {
     dispatch(initialClient());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (roomId && !createdRoomId && userInfo) {
-      dispatch(joinRoom(String(roomId), userInfo.name));
-    }
-  }, [roomId, createdRoomId]);
+  // useEffect(() => {
+  //   if (!userInfo) {
+  //     dispatch(setShowLoginModal(true));
+  //   } else {
+
+  //   }
+  // if (!loading && roomId && !createdRoomId) {
+  //   if (userInfo) {
+  //     console.log('ininininnin');
+  //     dispatch(joinRoom(String(roomId), userInfo.name));
+  //   } else {
+  //     dispatch(setShowLoginModal(true));
+  //   }
+  // }
+  // }, [userInfo]);
   // use effect end
 
   const getIsReadyGameText = () => {

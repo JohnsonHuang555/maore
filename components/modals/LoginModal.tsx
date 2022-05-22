@@ -7,8 +7,14 @@ import Button from '@mui/material/Button';
 import { useRouter } from 'next/router';
 import { Box } from '@mui/material';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import { createFirebaseApp } from '../../firebase/clientApp';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { firebaseApp } from 'firebase/clientApp';
+
+type LoginModalProps = {
+  show: boolean;
+  onClose: () => void;
+  onConfirm: (name: string) => void;
+};
 
 // configuration firebase ui
 const config = {
@@ -17,22 +23,15 @@ const config = {
   signInOptions: [GoogleAuthProvider.PROVIDER_ID],
 };
 
-type LoginModalProps = {
-  show: boolean;
-  onClose: () => void;
-  onConfirm: (name: string) => void;
-};
-
 const LoginModal = (props: LoginModalProps) => {
   const { show, onClose, onConfirm } = props;
   const [userName, setUserName] = useState('');
   const router = useRouter();
 
-  const app = createFirebaseApp();
-  const auth = getAuth(app);
+  const auth = getAuth(firebaseApp);
 
   const handleClose = () => {
-    if (router.pathname.substring(1, 5) === 'rooms') {
+    if (router.pathname.split('/').includes('rooms')) {
       return;
     }
     onClose();
@@ -48,8 +47,10 @@ const LoginModal = (props: LoginModalProps) => {
   return (
     <Dialog maxWidth="md" open={show} onClose={handleClose} fullWidth>
       <DialogTitle>Log in</DialogTitle>
-      <DialogContent sx={{ display: 'flex', overflow: 'hidden' }}>
-        <Box sx={{ flex: 1 }}>
+      <DialogContent
+        sx={{ display: 'flex', overflow: 'hidden', minHeight: '300px' }}
+      >
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ marginBottom: '20px' }}>訪客</Box>
           <TextField
             autoFocus
@@ -65,7 +66,7 @@ const LoginModal = (props: LoginModalProps) => {
                 setUserName(e.target.value);
               },
             }}
-            sx={{ marginBottom: '20px' }}
+            sx={{ marginBottom: '20px', flex: 1 }}
           />
           <Button
             variant="contained"

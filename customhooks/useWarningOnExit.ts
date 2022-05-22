@@ -21,7 +21,7 @@ export const useWarningOnExit = ({
     let isWarned = false;
 
     const routeChangeStart = (url: string) => {
-      if (url.substr(0, 6) === '/rooms') {
+      if (url.substring(0, 6) === '/rooms') {
         return;
       }
       if (Router.asPath !== url && shouldWarn && !isWarned) {
