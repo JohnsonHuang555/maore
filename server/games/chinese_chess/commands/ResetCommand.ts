@@ -1,13 +1,14 @@
 import { ArraySchema } from '@colyseus/schema';
 import { Command } from '@colyseus/command';
-import ChineseChessState from '../state/ChineseChessState';
 import ResetGameCommand from '../../../room/commands/ResetGameCommand';
 import { ChessInfoState } from '../state/ChessInfoState';
+import ChineseChess from '../ChineseChess';
 
-export default class ResetCommand extends Command<ChineseChessState> {
+export default class ResetCommand extends Command<ChineseChess> {
   execute() {
     // reset
-    this.room.state.chineseChesses = new ArraySchema<ChessInfoState>();
+    this.room.state.chineseChess.chineseChesses =
+      new ArraySchema<ChessInfoState>();
     return [new ResetGameCommand()];
   }
 }

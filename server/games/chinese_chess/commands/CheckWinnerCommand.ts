@@ -8,13 +8,14 @@ import {
 } from '../../../../features/chinese_chess/models/ChineseChessName';
 import { ChineseChessGroup } from '../../../../features/chinese_chess/models/ChineseChessGroup';
 import { ChessSide } from '../../../../features/chinese_chess/models/ChineseChessSide';
+import ChineseChess from '../ChineseChess';
 
 type Payload = {
   gameMode: GameMode;
   group: ChineseChessGroup;
 };
 
-export default class CheckWinnerCommand extends Command<ChineseChessState> {
+export default class CheckWinnerCommand extends Command<ChineseChess> {
   execute(data: Payload) {
     const { gameMode, group } = data;
 
@@ -23,12 +24,12 @@ export default class CheckWinnerCommand extends Command<ChineseChessState> {
         let isKingDead = undefined;
         if (group === ChineseChessGroup.Black) {
           // 檢查對方的將軍還有沒有存活
-          isKingDead = this.state.chineseChesses.find(
+          isKingDead = this.state.chineseChess.chineseChesses.find(
             (c) => c.name === ChessNameRed.King && !c.alive
           );
         } else {
           // 檢查對方的將軍還有沒有存活
-          isKingDead = this.state.chineseChesses.find(
+          isKingDead = this.state.chineseChess.chineseChesses.find(
             (c) => c.name === ChessNameBlack.King && !c.alive
           );
         }
@@ -44,7 +45,7 @@ export default class CheckWinnerCommand extends Command<ChineseChessState> {
         const chessSide =
           group === ChineseChessGroup.Black ? ChessSide.Black : ChessSide.Red;
         // 檢查對方的棋子數還有沒有存活
-        const anotherRemainChess = this.state.chineseChesses.find(
+        const anotherRemainChess = this.state.chineseChess.chineseChesses.find(
           (c) => c.chessSide !== chessSide && c.alive
         );
 

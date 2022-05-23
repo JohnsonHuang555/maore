@@ -1,6 +1,6 @@
 import { Command } from '@colyseus/command';
 import NextTurnCommand from '../../../room/commands/NextTurnCommand';
-import ChineseChessState from '../state/ChineseChessState';
+import ChineseChess from '../ChineseChess';
 
 type Payload = {
   id: number;
@@ -8,15 +8,15 @@ type Payload = {
   targetY: number;
 };
 
-export default class MoveChessCommand extends Command<ChineseChessState> {
+export default class MoveChessCommand extends Command<ChineseChess> {
   execute(data: Payload) {
     const { id, targetX, targetY } = data;
-    const chessIndex = this.room.state.chineseChesses.findIndex(
+    const chessIndex = this.room.state.chineseChess.chineseChesses.findIndex(
       (c) => c.id === id
     );
 
-    this.room.state.chineseChesses[chessIndex].locationX = targetX;
-    this.room.state.chineseChesses[chessIndex].locationY = targetY;
+    this.room.state.chineseChess.chineseChesses[chessIndex].locationX = targetX;
+    this.room.state.chineseChess.chineseChesses[chessIndex].locationY = targetY;
     return [new NextTurnCommand()];
   }
 }

@@ -558,7 +558,7 @@ export default class ChineseChessServer extends BaseServer {
   };
 
   private handleStateChange() {
-    this.room.state.chineseChesses.onAdd = (chessInfo, idx) => {
+    this.room.state.chineseChess.chineseChesses.onAdd = (chessInfo, idx) => {
       this.chineseChesses.push({
         id: chessInfo.id,
         chessSide: chessInfo.chessSide,
