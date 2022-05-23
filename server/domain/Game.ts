@@ -1,6 +1,5 @@
 // FIXME: 從 DB 來 => 遊戲列表
 export enum GameList {
-  TicTacToe = 'tic-tac-toe', // deprecated
   ChineseChess = 'chinese-chess',
   MathFormulaCard = 'math-formula-card',
 }

@@ -16,8 +16,9 @@ import UpdatePlayerGroupCommand from '../../room/commands/UpdatePlayerGroupComma
 import { RoomMessage } from '../../../domain/models/Message';
 import CheckWinnerCommand from './commands/CheckWinnerCommand';
 import SurrenderCommand from './commands/SurrenderCommand';
+import RoomState from '../../room/state/RoomState';
 
-export default class ChineseChess extends Room<ChineseChessState, Metadata> {
+export default class ChineseChess extends Room<RoomState, Metadata> {
   private dispatcher = new Dispatcher(this);
   private baseRoom = new BaseRoom(this);
 
@@ -28,7 +29,7 @@ export default class ChineseChess extends Room<ChineseChessState, Metadata> {
     }
 
     this.baseRoom.setMaxClient(2);
-    this.setState(new ChineseChessState());
+    this.setState(new RoomState());
 
     this.onMessage(RoomMessage.CreateGame, () => {
       this.dispatcher.dispatch(new CreateGameCommand(), {
@@ -39,13 +40,14 @@ export default class ChineseChess extends Room<ChineseChessState, Metadata> {
     this.onMessage(
       ChineseChessMessage.FlipChess,
       (client, message: { id: number }) => {
-        const chessIndex = this.state.chineseChesses.findIndex(
+        const chessIndex = this.state.chineseChess.chineseChesses.findIndex(
           (c) => c.id === message.id
         );
         this.dispatcher.dispatch(new FlipChessCommand(), {
           chessIndex,
         });
-        const side = this.state.chineseChesses[chessIndex].chessSide;
+        const side =
+          this.state.chineseChess.chineseChesses[chessIndex].chessSide;
         this.dispatcher.dispatch(new UpdatePlayerGroupCommand(), {
           allGroups: [ChineseChessGroup.Black, ChineseChessGroup.Red],
           needSetGroup: ChineseChessGroupMap[side],

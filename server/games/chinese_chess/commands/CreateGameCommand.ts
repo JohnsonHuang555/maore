@@ -10,28 +10,29 @@ import { ArraySchema } from '@colyseus/schema';
 import { ChessInfoState } from '../state/ChessInfoState';
 import Random from '../../../utils/Random';
 import { ChessHiddenMap } from '../state/ChessHiddenMap';
+import ChineseChess from '../ChineseChess';
 
 type Payload = {
   mode: GameMode;
 };
 
-export default class CreateGameCommand extends Command<ChineseChessState> {
+export default class CreateGameCommand extends Command<ChineseChess> {
   execute(data: Payload) {
     const { mode } = data;
     // 避免重複創建
-    if (this.room.state.chineseChesses.length) {
+    if (this.room.state.chineseChess.chineseChesses.length) {
       return;
     }
     switch (mode) {
       case GameMode.Standard: {
         // TODO: 決定組別
         const chineseChesses = this.createStandard();
-        this.room.state.chineseChesses = chineseChesses;
+        this.room.state.chineseChess.chineseChesses = chineseChesses;
         break;
       }
       case GameMode.Hidden: {
         const chineseChesses = this.createHidden();
-        this.room.state.chineseChesses = chineseChesses;
+        this.room.state.chineseChess.chineseChesses = chineseChesses;
         break;
       }
     }
