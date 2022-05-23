@@ -1,6 +1,5 @@
 import { store } from 'pages/_app';
 import { Room as ClientRoom } from 'colyseus.js';
-import { Room } from 'middleware/services/RoomServer';
 import { GameStatus, RoomInfo } from '@domain/models/Room';
 import { RoomMessage } from '@domain/models/Message';
 import { Player } from '@domain/models/Player';
@@ -8,6 +7,7 @@ import { setSnackbar } from '@actions/appAction';
 import { setShowGameScreen } from '@actions/roomAction';
 import { sharedInstance as events } from 'features/base/EventCenter';
 import ComponentService from 'features/base/services/ComponentService';
+import { Room } from 'server/room/state/RoomState';
 
 /** 共用接收與傳送房間資料，監聽 store state */
 export default class BaseServer {

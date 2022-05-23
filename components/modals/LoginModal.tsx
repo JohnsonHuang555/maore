@@ -7,32 +7,27 @@ import Button from '@mui/material/Button';
 import { useRouter } from 'next/router';
 import { Box } from '@mui/material';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import { createFirebaseApp } from '../../firebase/clientApp';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-
-// configuration firebase ui
-const config = {
-  signInFlow: 'popup',
-  signInSuccessUrl: '/',
-  signInOptions: [GoogleAuthProvider.PROVIDER_ID],
-};
+import { firebaseApp } from 'firebase/clientApp';
+import { setShowLoginModal } from '@actions/appAction';
+import { useDispatch } from 'react-redux';
 
 type LoginModalProps = {
   show: boolean;
   onClose: () => void;
-  onConfirm: (name: string) => void;
+  onGuestLogin: (name: string) => void;
 };
 
 const LoginModal = (props: LoginModalProps) => {
-  const { show, onClose, onConfirm } = props;
+  const { show, onClose, onGuestLogin } = props;
   const [userName, setUserName] = useState('');
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  const app = createFirebaseApp();
-  const auth = getAuth(app);
+  const auth = getAuth(firebaseApp);
 
   const handleClose = () => {
-    if (router.pathname.substring(1, 5) === 'rooms') {
+    if (router.pathname.split('/').includes('rooms')) {
       return;
     }
     onClose();
@@ -42,14 +37,29 @@ const LoginModal = (props: LoginModalProps) => {
     if (!userName) {
       return;
     }
-    onConfirm(userName);
+    onGuestLogin(userName);
+  };
+
+  // configuration firebase ui
+  const config: firebaseui.auth.Config = {
+    signInFlow: 'popup',
+    signInOptions: [GoogleAuthProvider.PROVIDER_ID],
+    callbacks: {
+      // Avoid redirects after sign-in.
+      signInSuccessWithAuthResult: () => {
+        dispatch(setShowLoginModal(false));
+        return false;
+      },
+    },
   };
 
   return (
     <Dialog maxWidth="md" open={show} onClose={handleClose} fullWidth>
       <DialogTitle>Log in</DialogTitle>
-      <DialogContent sx={{ display: 'flex', overflow: 'hidden' }}>
-        <Box sx={{ flex: 1 }}>
+      <DialogContent
+        sx={{ display: 'flex', overflow: 'hidden', minHeight: '300px' }}
+      >
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ marginBottom: '20px' }}>訪客</Box>
           <TextField
             autoFocus
@@ -58,14 +68,14 @@ const LoginModal = (props: LoginModalProps) => {
             InputProps={{
               onKeyDown: (e) => {
                 if (e.key === 'Enter') {
-                  onConfirm(userName);
+                  onGuestLogin(userName);
                 }
               },
               onChange: (e) => {
                 setUserName(e.target.value);
               },
             }}
-            sx={{ marginBottom: '20px' }}
+            sx={{ marginBottom: '20px', flex: 1 }}
           />
           <Button
             variant="contained"

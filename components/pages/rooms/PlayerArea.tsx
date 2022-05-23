@@ -52,7 +52,7 @@ const PlayerArea = (props: PlayerAreaProps) => {
               backgroundColor: isNowPlayer(player.id) ? '#64584b' : '#3b3b3b',
             }}
           >
-            <Avatar sx={{ width: 70, height: 70, color: '#fff' }}>
+            <Avatar sx={{ width: 56, height: 56, color: '#fff' }}>
               {player.name.substring(0, 1)}
             </Avatar>
             <Box

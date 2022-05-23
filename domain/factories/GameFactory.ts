@@ -1,5 +1,6 @@
+import { Game, GameMode } from '@domain/models/Game';
 import { EnhanceGameModes as ChinesChessMode } from 'features/chinese_chess/models/ChinesChessMode';
-import { Game, Game as NetGame, GameMode } from 'server/domain/Game';
+import { Game as NetGame } from 'server/domain/Game';
 import { toJsCaseObject } from 'utils/AjaxDataCase';
 
 const combinedEnhanceGameModes = {
@@ -9,13 +10,14 @@ const combinedEnhanceGameModes = {
 export default class GameFactory {
   static createFromNet(netGame: NetGame): Game {
     const game: Game = toJsCaseObject(netGame);
-    const modes = netGame.modes?.map((m) => {
-      const mode: GameMode = toJsCaseObject(m);
+    const modes: GameMode[] | undefined = netGame.modes?.map((m) => {
       return {
-        ...mode,
         label: combinedEnhanceGameModes[m.name],
         value: m.name,
-      };
+        maxPlayers: m.max_players,
+        minPlayers: m.min_players,
+        imageUrl: m.image_url,
+      } as GameMode;
     });
     return {
       ...game,

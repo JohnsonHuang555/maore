@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import Layout from '@components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createdRoomIdSelector,
+  isLoginSelector,
   messagesSelector,
   playersSelector,
   roomInfoSelector,
@@ -29,6 +30,9 @@ import ChatArea from '@components/pages/rooms/ChatArea';
 import SettingArea from '@components/pages/rooms/SettingArea';
 import { fetchGame } from '@actions/fetchAction';
 import { GameList } from 'server/domain/Game';
+import { getAuth } from 'firebase/auth';
+import { firebaseApp } from 'firebase/clientApp';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('@components/pages/rooms/GameScreen'),
@@ -49,18 +53,21 @@ const Rooms = () => {
   const userInfo = useSelector(userInfoSelector);
   const showGameScreen = useSelector(showGameScreenSelector);
   const messages = useSelector(messagesSelector);
+  const isLogin = useSelector(isLoginSelector);
 
-  useWarningOnExit({
-    shouldWarn: true,
-    leaveRoom,
-  });
+  const auth = getAuth(firebaseApp);
+  const [_user, loading, _error] = useAuthState(auth);
 
   // use effects start
   useEffect(() => {
-    if (!userInfo) {
-      dispatch(setShowLoginModal(true));
+    if (!loading && !createdRoomId) {
+      if (userInfo && isLogin) {
+        dispatch(joinRoom(String(roomId), userInfo.name));
+      } else {
+        dispatch(setShowLoginModal(true));
+      }
     }
-  }, []);
+  }, [loading, isLogin]);
 
   useEffect(() => {
     if (client) {
@@ -68,13 +75,12 @@ const Rooms = () => {
     }
     dispatch(initialClient());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (roomId && !createdRoomId && userInfo) {
-      dispatch(joinRoom(String(roomId), userInfo.name));
-    }
-  }, [roomId, createdRoomId]);
   // use effect end
+
+  useWarningOnExit({
+    shouldWarn: true,
+    leaveRoom,
+  });
 
   const getIsReadyGameText = () => {
     const isReady = players.find((p) => p.isReady && p.id === yourPlayerId);
