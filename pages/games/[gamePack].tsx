@@ -8,7 +8,7 @@ import useSWR from 'swr';
 import { useDispatch, useSelector } from 'react-redux';
 import { createdRoomIdSelector, roomsSelector } from '@selectors/roomSelector';
 import CreateRoom from '@components/pages/games/CreateRoomModal';
-import { setShowLoginModal, setSnackbar } from '@actions/appAction';
+import { setShowLoginModal } from '@actions/appAction';
 import { initialClient, createRoom, getAllRooms } from '@actions/serverAction';
 import RoomCard from '@components/pages/games/RoomCard';
 import { clientSelector } from '@selectors/serverSelector';
@@ -18,11 +18,13 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { fetchGame } from '@actions/fetchAction';
 import { GameList } from 'server/domain/Game';
+import { useSnackbar } from 'notistack';
 
 const Games = () => {
   const router = useRouter();
   const { gamePack } = router.query;
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   // selectors
   const createdRoomId = useSelector(createdRoomIdSelector);
@@ -64,12 +66,7 @@ const Games = () => {
 
   const onCreateRoom = async (roomTitle: string, gameMode?: string) => {
     if (!userInfo) {
-      dispatch(
-        setSnackbar({
-          show: true,
-          message: '請先登入',
-        })
-      );
+      enqueueSnackbar('請先登入', { variant: 'warning' });
       return;
     }
     try {
@@ -83,22 +80,14 @@ const Games = () => {
       );
     } catch (err: any) {
       const error = new Error(err);
-      dispatch(
-        setSnackbar({
-          show: true,
-          message: error.message,
-        })
-      );
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
   };
 
   const onJoinRoom = (roomId: string) => {
     if (!userInfo) {
       dispatch(setShowLoginModal(true));
-      setSnackbar({
-        show: true,
-        message: '請先登入',
-      });
+      enqueueSnackbar('請先登入', { variant: 'warning' });
       return;
     }
     router.push(`/rooms/${roomId}`);
@@ -107,12 +96,7 @@ const Games = () => {
   const handleCreateRoom = () => {
     if (!userInfo) {
       dispatch(setShowLoginModal(true));
-      dispatch(
-        setSnackbar({
-          show: true,
-          message: '請先登入',
-        })
-      );
+      enqueueSnackbar('請先登入', { variant: 'warning' });
       return;
     }
     setShowCreateRoomModal(true);

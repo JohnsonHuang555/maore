@@ -8,11 +8,11 @@ import {
   Button,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { setSnackbar } from '@actions/appAction';
 import { Game } from '@domain/models/Game';
 import Grid from '@mui/material/Grid';
 import styles from '@styles/components/createRoom.module.scss';
 import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
+import { useSnackbar } from 'notistack';
 
 type CreateRoomProps = {
   show: boolean;
@@ -22,7 +22,7 @@ type CreateRoomProps = {
 };
 
 const CreateRoomModal = (props: CreateRoomProps) => {
-  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
   const { show, selectedGame, onCreateRoom, onClose } = props;
   const [roomTitle, setRoomTitle] = useState('');
   // 預設選第一個
@@ -38,12 +38,7 @@ const CreateRoomModal = (props: CreateRoomProps) => {
 
   const onConfirm = () => {
     if (!roomTitle) {
-      dispatch(
-        setSnackbar({
-          show: true,
-          message: '請輸入房間名稱',
-        })
-      );
+      enqueueSnackbar('請輸入房間名稱', { variant: 'warning' });
       return;
     }
     setIsCreating(true);

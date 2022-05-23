@@ -3,6 +3,7 @@ import { GameStatus } from '../../../domain/models/Room';
 import RoomState from '../state/RoomState';
 import { Metadata } from '../../../domain/models/Room';
 import { Room } from 'colyseus';
+import { RoomMessage } from '../../../domain/models/Message';
 
 type Payload = {
   playerId: string;
@@ -15,6 +16,10 @@ export default class PlayerLeftCommand extends Command<
     const idx = this.room.state.players.findIndex(
       (player) => player.id === data.playerId
     );
+
+    this.room.broadcast(RoomMessage.PlayerLeft, {
+      playerName: this.room.state.players[idx].name,
+    });
     this.room.state.players.splice(idx, 1);
 
     // 如果房間剩下一人就切狀態
@@ -22,7 +27,7 @@ export default class PlayerLeftCommand extends Command<
       this.state.gameStatus = GameStatus.WaitingForPlayers;
     }
 
-    // 房間沒人
+    // 房間沒人不做下面指定 master 的動作
     if (!this.room.state.players.length) {
       return;
     }

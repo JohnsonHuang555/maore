@@ -21,7 +21,7 @@ import {
 } from '@actions/serverAction';
 import { playerIdSelector } from '@selectors/roomSelector';
 import { useWarningOnExit } from 'customhooks/useWarningOnExit';
-import { clientSelector } from '@selectors/serverSelector';
+import { clientRoomSelector, clientSelector } from '@selectors/serverSelector';
 import dynamic from 'next/dynamic';
 import { userInfoSelector } from '@selectors/appSelector';
 import { setShowLoginModal } from '@actions/appAction';
@@ -33,6 +33,8 @@ import { GameList } from 'server/domain/Game';
 import { getAuth } from 'firebase/auth';
 import { firebaseApp } from 'firebase/clientApp';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { RoomMessage } from '@domain/models/Message';
+import { useSnackbar } from 'notistack';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('@components/pages/rooms/GameScreen'),
@@ -43,6 +45,7 @@ const Rooms = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const roomId = router.query.id;
+  const { enqueueSnackbar } = useSnackbar();
 
   // selectors
   const createdRoomId = useSelector(createdRoomIdSelector);
@@ -54,6 +57,7 @@ const Rooms = () => {
   const showGameScreen = useSelector(showGameScreenSelector);
   const messages = useSelector(messagesSelector);
   const isLogin = useSelector(isLoginSelector);
+  const clientRoom = useSelector(clientRoomSelector);
 
   const auth = getAuth(firebaseApp);
   const [_user, loading, _error] = useAuthState(auth);
@@ -75,6 +79,14 @@ const Rooms = () => {
     }
     dispatch(initialClient());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (clientRoom) {
+      clientRoom.onMessage(RoomMessage.PlayerLeft, ({ playerName }) => {
+        enqueueSnackbar(`${playerName} 已經離開遊戲`, { variant: 'info' });
+      });
+    }
+  }, [clientRoom]);
   // use effect end
 
   useWarningOnExit({

@@ -18,12 +18,6 @@ const initialState: State = {
   showLoginModal: false,
 };
 
-type SetSnackbarAction = {
-  type: ActionType.SetSnackbar;
-  show: boolean;
-  message: string;
-};
-
 type LoginAction = {
   type: ActionType.Login;
   userInfo: User;
@@ -38,23 +32,10 @@ type ShowLoginModalAction = {
   show: boolean;
 };
 
-type Action =
-  | SetSnackbarAction
-  | LoginAction
-  | LogoutAction
-  | ShowLoginModalAction;
+type Action = LoginAction | LogoutAction | ShowLoginModalAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
-    case ActionType.SetSnackbar: {
-      return {
-        ...state,
-        snackbar: {
-          show: action.show,
-          message: action.message,
-        },
-      };
-    }
     case ActionType.Login: {
       return {
         ...state,

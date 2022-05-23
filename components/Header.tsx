@@ -1,18 +1,12 @@
 import React, { MouseEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import Toast from '@components/Toast';
 import {
   showLoginModalSelector,
   userInfoSelector,
 } from '@selectors/appSelector';
 import { User } from '@domain/models/User';
-import {
-  login,
-  logout,
-  setShowLoginModal,
-  setSnackbar,
-} from '@actions/appAction';
+import { login, logout, setShowLoginModal } from '@actions/appAction';
 import LoginModal from '@components/modals/LoginModal';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { firebaseApp } from 'firebase/clientApp';
@@ -26,6 +20,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { getAuth, signOut } from 'firebase/auth';
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -35,6 +30,8 @@ const Header = () => {
 
   const auth = getAuth(firebaseApp);
   const [user, loading, _error] = useAuthState(auth);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (!loading && user) {
@@ -54,12 +51,7 @@ const Header = () => {
     };
     dispatch(login(userInfo));
     dispatch(setShowLoginModal(false));
-    dispatch(
-      setSnackbar({
-        show: true,
-        message: '登入成功',
-      })
-    );
+    enqueueSnackbar('登入成功', { variant: 'success' });
   };
 
   const onLogout = () => {
@@ -68,20 +60,10 @@ const Header = () => {
     signOut(auth)
       .then(() => {
         dispatch(logout());
-        dispatch(
-          setSnackbar({
-            show: true,
-            message: '登出成功',
-          })
-        );
+        enqueueSnackbar('登出成功', { variant: 'success' });
       })
       .catch((error) => {
-        dispatch(
-          setSnackbar({
-            show: true,
-            message: error.message,
-          })
-        );
+        enqueueSnackbar('登出失敗', { variant: 'error' });
       });
   };
 
@@ -102,7 +84,6 @@ const Header = () => {
         onClose={() => dispatch(setShowLoginModal(false))}
         onGuestLogin={onGuestLogin}
       />
-      <Toast />
       <AppBar position="static">
         <Toolbar sx={{ backgroundColor: '#1d1d1d' }}>
           <Typography

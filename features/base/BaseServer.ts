@@ -3,7 +3,6 @@ import { Room as ClientRoom } from 'colyseus.js';
 import { GameStatus, RoomInfo } from '@domain/models/Room';
 import { RoomMessage } from '@domain/models/Message';
 import { Player } from '@domain/models/Player';
-import { setSnackbar } from '@actions/appAction';
 import { setShowGameScreen } from '@actions/roomAction';
 import { sharedInstance as events } from 'features/base/EventCenter';
 import ComponentService from 'features/base/services/ComponentService';
@@ -70,12 +69,12 @@ export default class BaseServer {
 
   // change redux state
   showAlert(message: string) {
-    store.dispatch(
-      setSnackbar({
-        show: true,
-        message,
-      })
-    );
+    // store.dispatch(
+    //   showSnackbar({
+    //     show: true,
+    //     message,
+    //   })
+    // );
   }
 
   closeGameScreen() {

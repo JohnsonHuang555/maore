@@ -38,7 +38,7 @@ const MathFormulaGameSettings = () => {
           disabled={!isMaster}
           onChange={onWinnerPointChange}
         >
-          <MenuItem value={1}>1分</MenuItem>
+          {/* <MenuItem value={1}>1分</MenuItem> */}
           <MenuItem value={10}>10分</MenuItem>
           <MenuItem value={20}>20分</MenuItem>
           <MenuItem value={30}>30分</MenuItem>

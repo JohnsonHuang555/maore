@@ -1,4 +1,3 @@
-import { setSnackbar } from '@actions/appAction';
 import { RoomMessage } from '@domain/models/Message';
 import { Box, Button, Zoom } from '@mui/material';
 import {
@@ -24,9 +23,11 @@ import { getSelectedCardLabel } from './components/SelectedCardDict';
 import GameOverModal from './components/GameOverModal';
 import { setShowGameScreen } from '@actions/roomAction';
 import { gameSettingsSelector } from '@selectors/game_settings/mathFormulaSelector';
+import { useSnackbar } from 'notistack';
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
   const gameSettings = useSelector(gameSettingsSelector);
   const clientRoom = useSelector(clientRoomSelector);
   const yourPlayerId = useSelector(playerIdSelector);
@@ -48,31 +49,16 @@ const MathFormulaCard = () => {
     clientRoom.onMessage(
       MathFormulaCardMessage.UseCardsFailed,
       ({ message }) => {
-        dispatch(
-          setSnackbar({
-            show: true,
-            message,
-          })
-        );
+        enqueueSnackbar(message, { variant: 'warning' });
       }
     );
 
     clientRoom.onMessage(MathFormulaCardMessage.AnswerCorrectly, () => {
-      dispatch(
-        setSnackbar({
-          show: true,
-          message: '你答對了',
-        })
-      );
+      enqueueSnackbar('你答對了', { variant: 'success' });
     });
 
     clientRoom.onMessage(MathFormulaCardMessage.AnsweredWrong, () => {
-      dispatch(
-        setSnackbar({
-          show: true,
-          message: '你答錯了',
-        })
-      );
+      enqueueSnackbar('你答錯了!!', { variant: 'error' });
     });
 
     clientRoom.state.mathFormulaCard.listen('answer', (currentValue) => {
@@ -192,12 +178,7 @@ const MathFormulaCard = () => {
 
   useEffect(() => {
     if (state.errorMsg) {
-      dispatch(
-        setSnackbar({
-          show: true,
-          message: state.errorMsg,
-        })
-      );
+      enqueueSnackbar(state.errorMsg, { variant: 'error' });
       localDispatch({ type: ActionType.ClearErrorMsg });
     }
   }, [state.errorMsg]);
@@ -262,12 +243,7 @@ const MathFormulaCard = () => {
   const handleSelectCard = (id: string) => {
     // 還沒輪到你
     if (!isYourTurn) {
-      dispatch(
-        setSnackbar({
-          show: true,
-          message: '還沒輪到你',
-        })
-      );
+      enqueueSnackbar('還沒輪到你', { variant: 'warning' });
       return;
     }
     clientRoom.send(MathFormulaCardMessage.SelectCard, { id });
@@ -277,12 +253,7 @@ const MathFormulaCard = () => {
     // 代表已經載入完成，改無延遲時間
     setNoDrawCardDelay(true);
     if (!state.selectedCards.length) {
-      dispatch(
-        setSnackbar({
-          show: true,
-          message: '請選牌',
-        })
-      );
+      enqueueSnackbar('請選牌', { variant: 'warning' });
       return;
     }
     clientRoom.send(MathFormulaCardMessage.UseCards);

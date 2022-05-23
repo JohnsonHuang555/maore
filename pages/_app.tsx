@@ -8,6 +8,7 @@ import ServerMiddleware from 'middleware/ServerMiddleware';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import '@styles/globals.scss';
+import { SnackbarProvider } from 'notistack';
 
 export const store = createStore(
   rootReducer,
@@ -19,7 +20,12 @@ function MyApp({ Component, pageProps }: AppProps) {
     <Provider store={store}>
       <CssBaseline />
       <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
+        <SnackbarProvider
+          maxSnack={3}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <Component {...pageProps} />
+        </SnackbarProvider>
       </ThemeProvider>
     </Provider>
   );
