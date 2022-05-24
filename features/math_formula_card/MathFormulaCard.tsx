@@ -89,10 +89,10 @@ const MathFormulaCard = () => {
           });
         };
         playerInfo.cards.onAdd = (playerCard) => {
-          const { id, cardNumber, cardSymbol } = playerCard;
+          const { id, cardNumber } = playerCard;
           localDispatch({
             type: ActionType.DrawCard,
-            playerCard: { id, cardNumber, cardSymbol },
+            playerCard: { id, cardNumber },
           });
         };
 
@@ -145,17 +145,21 @@ const MathFormulaCard = () => {
       }
     };
 
-    clientRoom.state.mathFormulaCard.selectedCards.onAdd = (playerCard) => {
-      const { id, cardNumber, cardSymbol } = playerCard;
-      const value = cardSymbol || cardNumber;
+    clientRoom.state.mathFormulaCard.selectedElements.onAdd = (
+      selectedElement
+    ) => {
+      const { id, cardNumber, mathSymbol } = selectedElement;
+      const value = mathSymbol || cardNumber;
       if (value !== undefined) {
         localDispatch({ type: ActionType.SelectCard, id, value });
       }
     };
 
-    clientRoom.state.mathFormulaCard.selectedCards.onRemove = (playerCard) => {
-      const { id, cardNumber, cardSymbol } = playerCard;
-      const value = cardSymbol || cardNumber;
+    clientRoom.state.mathFormulaCard.selectedElements.onRemove = (
+      selectedElement
+    ) => {
+      const { id, cardNumber, mathSymbol } = selectedElement;
+      const value = mathSymbol || cardNumber;
       if (value !== undefined) {
         localDispatch({ type: ActionType.SelectCard, id, value });
       }
@@ -230,7 +234,7 @@ const MathFormulaCard = () => {
           <Card
             key={card.id}
             id={card.id}
-            value={card.cardSymbol || card.cardNumber}
+            value={card.cardNumber}
             width="6rem"
             height="100%"
             onSelect={handleSelectCard}

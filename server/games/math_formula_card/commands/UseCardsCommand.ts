@@ -15,7 +15,7 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
     const { client } = data;
     let isIllegalFormula = false;
     let isPreviousNumberZero = false;
-    const cards = this.room.state.mathFormulaCard.selectedCards;
+    const cards = this.room.state.mathFormulaCard.selectedElements;
 
     // 第一張是 0、符號，最後一張是符號，連續兩張是符號
     cards.forEach((card) => {
@@ -30,7 +30,7 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
     });
 
     // 算式裡沒有用到符號為不合法
-    const notIncludeSymbols = cards.filter((card) => card.cardSymbol);
+    const notIncludeSymbols = cards.filter((card) => card.mathSymbol);
 
     if (isIllegalFormula || notIncludeSymbols.length === 0) {
       client.send(MathFormulaCardMessage.UseCardsFailed, {
@@ -44,8 +44,8 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
       .map((card) => {
         if (card.cardNumber !== undefined) {
           return card.cardNumber;
-        } else if (card.cardSymbol !== undefined) {
-          return card.cardSymbol;
+        } else if (card.mathSymbol !== undefined) {
+          return card.mathSymbol;
         }
       })
       .join('');

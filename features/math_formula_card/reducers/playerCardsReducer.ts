@@ -1,9 +1,5 @@
-import {
-  CardSymbol,
-  IPlayerCard,
-} from 'server/games/math_formula_card/state/PlayerCardState';
-import { SelectCardSymbol } from 'server/games/math_formula_card/state/SelectedCardState';
-import { Helper } from 'utils/Helper';
+import { IPlayerCard } from 'server/games/math_formula_card/state/PlayerCardState';
+import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 import { OtherPlayerDict, OthersPlayerInfo } from '../models/OtherPlayerCard';
 
 // 其他玩家手牌只記剩餘數量就可以
@@ -24,7 +20,7 @@ export enum ActionType {
 
 type SelectedCard = {
   id: string;
-  value: number | SelectCardSymbol;
+  value: number | MathSymbol;
 };
 
 export type State = {
@@ -84,7 +80,7 @@ type UpdateOthersInfoAction = {
 type SelectCardAction = {
   type: ActionType.SelectCard;
   id: string;
-  value: number | SelectCardSymbol;
+  value: number | MathSymbol;
 };
 
 type ClearErrorMsgAction = {
@@ -189,47 +185,47 @@ const reducer = (state = initialState, action: Action): State => {
       };
     }
     case ActionType.SelectCard: {
-      let newCards = [...state.selectedCards];
-      if (action.value === SelectCardSymbol.LeftParentheses) {
-        const leftParentheses = newCards.findIndex(
-          (card) =>
-            card.id === action.id &&
-            card.value === SelectCardSymbol.LeftParentheses
-        );
-        if (leftParentheses !== -1) {
-          newCards.splice(leftParentheses, 1);
-        } else {
-          newCards = [
-            { id: action.id, value: SelectCardSymbol.LeftParentheses },
-            ...newCards,
-          ];
-        }
-      } else if (action.value === SelectCardSymbol.RightParentheses) {
-        const rightParentheses = newCards.findIndex(
-          (card) =>
-            card.id === action.id &&
-            card.value === SelectCardSymbol.RightParentheses
-        );
-        if (rightParentheses !== -1) {
-          newCards.splice(rightParentheses, 1);
-        } else {
-          newCards = [
-            ...newCards,
-            { id: action.id, value: SelectCardSymbol.RightParentheses },
-          ];
-        }
-      } else {
-        const cardIndex = newCards.findIndex((card) => card.id === action.id);
-        if (cardIndex !== -1) {
-          newCards.splice(cardIndex, 1);
-        } else {
-          newCards = [...newCards, { id: action.id, value: action.value }];
-        }
-      }
+      // let newCards = [...state.selectedCards];
+      // if (action.value === SelectCardSymbol.LeftParentheses) {
+      //   const leftParentheses = newCards.findIndex(
+      //     (card) =>
+      //       card.id === action.id &&
+      //       card.value === SelectCardSymbol.LeftParentheses
+      //   );
+      //   if (leftParentheses !== -1) {
+      //     newCards.splice(leftParentheses, 1);
+      //   } else {
+      //     newCards = [
+      //       { id: action.id, value: SelectCardSymbol.LeftParentheses },
+      //       ...newCards,
+      //     ];
+      //   }
+      // } else if (action.value === SelectCardSymbol.RightParentheses) {
+      //   const rightParentheses = newCards.findIndex(
+      //     (card) =>
+      //       card.id === action.id &&
+      //       card.value === SelectCardSymbol.RightParentheses
+      //   );
+      //   if (rightParentheses !== -1) {
+      //     newCards.splice(rightParentheses, 1);
+      //   } else {
+      //     newCards = [
+      //       ...newCards,
+      //       { id: action.id, value: SelectCardSymbol.RightParentheses },
+      //     ];
+      //   }
+      // } else {
+      //   const cardIndex = newCards.findIndex((card) => card.id === action.id);
+      //   if (cardIndex !== -1) {
+      //     newCards.splice(cardIndex, 1);
+      //   } else {
+      //     newCards = [...newCards, { id: action.id, value: action.value }];
+      //   }
+      // }
 
       return {
         ...state,
-        selectedCards: newCards,
+        // selectedCards: newCards,
       };
     }
     case ActionType.ClearErrorMsg: {
@@ -251,7 +247,7 @@ const reducer = (state = initialState, action: Action): State => {
       };
     }
     case ActionType.SortCard: {
-      const sortedNumbers = state.yourCards
+      const sortedCards = state.yourCards
         .filter((card) => !isNaN(Number(card.cardNumber)))
         .sort((a, b) => {
           const numberA = a.cardNumber as number;
@@ -264,23 +260,10 @@ const reducer = (state = initialState, action: Action): State => {
           }
           return 0;
         });
-      const sortedSymbols = state.yourCards
-        .filter((card) => card.cardSymbol)
-        .sort((a, b) => {
-          const symbolA = a.cardSymbol as CardSymbol;
-          const symbolB = b.cardSymbol as CardSymbol;
-          if (symbolA < symbolB) {
-            return -1;
-          }
-          if (symbolA > symbolB) {
-            return 1;
-          }
-          return 0;
-        });
 
       return {
         ...state,
-        yourCards: sortedNumbers.concat(sortedSymbols),
+        yourCards: sortedCards,
       };
     }
     case ActionType.SetWinnerIndex: {

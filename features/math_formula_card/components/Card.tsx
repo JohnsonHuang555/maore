@@ -1,10 +1,5 @@
 import React from 'react';
 import { Box, Paper } from '@mui/material';
-import { CardSymbol } from 'server/games/math_formula_card/state/PlayerCardState';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
-import ClearIcon from '@mui/icons-material/Clear';
-import DivideIcon from '@components/icons/DivideIcon';
 
 // TODO: 之後要做多國
 const labelDict: { [key: string]: string } = {
@@ -18,24 +13,19 @@ const labelDict: { [key: string]: string } = {
   '7': '七',
   '8': '八',
   '9': '九',
-  [CardSymbol.Plus]: '加',
-  [CardSymbol.Minus]: '減',
-  [CardSymbol.Times]: '乘',
-  [CardSymbol.Divide]: '除',
-  [CardSymbol.Parentheses]: '括號',
 };
 
-const symbolDict: { [key: string]: React.ReactNode } = {
-  [CardSymbol.Plus]: <AddIcon fontSize="large" />,
-  [CardSymbol.Minus]: <RemoveIcon fontSize="large" />,
-  [CardSymbol.Times]: <ClearIcon fontSize="large" />,
-  [CardSymbol.Divide]: <DivideIcon />,
-  [CardSymbol.Parentheses]: '()',
-};
+// const symbolDict: { [key: string]: React.ReactNode } = {
+//   [CardSymbol.Plus]: <AddIcon fontSize="large" />,
+//   [CardSymbol.Minus]: <RemoveIcon fontSize="large" />,
+//   [CardSymbol.Times]: <ClearIcon fontSize="large" />,
+//   [CardSymbol.Divide]: <DivideIcon />,
+//   [CardSymbol.Parentheses]: '()',
+// };
 
 type CardProps = {
   id?: string;
-  value?: number | CardSymbol;
+  value?: number;
   hideCard?: boolean;
   width: string;
   height: string;
@@ -44,17 +34,6 @@ type CardProps = {
 
 const Card = (props: CardProps) => {
   const { id, value, hideCard = false, width, height, onSelect } = props;
-
-  const getLabel = (value: number | CardSymbol) => {
-    if (!isNaN(value as number)) {
-      return value;
-    }
-    return symbolDict[value];
-  };
-
-  const getBrief = () => {
-    return labelDict[value as number | CardSymbol];
-  };
 
   return (
     <Paper
@@ -85,10 +64,8 @@ const Card = (props: CardProps) => {
         <Box />
       ) : (
         <>
-          <Box sx={{ fontSize: '50px', marginBottom: '10px' }}>
-            {getLabel(value as number | CardSymbol)}
-          </Box>
-          <Box>{getBrief()}</Box>
+          <Box sx={{ fontSize: '50px', marginBottom: '10px' }}>{value}</Box>
+          <Box>{labelDict[value as number]}</Box>
         </>
       )}
     </Paper>
