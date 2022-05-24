@@ -14,6 +14,15 @@ export const selectedCardSymbolDict: { [key: string]: React.ReactNode } = {
   [MathSymbol.RightParentheses]: ')',
 };
 
+export const selectedCardLabelDict: { [key: string]: string } = {
+  [MathSymbol.Plus]: '加法',
+  [MathSymbol.Minus]: '減法',
+  [MathSymbol.Times]: '乘法',
+  [MathSymbol.Divide]: '除法',
+  [MathSymbol.LeftParentheses]: '左括號',
+  [MathSymbol.RightParentheses]: '右括號',
+};
+
 export const getSelectedCardLabel = (value: number | MathSymbol) => {
   if (!isNaN(Number(value))) {
     return value as number;

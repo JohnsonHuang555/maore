@@ -1,5 +1,5 @@
 import { RoomMessage } from '@domain/models/Message';
-import { Box, Button, Zoom } from '@mui/material';
+import { Box, Button, Grid, Paper, Tooltip, Zoom } from '@mui/material';
 import {
   isAllPlayersLoadedSelector,
   playerIdSelector,
@@ -19,7 +19,11 @@ import playerCardsReducer, {
   ActionType,
   initialState,
 } from './reducers/playerCardsReducer';
-import { getSelectedCardLabel } from './components/SelectedCardDict';
+import {
+  selectedCardSymbolDict,
+  selectedCardLabelDict,
+  getSelectedCardLabel,
+} from './components/SelectedCardDict';
 import GameOverModal from './components/GameOverModal';
 import { setShowGameScreen } from '@actions/roomAction';
 import { gameSettingsSelector } from '@selectors/game_settings/mathFormulaSelector';
@@ -340,10 +344,55 @@ const MathFormulaCard = () => {
               </Box>
             )}
           </Box>
-          <Box sx={{ flex: 1 }}>
+          <Box
+            sx={{
+              flex: 1,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Box sx={{ fontSize: '26px' }}>題目</Box>
               <Box sx={{ fontSize: '120px' }}>={state.answer}</Box>
+            </Box>
+            <Box sx={{ marginTop: '150px', marginRight: '50px' }}>
+              <Box
+                sx={{
+                  textAlign: 'center',
+                  marginBottom: '10px',
+                  fontSize: '26px',
+                }}
+              >
+                數學符號
+              </Box>
+              <Grid container spacing={1} sx={{ width: '216px' }}>
+                {Object.keys(selectedCardSymbolDict).map((symbol) => (
+                  <Grid item xs={6}>
+                    <Tooltip title={selectedCardLabelDict[symbol]} arrow>
+                      <Paper
+                        sx={{
+                          height: '100px',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          border: '5px solid #525252',
+                          backgroundColor: '#1d1d1d',
+                          ':hover': {
+                            backgroundColor: 'rgba(0,0,0,0.25)',
+                          },
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          fontSize: '36px',
+                        }}
+                        elevation={4}
+                      >
+                        {selectedCardSymbolDict[symbol]}
+                      </Paper>
+                    </Tooltip>
+                  </Grid>
+                ))}
+              </Grid>
             </Box>
           </Box>
         </Box>
