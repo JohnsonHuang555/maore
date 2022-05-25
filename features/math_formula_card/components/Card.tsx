@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Paper } from '@mui/material';
+import { Box, Card as MuiCard, CardActionArea } from '@mui/material';
 
 // TODO: 之後要做多國
 const labelDict: { [key: string]: string } = {
@@ -15,14 +15,6 @@ const labelDict: { [key: string]: string } = {
   '9': '九',
 };
 
-// const symbolDict: { [key: string]: React.ReactNode } = {
-//   [CardSymbol.Plus]: <AddIcon fontSize="large" />,
-//   [CardSymbol.Minus]: <RemoveIcon fontSize="large" />,
-//   [CardSymbol.Times]: <ClearIcon fontSize="large" />,
-//   [CardSymbol.Divide]: <DivideIcon />,
-//   [CardSymbol.Parentheses]: '()',
-// };
-
 type CardProps = {
   id?: string;
   value?: number;
@@ -36,23 +28,12 @@ const Card = (props: CardProps) => {
   const { id, value, hideCard = false, width, height, onSelect } = props;
 
   return (
-    <Paper
-      elevation={4}
+    <MuiCard
       sx={{
         width,
         height,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
         backgroundColor: '#1d1d1d',
-        cursor: 'pointer',
-        transition: 'all 0.2s',
         pointerEvents: hideCard ? 'none' : 'auto',
-        ':hover': {
-          backgroundColor: 'rgba(0,0,0,0.25)',
-        },
-        padding: '20px',
       }}
       onClick={() => {
         if (id && onSelect) {
@@ -63,12 +44,21 @@ const Card = (props: CardProps) => {
       {hideCard ? (
         <Box />
       ) : (
-        <>
+        <CardActionArea
+          sx={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
+          }}
+        >
           <Box sx={{ fontSize: '50px', marginBottom: '10px' }}>{value}</Box>
           <Box>{labelDict[value as number]}</Box>
-        </>
+        </CardActionArea>
       )}
-    </Paper>
+    </MuiCard>
   );
 };
 

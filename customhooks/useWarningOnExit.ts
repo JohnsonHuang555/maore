@@ -1,5 +1,4 @@
 import { reset } from '@actions/roomAction';
-import Router from 'next/router';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -18,27 +17,8 @@ export const useWarningOnExit = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    let isWarned = false;
-
-    const routeChangeStart = (url: string) => {
-      if (url.substring(0, 6) === '/rooms') {
-        return;
-      }
-      if (Router.asPath !== url && shouldWarn && !isWarned) {
-        isWarned = true;
-        if (window.confirm(message)) {
-          Router.push(url);
-        } else {
-          isWarned = false;
-          Router.events.emit('routeChangeError');
-          Router.replace(Router, Router.asPath, { shallow: true });
-          throw 'Abort route change. Please ignore this error.';
-        }
-      }
-    };
-
     const beforeUnload = (e: BeforeUnloadEvent) => {
-      if (shouldWarn && !isWarned) {
+      if (shouldWarn) {
         const event = e || window.event;
         event.returnValue = message;
         return message;
@@ -46,36 +26,15 @@ export const useWarningOnExit = ({
       return null;
     };
 
-    Router.events.on('routeChangeStart', routeChangeStart);
     window.addEventListener('beforeunload', beforeUnload);
-    Router.beforePopState(({ url }) => {
-      if (Router.asPath !== url && shouldWarn && !isWarned) {
-        isWarned = true;
-        if (window.confirm(message)) {
-          return true;
-        } else {
-          isWarned = false;
-          window.history.pushState(null, '', url);
-          Router.replace(Router, Router.asPath, { shallow: true });
-          return false;
-        }
-      }
-      return true;
-    });
 
     return () => {
-      Router.events.off('routeChangeStart', routeChangeStart);
       window.removeEventListener('beforeunload', beforeUnload);
 
       if (leaveRoom) {
         dispatch(leaveRoom());
       }
-
       dispatch(reset());
-
-      Router.beforePopState(() => {
-        return true;
-      });
     };
   }, [message, shouldWarn]);
 };

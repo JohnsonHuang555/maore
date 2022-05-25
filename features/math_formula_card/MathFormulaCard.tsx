@@ -1,5 +1,15 @@
 import { RoomMessage } from '@domain/models/Message';
-import { Box, Button, Grid, Paper, Tooltip, Zoom } from '@mui/material';
+import {
+  Box,
+  Button,
+  CardActionArea,
+  Grid,
+  IconButton,
+  Stack,
+  Tooltip,
+  Zoom,
+  Card as MuiCard,
+} from '@mui/material';
 import {
   isAllPlayersLoadedSelector,
   playerIdSelector,
@@ -28,6 +38,8 @@ import GameOverModal from './components/GameOverModal';
 import { setShowGameScreen } from '@actions/roomAction';
 import { gameSettingsSelector } from '@selectors/game_settings/mathFormulaSelector';
 import { useSnackbar } from 'notistack';
+import LogoutIcon from '@mui/icons-material/Logout';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
@@ -294,8 +306,27 @@ const MathFormulaCard = () => {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
+          position: 'relative',
         }}
       >
+        <Box sx={{ position: 'absolute', top: '25px', right: '50px' }}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Tooltip title="規則說明">
+              <IconButton size="large" aria-label="leave_room">
+                <DescriptionOutlinedIcon fontSize="inherit" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="離開遊戲">
+              <IconButton
+                size="large"
+                aria-label="leave_room"
+                onClick={() => (location.href = '/games/math-formula-card')}
+              >
+                <LogoutIcon fontSize="inherit" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        </Box>
         {/* 其他玩家區塊 */}
         <Box
           sx={{
@@ -366,30 +397,38 @@ const MathFormulaCard = () => {
               >
                 數學符號
               </Box>
-              <Grid container spacing={1} sx={{ width: '216px' }}>
+              <Grid container spacing={1} sx={{ width: '176px' }}>
                 {Object.keys(selectedCardSymbolDict).map((symbol) => (
-                  <Grid item xs={6}>
-                    <Tooltip title={selectedCardLabelDict[symbol]} arrow>
-                      <Paper
-                        sx={{
-                          height: '100px',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          border: '5px solid #525252',
-                          backgroundColor: '#1d1d1d',
-                          ':hover': {
-                            backgroundColor: 'rgba(0,0,0,0.25)',
-                          },
-                          cursor: 'pointer',
-                          transition: 'all 0.2s',
-                          fontSize: '36px',
-                        }}
-                        elevation={4}
-                      >
-                        {selectedCardSymbolDict[symbol]}
-                      </Paper>
-                    </Tooltip>
+                  <Grid key={symbol} item xs={6}>
+                    <Zoom
+                      in={true}
+                      style={{
+                        transitionDelay: '500ms',
+                      }}
+                    >
+                      <Tooltip title={selectedCardLabelDict[symbol]} arrow>
+                        <MuiCard
+                          sx={{
+                            height: '80px',
+                            border: '5px solid #525252',
+                            backgroundColor: '#1d1d1d',
+                          }}
+                        >
+                          <CardActionArea
+                            sx={{
+                              height: '100%',
+                              width: '100%',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              fontSize: '36px',
+                            }}
+                          >
+                            {selectedCardSymbolDict[symbol]}
+                          </CardActionArea>
+                        </MuiCard>
+                      </Tooltip>
+                    </Zoom>
                   </Grid>
                 ))}
               </Grid>
