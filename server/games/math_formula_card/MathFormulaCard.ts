@@ -12,6 +12,8 @@ import RoomState from '../../room/state/RoomState';
 import SelectCardCommand from './commands/SelectCardCommand';
 import ClearSelectedCardsCommand from './commands/ClearSelectedCardsCommand';
 import UpdateGameSettingsCommand from './commands/UpdateGameSettingsCommand';
+import { MathSymbol } from './state/SelectedElementsState';
+import SelectSymbolCommand from './commands/SelectSymbolCommand';
 
 export default class MathFormulaCard extends Room<RoomState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -49,11 +51,20 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
     });
 
     this.onMessage(
-      MathFormulaCardMessage.SelectCard,
+      MathFormulaCardMessage.SelectCardNumber,
       (client, message: { id: string }) => {
         this.dispatcher.dispatch(new SelectCardCommand(), {
           playerId: client.id,
           cardId: message.id,
+        });
+      }
+    );
+
+    this.onMessage(
+      MathFormulaCardMessage.SelectMathSymbol,
+      (_c, message: { mathSymbol: MathSymbol }) => {
+        this.dispatcher.dispatch(new SelectSymbolCommand(), {
+          mathSymbol: message.mathSymbol,
         });
       }
     );

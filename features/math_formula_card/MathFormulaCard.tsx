@@ -40,6 +40,7 @@ import { gameSettingsSelector } from '@selectors/game_settings/mathFormulaSelect
 import { useSnackbar } from 'notistack';
 import LogoutIcon from '@mui/icons-material/Logout';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
@@ -260,13 +261,24 @@ const MathFormulaCard = () => {
     );
   };
 
+  // 選擇手牌
   const handleSelectCard = (id: string) => {
     // 還沒輪到你
     if (!isYourTurn) {
       enqueueSnackbar('還沒輪到你', { variant: 'warning' });
       return;
     }
-    clientRoom.send(MathFormulaCardMessage.SelectCard, { id });
+    clientRoom.send(MathFormulaCardMessage.SelectCardNumber, { id });
+  };
+
+  // 選擇符號
+  const handleSelectSymbol = (mathSymbol: MathSymbol) => {
+    // 還沒輪到你
+    if (!isYourTurn) {
+      enqueueSnackbar('還沒輪到你', { variant: 'warning' });
+      return;
+    }
+    clientRoom.send(MathFormulaCardMessage.SelectMathSymbol, { mathSymbol });
   };
 
   const useCards = () => {
@@ -413,6 +425,9 @@ const MathFormulaCard = () => {
                             border: '5px solid #525252',
                             backgroundColor: '#1d1d1d',
                           }}
+                          onClick={() =>
+                            handleSelectSymbol(symbol as MathSymbol)
+                          }
                         >
                           <CardActionArea
                             sx={{

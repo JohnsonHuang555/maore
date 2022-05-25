@@ -62,8 +62,13 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
         if (!playerInfo) {
           throw new Error('playerInfo not found...');
         }
+
+        // 算手牌數量計算分數
+        const cardNumbers = cards.filter(
+          (card) => card.cardNumber !== undefined
+        );
         // 加分
-        playerInfo.point += cards.length;
+        playerInfo.point += cardNumbers.length;
 
         // 用完卡片即移除
         for (let i = 0; i < cards.length; i++) {
