@@ -20,7 +20,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { getAuth, signOut } from 'firebase/auth';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { useSnackbar } from 'notistack';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -62,7 +62,7 @@ const Header = () => {
         dispatch(logout());
         enqueueSnackbar('登出成功', { variant: 'success' });
       })
-      .catch((error) => {
+      .catch(() => {
         enqueueSnackbar('登出失敗', { variant: 'error' });
       });
   };
@@ -99,7 +99,7 @@ const Header = () => {
               color: 'secondary.main',
               mr: 1,
             }}
-            onClick={() => router.push('/')}
+            onClick={() => (location.href = '/')}
           >
             Cookuya
           </Typography>

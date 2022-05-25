@@ -1,11 +1,11 @@
 import { Command } from '@colyseus/command';
 import { ArraySchema } from '@colyseus/schema';
 import MathFormulaCard from '../MathFormulaCard';
-import { SelectedCardState } from '../state/SelectedCardState';
+import { SelectedElementsState } from '../state/SelectedElementsState';
 
-export default class ClearSelectedCardsCommand extends Command<MathFormulaCard> {
+export default class ClearselectedElementssCommand extends Command<MathFormulaCard> {
   execute() {
-    this.room.state.mathFormulaCard.selectedCards =
-      new ArraySchema<SelectedCardState>();
+    this.room.state.mathFormulaCard.selectedElements =
+      new ArraySchema<SelectedElementsState>();
   }
 }

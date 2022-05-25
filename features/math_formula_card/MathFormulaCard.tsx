@@ -1,5 +1,15 @@
 import { RoomMessage } from '@domain/models/Message';
-import { Box, Button, Zoom } from '@mui/material';
+import {
+  Box,
+  Button,
+  CardActionArea,
+  Grid,
+  IconButton,
+  Stack,
+  Tooltip,
+  Zoom,
+  Card as MuiCard,
+} from '@mui/material';
 import {
   isAllPlayersLoadedSelector,
   playerIdSelector,
@@ -19,11 +29,18 @@ import playerCardsReducer, {
   ActionType,
   initialState,
 } from './reducers/playerCardsReducer';
-import { getSelectedCardLabel } from './components/SelectedCardDict';
+import {
+  selectedCardSymbolDict,
+  selectedCardLabelDict,
+  getSelectedCardLabel,
+} from './components/SelectedCardDict';
 import GameOverModal from './components/GameOverModal';
 import { setShowGameScreen } from '@actions/roomAction';
 import { gameSettingsSelector } from '@selectors/game_settings/mathFormulaSelector';
 import { useSnackbar } from 'notistack';
+import LogoutIcon from '@mui/icons-material/Logout';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
@@ -89,10 +106,10 @@ const MathFormulaCard = () => {
           });
         };
         playerInfo.cards.onAdd = (playerCard) => {
-          const { id, cardNumber, cardSymbol } = playerCard;
+          const { id, cardNumber } = playerCard;
           localDispatch({
             type: ActionType.DrawCard,
-            playerCard: { id, cardNumber, cardSymbol },
+            playerCard: { id, cardNumber },
           });
         };
 
@@ -145,17 +162,21 @@ const MathFormulaCard = () => {
       }
     };
 
-    clientRoom.state.mathFormulaCard.selectedCards.onAdd = (playerCard) => {
-      const { id, cardNumber, cardSymbol } = playerCard;
-      const value = cardSymbol || cardNumber;
+    clientRoom.state.mathFormulaCard.selectedElements.onAdd = (
+      selectedElement
+    ) => {
+      const { id, cardNumber, mathSymbol } = selectedElement;
+      const value = mathSymbol || cardNumber;
       if (value !== undefined) {
         localDispatch({ type: ActionType.SelectCard, id, value });
       }
     };
 
-    clientRoom.state.mathFormulaCard.selectedCards.onRemove = (playerCard) => {
-      const { id, cardNumber, cardSymbol } = playerCard;
-      const value = cardSymbol || cardNumber;
+    clientRoom.state.mathFormulaCard.selectedElements.onRemove = (
+      selectedElement
+    ) => {
+      const { id, cardNumber, mathSymbol } = selectedElement;
+      const value = mathSymbol || cardNumber;
       if (value !== undefined) {
         localDispatch({ type: ActionType.SelectCard, id, value });
       }
@@ -230,7 +251,7 @@ const MathFormulaCard = () => {
           <Card
             key={card.id}
             id={card.id}
-            value={card.cardSymbol || card.cardNumber}
+            value={card.cardNumber}
             width="6rem"
             height="100%"
             onSelect={handleSelectCard}
@@ -240,13 +261,24 @@ const MathFormulaCard = () => {
     );
   };
 
+  // 選擇手牌
   const handleSelectCard = (id: string) => {
     // 還沒輪到你
     if (!isYourTurn) {
       enqueueSnackbar('還沒輪到你', { variant: 'warning' });
       return;
     }
-    clientRoom.send(MathFormulaCardMessage.SelectCard, { id });
+    clientRoom.send(MathFormulaCardMessage.SelectCardNumber, { id });
+  };
+
+  // 選擇符號
+  const handleSelectSymbol = (mathSymbol: MathSymbol) => {
+    // 還沒輪到你
+    if (!isYourTurn) {
+      enqueueSnackbar('還沒輪到你', { variant: 'warning' });
+      return;
+    }
+    clientRoom.send(MathFormulaCardMessage.SelectMathSymbol, { mathSymbol });
   };
 
   const useCards = () => {
@@ -286,8 +318,27 @@ const MathFormulaCard = () => {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
+          position: 'relative',
         }}
       >
+        <Box sx={{ position: 'absolute', top: '25px', right: '50px' }}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Tooltip title="規則說明">
+              <IconButton size="large" aria-label="leave_room">
+                <DescriptionOutlinedIcon fontSize="inherit" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="離開遊戲">
+              <IconButton
+                size="large"
+                aria-label="leave_room"
+                onClick={() => (location.href = '/games/math-formula-card')}
+              >
+                <LogoutIcon fontSize="inherit" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        </Box>
         {/* 其他玩家區塊 */}
         <Box
           sx={{
@@ -336,10 +387,66 @@ const MathFormulaCard = () => {
               </Box>
             )}
           </Box>
-          <Box sx={{ flex: 1 }}>
+          <Box
+            sx={{
+              flex: 1,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Box sx={{ fontSize: '26px' }}>題目</Box>
               <Box sx={{ fontSize: '120px' }}>={state.answer}</Box>
+            </Box>
+            <Box sx={{ marginTop: '150px', marginRight: '50px' }}>
+              <Box
+                sx={{
+                  textAlign: 'center',
+                  marginBottom: '10px',
+                  fontSize: '26px',
+                }}
+              >
+                數學符號
+              </Box>
+              <Grid container spacing={1} sx={{ width: '176px' }}>
+                {Object.keys(selectedCardSymbolDict).map((symbol) => (
+                  <Grid key={symbol} item xs={6}>
+                    <Zoom
+                      in={true}
+                      style={{
+                        transitionDelay: '500ms',
+                      }}
+                    >
+                      <Tooltip title={selectedCardLabelDict[symbol]} arrow>
+                        <MuiCard
+                          sx={{
+                            height: '80px',
+                            border: '5px solid #525252',
+                            backgroundColor: '#1d1d1d',
+                          }}
+                          onClick={() =>
+                            handleSelectSymbol(symbol as MathSymbol)
+                          }
+                        >
+                          <CardActionArea
+                            sx={{
+                              height: '100%',
+                              width: '100%',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              fontSize: '36px',
+                            }}
+                          >
+                            {selectedCardSymbolDict[symbol]}
+                          </CardActionArea>
+                        </MuiCard>
+                      </Tooltip>
+                    </Zoom>
+                  </Grid>
+                ))}
+              </Grid>
             </Box>
           </Box>
         </Box>

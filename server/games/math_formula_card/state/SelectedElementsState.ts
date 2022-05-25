@@ -1,6 +1,6 @@
 import { Schema, type } from '@colyseus/schema';
 
-export enum SelectCardSymbol {
+export enum MathSymbol {
   Plus = '+',
   Minus = '-',
   Times = '*',
@@ -10,13 +10,13 @@ export enum SelectCardSymbol {
 }
 
 // 可能為 數字牌、運算符號牌、功能牌等等
-export interface ISelectCard {
+export interface ISelectedCard {
   id: string;
   cardNumber?: number;
-  cardSymbol?: SelectCardSymbol;
+  mathSymbol?: MathSymbol;
 }
 
-export class SelectedCardState extends Schema implements ISelectCard {
+export class SelectedElementsState extends Schema implements ISelectedCard {
   @type('string')
   id: string;
 
@@ -24,12 +24,12 @@ export class SelectedCardState extends Schema implements ISelectCard {
   cardNumber?: number;
 
   @type('string')
-  cardSymbol?: SelectCardSymbol;
+  mathSymbol?: MathSymbol;
 
-  constructor({ id, cardNumber, cardSymbol }: ISelectCard) {
+  constructor({ id, cardNumber, mathSymbol }: ISelectedCard) {
     super();
     this.id = id;
     this.cardNumber = cardNumber;
-    this.cardSymbol = cardSymbol;
+    this.mathSymbol = mathSymbol;
   }
 }

@@ -28,7 +28,6 @@ import { setShowLoginModal } from '@actions/appAction';
 import PlayerArea from '@components/pages/rooms/PlayerArea';
 import ChatArea from '@components/pages/rooms/ChatArea';
 import SettingArea from '@components/pages/rooms/SettingArea';
-import { fetchGame } from '@actions/fetchAction';
 import { GameList } from 'server/domain/Game';
 import { getAuth } from 'firebase/auth';
 import { firebaseApp } from 'firebase/clientApp';
@@ -83,7 +82,7 @@ const Rooms = () => {
   useEffect(() => {
     if (clientRoom) {
       clientRoom.onMessage(RoomMessage.PlayerLeft, ({ playerName }) => {
-        enqueueSnackbar(`${playerName} 已經離開遊戲`, { variant: 'info' });
+        enqueueSnackbar(`${playerName} 已經離開房間`, { variant: 'info' });
       });
     }
   }, [clientRoom]);
@@ -120,7 +119,11 @@ const Rooms = () => {
             xs={12}
             sx={{ display: 'flex', flexDirection: 'column' }}
           >
-            <PlayerArea players={players} yourPlayerId={yourPlayerId} />
+            <PlayerArea
+              roomTitle={roomInfo.roomTitle}
+              players={players}
+              yourPlayerId={yourPlayerId}
+            />
             <ChatArea messages={messages} />
           </Grid>
           <Grid item lg={3} xs={12}>
@@ -129,7 +132,9 @@ const Rooms = () => {
               // gameModes={game?.modes || []}
               disabledStartGame={checkDisabledStartGame()}
               isReadyGame={getIsReadyGameText()}
-              onLeaveRoom={() => router.push('/')}
+              onLeaveRoom={() =>
+                (location.href = `/games/${roomInfo.gamePack}`)
+              }
               onStartGame={() => dispatch(startGame())}
               onReadyGame={() => dispatch(readyGame())}
             />

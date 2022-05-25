@@ -1,15 +1,17 @@
 import Box from '@mui/material/Box';
 import { Player } from '@domain/models/Player';
 import { Stars } from '@mui/icons-material';
-import { Avatar } from '@mui/material';
+import { Avatar, IconButton, Stack, Tooltip } from '@mui/material';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 
 type PlayerAreaProps = {
+  roomTitle: string;
   players: Player[];
   yourPlayerId: string;
 };
 
 const PlayerArea = (props: PlayerAreaProps) => {
-  const { players, yourPlayerId } = props;
+  const { roomTitle, players, yourPlayerId } = props;
 
   const isNowPlayer = (id: string) => {
     return id === yourPlayerId ? true : false;
@@ -26,6 +28,22 @@ const PlayerArea = (props: PlayerAreaProps) => {
         overflowY: 'auto',
       }}
     >
+      <Box sx={{ fontSize: '26px', marginBottom: '10px' }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          spacing={1}
+        >
+          <Box>房名: {roomTitle}</Box>
+          <Tooltip title="編輯房間資訊">
+            {/* TODO: 跳 modal */}
+            <IconButton aria-label="edit_room" onClick={() => {}}>
+              <EditOutlinedIcon fontSize="inherit" />
+            </IconButton>
+          </Tooltip>
+        </Stack>
+      </Box>
       <Box
         sx={{
           display: 'flex',
