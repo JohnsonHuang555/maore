@@ -52,6 +52,7 @@ const Card = (props: CardProps) => {
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'column',
+            padding: '35px 0',
           }}
         >
           <Box sx={{ fontSize: '50px', marginBottom: '10px' }}>{value}</Box>

@@ -1,7 +1,8 @@
 import express from 'express';
 import next from 'next';
 import http from 'http';
-import { Server } from 'colyseus';
+import { Server } from '@colyseus/core';
+import { WebSocketTransport } from '@colyseus/ws-transport';
 import { monitor } from '@colyseus/monitor';
 import ChineseChess from './games/chinese_chess/ChineseChess';
 import MathFormulaCard from './games/math_formula_card/MathFormulaCard';
@@ -20,7 +21,13 @@ const handle = nextApp.getRequestHandler();
 nextApp.prepare().then(() => {
   const app = express();
   const server = http.createServer(app);
-  const gameServer = new Server({ server });
+  const gameServer = new Server({
+    transport: new WebSocketTransport({
+      server,
+      pingInterval: 1000,
+      pingMaxRetries: 5,
+    }),
+  });
 
   // 遊戲相關 Service
   const gameRepo = new GameRepository(Games);

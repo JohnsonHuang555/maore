@@ -1,5 +1,4 @@
 import React, { MouseEvent, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   showLoginModalSelector,
@@ -24,7 +23,6 @@ import { useSnackbar } from 'notistack';
 
 const Header = () => {
   const dispatch = useDispatch();
-  const router = useRouter();
   const userInfo = useSelector(userInfoSelector);
   const showLoginModal = useSelector(showLoginModalSelector);
 
