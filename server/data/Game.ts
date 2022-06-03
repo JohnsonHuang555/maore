@@ -31,13 +31,23 @@ export const Games: Game[] = [
     id: 3,
     name: '數學算式牌',
     brief:
-      '原創遊戲，考驗你的邏輯能力，組合出符合答案的算式，與對手一較高下吧！',
-    description:
-      '考驗你的邏輯能力，組合出符合答案的算式，與對手一較高下吧！考驗你的邏輯能力，組合出符合答案的算式，與對手一較高下吧！考驗你的邏輯能力，組合出符合答案的算式，與對手一較高下吧！考驗你的邏輯能力，組合出符合答案的算式，與對手一較高下吧！',
+      '原創遊戲，利用你手上的數字牌搭配數學符號，組合答案，與對手一較高下吧！',
+    description: '考驗你的邏輯能力',
     image_url: '/math_formula/home.jpg',
     estimate_time: 30,
     create_at: 'September 14, 2022',
     max_players: 4,
     game_pack: GameList.MathFormulaCard,
+  },
+  {
+    id: 4,
+    name: '尋機頭',
+    brief: '猜猜機頭在哪裡? 在畫面上最先找出所有機頭的玩家獲勝',
+    description: '考驗你的運氣及推理能力',
+    image_url: '/math_formula/home.jpg',
+    estimate_time: 30,
+    create_at: 'September 14, 2022',
+    max_players: 2,
+    game_pack: GameList.FindPlaneHead,
   },
 ];

@@ -2,6 +2,7 @@
 export enum GameList {
   ChineseChess = 'chinese-chess',
   MathFormulaCard = 'math-formula-card',
+  FindPlaneHead = 'find-plane-head',
 }
 
 export type Game = {

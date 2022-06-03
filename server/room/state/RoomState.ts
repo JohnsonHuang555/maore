@@ -4,6 +4,7 @@ import { RoomInfoState } from './RoomInfoState';
 import { GameStatus } from '../../../domain/models/Room';
 import MathFormulaCardState from '../../games/math_formula_card/state/MathFormulaCardState';
 import ChineseChessState from '../../games/chinese_chess/state/ChineseChessState';
+import FindPlaneHeadState from '../../games/find_plane_head/state/FindPlaneHeadState';
 
 export interface Room extends Schema {
   players: ArraySchema<PlayerState>;
@@ -14,6 +15,7 @@ export interface Room extends Schema {
   // 各個遊戲的 mapSchema
   chineseChess: ChineseChessState;
   mathFormulaCard: MathFormulaCardState;
+  findPlaneHead: FindPlaneHeadState;
 }
 
 export default class RoomState extends Schema implements Room {
@@ -37,11 +39,15 @@ export default class RoomState extends Schema implements Room {
   @type('number')
   winningPlayer = -1;
 
-  // 數學牌
+  // 象棋
   @type(ChineseChessState)
   chineseChess = new ChineseChessState();
 
   // 數學牌
   @type(MathFormulaCardState)
   mathFormulaCard = new MathFormulaCardState();
+
+  // 尋機頭
+  @type(FindPlaneHeadState)
+  findPlaneHead = new FindPlaneHeadState();
 }
