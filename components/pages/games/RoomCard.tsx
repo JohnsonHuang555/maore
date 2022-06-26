@@ -61,7 +61,8 @@ const RoomCard = (props: RoomCardProps) => {
           }}
         >
           <VideogameAsset />
-          <Box sx={{ fontSize: '16px', marginLeft: '5px' }}>暗棋</Box>
+          {/* TODO: 模式 */}
+          <Box sx={{ fontSize: '16px', marginLeft: '5px' }}>標準</Box>
         </Box>
         <Box sx={{ flex: 0.5 }}></Box>
         <Button

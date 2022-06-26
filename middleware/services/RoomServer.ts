@@ -32,6 +32,8 @@ enum RoomStateChangeList {
 export default class RoomServer {
   private dispatch: Dispatch<AnyAction>;
 
+  private photoURL?: string;
+
   constructor(dispatch: Dispatch<AnyAction>) {
     const client = new Client();
     dispatch(setClient(client));
@@ -44,7 +46,13 @@ export default class RoomServer {
   }
 
   // 房主觸發 createOrJoinRoom 只會觸發一次
-  async createRoom(client: Client, gamePack: GameList, metaData: Metadata) {
+  async createRoom(
+    client: Client,
+    gamePack: GameList,
+    photoURL: string,
+    metaData: Metadata
+  ) {
+    this.photoURL = photoURL;
     const room = await client.create<Room>(gamePack, metaData);
     this.dispatch(createdRoom(room.id));
     this.dispatch(setRoom(room));
@@ -52,7 +60,13 @@ export default class RoomServer {
   }
 
   // 加入房間玩家觸發
-  async joinRoom(client: Client, roomId: string, metaData: Metadata) {
+  async joinRoom(
+    client: Client,
+    roomId: string,
+    photoURL: string,
+    metaData: Metadata
+  ) {
+    this.photoURL = photoURL;
     const room = await client.joinById<Room>(roomId, metaData);
     this.dispatch(setRoom(room));
     this.handleRoomChange(room);
@@ -93,7 +107,10 @@ export default class RoomServer {
 
     // room players changes...
     room.state.players.onAdd = (player) => {
-      this.dispatch(addPlayer(player));
+      // 為了做頭像
+      this.dispatch(
+        addPlayer({ ...player, photoURL: this.photoURL as string })
+      );
       player.onChange = (changes) => {
         changes.forEach((change) => {
           const { field, value } = change;
@@ -106,8 +123,8 @@ export default class RoomServer {
       };
     };
 
-    room.state.players.onRemove = (item) => {
-      this.dispatch(removePlayer(item.id));
+    room.state.players.onRemove = (player) => {
+      this.dispatch(removePlayer(player.id));
       this.dispatch(setShowGameScreen(false));
     };
 
