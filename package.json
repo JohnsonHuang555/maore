@@ -24,6 +24,7 @@
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "firebase": "^9.8.1",
+    "framer-motion": "4.1.17",
     "kaboom": "^2000.2.8",
     "lodash": "^4.17.21",
     "mathjs": "^10.5.1",
