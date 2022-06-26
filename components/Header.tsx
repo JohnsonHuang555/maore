@@ -99,7 +99,7 @@ const Header = () => {
             }}
             onClick={() => (location.href = '/')}
           >
-            Cookuya
+            maore
           </Typography>
           <Box sx={{ flexGrow: 1 }}></Box>
           {/* TODO: 手機板 */}
