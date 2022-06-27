@@ -240,20 +240,12 @@ const MathFormulaCard = () => {
           transitionDelay: noDrawCardDelay ? '0ms' : `${index * 100}ms`,
         }}
       >
-        <Box
-          sx={{
-            '.MuiPaper-elevation': {
-              border:
-                isSelected !== -1 ? '5px solid #b95e47' : '5px solid #525252',
-            },
-          }}
-        >
+        <Box>
           <Card
             key={card.id}
             id={card.id}
             value={card.cardNumber}
-            width="6rem"
-            height="100%"
+            width="100px"
             onSelect={handleSelectCard}
           />
         </Box>
@@ -319,6 +311,7 @@ const MathFormulaCard = () => {
           display: 'flex',
           flexDirection: 'column',
           position: 'relative',
+          background: '#264653',
         }}
       >
         <Box sx={{ position: 'absolute', top: '25px', right: '50px' }}>
@@ -470,9 +463,8 @@ const MathFormulaCard = () => {
               display: 'flex',
               justifyContent: 'center',
               gap: '15px',
-              height: '100%',
               flexWrap: 'wrap',
-              width: '90vw',
+              width: '70vw',
             }}
           >
             {state.yourCards.map((card, index) => renderYourCard(card, index))}

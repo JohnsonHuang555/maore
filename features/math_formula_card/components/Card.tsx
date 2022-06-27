@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Card as MuiCard, CardActionArea } from '@mui/material';
+import CatHand from './icons/CatHand';
 
 // TODO: 之後要做多國
 const labelDict: { [key: string]: string } = {
@@ -20,20 +21,20 @@ type CardProps = {
   value?: number;
   hideCard?: boolean;
   width: string;
-  height: string;
   onSelect?: (id: string) => void;
 };
 
 const Card = (props: CardProps) => {
-  const { id, value, hideCard = false, width, height, onSelect } = props;
+  const { id, value, hideCard = false, width, onSelect } = props;
 
   return (
     <MuiCard
       sx={{
         width,
-        height,
-        backgroundColor: '#1d1d1d',
+        backgroundColor: '#F0F0F0',
+        aspectRatio: '2/3',
         pointerEvents: hideCard ? 'none' : 'auto',
+        color: '#232220',
       }}
       onClick={() => {
         if (id && onSelect) {
@@ -55,8 +56,8 @@ const Card = (props: CardProps) => {
             padding: '35px 0',
           }}
         >
-          <Box sx={{ fontSize: '50px', marginBottom: '10px' }}>{value}</Box>
-          <Box>{labelDict[value as number]}</Box>
+          <Box sx={{ fontSize: '48px', marginBottom: '10px' }}>{value}</Box>
+          <CatHand fontSize="medium" />
         </CardActionArea>
       )}
     </MuiCard>
