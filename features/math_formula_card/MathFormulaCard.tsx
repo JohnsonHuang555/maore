@@ -41,6 +41,7 @@ import { useSnackbar } from 'notistack';
 import LogoutIcon from '@mui/icons-material/Logout';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
+import PlayerAvatar from './components/PlayerAvatar';
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
@@ -355,7 +356,7 @@ const MathFormulaCard = () => {
             position: 'relative',
           }}
         >
-          <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+          {/* <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
             {state.selectedCards.length > 0 && (
               <Box
                 sx={{
@@ -441,7 +442,7 @@ const MathFormulaCard = () => {
                 ))}
               </Grid>
             </Box>
-          </Box>
+          </Box>*/}
         </Box>
         <Box
           sx={{ textAlign: 'center', marginBottom: '20px', fontSize: '30px' }}
@@ -458,6 +459,9 @@ const MathFormulaCard = () => {
             marginBottom: '20px',
           }}
         >
+          <Box sx={{ width: '15vw' }}>
+            <PlayerAvatar />
+          </Box>
           <Box
             sx={{
               display: 'flex',
@@ -469,9 +473,56 @@ const MathFormulaCard = () => {
           >
             {state.yourCards.map((card, index) => renderYourCard(card, index))}
           </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '15vw',
+              padding: '40px',
+            }}
+          >
+            <Button
+              sx={{
+                maxWidth: '200px',
+                backgroundColor: '#E76F51',
+                ':hover': {
+                  backgroundColor: '#c04d30',
+                },
+                marginBottom: '20px',
+              }}
+              variant="contained"
+              size="large"
+              disableElevation
+              color="secondary"
+              disabled={!isYourTurn || state.winnerIndex !== -1}
+              onClick={() => drawCard()}
+            >
+              抽牌
+            </Button>
+            <Button
+              sx={{
+                maxWidth: '200px',
+                backgroundColor: '#415761',
+                ':hover': {
+                  backgroundColor: '#385968',
+                },
+              }}
+              variant="contained"
+              size="large"
+              disableElevation
+              disabled={!isYourTurn || state.winnerIndex !== -1}
+              onClick={() => {
+                if (state.selectedCards.length !== 0) {
+                  clientRoom.send(MathFormulaCardMessage.ClearSelectedCards);
+                }
+              }}
+            >
+              重選
+            </Button>
+          </Box>
         </Box>
         {/* 操作 */}
-        <Box
+        {/* <Box
           sx={{
             display: 'flex',
             justifyContent: 'center',
@@ -550,7 +601,7 @@ const MathFormulaCard = () => {
           >
             出牌
           </Button>
-        </Box>
+        </Box> */}
       </Box>
     </>
   );
