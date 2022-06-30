@@ -2,39 +2,41 @@ import React from 'react';
 import { Box, Card as MuiCard, CardActionArea } from '@mui/material';
 import CatHand from './icons/CatHand';
 
-// TODO: 之後要做多國
-const labelDict: { [key: string]: string } = {
-  '0': '零',
-  '1': '一',
-  '2': '二',
-  '3': '三',
-  '4': '四',
-  '5': '五',
-  '6': '六',
-  '7': '七',
-  '8': '八',
-  '9': '九',
-};
-
 type CardProps = {
   id?: string;
-  value?: number;
+  value?: number | React.ReactNode;
   hideCard?: boolean;
   width: string;
+  bgColor?: string;
+  fontColor?: string;
+  symbolSize?: string;
+  iconColor?: string;
+  iconSize?: 'small' | 'inherit' | 'large' | 'medium' | undefined;
   onSelect?: (id: string) => void;
 };
 
 const Card = (props: CardProps) => {
-  const { id, value, hideCard = false, width, onSelect } = props;
+  const {
+    id,
+    value,
+    hideCard = false,
+    width,
+    bgColor = '#F0F0F0',
+    fontColor = '#232220',
+    symbolSize = '48px',
+    iconColor,
+    iconSize = 'medium',
+    onSelect,
+  } = props;
 
   return (
     <MuiCard
       sx={{
         width,
-        backgroundColor: '#F0F0F0',
+        backgroundColor: bgColor,
         aspectRatio: '2/3',
         pointerEvents: hideCard ? 'none' : 'auto',
-        color: '#232220',
+        color: fontColor,
       }}
       onClick={() => {
         if (id && onSelect) {
@@ -56,8 +58,8 @@ const Card = (props: CardProps) => {
             padding: '35px 0',
           }}
         >
-          <Box sx={{ fontSize: '48px', marginBottom: '10px' }}>{value}</Box>
-          <CatHand fontSize="medium" />
+          <Box sx={{ fontSize: symbolSize, marginBottom: '10px' }}>{value}</Box>
+          <CatHand fontSize={iconSize} pathcolor={iconColor} />
         </CardActionArea>
       )}
     </MuiCard>

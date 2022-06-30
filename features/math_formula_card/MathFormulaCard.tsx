@@ -315,6 +315,7 @@ const MathFormulaCard = () => {
           background: '#264653',
         }}
       >
+        {/* 操作區塊 */}
         <Box sx={{ position: 'absolute', top: '25px', right: '50px' }}>
           <Stack direction="row" alignItems="center" spacing={1}>
             <Tooltip title="規則說明">
@@ -356,6 +357,7 @@ const MathFormulaCard = () => {
             position: 'relative',
           }}
         >
+          <Box></Box>
           {/* <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
             {state.selectedCards.length > 0 && (
               <Box
@@ -404,49 +406,68 @@ const MathFormulaCard = () => {
                 數學符號
               </Box>
               <Grid container spacing={1} sx={{ width: '176px' }}>
-                {Object.keys(selectedCardSymbolDict).map((symbol) => (
-                  <Grid key={symbol} item xs={6}>
-                    <Zoom
-                      in={true}
-                      style={{
-                        transitionDelay: '500ms',
-                      }}
-                    >
-                      <Tooltip title={selectedCardLabelDict[symbol]} arrow>
-                        <MuiCard
-                          sx={{
-                            height: '80px',
-                            border: '5px solid #525252',
-                            backgroundColor: '#1d1d1d',
-                          }}
-                          onClick={() =>
-                            handleSelectSymbol(symbol as MathSymbol)
-                          }
-                        >
-                          <CardActionArea
-                            sx={{
-                              height: '100%',
-                              width: '100%',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              fontSize: '36px',
-                            }}
-                          >
-                            {selectedCardSymbolDict[symbol]}
-                          </CardActionArea>
-                        </MuiCard>
-                      </Tooltip>
-                    </Zoom>
-                  </Grid>
-                ))}
               </Grid>
             </Box>
           </Box>*/}
         </Box>
         <Box
-          sx={{ textAlign: 'center', marginBottom: '20px', fontSize: '30px' }}
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+            marginBottom: '20px',
+          }}
         >
+          <Box sx={{ marginBottom: '10px', fontSize: '24px' }}>數學算式牌</Box>
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
+            {Object.keys(selectedCardSymbolDict).map((symbol) => (
+              <Zoom
+                key={symbol}
+                in={true}
+                style={{
+                  transitionDelay: '500ms',
+                }}
+              >
+                <Box>
+                  <Card
+                    id={symbol}
+                    value={selectedCardSymbolDict[symbol]}
+                    width="60px"
+                    bgColor="#CCB8B2"
+                    fontColor="#264653"
+                    symbolSize="10px"
+                    iconColor="#FFFFFF"
+                    iconSize="inherit"
+                    onSelect={handleSelectCard}
+                  />
+                </Box>
+                {/* <MuiCard
+                  sx={{
+                    height: '80px',
+                    border: '5px solid #525252',
+                    backgroundColor: '#1d1d1d',
+                  }}
+                  onClick={() => handleSelectSymbol(symbol as MathSymbol)}
+                >
+                  <CardActionArea
+                    sx={{
+                      height: '100%',
+                      width: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      fontSize: '36px',
+                    }}
+                  >
+                    {selectedCardSymbolDict[symbol]}
+                  </CardActionArea>
+                </MuiCard> */}
+              </Zoom>
+            ))}
+          </Box>
+        </Box>
+        <Box sx={{ textAlign: 'center', fontSize: '30px' }}>
           {isYourTurn ? '你的回合' : '其他玩家回合'}
         </Box>
         {/* 自己手牌 */}
@@ -459,7 +480,23 @@ const MathFormulaCard = () => {
             marginBottom: '20px',
           }}
         >
-          <Box sx={{ width: '15vw' }}>
+          <Box
+            sx={{
+              width: '15vw',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
+            }}
+          >
+            <Box
+              sx={{
+                marginBottom: '20px',
+                fontSize: '26px',
+              }}
+            >
+              勝利條件: {gameSettings?.winnerPoint} 分
+            </Box>
             <PlayerAvatar />
           </Box>
           <Box
