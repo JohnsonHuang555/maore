@@ -29,19 +29,18 @@ import playerCardsReducer, {
   ActionType,
   initialState,
 } from './reducers/playerCardsReducer';
-import {
-  selectedCardSymbolDict,
-  selectedCardLabelDict,
-  getSelectedCardLabel,
-} from './components/SelectedCardDict';
+import { selectedCardSymbolDict } from './components/SelectedCardDict';
 import GameOverModal from './components/GameOverModal';
 import { setShowGameScreen } from '@actions/roomAction';
 import { gameSettingsSelector } from '@selectors/game_settings/mathFormulaSelector';
 import { useSnackbar } from 'notistack';
 import LogoutIcon from '@mui/icons-material/Logout';
+import StarIcon from '@mui/icons-material/Star';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 import PlayerAvatar from './components/PlayerAvatar';
+import SymbolDropZone from './components/SymbolDropZone';
+import NumberDropZone from './components/NumberDropZone';
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
@@ -354,61 +353,152 @@ const MathFormulaCard = () => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            position: 'relative',
+            flexDirection: 'column',
           }}
         >
-          <Box></Box>
-          {/* <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
-            {state.selectedCards.length > 0 && (
+          <Box
+            sx={{
+              marginBottom: '20px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
+            <Box
+              sx={{
+                flex: '0.5',
+                display: 'flex',
+                justifyContent: 'flex-end',
+                marginRight: '30px',
+              }}
+            >
+              <Box sx={{ marginRight: '20px' }}>
+                <NumberDropZone />
+              </Box>
+              <Box sx={{ marginRight: '20px' }}>
+                <SymbolDropZone />
+              </Box>
+              <Box sx={{ marginRight: '20px' }}>
+                <NumberDropZone />
+              </Box>
+              <Box sx={{ marginRight: '20px' }}>
+                <SymbolDropZone />
+              </Box>
+              <Box sx={{ marginRight: '20px' }}>
+                <NumberDropZone />
+              </Box>
+              <Box sx={{ marginRight: '20px' }}>
+                <SymbolDropZone />
+              </Box>
+              <Box>
+                <NumberDropZone />
+              </Box>
+            </Box>
+            <Box sx={{ fontSize: '80px', flex: '0.3', display: 'flex' }}>
+              <Box>=15</Box>
               <Box
                 sx={{
                   display: 'flex',
                   justifyContent: 'center',
-                  fontSize: '80px',
-                  background: 'rgba(0,0,0,0.2)',
-                  padding: '10px 20px',
-                  marginTop: '50px',
-                  marginRight: '20px',
-                  gap: '10px',
+                  alignItems: 'center',
+                  marginLeft: '40px',
                 }}
               >
-                {state.selectedCards.map((selectedCard, index) => (
-                  <Box
-                    key={index}
-                    sx={{ display: 'flex', alignItems: 'center' }}
-                  >
-                    {getSelectedCardLabel(selectedCard.value)}
-                  </Box>
-                ))}
+                <StarIcon htmlColor="#E9C46A" />
+                <StarIcon htmlColor="#E9C46A" />
+                <StarIcon htmlColor="#E9C46A" />
               </Box>
-            )}
+            </Box>
           </Box>
           <Box
             sx={{
-              flex: 1,
+              marginBottom: '20px',
               display: 'flex',
-              justifyContent: 'space-between',
+              justifyContent: 'center',
               alignItems: 'center',
+              width: '100%',
             }}
           >
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ fontSize: '26px' }}>題目</Box>
-              <Box sx={{ fontSize: '120px' }}>={state.answer}</Box>
+            <Box
+              sx={{
+                flex: '0.5',
+                display: 'flex',
+                justifyContent: 'flex-end',
+                marginRight: '30px',
+              }}
+            >
+              <Box sx={{ marginRight: '20px' }}>
+                <NumberDropZone />
+              </Box>
+              <Box sx={{ marginRight: '20px' }}>
+                <SymbolDropZone />
+              </Box>
+              <Box sx={{ marginRight: '20px' }}>
+                <NumberDropZone />
+              </Box>
+              <Box sx={{ marginRight: '20px' }}>
+                <SymbolDropZone />
+              </Box>
+              <Box>
+                <NumberDropZone />
+              </Box>
             </Box>
-            <Box sx={{ marginTop: '150px', marginRight: '50px' }}>
+            <Box sx={{ fontSize: '80px', flex: '0.3', display: 'flex' }}>
+              <Box>=15</Box>
               <Box
                 sx={{
-                  textAlign: 'center',
-                  marginBottom: '10px',
-                  fontSize: '26px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginLeft: '40px',
                 }}
               >
-                數學符號
+                <StarIcon htmlColor="#E9C46A" />
+                <StarIcon htmlColor="#E9C46A" />
               </Box>
-              <Grid container spacing={1} sx={{ width: '176px' }}>
-              </Grid>
             </Box>
-          </Box>*/}
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
+            <Box
+              sx={{
+                flex: '0.5',
+                display: 'flex',
+                justifyContent: 'flex-end',
+                marginRight: '30px',
+              }}
+            >
+              <Box sx={{ marginRight: '20px' }}>
+                <NumberDropZone />
+              </Box>
+              <Box sx={{ marginRight: '20px' }}>
+                <SymbolDropZone />
+              </Box>
+              <Box>
+                <NumberDropZone />
+              </Box>
+            </Box>
+            <Box sx={{ fontSize: '80px', flex: '0.3', display: 'flex' }}>
+              <Box>=15</Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginLeft: '40px',
+                }}
+              >
+                <StarIcon htmlColor="#E9C46A" />
+              </Box>
+            </Box>
+          </Box>
         </Box>
         <Box
           sx={{

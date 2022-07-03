@@ -9,7 +9,7 @@ export const selectedCardSymbolDict: { [key: string]: React.ReactNode } = {
   [MathSymbol.Plus]: <AddIcon fontSize="small" />,
   [MathSymbol.Minus]: <RemoveIcon fontSize="small" />,
   [MathSymbol.Times]: <ClearIcon fontSize="small" />,
-  [MathSymbol.Divide]: <DivideIcon />,
+  [MathSymbol.Divide]: <DivideIcon fontSize="small" />,
   // [MathSymbol.LeftParentheses]: '(',
   // [MathSymbol.RightParentheses]: ')',
 };
