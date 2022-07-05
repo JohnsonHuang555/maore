@@ -1,6 +1,7 @@
 import { IPlayerCard } from 'server/games/math_formula_card/state/PlayerCardState';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 import { OtherPlayerDict, OthersPlayerInfo } from '../models/OtherPlayerCard';
+import { EasyPart, MediumPart, HardPart } from '../models/Part';
 
 // 其他玩家手牌只記剩餘數量就可以
 export enum ActionType {
@@ -16,6 +17,8 @@ export enum ActionType {
   CreateAnswer = 'CreateAnswer',
   SortCard = 'SortCard',
   SetWinnerIndex = 'SetWinnerIndex',
+
+  // Drag
 }
 
 type SelectedCard = {
@@ -24,7 +27,11 @@ type SelectedCard = {
 };
 
 export type State = {
+  // 題目
   answer?: number;
+  easyPart?: EasyPart;
+  mediumPart?: MediumPart;
+  hardPart?: HardPart;
   // 你的手牌
   yourCards: IPlayerCard[];
   yourPoint: number;

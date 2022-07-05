@@ -47,7 +47,7 @@ const Card = (props: CardProps) => {
       {hideCard ? (
         <Box />
       ) : (
-        <CardActionArea
+        <Box
           sx={{
             width: '100%',
             height: '100%',
@@ -60,7 +60,7 @@ const Card = (props: CardProps) => {
         >
           <Box sx={{ fontSize: symbolSize, marginBottom: '10px' }}>{value}</Box>
           <CatHand fontSize={iconSize} pathcolor={iconColor} />
-        </CardActionArea>
+        </Box>
       )}
     </MuiCard>
   );

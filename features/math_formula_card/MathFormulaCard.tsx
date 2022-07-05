@@ -23,7 +23,6 @@ import { useEffect, useReducer, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { IPlayerCard } from 'server/games/math_formula_card/state/PlayerCardState';
 import Card from './components/Card';
-import OtherPlayer from './components/OtherPlayer';
 import { MathFormulaCardMessage } from './models/MathFormulaCardMessage';
 import playerCardsReducer, {
   ActionType,
@@ -34,13 +33,15 @@ import GameOverModal from './components/GameOverModal';
 import { setShowGameScreen } from '@actions/roomAction';
 import { gameSettingsSelector } from '@selectors/game_settings/mathFormulaSelector';
 import { useSnackbar } from 'notistack';
-import LogoutIcon from '@mui/icons-material/Logout';
-import StarIcon from '@mui/icons-material/Star';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 import PlayerAvatar from './components/PlayerAvatar';
 import SymbolDropZone from './components/SymbolDropZone';
 import NumberDropZone from './components/NumberDropZone';
+import { motion } from 'framer-motion';
+import ControlArea from './components/areas/ControllArea';
+import OtherPlayerArea from './components/areas/OtherPlayerArea';
+import PartArea from './components/areas/PartArea';
+import MaoreFlex from '@components/Shared/MaoreFlex';
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
@@ -214,31 +215,22 @@ const MathFormulaCard = () => {
     }
   }, [winnerIndex]);
 
-  const renderOtherPlayer = (other: string) => {
-    const { remainCardCount, name, point, isNowTurn } =
-      state.otherPlayerDict[other];
-    return (
-      <Box sx={{ flex: 1 }} key={other}>
-        <OtherPlayer
-          playerCount={players.length}
-          remainCardCount={remainCardCount}
-          name={name}
-          point={point}
-          isNowTurn={isNowTurn}
-        />
-      </Box>
-    );
-  };
-
   const renderYourCard = (card: IPlayerCard, index: number) => {
     const isSelected = state.selectedCards.findIndex((s) => s.id === card.id);
     return (
-      <Zoom
+      // <Zoom
+      //   key={card.id}
+      //   in={true}
+      //   style={{
+      //     transitionDelay: noDrawCardDelay ? '0ms' : `${index * 100}ms`,
+      //   }}
+      // >
+      <motion.div
         key={card.id}
-        in={true}
-        style={{
-          transitionDelay: noDrawCardDelay ? '0ms' : `${index * 100}ms`,
-        }}
+        drag
+        dragConstraints={{ left: 0, top: 0, right: 0, bottom: 0 }}
+        dragElastic={1}
+        onDragStart={(e) => e}
       >
         <Box>
           <Card
@@ -249,7 +241,8 @@ const MathFormulaCard = () => {
             onSelect={handleSelectCard}
           />
         </Box>
-      </Zoom>
+      </motion.div>
+      // </Zoom>
     );
   };
 
@@ -304,213 +297,60 @@ const MathFormulaCard = () => {
         isWinner={getIsWinner()}
         onConfirm={() => dispatch(setShowGameScreen(false))}
       />
-      <Box
+      <MaoreFlex
         sx={{
           width: '100%',
           height: '100%',
-          display: 'flex',
           flexDirection: 'column',
           position: 'relative',
           background: '#264653',
         }}
       >
         {/* 操作區塊 */}
-        <Box sx={{ position: 'absolute', top: '25px', right: '50px' }}>
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <Tooltip title="規則說明">
-              <IconButton size="large" aria-label="leave_room">
-                <DescriptionOutlinedIcon fontSize="inherit" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="離開遊戲">
-              <IconButton
-                size="large"
-                aria-label="leave_room"
-                onClick={() => (location.href = '/games/math-formula-card')}
-              >
-                <LogoutIcon fontSize="inherit" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        </Box>
+        <ControlArea onRuleClick={() => {}} />
         {/* 其他玩家區塊 */}
-        <Box
+        <MaoreFlex
+          alignItems="center"
           sx={{
             flexBasis: '15%',
-            display: 'flex',
-            alignItems: 'center',
             gap: '20px',
           }}
         >
-          {Object.keys(state.otherPlayerDict).map((other) =>
-            renderOtherPlayer(other)
-          )}
-        </Box>
+          {Object.keys(state.otherPlayerDict).map((playerId) => (
+            <OtherPlayerArea
+              playerId={playerId}
+              playerInfo={state.otherPlayerDict[playerId]}
+            />
+          ))}
+        </MaoreFlex>
         {/* 答案區塊 */}
-        <Box
+        <MaoreFlex
+          verticalHorizonCenter
           sx={{
             flex: 1,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
             flexDirection: 'column',
           }}
         >
-          <Box
-            sx={{
-              marginBottom: '20px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
+          <PartArea
+            easy={{ answer: 15 }}
+            medium={{ answer: 15, symbolAvailable1: [], symbolAvailable2: [] }}
+            hard={{
+              answer: 15,
+              symbolAvailable1: [],
+              symbolAvailable2: [],
+              symbolAvailable3: [],
             }}
-          >
-            <Box
-              sx={{
-                flex: '0.5',
-                display: 'flex',
-                justifyContent: 'flex-end',
-                marginRight: '30px',
-              }}
-            >
-              <Box sx={{ marginRight: '20px' }}>
-                <NumberDropZone />
-              </Box>
-              <Box sx={{ marginRight: '20px' }}>
-                <SymbolDropZone />
-              </Box>
-              <Box sx={{ marginRight: '20px' }}>
-                <NumberDropZone />
-              </Box>
-              <Box sx={{ marginRight: '20px' }}>
-                <SymbolDropZone />
-              </Box>
-              <Box sx={{ marginRight: '20px' }}>
-                <NumberDropZone />
-              </Box>
-              <Box sx={{ marginRight: '20px' }}>
-                <SymbolDropZone />
-              </Box>
-              <Box>
-                <NumberDropZone />
-              </Box>
-            </Box>
-            <Box sx={{ fontSize: '80px', flex: '0.3', display: 'flex' }}>
-              <Box>=15</Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginLeft: '40px',
-                }}
-              >
-                <StarIcon htmlColor="#E9C46A" />
-                <StarIcon htmlColor="#E9C46A" />
-                <StarIcon htmlColor="#E9C46A" />
-              </Box>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              marginBottom: '20px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
-            }}
-          >
-            <Box
-              sx={{
-                flex: '0.5',
-                display: 'flex',
-                justifyContent: 'flex-end',
-                marginRight: '30px',
-              }}
-            >
-              <Box sx={{ marginRight: '20px' }}>
-                <NumberDropZone />
-              </Box>
-              <Box sx={{ marginRight: '20px' }}>
-                <SymbolDropZone />
-              </Box>
-              <Box sx={{ marginRight: '20px' }}>
-                <NumberDropZone />
-              </Box>
-              <Box sx={{ marginRight: '20px' }}>
-                <SymbolDropZone />
-              </Box>
-              <Box>
-                <NumberDropZone />
-              </Box>
-            </Box>
-            <Box sx={{ fontSize: '80px', flex: '0.3', display: 'flex' }}>
-              <Box>=15</Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginLeft: '40px',
-                }}
-              >
-                <StarIcon htmlColor="#E9C46A" />
-                <StarIcon htmlColor="#E9C46A" />
-              </Box>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
-            }}
-          >
-            <Box
-              sx={{
-                flex: '0.5',
-                display: 'flex',
-                justifyContent: 'flex-end',
-                marginRight: '30px',
-              }}
-            >
-              <Box sx={{ marginRight: '20px' }}>
-                <NumberDropZone />
-              </Box>
-              <Box sx={{ marginRight: '20px' }}>
-                <SymbolDropZone />
-              </Box>
-              <Box>
-                <NumberDropZone />
-              </Box>
-            </Box>
-            <Box sx={{ fontSize: '80px', flex: '0.3', display: 'flex' }}>
-              <Box>=15</Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginLeft: '40px',
-                }}
-              >
-                <StarIcon htmlColor="#E9C46A" />
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-        <Box
+          />
+        </MaoreFlex>
+        <MaoreFlex
+          verticalHorizonCenter
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
             flexDirection: 'column',
             marginBottom: '20px',
           }}
         >
           <Box sx={{ marginBottom: '10px', fontSize: '24px' }}>數學算式牌</Box>
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
+          <MaoreFlex justifyContent="center" sx={{ gap: '15px' }}>
             {Object.keys(selectedCardSymbolDict).map((symbol) => (
               <Zoom
                 key={symbol}
@@ -532,50 +372,25 @@ const MathFormulaCard = () => {
                     onSelect={handleSelectCard}
                   />
                 </Box>
-                {/* <MuiCard
-                  sx={{
-                    height: '80px',
-                    border: '5px solid #525252',
-                    backgroundColor: '#1d1d1d',
-                  }}
-                  onClick={() => handleSelectSymbol(symbol as MathSymbol)}
-                >
-                  <CardActionArea
-                    sx={{
-                      height: '100%',
-                      width: '100%',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      fontSize: '36px',
-                    }}
-                  >
-                    {selectedCardSymbolDict[symbol]}
-                  </CardActionArea>
-                </MuiCard> */}
               </Zoom>
             ))}
-          </Box>
-        </Box>
+          </MaoreFlex>
+        </MaoreFlex>
         <Box sx={{ textAlign: 'center', fontSize: '30px' }}>
           {isYourTurn ? '你的回合' : '其他玩家回合'}
         </Box>
         {/* 自己手牌 */}
-        <Box
+        <MaoreFlex
+          verticalHorizonCenter
           sx={{
             flexBasis: '14%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
             marginBottom: '20px',
           }}
         >
-          <Box
+          <MaoreFlex
+            verticalHorizonCenter
             sx={{
               width: '15vw',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
               flexDirection: 'column',
             }}
           >
@@ -588,21 +403,19 @@ const MathFormulaCard = () => {
               勝利條件: {gameSettings?.winnerPoint} 分
             </Box>
             <PlayerAvatar />
-          </Box>
-          <Box
+          </MaoreFlex>
+          <MaoreFlex
+            justifyContent="center"
             sx={{
-              display: 'flex',
-              justifyContent: 'center',
               gap: '15px',
               flexWrap: 'wrap',
               width: '70vw',
             }}
           >
             {state.yourCards.map((card, index) => renderYourCard(card, index))}
-          </Box>
-          <Box
+          </MaoreFlex>
+          <MaoreFlex
             sx={{
-              display: 'flex',
               flexDirection: 'column',
               width: '15vw',
               padding: '40px',
@@ -646,8 +459,8 @@ const MathFormulaCard = () => {
             >
               重選
             </Button>
-          </Box>
-        </Box>
+          </MaoreFlex>
+        </MaoreFlex>
         {/* 操作 */}
         {/* <Box
           sx={{
@@ -729,7 +542,7 @@ const MathFormulaCard = () => {
             出牌
           </Button>
         </Box> */}
-      </Box>
+      </MaoreFlex>
     </>
   );
 };
