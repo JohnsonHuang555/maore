@@ -1,159 +1,56 @@
+import React from 'react';
 import { Box } from '@mui/material';
-import StarIcon from '@mui/icons-material/Star';
 import MaoreFlex from '@components/Shared/MaoreFlex';
 import {
-  EasyPart,
-  MediumPart,
-  HardPart,
-} from 'features/math_formula_card/models/Part';
+  Formula,
+  FormulaType,
+} from 'features/math_formula_card/models/Formula';
 import NumberDropZone from '../NumberDropZone';
 import SymbolDropZone from '../SymbolDropZone';
-import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 
 type PartAreaProps = {
-  easy: EasyPart;
-  medium: MediumPart;
-  hard: HardPart;
+  answer?: number;
+  formula?: Formula[];
+  onDragToNumberZone: (id: string) => void;
 };
 
 const PartArea = (props: PartAreaProps) => {
-  const { easy, medium, hard } = props;
+  const { answer, formula = [], onDragToNumberZone } = props;
+
   return (
-    <>
+    <MaoreFlex
+      justifyContent="center"
+      sx={{
+        marginBottom: '20px',
+        width: '100%',
+      }}
+    >
       <MaoreFlex
-        justifyContent="center"
+        justifyContent="flex-end"
         sx={{
-          marginBottom: '20px',
-          width: '100%',
+          flex: '0.5',
+          marginRight: '30px',
         }}
       >
-        <MaoreFlex
-          justifyContent="flex-end"
-          sx={{
-            flex: '0.5',
-            marginRight: '30px',
-          }}
-        >
-          <Box sx={{ marginRight: '20px' }}>
-            <NumberDropZone />
-          </Box>
-          <Box sx={{ marginRight: '20px' }}>
-            <SymbolDropZone availableSymbols={hard.symbolAvailable1} />
-          </Box>
-          <Box sx={{ marginRight: '20px' }}>
-            <NumberDropZone />
-          </Box>
-          <Box sx={{ marginRight: '20px' }}>
-            <SymbolDropZone availableSymbols={hard.symbolAvailable2} />
-          </Box>
-          <Box sx={{ marginRight: '20px' }}>
-            <NumberDropZone />
-          </Box>
-          <Box sx={{ marginRight: '20px' }}>
-            <SymbolDropZone availableSymbols={hard.symbolAvailable3} />
-          </Box>
-          <Box>
-            <NumberDropZone />
-          </Box>
-        </MaoreFlex>
-        <MaoreFlex sx={{ fontSize: '80px', flex: '0.3' }}>
-          <Box>={hard.answer}</Box>
-          <MaoreFlex
-            verticalHorizonCenter
-            sx={{
-              marginLeft: '40px',
-            }}
-          >
-            <StarIcon htmlColor="#E9C46A" />
-            <StarIcon htmlColor="#E9C46A" />
-            <StarIcon htmlColor="#E9C46A" />
-          </MaoreFlex>
-        </MaoreFlex>
+        {formula.map((f) => (
+          <React.Fragment key={f.id}>
+            {f.formulaType === FormulaType.number && (
+              <Box sx={{ marginRight: '20px' }}>
+                <NumberDropZone id={f.id} onDrop={onDragToNumberZone} />
+              </Box>
+            )}
+            {f.formulaType === FormulaType.symbol && (
+              <Box sx={{ marginRight: '20px' }}>
+                <SymbolDropZone />
+              </Box>
+            )}
+          </React.Fragment>
+        ))}
       </MaoreFlex>
-      <MaoreFlex
-        sx={{
-          marginBottom: '20px',
-          width: '100%',
-        }}
-      >
-        <MaoreFlex
-          justifyContent="flex-end"
-          sx={{
-            flex: '0.5',
-            marginRight: '30px',
-          }}
-        >
-          <Box sx={{ marginRight: '20px' }}>
-            <NumberDropZone />
-          </Box>
-          <Box sx={{ marginRight: '20px' }}>
-            <SymbolDropZone availableSymbols={medium.symbolAvailable1} />
-          </Box>
-          <Box sx={{ marginRight: '20px' }}>
-            <NumberDropZone />
-          </Box>
-          <Box sx={{ marginRight: '20px' }}>
-            <SymbolDropZone availableSymbols={medium.symbolAvailable2} />
-          </Box>
-          <Box>
-            <NumberDropZone />
-          </Box>
-        </MaoreFlex>
-        <MaoreFlex sx={{ fontSize: '80px', flex: '0.3' }}>
-          <Box>={medium.answer}</Box>
-          <MaoreFlex
-            verticalHorizonCenter
-            sx={{
-              marginLeft: '40px',
-            }}
-          >
-            <StarIcon htmlColor="#E9C46A" />
-            <StarIcon htmlColor="#E9C46A" />
-          </MaoreFlex>
-        </MaoreFlex>
+      <MaoreFlex alignItems="center" sx={{ fontSize: '80px', flex: '0.3' }}>
+        <Box>={answer}</Box>
       </MaoreFlex>
-      <MaoreFlex
-        sx={{
-          width: '100%',
-        }}
-      >
-        <MaoreFlex
-          justifyContent="flex-end"
-          sx={{
-            flex: '0.5',
-            marginRight: '30px',
-          }}
-        >
-          <Box sx={{ marginRight: '20px' }}>
-            <NumberDropZone />
-          </Box>
-          <Box sx={{ marginRight: '20px' }}>
-            <SymbolDropZone
-              availableSymbols={[
-                MathSymbol.Plus,
-                MathSymbol.Minus,
-                MathSymbol.Times,
-                MathSymbol.Divide,
-              ]}
-            />
-          </Box>
-          <Box>
-            <NumberDropZone />
-          </Box>
-        </MaoreFlex>
-        <MaoreFlex sx={{ fontSize: '80px', flex: '0.3' }}>
-          <Box>={easy.answer}</Box>
-          <MaoreFlex
-            verticalHorizonCenter
-            sx={{
-              marginLeft: '40px',
-            }}
-          >
-            <StarIcon htmlColor="#E9C46A" />
-          </MaoreFlex>
-        </MaoreFlex>
-      </MaoreFlex>
-    </>
+    </MaoreFlex>
   );
 };
 

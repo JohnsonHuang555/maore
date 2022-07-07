@@ -1,15 +1,5 @@
 import { RoomMessage } from '@domain/models/Message';
-import {
-  Box,
-  Button,
-  CardActionArea,
-  Grid,
-  IconButton,
-  Stack,
-  Tooltip,
-  Zoom,
-  Card as MuiCard,
-} from '@mui/material';
+import { Box, Button, Zoom } from '@mui/material';
 import {
   isAllPlayersLoadedSelector,
   playerIdSelector,
@@ -22,7 +12,6 @@ import { clientRoomSelector } from '@selectors/serverSelector';
 import { useEffect, useReducer, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { IPlayerCard } from 'server/games/math_formula_card/state/PlayerCardState';
-import Card from './components/Card';
 import { MathFormulaCardMessage } from './models/MathFormulaCardMessage';
 import playerCardsReducer, {
   ActionType,
@@ -35,13 +24,14 @@ import { gameSettingsSelector } from '@selectors/game_settings/mathFormulaSelect
 import { useSnackbar } from 'notistack';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 import PlayerAvatar from './components/PlayerAvatar';
-import SymbolDropZone from './components/SymbolDropZone';
-import NumberDropZone from './components/NumberDropZone';
-import { motion } from 'framer-motion';
 import ControlArea from './components/areas/ControllArea';
 import OtherPlayerArea from './components/areas/OtherPlayerArea';
 import PartArea from './components/areas/PartArea';
 import MaoreFlex from '@components/Shared/MaoreFlex';
+import { motion } from 'framer-motion';
+import HandCardArea from './components/areas/HandCardArea';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
@@ -217,33 +207,6 @@ const MathFormulaCard = () => {
 
   const renderYourCard = (card: IPlayerCard, index: number) => {
     const isSelected = state.selectedCards.findIndex((s) => s.id === card.id);
-    return (
-      // <Zoom
-      //   key={card.id}
-      //   in={true}
-      //   style={{
-      //     transitionDelay: noDrawCardDelay ? '0ms' : `${index * 100}ms`,
-      //   }}
-      // >
-      <motion.div
-        key={card.id}
-        drag
-        dragConstraints={{ left: 0, top: 0, right: 0, bottom: 0 }}
-        dragElastic={1}
-        onDragStart={(e) => e}
-      >
-        <Box>
-          <Card
-            key={card.id}
-            id={card.id}
-            value={card.cardNumber}
-            width="100px"
-            onSelect={handleSelectCard}
-          />
-        </Box>
-      </motion.div>
-      // </Zoom>
-    );
   };
 
   // 選擇手牌
@@ -290,8 +253,13 @@ const MathFormulaCard = () => {
     return false;
   };
 
+  // 拖曳到數字區塊
+  const handleDragToNumberZone = (id: string) => {
+    console.log(id);
+  };
+
   return (
-    <>
+    <DndProvider backend={HTML5Backend}>
       <GameOverModal
         show={state.winnerIndex !== -1}
         isWinner={getIsWinner()}
@@ -332,17 +300,12 @@ const MathFormulaCard = () => {
           }}
         >
           <PartArea
-            easy={{ answer: 15 }}
-            medium={{ answer: 15, symbolAvailable1: [], symbolAvailable2: [] }}
-            hard={{
-              answer: 15,
-              symbolAvailable1: [],
-              symbolAvailable2: [],
-              symbolAvailable3: [],
-            }}
+            answer={state.answer}
+            formula={state.formula}
+            onDragToNumberZone={handleDragToNumberZone}
           />
         </MaoreFlex>
-        <MaoreFlex
+        {/* <MaoreFlex
           verticalHorizonCenter
           sx={{
             flexDirection: 'column',
@@ -375,7 +338,7 @@ const MathFormulaCard = () => {
               </Zoom>
             ))}
           </MaoreFlex>
-        </MaoreFlex>
+        </MaoreFlex> */}
         <Box sx={{ textAlign: 'center', fontSize: '30px' }}>
           {isYourTurn ? '你的回合' : '其他玩家回合'}
         </Box>
@@ -412,7 +375,13 @@ const MathFormulaCard = () => {
               width: '70vw',
             }}
           >
-            {state.yourCards.map((card, index) => renderYourCard(card, index))}
+            {state.yourCards.map((card) => (
+              <HandCardArea
+                key={card.id}
+                card={card}
+                onSelect={handleSelectCard}
+              />
+            ))}
           </MaoreFlex>
           <MaoreFlex
             sx={{
@@ -543,7 +512,7 @@ const MathFormulaCard = () => {
           </Button>
         </Box> */}
       </MaoreFlex>
-    </>
+    </DndProvider>
   );
 };
 

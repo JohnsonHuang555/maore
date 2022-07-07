@@ -1,7 +1,8 @@
 import { IPlayerCard } from 'server/games/math_formula_card/state/PlayerCardState';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 import { OtherPlayerDict, OthersPlayerInfo } from '../models/OtherPlayerCard';
-import { EasyPart, MediumPart, HardPart } from '../models/Part';
+import { Formula, FormulaType } from '../models/Formula';
+import { generate } from 'short-uuid';
 
 // 其他玩家手牌只記剩餘數量就可以
 export enum ActionType {
@@ -29,9 +30,7 @@ type SelectedCard = {
 export type State = {
   // 題目
   answer?: number;
-  easyPart?: EasyPart;
-  mediumPart?: MediumPart;
-  hardPart?: HardPart;
+  formula?: Formula[];
   // 你的手牌
   yourCards: IPlayerCard[];
   yourPoint: number;
@@ -218,9 +217,37 @@ const reducer = (state = initialState, action: Action): State => {
       };
     }
     case ActionType.CreateAnswer: {
+      let formula: Formula[] = [];
+      // 決定可以使用多少符號
+      if (action.answer < 10) {
+        formula = [
+          { id: generate(), formulaType: FormulaType.number },
+          { id: generate(), formulaType: FormulaType.symbol },
+          { id: generate(), formulaType: FormulaType.number },
+        ];
+      } else if (action.answer < 50) {
+        formula = [
+          { id: generate(), formulaType: FormulaType.number },
+          { id: generate(), formulaType: FormulaType.symbol },
+          { id: generate(), formulaType: FormulaType.number },
+          { id: generate(), formulaType: FormulaType.symbol },
+          { id: generate(), formulaType: FormulaType.number },
+        ];
+      } else {
+        formula = [
+          { id: generate(), formulaType: FormulaType.number },
+          { id: generate(), formulaType: FormulaType.symbol },
+          { id: generate(), formulaType: FormulaType.number },
+          { id: generate(), formulaType: FormulaType.symbol },
+          { id: generate(), formulaType: FormulaType.number },
+          { id: generate(), formulaType: FormulaType.symbol },
+          { id: generate(), formulaType: FormulaType.number },
+        ];
+      }
       return {
         ...state,
         answer: action.answer,
+        formula,
       };
     }
     case ActionType.SortCard: {
