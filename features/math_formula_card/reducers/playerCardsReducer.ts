@@ -1,8 +1,6 @@
 import { IPlayerCard } from 'server/games/math_formula_card/state/PlayerCardState';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 import { OtherPlayerDict, OthersPlayerInfo } from '../models/OtherPlayerCard';
-import { Formula, FormulaType } from '../models/Formula';
-import { generate } from 'short-uuid';
 
 // 其他玩家手牌只記剩餘數量就可以
 export enum ActionType {
@@ -18,19 +16,17 @@ export enum ActionType {
   CreateAnswer = 'CreateAnswer',
   SortCard = 'SortCard',
   SetWinnerIndex = 'SetWinnerIndex',
-
-  // Drag
 }
 
-type SelectedCard = {
+export type SelectedCard = {
   id: string;
-  value: number | MathSymbol;
+  cardNumber?: number;
+  mathSymbol?: MathSymbol;
 };
 
 export type State = {
   // 題目
   answer?: number;
-  formula?: Formula[];
   // 你的手牌
   yourCards: IPlayerCard[];
   yourPoint: number;
@@ -86,7 +82,9 @@ type UpdateOthersInfoAction = {
 type SelectCardAction = {
   type: ActionType.SelectCard;
   id: string;
-  value: number | MathSymbol;
+  cardNumber?: number;
+  mathSymbol?: MathSymbol;
+  field: 'create' | 'update';
 };
 
 type ClearErrorMsgAction = {
@@ -192,12 +190,22 @@ const reducer = (state = initialState, action: Action): State => {
     }
     case ActionType.SelectCard: {
       let newCards = [...state.selectedCards];
-      const cardIndex = newCards.findIndex((card) => card.id === action.id);
-      if (cardIndex !== -1) {
-        newCards.splice(cardIndex, 1);
-      } else {
-        newCards = [...newCards, { id: action.id, value: action.value }];
+      switch (action.field) {
+        case 'create': {
+          newCards = [...newCards, { id: action.id }];
+          break;
+        }
+        case 'update': {
+          break;
+        }
       }
+      // const cardIndex = newCards.findIndex((card) => card.id === action.id);
+      // newCards[cardIndex].value = action.value;
+      // if (cardIndex !== -1) {
+      //   newCards.splice(cardIndex, 1);
+      // } else {
+      //   newCards = [...newCards, { id: action.id, value: action.value }];
+      // }
 
       return {
         ...state,
@@ -217,37 +225,9 @@ const reducer = (state = initialState, action: Action): State => {
       };
     }
     case ActionType.CreateAnswer: {
-      let formula: Formula[] = [];
-      // 決定可以使用多少符號
-      if (action.answer < 10) {
-        formula = [
-          { id: generate(), formulaType: FormulaType.number },
-          { id: generate(), formulaType: FormulaType.symbol },
-          { id: generate(), formulaType: FormulaType.number },
-        ];
-      } else if (action.answer < 50) {
-        formula = [
-          { id: generate(), formulaType: FormulaType.number },
-          { id: generate(), formulaType: FormulaType.symbol },
-          { id: generate(), formulaType: FormulaType.number },
-          { id: generate(), formulaType: FormulaType.symbol },
-          { id: generate(), formulaType: FormulaType.number },
-        ];
-      } else {
-        formula = [
-          { id: generate(), formulaType: FormulaType.number },
-          { id: generate(), formulaType: FormulaType.symbol },
-          { id: generate(), formulaType: FormulaType.number },
-          { id: generate(), formulaType: FormulaType.symbol },
-          { id: generate(), formulaType: FormulaType.number },
-          { id: generate(), formulaType: FormulaType.symbol },
-          { id: generate(), formulaType: FormulaType.number },
-        ];
-      }
       return {
         ...state,
         answer: action.answer,
-        formula,
       };
     }
     case ActionType.SortCard: {

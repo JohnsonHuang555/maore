@@ -1,21 +1,16 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import MaoreFlex from '@components/Shared/MaoreFlex';
-import {
-  Formula,
-  FormulaType,
-} from 'features/math_formula_card/models/Formula';
-import NumberDropZone from '../NumberDropZone';
-import SymbolDropZone from '../SymbolDropZone';
+import CardDropZone from '../CardDropZone';
+import { SelectedCard } from 'features/math_formula_card/reducers/playerCardsReducer';
 
 type PartAreaProps = {
   answer?: number;
-  formula?: Formula[];
-  onDragToNumberZone: (id: string) => void;
+  selectedCards: SelectedCard[];
 };
 
 const PartArea = (props: PartAreaProps) => {
-  const { answer, formula = [], onDragToNumberZone } = props;
+  const { answer, selectedCards } = props;
 
   return (
     <MaoreFlex
@@ -32,19 +27,10 @@ const PartArea = (props: PartAreaProps) => {
           marginRight: '30px',
         }}
       >
-        {formula.map((f) => (
-          <React.Fragment key={f.id}>
-            {f.formulaType === FormulaType.number && (
-              <Box sx={{ marginRight: '20px' }}>
-                <NumberDropZone id={f.id} onDrop={onDragToNumberZone} />
-              </Box>
-            )}
-            {f.formulaType === FormulaType.symbol && (
-              <Box sx={{ marginRight: '20px' }}>
-                <SymbolDropZone />
-              </Box>
-            )}
-          </React.Fragment>
+        {selectedCards.map((card) => (
+          <Box key={card.id} sx={{ marginRight: '20px' }}>
+            <CardDropZone id={card.id} />
+          </Box>
         ))}
       </MaoreFlex>
       <MaoreFlex alignItems="center" sx={{ fontSize: '80px', flex: '0.3' }}>

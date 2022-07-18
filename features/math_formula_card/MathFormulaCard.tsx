@@ -156,23 +156,40 @@ const MathFormulaCard = () => {
     clientRoom.state.mathFormulaCard.selectedElements.onAdd = (
       selectedElement
     ) => {
-      const { id, cardNumber, mathSymbol } = selectedElement;
-      const value = mathSymbol || cardNumber;
-      if (value !== undefined) {
-        localDispatch({ type: ActionType.SelectCard, id, value });
-      }
+      selectedElement.onChange = (changes) => {
+        changes.forEach((change) => {
+          const { field, value } = change;
+          switch (field) {
+            case 'id': {
+              localDispatch({
+                type: ActionType.SelectCard,
+                id: selectedElement.id,
+                field: 'create',
+              });
+              break;
+            }
+            case 'cardNumber': {
+              localDispatch({
+                type: ActionType.SelectCard,
+                id: selectedElement.id,
+                field: 'update',
+                cardNumber: value,
+              });
+              break;
+            }
+            case 'mathSymbol': {
+              localDispatch({
+                type: ActionType.SelectCard,
+                id: selectedElement.id,
+                field: 'update',
+                mathSymbol: value,
+              });
+              break;
+            }
+          }
+        });
+      };
     };
-
-    clientRoom.state.mathFormulaCard.selectedElements.onRemove = (
-      selectedElement
-    ) => {
-      const { id, cardNumber, mathSymbol } = selectedElement;
-      const value = mathSymbol || cardNumber;
-      if (value !== undefined) {
-        localDispatch({ type: ActionType.SelectCard, id, value });
-      }
-    };
-
     clientRoom.send(RoomMessage.LoadedGame);
 
     return () => {
@@ -253,9 +270,14 @@ const MathFormulaCard = () => {
     return false;
   };
 
-  // 拖曳到數字區塊
-  const handleDragToNumberZone = (id: string) => {
-    console.log(id);
+  // 拖曳到區塊
+  const handleDropCard = (id: string, targetId: string) => {
+    // 還沒輪到你
+    if (!isYourTurn) {
+      enqueueSnackbar('還沒輪到你', { variant: 'warning' });
+      return;
+    }
+    clientRoom.send(MathFormulaCardMessage.SelectCardNumber, { id, targetId });
   };
 
   return (
@@ -299,11 +321,7 @@ const MathFormulaCard = () => {
             flexDirection: 'column',
           }}
         >
-          <PartArea
-            answer={state.answer}
-            formula={state.formula}
-            onDragToNumberZone={handleDragToNumberZone}
-          />
+          <PartArea answer={state.answer} selectedCards={state.selectedCards} />
         </MaoreFlex>
         {/* <MaoreFlex
           verticalHorizonCenter
@@ -379,7 +397,7 @@ const MathFormulaCard = () => {
               <HandCardArea
                 key={card.id}
                 card={card}
-                onSelect={handleSelectCard}
+                onDropCard={handleDropCard}
               />
             ))}
           </MaoreFlex>

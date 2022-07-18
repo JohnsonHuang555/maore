@@ -5,30 +5,26 @@ import MathFormulaCard from '../MathFormulaCard';
 type Payload = {
   playerId: string;
   cardId: string;
+  targetId: string;
 };
 
 export default class SelectCardCommand extends Command<MathFormulaCard> {
   execute(data: Payload) {
-    const { playerId, cardId } = data;
+    const { playerId, cardId, targetId } = data;
     const cards = this.state.mathFormulaCard.playerInfos.get(playerId)?.cards;
-    const playerCard = cards?.find((card) => card.id === cardId);
-    if (!playerCard) {
+    const cardIndex = cards?.findIndex((card) => card.id === cardId);
+    if (!cards || cardIndex === undefined) {
       throw new Error('playerCard not found');
     }
 
-    const isExistIndex = this.state.mathFormulaCard.selectedElements.findIndex(
-      (card) => card.id === playerCard.id
-    );
+    // 移除手牌的卡
+    this.state.mathFormulaCard.selectedElements.splice(cardIndex, 1);
 
-    if (isExistIndex !== -1) {
-      this.state.mathFormulaCard.selectedElements.splice(isExistIndex, 1);
-    } else {
-      this.state.mathFormulaCard.selectedElements.push(
-        new SelectedElementsState({
-          id: playerCard.id,
-          cardNumber: playerCard.cardNumber,
-        })
-      );
-    }
+    // 放到區塊上
+    const targetIndex = this.state.mathFormulaCard.selectedElements.findIndex(
+      (selectedCard) => selectedCard.id === targetId
+    );
+    this.state.mathFormulaCard.selectedElements[targetIndex].cardNumber =
+      cards[cardIndex].cardNumber;
   }
 }

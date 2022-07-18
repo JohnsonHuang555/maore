@@ -5,8 +5,8 @@ export enum MathSymbol {
   Minus = '-',
   Times = '*',
   Divide = '/',
-  LeftParentheses = '(',
-  RightParentheses = ')',
+  // LeftParentheses = '(',
+  // RightParentheses = ')',
 }
 
 // 可能為 數字牌、運算符號牌、功能牌等等
@@ -16,6 +16,7 @@ export interface ISelectedCard {
   mathSymbol?: MathSymbol;
 }
 
+// 所選擇的牌放的位置
 export class SelectedElementsState extends Schema implements ISelectedCard {
   @type('string')
   id: string;

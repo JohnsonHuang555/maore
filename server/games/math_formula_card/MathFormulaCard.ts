@@ -52,10 +52,11 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
 
     this.onMessage(
       MathFormulaCardMessage.SelectCardNumber,
-      (client, message: { id: string }) => {
+      (client, message: { id: string; targetId: string }) => {
         this.dispatcher.dispatch(new SelectCardCommand(), {
           playerId: client.id,
           cardId: message.id,
+          targetId: message.targetId,
         });
       }
     );

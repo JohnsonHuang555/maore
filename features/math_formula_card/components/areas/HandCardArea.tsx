@@ -4,34 +4,36 @@ import Card from '../Card';
 import { useDrag } from 'react-dnd';
 import { ItemType } from 'features/math_formula_card/models/ItemType';
 
-// TODO: 每張牌有自己的 座標位置
 type HandCardAreaProps = {
   card: IPlayerCard;
-  onSelect: (id: string) => void;
+  onDropCard: (id: string, targetId: string) => void;
 };
 
+interface DropResult {
+  id: string;
+}
+
 const HandCardArea = (props: HandCardAreaProps) => {
-  const { card, onSelect } = props;
+  const { card, onDropCard } = props;
   const [{ isDragging }, dragRef] = useDrag({
     type: ItemType.Card,
+    item: { id: card.id },
+    end: (item, monitor) => {
+      const dropResult = monitor.getDropResult<DropResult>();
+      if (item && dropResult) {
+        onDropCard(item.id, dropResult.id);
+      }
+    },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
   });
 
-  if (isDragging) {
-    console.log(card.cardNumber, 'card');
-  }
+  const opacity = isDragging ? 0.4 : 1;
 
   return (
-    <Box ref={dragRef}>
-      <Card
-        key={card.id}
-        id={card.id}
-        value={card.cardNumber}
-        width="100px"
-        onSelect={onSelect}
-      />
+    <Box ref={dragRef} sx={{ opacity }}>
+      <Card key={card.id} id={card.id} value={card.cardNumber} width="100px" />
     </Box>
   );
 };
