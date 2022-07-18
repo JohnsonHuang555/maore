@@ -29,7 +29,11 @@ const PartArea = (props: PartAreaProps) => {
       >
         {selectedCards.map((card) => (
           <Box key={card.id} sx={{ marginRight: '20px' }}>
-            <CardDropZone id={card.id} />
+            <CardDropZone
+              id={card.id}
+              cardNumber={card.cardNumber}
+              mathSymbol={card.mathSymbol}
+            />
           </Box>
         ))}
       </MaoreFlex>

@@ -196,6 +196,9 @@ const reducer = (state = initialState, action: Action): State => {
           break;
         }
         case 'update': {
+          const cardIndex = newCards.findIndex((card) => card.id === action.id);
+          newCards[cardIndex].cardNumber = action.cardNumber;
+          newCards[cardIndex].mathSymbol = action.mathSymbol;
           break;
         }
       }
