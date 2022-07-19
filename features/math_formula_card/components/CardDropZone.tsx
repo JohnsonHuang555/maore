@@ -9,10 +9,11 @@ type CardDropZoneProps = {
   cardId?: string;
   cardNumber?: number;
   mathSymbol?: MathSymbol;
+  onDropCard: (id: string, targetId: string) => void;
 };
 
 const CardDropZone = (props: CardDropZoneProps) => {
-  const { id, cardId, cardNumber, mathSymbol } = props;
+  const { id, cardId, cardNumber, mathSymbol, onDropCard } = props;
 
   const [{ isOver }, drop] = useDrop(
     () => ({
@@ -42,14 +43,15 @@ const CardDropZone = (props: CardDropZoneProps) => {
     >
       {cardNumber && cardId && (
         <Box sx={{ fontSize: '16px' }}>
-          <HandCard card={{ id: cardId, cardNumber }} onDropCard={() => {}} />
+          <HandCard card={{ id: cardId, cardNumber }} onDropCard={onDropCard} />
         </Box>
       )}
-      {cardNumber === undefined && mathSymbol === undefined && (
-        <Box sx={{ color: '#ccc', fontSize: '16px', margin: '10px' }}>
-          將牌拖曳到這裡
-        </Box>
-      )}
+      {(cardNumber === undefined || cardNumber === -1) &&
+        mathSymbol === undefined && (
+          <Box sx={{ color: '#ccc', fontSize: '16px', margin: '10px' }}>
+            將牌拖曳到這裡
+          </Box>
+        )}
     </Box>
   );
 };

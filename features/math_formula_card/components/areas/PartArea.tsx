@@ -7,10 +7,11 @@ import { SelectedCard } from 'features/math_formula_card/reducers/playerCardsRed
 type PartAreaProps = {
   answer?: number;
   selectedCards: SelectedCard[];
+  onDropCard: (id: string, targetId: string) => void;
 };
 
 const PartArea = (props: PartAreaProps) => {
-  const { answer, selectedCards } = props;
+  const { answer, selectedCards, onDropCard } = props;
 
   return (
     <MaoreFlex
@@ -34,6 +35,7 @@ const PartArea = (props: PartAreaProps) => {
               cardId={card.cardId}
               cardNumber={card.cardNumber}
               mathSymbol={card.mathSymbol}
+              onDropCard={onDropCard}
             />
           </Box>
         ))}

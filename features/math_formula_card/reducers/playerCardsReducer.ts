@@ -199,7 +199,7 @@ const reducer = (state = initialState, action: Action): State => {
         }
         case 'update': {
           const cardIndex = newCards.findIndex((card) => card.id === action.id);
-          if (action.cardId) {
+          if (action.cardId !== undefined) {
             newCards[cardIndex].cardId = action.cardId;
           }
           if (action.cardNumber) {

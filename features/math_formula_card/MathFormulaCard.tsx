@@ -329,7 +329,11 @@ const MathFormulaCard = () => {
             flexDirection: 'column',
           }}
         >
-          <PartArea answer={state.answer} selectedCards={state.selectedCards} />
+          <PartArea
+            answer={state.answer}
+            selectedCards={state.selectedCards}
+            onDropCard={handleDropCard}
+          />
         </MaoreFlex>
         {/* <MaoreFlex
           verticalHorizonCenter
