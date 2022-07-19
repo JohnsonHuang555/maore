@@ -31,6 +31,7 @@ const PartArea = (props: PartAreaProps) => {
           <Box key={card.id} sx={{ marginRight: '20px' }}>
             <CardDropZone
               id={card.id}
+              cardId={card.cardId}
               cardNumber={card.cardNumber}
               mathSymbol={card.mathSymbol}
             />

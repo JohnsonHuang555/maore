@@ -1,5 +1,4 @@
 import { Command } from '@colyseus/command';
-import { SelectedElementsState } from '../state/SelectedElementsState';
 import MathFormulaCard from '../MathFormulaCard';
 
 type Payload = {
@@ -26,9 +25,11 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
     );
     this.state.mathFormulaCard.selectedElements[targetIndex].cardNumber =
       playerInfo.cards[cardIndex].cardNumber;
+    this.state.mathFormulaCard.selectedElements[targetIndex].cardId =
+      playerInfo.cards[cardIndex].id;
 
     console.log(
-      this.state.mathFormulaCard.selectedElements[targetIndex].cardNumber
+      this.state.mathFormulaCard.selectedElements[targetIndex].cardId
     );
 
     // 移除手牌的卡

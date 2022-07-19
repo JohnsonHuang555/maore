@@ -2,15 +2,17 @@ import { Box } from '@mui/material';
 import { useDrop } from 'react-dnd';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 import { ItemType } from '../models/ItemType';
+import HandCard from './HandCard';
 
 type CardDropZoneProps = {
   id: string;
+  cardId?: string;
   cardNumber?: number;
   mathSymbol?: MathSymbol;
 };
 
 const CardDropZone = (props: CardDropZoneProps) => {
-  const { id, cardNumber, mathSymbol } = props;
+  const { id, cardId, cardNumber, mathSymbol } = props;
 
   const [{ isOver }, drop] = useDrop(
     () => ({
@@ -36,12 +38,17 @@ const CardDropZone = (props: CardDropZoneProps) => {
         borderRadius: '5px',
         backgroundColor: isOver ? '#4c636d' : '#415761',
         textAlign: 'center',
-        padding: '10px',
       }}
     >
-      {cardNumber && <Box sx={{ fontSize: '16px' }}>{cardNumber}</Box>}
+      {cardNumber && cardId && (
+        <Box sx={{ fontSize: '16px' }}>
+          <HandCard card={{ id: cardId, cardNumber }} onDropCard={() => {}} />
+        </Box>
+      )}
       {cardNumber === undefined && mathSymbol === undefined && (
-        <Box sx={{ color: '#ccc', fontSize: '16px' }}>將牌拖曳到這裡</Box>
+        <Box sx={{ color: '#ccc', fontSize: '16px', margin: '10px' }}>
+          將牌拖曳到這裡
+        </Box>
       )}
     </Box>
   );

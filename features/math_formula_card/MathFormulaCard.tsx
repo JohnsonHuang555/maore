@@ -17,7 +17,6 @@ import playerCardsReducer, {
   ActionType,
   initialState,
 } from './reducers/playerCardsReducer';
-import { selectedCardSymbolDict } from './components/SelectedCardDict';
 import GameOverModal from './components/GameOverModal';
 import { setShowGameScreen } from '@actions/roomAction';
 import { gameSettingsSelector } from '@selectors/game_settings/mathFormulaSelector';
@@ -29,7 +28,7 @@ import OtherPlayerArea from './components/areas/OtherPlayerArea';
 import PartArea from './components/areas/PartArea';
 import MaoreFlex from '@components/Shared/MaoreFlex';
 import { motion } from 'framer-motion';
-import HandCardArea from './components/areas/HandCardArea';
+import HandCard from './components/HandCard';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
@@ -165,6 +164,15 @@ const MathFormulaCard = () => {
                 type: ActionType.SelectCard,
                 id: selectedElement.id,
                 field: 'create',
+              });
+              break;
+            }
+            case 'cardId': {
+              localDispatch({
+                type: ActionType.SelectCard,
+                id: selectedElement.id,
+                field: 'update',
+                cardId: value,
               });
               break;
             }
@@ -394,11 +402,7 @@ const MathFormulaCard = () => {
             }}
           >
             {state.yourCards.map((card) => (
-              <HandCardArea
-                key={card.id}
-                card={card}
-                onDropCard={handleDropCard}
-              />
+              <HandCard key={card.id} card={card} onDropCard={handleDropCard} />
             ))}
           </MaoreFlex>
           <MaoreFlex

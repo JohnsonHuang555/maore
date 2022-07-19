@@ -1,10 +1,10 @@
 import { Box } from '@mui/material';
 import { IPlayerCard } from 'server/games/math_formula_card/state/PlayerCardState';
-import Card from '../Card';
+import Card from './Card';
 import { useDrag } from 'react-dnd';
 import { ItemType } from 'features/math_formula_card/models/ItemType';
 
-type HandCardAreaProps = {
+type HandCardProps = {
   card: IPlayerCard;
   onDropCard: (id: string, targetId: string) => void;
 };
@@ -13,7 +13,7 @@ interface DropResult {
   id: string;
 }
 
-const HandCardArea = (props: HandCardAreaProps) => {
+const HandCard = (props: HandCardProps) => {
   const { card, onDropCard } = props;
   const [{ isDragging }, dragRef] = useDrag({
     type: ItemType.Card,
@@ -38,4 +38,4 @@ const HandCardArea = (props: HandCardAreaProps) => {
   );
 };
 
-export default HandCardArea;
+export default HandCard;

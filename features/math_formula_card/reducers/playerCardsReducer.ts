@@ -20,6 +20,7 @@ export enum ActionType {
 
 export type SelectedCard = {
   id: string;
+  cardId?: string;
   cardNumber?: number;
   mathSymbol?: MathSymbol;
 };
@@ -82,6 +83,7 @@ type UpdateOthersInfoAction = {
 type SelectCardAction = {
   type: ActionType.SelectCard;
   id: string;
+  cardId?: string;
   cardNumber?: number;
   mathSymbol?: MathSymbol;
   field: 'create' | 'update';
@@ -197,18 +199,20 @@ const reducer = (state = initialState, action: Action): State => {
         }
         case 'update': {
           const cardIndex = newCards.findIndex((card) => card.id === action.id);
-          newCards[cardIndex].cardNumber = action.cardNumber;
-          newCards[cardIndex].mathSymbol = action.mathSymbol;
+          if (action.cardId) {
+            newCards[cardIndex].cardId = action.cardId;
+          }
+          if (action.cardNumber) {
+            newCards[cardIndex].cardNumber = action.cardNumber;
+          }
+          if (action.mathSymbol) {
+            newCards[cardIndex].mathSymbol = action.mathSymbol;
+          }
           break;
         }
       }
-      // const cardIndex = newCards.findIndex((card) => card.id === action.id);
-      // newCards[cardIndex].value = action.value;
-      // if (cardIndex !== -1) {
-      //   newCards.splice(cardIndex, 1);
-      // } else {
-      //   newCards = [...newCards, { id: action.id, value: action.value }];
-      // }
+
+      console.log(newCards);
 
       return {
         ...state,
