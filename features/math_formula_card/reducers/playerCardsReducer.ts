@@ -202,10 +202,10 @@ const reducer = (state = initialState, action: Action): State => {
           if (action.cardId !== undefined) {
             newCards[cardIndex].cardId = action.cardId;
           }
-          if (action.cardNumber) {
+          if (action.cardNumber !== undefined) {
             newCards[cardIndex].cardNumber = action.cardNumber;
           }
-          if (action.mathSymbol) {
+          if (action.mathSymbol !== undefined) {
             newCards[cardIndex].mathSymbol = action.mathSymbol;
           }
           break;

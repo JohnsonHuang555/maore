@@ -14,7 +14,7 @@ export interface ISelectedCard {
   id: string;
   cardId?: string;
   cardNumber?: number;
-  mathSymbol?: MathSymbol;
+  mathSymbol?: MathSymbol | '';
 }
 
 // 所選擇的牌放的位置
@@ -29,7 +29,7 @@ export class SelectedElementsState extends Schema implements ISelectedCard {
   cardNumber?: number;
 
   @type('string')
-  mathSymbol?: MathSymbol;
+  mathSymbol?: MathSymbol | '';
 
   constructor({ id, cardId, cardNumber, mathSymbol }: ISelectedCard) {
     super();

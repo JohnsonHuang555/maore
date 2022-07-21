@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Card as MuiCard, CardActionArea } from '@mui/material';
+import { Box, Card as MuiCard } from '@mui/material';
 import CatHand from './icons/CatHand';
 
 type CardProps = {

@@ -3,12 +3,14 @@ import { useDrop } from 'react-dnd';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 import { ItemType } from '../models/ItemType';
 import HandCard from './HandCard';
+import MathSymbolCard from './MathSymbolCard';
+import { selectedCardSymbolDict } from './SelectedCardDict';
 
 type CardDropZoneProps = {
   id: string;
   cardId?: string;
   cardNumber?: number;
-  mathSymbol?: MathSymbol;
+  mathSymbol?: MathSymbol | '';
   onDropCard: (id: string, targetId: string) => void;
 };
 
@@ -41,13 +43,22 @@ const CardDropZone = (props: CardDropZoneProps) => {
         textAlign: 'center',
       }}
     >
-      {cardNumber && cardId && (
+      {cardNumber !== undefined && cardNumber !== -1 && cardId && (
         <Box sx={{ fontSize: '16px' }}>
           <HandCard card={{ id: cardId, cardNumber }} onDropCard={onDropCard} />
         </Box>
       )}
+      {mathSymbol && cardId && (
+        <Box sx={{ fontSize: '16px' }}>
+          <MathSymbolCard
+            symbolKey={mathSymbol}
+            symbolValue={selectedCardSymbolDict[mathSymbol]}
+            onDropCard={onDropCard}
+          />
+        </Box>
+      )}
       {(cardNumber === undefined || cardNumber === -1) &&
-        mathSymbol === undefined && (
+        (mathSymbol === undefined || mathSymbol === '') && (
           <Box sx={{ color: '#ccc', fontSize: '16px', margin: '10px' }}>
             將牌拖曳到這裡
           </Box>

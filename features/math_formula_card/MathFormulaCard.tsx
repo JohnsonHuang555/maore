@@ -31,6 +31,8 @@ import { motion } from 'framer-motion';
 import HandCard from './components/HandCard';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { selectedCardSymbolDict } from './components/SelectedCardDict';
+import MathSymbolCard from './components/MathSymbolCard';
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
@@ -279,13 +281,21 @@ const MathFormulaCard = () => {
   };
 
   // 拖曳到區塊
-  const handleDropCard = (id: string, targetId: string) => {
-    // 還沒輪到你
+  const handleDropCard = (
+    id: string,
+    targetId: string,
+    mathSymbol?: MathSymbol
+  ) => {
     if (!isYourTurn) {
       enqueueSnackbar('還沒輪到你', { variant: 'warning' });
       return;
     }
-    clientRoom.send(MathFormulaCardMessage.SelectCardNumber, { id, targetId });
+    setNoDrawCardDelay(true);
+    clientRoom.send(MathFormulaCardMessage.SelectCardNumber, {
+      id,
+      targetId,
+      mathSymbol,
+    });
   };
 
   return (
@@ -335,7 +345,7 @@ const MathFormulaCard = () => {
             onDropCard={handleDropCard}
           />
         </MaoreFlex>
-        {/* <MaoreFlex
+        <MaoreFlex
           verticalHorizonCenter
           sx={{
             flexDirection: 'column',
@@ -353,22 +363,16 @@ const MathFormulaCard = () => {
                 }}
               >
                 <Box>
-                  <Card
-                    id={symbol}
-                    value={selectedCardSymbolDict[symbol]}
-                    width="60px"
-                    bgColor="#CCB8B2"
-                    fontColor="#264653"
-                    symbolSize="10px"
-                    iconColor="#FFFFFF"
-                    iconSize="inherit"
-                    onSelect={handleSelectCard}
+                  <MathSymbolCard
+                    symbolKey={symbol as MathSymbol}
+                    symbolValue={selectedCardSymbolDict[symbol]}
+                    onDropCard={handleDropCard}
                   />
                 </Box>
               </Zoom>
             ))}
           </MaoreFlex>
-        </MaoreFlex> */}
+        </MaoreFlex>
         <Box sx={{ textAlign: 'center', fontSize: '30px' }}>
           {isYourTurn ? '你的回合' : '其他玩家回合'}
         </Box>
@@ -405,8 +409,18 @@ const MathFormulaCard = () => {
               width: '70vw',
             }}
           >
-            {state.yourCards.map((card) => (
-              <HandCard key={card.id} card={card} onDropCard={handleDropCard} />
+            {state.yourCards.map((card, index) => (
+              <Zoom
+                key={card.id}
+                in={true}
+                style={{
+                  transitionDelay: noDrawCardDelay ? '0ms' : `${index * 100}ms`,
+                }}
+              >
+                <Box>
+                  <HandCard card={card} onDropCard={handleDropCard} />
+                </Box>
+              </Zoom>
             ))}
           </MaoreFlex>
           <MaoreFlex
