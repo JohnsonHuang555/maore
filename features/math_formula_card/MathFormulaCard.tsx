@@ -154,12 +154,34 @@ const MathFormulaCard = () => {
       }
     };
 
+    clientRoom.state.mathFormulaCard.canUseMathSymbols.onAdd = (card) => {
+      localDispatch({
+        type: ActionType.UpdateCanUseSymbol,
+        id: card.id,
+        symbol: card.mathSymbol,
+        field: 'create',
+      });
+      card.onChange = (changes) => {
+        changes.forEach((change) => {
+          const { field, value } = change;
+          if (field === 'id') {
+            localDispatch({
+              type: ActionType.UpdateCanUseSymbol,
+              symbol: value,
+              field: 'update',
+            });
+          }
+        });
+      };
+    };
+
     clientRoom.state.mathFormulaCard.selectedElements.onAdd = (
       selectedElement
     ) => {
       selectedElement.onChange = (changes) => {
         changes.forEach((change) => {
           const { field, value } = change;
+          console.log(change, 'change...');
           switch (field) {
             case 'id': {
               localDispatch({
@@ -206,6 +228,8 @@ const MathFormulaCard = () => {
       clientRoom.removeAllListeners();
     };
   }, []);
+
+  console.log(state.canUseMathSymbols);
 
   useEffect(() => {
     // 當所有玩家載入完成，即打建立遊戲事件並判斷只打一次
@@ -290,6 +314,7 @@ const MathFormulaCard = () => {
       enqueueSnackbar('還沒輪到你', { variant: 'warning' });
       return;
     }
+    console.log(id, targetId, mathSymbol);
     setNoDrawCardDelay(true);
     clientRoom.send(MathFormulaCardMessage.SelectCardNumber, {
       id,
@@ -354,9 +379,9 @@ const MathFormulaCard = () => {
         >
           <Box sx={{ marginBottom: '10px', fontSize: '24px' }}>數學算式牌</Box>
           <MaoreFlex justifyContent="center" sx={{ gap: '15px' }}>
-            {Object.keys(selectedCardSymbolDict).map((symbol) => (
+            {state.canUseMathSymbols.map((card) => (
               <Zoom
-                key={symbol}
+                key={card.id}
                 in={true}
                 style={{
                   transitionDelay: '500ms',
@@ -364,8 +389,9 @@ const MathFormulaCard = () => {
               >
                 <Box>
                   <MathSymbolCard
-                    symbolKey={symbol as MathSymbol}
-                    symbolValue={selectedCardSymbolDict[symbol]}
+                    id={card.id}
+                    symbolKey={card.mathSymbol}
+                    symbolValue={selectedCardSymbolDict[card.mathSymbol]}
                     onDropCard={handleDropCard}
                   />
                 </Box>

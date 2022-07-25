@@ -69,8 +69,6 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
       this.state.mathFormulaCard.selectedElements[targetIndex].cardId
     ) {
       console.log('FromHandExchange');
-      const cardId = this.state.mathFormulaCard.selectedElements[targetIndex]
-        .cardId as string;
       const cardNumber = this.state.mathFormulaCard.selectedElements[
         targetIndex
       ].cardNumber as number;
@@ -104,6 +102,9 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
         this.state.mathFormulaCard.selectedElements[targetIndex].cardId =
           cardId;
       } else {
+        // 數字卡互換才使用 targetID
+        const cardId = this.state.mathFormulaCard.selectedElements[targetIndex]
+          .cardId as string;
         // 目標是符號
         if (
           this.state.mathFormulaCard.selectedElements[targetIndex].mathSymbol
@@ -248,5 +249,13 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
       this.state.mathFormulaCard.selectedElements[dropZoneIndex].cardId =
         tempCardId;
     }
+
+    this.state.mathFormulaCard.selectedElements.forEach((i) => {
+      console.log(i.id, 'element-id');
+      console.log(i.cardId, 'element-cardId');
+      console.log(i.cardNumber, 'element-cardNumber');
+      console.log(i.mathSymbol, 'element-mathSymbol');
+      console.log('--------------------------------');
+    });
   }
 }

@@ -2,11 +2,10 @@ import { Box } from '@mui/material';
 import Card from './Card';
 import { useDrag } from 'react-dnd';
 import { ItemType } from 'features/math_formula_card/models/ItemType';
-import short from 'short-uuid';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
-import { useState } from 'react';
 
 type MathSymbolCardProps = {
+  id: string;
   symbolKey: MathSymbol;
   symbolValue: React.ReactNode;
   onDropCard: (id: string, targetId: string, mathSymbol: MathSymbol) => void;
@@ -17,8 +16,7 @@ interface DropResult {
 }
 
 const MathSymbolCard = (props: MathSymbolCardProps) => {
-  const { symbolKey, symbolValue, onDropCard } = props;
-  const [id, setId] = useState(`default-${symbolKey}`);
+  const { id, symbolKey, symbolValue, onDropCard } = props;
 
   const [{ isDragging }, dragRef] = useDrag({
     type: ItemType.Card,
@@ -27,7 +25,6 @@ const MathSymbolCard = (props: MathSymbolCardProps) => {
       const dropResult = monitor.getDropResult<DropResult>();
       if (item && dropResult) {
         // drop 後產一個 新的 id
-        setId(short.generate());
         onDropCard(item.id, dropResult.id, symbolKey);
       }
     },

@@ -5,7 +5,11 @@ import { PlayerCardState } from '../state/PlayerCardState';
 import { PlayerInfoState } from '../state/PlayerInfoState';
 import short from 'short-uuid';
 import MathFormulaCard from '../MathFormulaCard';
-import { SelectedElementsState } from '../state/SelectedElementsState';
+import {
+  MathSymbol,
+  SelectedElementsState,
+} from '../state/SelectedElementsState';
+import { MathSymbolCardState } from '../state/MathSymbolCardState';
 
 export default class CreateGameCommand extends Command<MathFormulaCard> {
   execute() {
@@ -23,6 +27,21 @@ export default class CreateGameCommand extends Command<MathFormulaCard> {
         })
       );
     }
+
+    // 產生符號算式牌
+    [
+      MathSymbol.Plus,
+      MathSymbol.Minus,
+      MathSymbol.Times,
+      MathSymbol.Divide,
+    ].forEach((mathSymbol) => {
+      this.room.state.mathFormulaCard.canUseMathSymbols.push(
+        new MathSymbolCardState({
+          id: short.generate(),
+          mathSymbol,
+        })
+      );
+    });
 
     // 發牌 隨機產八張數字牌
     const playerIds = this.room.state.players.map((p) => p.id);

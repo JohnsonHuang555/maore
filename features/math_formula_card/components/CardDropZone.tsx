@@ -51,6 +51,7 @@ const CardDropZone = (props: CardDropZoneProps) => {
       {mathSymbol && cardId && (
         <Box sx={{ fontSize: '16px' }}>
           <MathSymbolCard
+            id={cardId}
             symbolKey={mathSymbol}
             symbolValue={selectedCardSymbolDict[mathSymbol]}
             onDropCard={onDropCard}

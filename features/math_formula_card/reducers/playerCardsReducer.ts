@@ -1,3 +1,4 @@
+import { IMahSymbolCard } from 'server/games/math_formula_card/state/MathSymbolCardState';
 import { IPlayerCard } from 'server/games/math_formula_card/state/PlayerCardState';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 import { OtherPlayerDict, OthersPlayerInfo } from '../models/OtherPlayerCard';
@@ -16,6 +17,7 @@ export enum ActionType {
   CreateAnswer = 'CreateAnswer',
   SortCard = 'SortCard',
   SetWinnerIndex = 'SetWinnerIndex',
+  UpdateCanUseSymbol = 'UpdateCanUseSymbol',
 }
 
 export type SelectedCard = {
@@ -28,6 +30,7 @@ export type SelectedCard = {
 export type State = {
   // 題目
   answer?: number;
+  canUseMathSymbols: IMahSymbolCard[];
   // 你的手牌
   yourCards: IPlayerCard[];
   yourPoint: number;
@@ -40,6 +43,7 @@ export type State = {
 };
 
 export const initialState: State = {
+  canUseMathSymbols: [],
   yourCards: [],
   yourPoint: 0,
   selectedCards: [],
@@ -112,6 +116,13 @@ type SetWinnerIndexAction = {
   winnerIndex: number;
 };
 
+type UpdateCanUseSymbolAction = {
+  type: ActionType.UpdateCanUseSymbol;
+  id?: string;
+  symbol?: MathSymbol;
+  field: 'create' | 'update';
+};
+
 type Action =
   | DrawCardAction
   | UseCardAction
@@ -124,7 +135,8 @@ type Action =
   | UpdateYourPointAction
   | CreateAnswersAction
   | SortCardAction
-  | SetWinnerIndexAction;
+  | SetWinnerIndexAction
+  | UpdateCanUseSymbolAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -261,6 +273,34 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         winnerIndex: action.winnerIndex,
+      };
+    }
+    case ActionType.UpdateCanUseSymbol: {
+      let newCards = [...state.canUseMathSymbols];
+      switch (action.field) {
+        case 'create': {
+          newCards = [
+            ...newCards,
+            {
+              id: action.id as string,
+              mathSymbol: action.symbol as MathSymbol,
+            },
+          ];
+          break;
+        }
+        case 'update': {
+          const cardIndex = newCards.findIndex(
+            (card) => card.mathSymbol === action.symbol
+          );
+          if (cardIndex !== -1) {
+            newCards[cardIndex].id = action.id as string;
+          }
+          break;
+        }
+      }
+      return {
+        ...state,
+        canUseMathSymbols: newCards,
       };
     }
     default: {
