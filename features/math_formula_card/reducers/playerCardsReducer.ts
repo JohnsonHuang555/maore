@@ -224,8 +224,6 @@ const reducer = (state = initialState, action: Action): State => {
         }
       }
 
-      console.log(newCards);
-
       return {
         ...state,
         selectedCards: newCards,

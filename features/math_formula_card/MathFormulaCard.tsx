@@ -167,7 +167,8 @@ const MathFormulaCard = () => {
           if (field === 'id') {
             localDispatch({
               type: ActionType.UpdateCanUseSymbol,
-              symbol: value,
+              id: value,
+              symbol: card.mathSymbol,
               field: 'update',
             });
           }
@@ -181,7 +182,6 @@ const MathFormulaCard = () => {
       selectedElement.onChange = (changes) => {
         changes.forEach((change) => {
           const { field, value } = change;
-          console.log(change, 'change...');
           switch (field) {
             case 'id': {
               localDispatch({
@@ -228,8 +228,6 @@ const MathFormulaCard = () => {
       clientRoom.removeAllListeners();
     };
   }, []);
-
-  console.log(state.canUseMathSymbols);
 
   useEffect(() => {
     // 當所有玩家載入完成，即打建立遊戲事件並判斷只打一次
@@ -314,7 +312,6 @@ const MathFormulaCard = () => {
       enqueueSnackbar('還沒輪到你', { variant: 'warning' });
       return;
     }
-    console.log(id, targetId, mathSymbol);
     setNoDrawCardDelay(true);
     clientRoom.send(MathFormulaCardMessage.SelectCardNumber, {
       id,
@@ -384,7 +381,7 @@ const MathFormulaCard = () => {
                 key={card.id}
                 in={true}
                 style={{
-                  transitionDelay: '500ms',
+                  transitionDelay: '100ms',
                 }}
               >
                 <Box>

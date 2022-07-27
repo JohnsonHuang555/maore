@@ -2,6 +2,7 @@ import { Command } from '@colyseus/command';
 import MathFormulaCard from '../MathFormulaCard';
 import { PlayerCardState } from '../state/PlayerCardState';
 import { MathSymbol } from '../state/SelectedElementsState';
+import short from 'short-uuid';
 
 type Payload = {
   playerId: string;
@@ -13,7 +14,6 @@ type Payload = {
 export default class SelectCardCommand extends Command<MathFormulaCard> {
   execute(data: Payload) {
     const { playerId, cardId, targetId, mathSymbol } = data;
-    console.log(data);
     const playerInfo = this.state.mathFormulaCard.playerInfos.get(playerId);
     if (!playerInfo) {
       throw new Error('playerInfo not found');
@@ -36,15 +36,10 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
     // 判斷是不是拖曳符號卡
     const isMathSymbolCard = !!mathSymbol;
 
-    console.log(dropZoneIndex, 'drop');
-
-    console.log(targetIndex, 'target');
-
     if (
       dropZoneIndex === -1 &&
       !this.state.mathFormulaCard.selectedElements[targetIndex].cardId
     ) {
-      console.log('from hand');
       // FromHand
       if (isMathSymbolCard) {
         // 寫入格子
@@ -53,6 +48,13 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
         // 寫入 id
         this.state.mathFormulaCard.selectedElements[targetIndex].cardId =
           cardId;
+        const canUseMathSymbolIndex =
+          this.state.mathFormulaCard.canUseMathSymbols.findIndex(
+            (s) => s.mathSymbol === mathSymbol
+          );
+        const newId = short.generate();
+        this.state.mathFormulaCard.canUseMathSymbols[canUseMathSymbolIndex].id =
+          newId;
       } else {
         // 寫入格子
         this.state.mathFormulaCard.selectedElements[targetIndex].cardNumber =
@@ -68,7 +70,6 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
       dropZoneIndex === -1 &&
       this.state.mathFormulaCard.selectedElements[targetIndex].cardId
     ) {
-      console.log('FromHandExchange');
       const cardNumber = this.state.mathFormulaCard.selectedElements[
         targetIndex
       ].cardNumber as number;
@@ -101,6 +102,13 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
         // 寫入 id
         this.state.mathFormulaCard.selectedElements[targetIndex].cardId =
           cardId;
+        const canUseMathSymbolIndex =
+          this.state.mathFormulaCard.canUseMathSymbols.findIndex(
+            (s) => s.mathSymbol === mathSymbol
+          );
+        const newId = short.generate();
+        this.state.mathFormulaCard.canUseMathSymbols[canUseMathSymbolIndex].id =
+          newId;
       } else {
         // 數字卡互換才使用 targetID
         const cardId = this.state.mathFormulaCard.selectedElements[targetIndex]
@@ -142,8 +150,6 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
       dropZoneIndex !== -1 &&
       !this.state.mathFormulaCard.selectedElements[targetIndex].cardId
     ) {
-      console.log('ExchangeOnEmptyDropZone');
-
       // ExchangeOnEmptyDropZone
       if (isMathSymbolCard) {
         // 寫入格子
@@ -175,8 +181,6 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
       dropZoneIndex !== -1 &&
       this.state.mathFormulaCard.selectedElements[targetIndex].cardId
     ) {
-      console.log('ExchangeOnDropZone');
-
       // ExchangeOnDropZone
       const tempNumber =
         this.state.mathFormulaCard.selectedElements[targetIndex].cardNumber;
@@ -249,13 +253,5 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
       this.state.mathFormulaCard.selectedElements[dropZoneIndex].cardId =
         tempCardId;
     }
-
-    this.state.mathFormulaCard.selectedElements.forEach((i) => {
-      console.log(i.id, 'element-id');
-      console.log(i.cardId, 'element-cardId');
-      console.log(i.cardNumber, 'element-cardNumber');
-      console.log(i.mathSymbol, 'element-mathSymbol');
-      console.log('--------------------------------');
-    });
   }
 }
