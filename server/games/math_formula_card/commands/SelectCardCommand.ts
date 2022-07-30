@@ -28,10 +28,14 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
       (selectedElement) => selectedElement.cardId === cardId
     );
 
+    console.log(dropZoneIndex, 'drop');
+
     // 目標區塊的 index
     const targetIndex = this.state.mathFormulaCard.selectedElements.findIndex(
       (selectedElement) => selectedElement.id === targetId
     );
+
+    console.log(targetIndex, 'target');
 
     // 判斷是不是拖曳符號卡
     const isMathSymbolCard = !!mathSymbol;
@@ -40,6 +44,7 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
       dropZoneIndex === -1 &&
       !this.state.mathFormulaCard.selectedElements[targetIndex].cardId
     ) {
+      console.log('FromHand');
       // FromHand
       if (isMathSymbolCard) {
         // 寫入格子
@@ -70,6 +75,8 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
       dropZoneIndex === -1 &&
       this.state.mathFormulaCard.selectedElements[targetIndex].cardId
     ) {
+      console.log('FromHandExchange');
+
       const cardNumber = this.state.mathFormulaCard.selectedElements[
         targetIndex
       ].cardNumber as number;
@@ -87,7 +94,9 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
         // 目標是數字
         else if (
           this.state.mathFormulaCard.selectedElements[targetIndex]
-            .cardNumber !== undefined
+            .cardNumber !== undefined &&
+          this.state.mathFormulaCard.selectedElements[targetIndex]
+            .cardNumber !== -1
         ) {
           // 寫入格子
           this.state.mathFormulaCard.selectedElements[targetIndex].mathSymbol =
@@ -150,6 +159,7 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
       dropZoneIndex !== -1 &&
       !this.state.mathFormulaCard.selectedElements[targetIndex].cardId
     ) {
+      console.log('ExchangeOnEmptyDropZone');
       // ExchangeOnEmptyDropZone
       if (isMathSymbolCard) {
         // 寫入格子
@@ -181,6 +191,7 @@ export default class SelectCardCommand extends Command<MathFormulaCard> {
       dropZoneIndex !== -1 &&
       this.state.mathFormulaCard.selectedElements[targetIndex].cardId
     ) {
+      console.log('ExchangeOnDropZone');
       // ExchangeOnDropZone
       const tempNumber =
         this.state.mathFormulaCard.selectedElements[targetIndex].cardNumber;

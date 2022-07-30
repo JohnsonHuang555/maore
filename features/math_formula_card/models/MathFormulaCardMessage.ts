@@ -4,7 +4,8 @@ export enum MathFormulaCardMessage {
   AnswerCorrectly = 'AnswerCorrectly',
   AnsweredWrong = 'AnsweredWrong',
   DrawCard = 'DrawCard',
-  SelectCardNumber = 'SelectCardNumber',
-  SelectMathSymbol = 'SelectMathSymbol',
+  DropCard = 'DropCard',
+  // SelectCardNumber = 'SelectCardNumber',
+  // SelectMathSymbol = 'SelectMathSymbol',
   ClearSelectedCards = 'ClearSelectedCards',
 }

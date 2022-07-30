@@ -10,10 +10,10 @@ import UseCardsCommand from './commands/UseCardsCommand';
 import DrawCardCommand from './commands/DrawCardCommand';
 import RoomState from '../../room/state/RoomState';
 import SelectCardCommand from './commands/SelectCardCommand';
-import ClearSelectedCardsCommand from './commands/ClearSelectedCardsCommand';
+import ClearSelectedElementsCommand from './commands/ClearSelectedElementsCommand';
 import UpdateGameSettingsCommand from './commands/UpdateGameSettingsCommand';
 import { MathSymbol } from './state/SelectedElementsState';
-import SelectSymbolCommand from './commands/SelectSymbolCommand';
+// import SelectSymbolCommand from './commands/SelectSymbolCommand';
 
 export default class MathFormulaCard extends Room<RoomState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -51,7 +51,7 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
     });
 
     this.onMessage(
-      MathFormulaCardMessage.SelectCardNumber,
+      MathFormulaCardMessage.DropCard,
       (
         client,
         message: { id: string; targetId: string; mathSymbol?: MathSymbol }
@@ -65,17 +65,12 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
       }
     );
 
-    this.onMessage(
-      MathFormulaCardMessage.SelectMathSymbol,
-      (_c, message: { mathSymbol: MathSymbol }) => {
-        this.dispatcher.dispatch(new SelectSymbolCommand(), {
-          mathSymbol: message.mathSymbol,
-        });
-      }
-    );
-
-    this.onMessage(MathFormulaCardMessage.ClearSelectedCards, () => {
-      this.dispatcher.dispatch(new ClearSelectedCardsCommand());
+    // 重選
+    this.onMessage(MathFormulaCardMessage.ClearSelectedCards, (client) => {
+      this.dispatcher.dispatch(new ClearSelectedElementsCommand(), {
+        client,
+        isDrawCard: true,
+      });
     });
 
     // 結束遊戲

@@ -4,7 +4,7 @@ import { Client } from 'colyseus';
 import { PlayerCardState } from '../state/PlayerCardState';
 import short from 'short-uuid';
 import Random from '../../../utils/Random';
-import ClearSelectedElementsCommand from './ClearSelectedCardsCommand';
+import ClearSelectedElementsCommand from './ClearSelectedElementsCommand';
 import MathFormulaCard from '../MathFormulaCard';
 
 type Payload = {
@@ -31,6 +31,12 @@ export default class DrawCardCommand extends Command<MathFormulaCard, Payload> {
       })
     );
     // 抽完牌換下一位玩家
-    return [new ClearSelectedElementsCommand(), new NextTurnCommand()];
+    return [
+      new ClearSelectedElementsCommand().setPayload({
+        client,
+        isDrawCard: true,
+      }),
+      new NextTurnCommand(),
+    ];
   }
 }

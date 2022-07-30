@@ -5,29 +5,12 @@ import { PlayerCardState } from '../state/PlayerCardState';
 import { PlayerInfoState } from '../state/PlayerInfoState';
 import short from 'short-uuid';
 import MathFormulaCard from '../MathFormulaCard';
-import {
-  MathSymbol,
-  SelectedElementsState,
-} from '../state/SelectedElementsState';
+import { MathSymbol } from '../state/SelectedElementsState';
 import { MathSymbolCardState } from '../state/MathSymbolCardState';
+import CreateAnswerCommand from './CreateAnswerCommand';
 
 export default class CreateGameCommand extends Command<MathFormulaCard> {
   execute() {
-    // 產隨機答案後寫入 0 ~ 10
-    const answer = Random.getRangeNumbers(0, 10, 1);
-    // 依照模式去產幾個答案，目前先產一個
-    this.room.state.mathFormulaCard.answer = answer[0];
-
-    // 玩家需要使用的牌數
-    const canUseCards = Random.getRangeNumbers(3, 7, 1);
-    for (let i = 0; i < canUseCards[0]; i++) {
-      this.room.state.mathFormulaCard.selectedElements.push(
-        new SelectedElementsState({
-          id: short.generate(),
-        })
-      );
-    }
-
     // 產生符號算式牌
     [
       MathSymbol.Plus,
@@ -61,5 +44,8 @@ export default class CreateGameCommand extends Command<MathFormulaCard> {
         new PlayerInfoState({ cards, point: 0 })
       );
     });
+
+    // 產答案
+    return [new CreateAnswerCommand()];
   }
 }

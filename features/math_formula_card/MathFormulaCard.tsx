@@ -222,6 +222,16 @@ const MathFormulaCard = () => {
         });
       };
     };
+    clientRoom.state.mathFormulaCard.selectedElements.onRemove = (
+      selectedElement
+    ) => {
+      localDispatch({
+        type: ActionType.SelectCard,
+        id: selectedElement.id,
+        field: 'remove',
+      });
+    };
+
     clientRoom.send(RoomMessage.LoadedGame);
 
     return () => {
@@ -256,26 +266,6 @@ const MathFormulaCard = () => {
 
   const renderYourCard = (card: IPlayerCard, index: number) => {
     const isSelected = state.selectedCards.findIndex((s) => s.id === card.id);
-  };
-
-  // 選擇手牌
-  const handleSelectCard = (id: string) => {
-    // 還沒輪到你
-    if (!isYourTurn) {
-      enqueueSnackbar('還沒輪到你', { variant: 'warning' });
-      return;
-    }
-    clientRoom.send(MathFormulaCardMessage.SelectCardNumber, { id });
-  };
-
-  // 選擇符號
-  const handleSelectSymbol = (mathSymbol: MathSymbol) => {
-    // 還沒輪到你
-    if (!isYourTurn) {
-      enqueueSnackbar('還沒輪到你', { variant: 'warning' });
-      return;
-    }
-    clientRoom.send(MathFormulaCardMessage.SelectMathSymbol, { mathSymbol });
   };
 
   const useCards = () => {
@@ -313,11 +303,16 @@ const MathFormulaCard = () => {
       return;
     }
     setNoDrawCardDelay(true);
-    clientRoom.send(MathFormulaCardMessage.SelectCardNumber, {
+    clientRoom.send(MathFormulaCardMessage.DropCard, {
       id,
       targetId,
       mathSymbol,
     });
+  };
+
+  // 檢查答案
+  const handleCheckAnswer = () => {
+    clientRoom.send(MathFormulaCardMessage.UseCards);
   };
 
   return (
@@ -364,7 +359,9 @@ const MathFormulaCard = () => {
           <PartArea
             answer={state.answer}
             selectedCards={state.selectedCards}
+            isYourTurn={isYourTurn}
             onDropCard={handleDropCard}
+            onCheckAnswer={handleCheckAnswer}
           />
         </MaoreFlex>
         <MaoreFlex
@@ -374,7 +371,7 @@ const MathFormulaCard = () => {
             marginBottom: '20px',
           }}
         >
-          <Box sx={{ marginBottom: '10px', fontSize: '24px' }}>數學算式牌</Box>
+          <Box sx={{ marginBottom: '10px', fontSize: '24px' }}>算式牌</Box>
           <MaoreFlex justifyContent="center" sx={{ gap: '15px' }}>
             {state.canUseMathSymbols.map((card) => (
               <Zoom
@@ -484,96 +481,14 @@ const MathFormulaCard = () => {
               disableElevation
               disabled={!isYourTurn || state.winnerIndex !== -1}
               onClick={() => {
-                if (state.selectedCards.length !== 0) {
-                  clientRoom.send(MathFormulaCardMessage.ClearSelectedCards);
-                }
+                enqueueSnackbar('已回到手牌', { variant: 'info' });
+                clientRoom.send(MathFormulaCardMessage.ClearSelectedCards);
               }}
             >
               重選
             </Button>
           </MaoreFlex>
         </MaoreFlex>
-        {/* 操作 */}
-        {/* <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: '20px',
-            gap: '15px',
-          }}
-        >
-          <Box sx={{ marginRight: '20px', fontSize: '26px' }}>
-            勝利條件: {gameSettings?.winnerPoint} 分
-          </Box>
-          <Box sx={{ marginRight: '20px', fontSize: '26px' }}>
-            分數:{' '}
-            <Box component="span" sx={{ color: 'secondary.light' }}>
-              {state.yourPoint}
-            </Box>{' '}
-            分
-          </Box>
-          <Button
-            sx={{
-              minWidth: '100px',
-              backgroundColor: '#555454',
-              ':hover': { backgroundColor: '#454444' },
-            }}
-            variant="contained"
-            size="large"
-            disableElevation
-            disabled={state.winnerIndex !== -1}
-            onClick={() => localDispatch({ type: ActionType.SortCard })}
-          >
-            排序
-          </Button>
-          <Button
-            sx={{
-              minWidth: '100px',
-              backgroundColor: '#555454',
-              ':hover': { backgroundColor: '#454444' },
-            }}
-            variant="contained"
-            size="large"
-            disableElevation
-            disabled={!isYourTurn || state.winnerIndex !== -1}
-            onClick={() => {
-              if (state.selectedCards.length !== 0) {
-                clientRoom.send(MathFormulaCardMessage.ClearSelectedCards);
-              }
-            }}
-          >
-            重選
-          </Button>
-          <Button
-            sx={{
-              minWidth: '150px',
-              backgroundColor: '#095858',
-              ':hover': {
-                backgroundColor: '#044040',
-              },
-            }}
-            variant="contained"
-            size="large"
-            disableElevation
-            color="secondary"
-            disabled={!isYourTurn || state.winnerIndex !== -1}
-            onClick={() => drawCard()}
-          >
-            抽牌並結束回合
-          </Button>
-          <Button
-            sx={{ minWidth: '150px' }}
-            variant="contained"
-            size="large"
-            disableElevation
-            color="secondary"
-            disabled={!isYourTurn || state.winnerIndex !== -1}
-            onClick={() => useCards()}
-          >
-            出牌
-          </Button>
-        </Box> */}
       </MaoreFlex>
     </DndProvider>
   );

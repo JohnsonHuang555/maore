@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box } from '@mui/material';
+import React, { useMemo } from 'react';
+import { Box, Button } from '@mui/material';
 import MaoreFlex from '@components/Shared/MaoreFlex';
 import CardDropZone from '../CardDropZone';
 import { SelectedCard } from 'features/math_formula_card/reducers/playerCardsReducer';
@@ -7,11 +7,27 @@ import { SelectedCard } from 'features/math_formula_card/reducers/playerCardsRed
 type PartAreaProps = {
   answer?: number;
   selectedCards: SelectedCard[];
+  isYourTurn: boolean;
   onDropCard: (id: string, targetId: string) => void;
+  onCheckAnswer: () => void;
 };
 
 const PartArea = (props: PartAreaProps) => {
-  const { answer, selectedCards, onDropCard } = props;
+  const { answer, selectedCards, isYourTurn, onDropCard, onCheckAnswer } =
+    props;
+
+  // 可以使用檢查按鈕
+  const showCheckAnswerBtn = useMemo(() => {
+    const allAnswered = selectedCards.filter(
+      (s) =>
+        (s.cardNumber !== undefined && s.cardNumber !== -1) ||
+        (s.mathSymbol !== undefined && s.mathSymbol !== '')
+    );
+    if (allAnswered.length === selectedCards.length) {
+      return true;
+    }
+    return false;
+  }, [selectedCards]);
 
   return (
     <MaoreFlex
@@ -42,6 +58,26 @@ const PartArea = (props: PartAreaProps) => {
       </MaoreFlex>
       <MaoreFlex alignItems="center" sx={{ fontSize: '80px', flex: '0.3' }}>
         <Box>={answer}</Box>
+        {isYourTurn && (
+          <Button
+            sx={{
+              maxWidth: '200px',
+              marginLeft: '50px',
+              backgroundColor: '#E76F51',
+              ':hover': {
+                backgroundColor: '#c04d30',
+              },
+            }}
+            variant="contained"
+            size="small"
+            disableElevation
+            color="secondary"
+            disabled={!showCheckAnswerBtn}
+            onClick={onCheckAnswer}
+          >
+            檢查算式
+          </Button>
+        )}
       </MaoreFlex>
     </MaoreFlex>
   );

@@ -24,7 +24,7 @@ export type SelectedCard = {
   id: string;
   cardId?: string;
   cardNumber?: number;
-  mathSymbol?: MathSymbol;
+  mathSymbol?: MathSymbol | '';
 };
 
 export type State = {
@@ -90,7 +90,7 @@ type SelectCardAction = {
   cardId?: string;
   cardNumber?: number;
   mathSymbol?: MathSymbol;
-  field: 'create' | 'update';
+  field: 'create' | 'update' | 'remove';
 };
 
 type ClearErrorMsgAction = {
@@ -220,6 +220,11 @@ const reducer = (state = initialState, action: Action): State => {
           if (action.mathSymbol !== undefined) {
             newCards[cardIndex].mathSymbol = action.mathSymbol;
           }
+          break;
+        }
+        case 'remove': {
+          const cardIndex = newCards.findIndex((card) => card.id === action.id);
+          newCards.splice(cardIndex, 1);
           break;
         }
       }
