@@ -51,7 +51,6 @@ const CreateRoomModal = (props: CreateRoomProps) => {
       onClose={onClose}
       aria-labelledby="create-room-dialog-title"
       fullWidth
-      maxWidth="md"
     >
       <DialogTitle id="create-room-dialog-title">建立房間</DialogTitle>
       <DialogContent style={{ overflow: 'hidden' }}>

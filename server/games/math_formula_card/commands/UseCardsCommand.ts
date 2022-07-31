@@ -6,6 +6,7 @@ import DrawCardCommand from './DrawCardCommand';
 import MathFormulaCard from '../MathFormulaCard';
 import CreateAnswerCommand from './CreateAnswerCommand';
 import ClearSelectedElementsCommand from './ClearSelectedElementsCommand';
+import NextTurnCommand from '../../../room/commands/NextTurnCommand';
 
 type Payload = {
   client: Client;
@@ -84,7 +85,7 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
           this.state.winningPlayer = this.state.activePlayer;
         }
 
-        // 抽牌
+        // 產新題目清空答案區抽牌並換下一位玩家
         return [
           new CreateAnswerCommand(),
           new ClearSelectedElementsCommand().setPayload({
@@ -92,6 +93,7 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
             isDrawCard: false,
           }),
           new DrawCardCommand().setPayload({ client }),
+          new NextTurnCommand(),
         ];
       } else {
         client.send(MathFormulaCardMessage.AnsweredWrong);

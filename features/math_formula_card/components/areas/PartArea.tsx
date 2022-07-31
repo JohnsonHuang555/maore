@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Box, Button } from '@mui/material';
-import MaoreFlex from '@components/Shared/MaoreFlex';
+import MaoreFlex from '@components/shared/MaoreFlex';
 import CardDropZone from '../CardDropZone';
 import { SelectedCard } from 'features/math_formula_card/reducers/playerCardsReducer';
 
@@ -16,8 +16,11 @@ const PartArea = (props: PartAreaProps) => {
   const { answer, selectedCards, isYourTurn, onDropCard, onCheckAnswer } =
     props;
 
-  // 可以使用檢查按鈕
+  // 可以使用送出按鈕
   const showCheckAnswerBtn = useMemo(() => {
+    if (selectedCards.length === 0) {
+      return undefined;
+    }
     const allAnswered = selectedCards.filter(
       (s) =>
         (s.cardNumber !== undefined && s.cardNumber !== -1) ||
@@ -72,10 +75,12 @@ const PartArea = (props: PartAreaProps) => {
             size="small"
             disableElevation
             color="secondary"
-            disabled={!showCheckAnswerBtn}
+            disabled={
+              showCheckAnswerBtn === undefined ? true : !showCheckAnswerBtn
+            }
             onClick={onCheckAnswer}
           >
-            檢查算式
+            送出
           </Button>
         )}
       </MaoreFlex>

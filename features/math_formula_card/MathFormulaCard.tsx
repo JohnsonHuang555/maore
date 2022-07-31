@@ -26,13 +26,16 @@ import PlayerAvatar from './components/PlayerAvatar';
 import ControlArea from './components/areas/ControllArea';
 import OtherPlayerArea from './components/areas/OtherPlayerArea';
 import PartArea from './components/areas/PartArea';
-import MaoreFlex from '@components/Shared/MaoreFlex';
+import MaoreFlex from '@components/shared/MaoreFlex';
 import { motion } from 'framer-motion';
 import HandCard from './components/HandCard';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { selectedCardSymbolDict } from './components/SelectedCardDict';
 import MathSymbolCard from './components/MathSymbolCard';
+
+// 每人起手八張牌
+const DEFAULT_CARD_COUNT = 8;
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
@@ -264,23 +267,22 @@ const MathFormulaCard = () => {
     }
   }, [winnerIndex]);
 
-  const renderYourCard = (card: IPlayerCard, index: number) => {
-    const isSelected = state.selectedCards.findIndex((s) => s.id === card.id);
-  };
-
-  const useCards = () => {
-    // 代表已經載入完成，改無延遲時間
-    setNoDrawCardDelay(true);
-    if (!state.selectedCards.length) {
-      enqueueSnackbar('請選牌', { variant: 'warning' });
-      return;
+  useEffect(() => {
+    // 初始化後取消動畫延遲
+    if (state.yourCards.length === DEFAULT_CARD_COUNT && !noDrawCardDelay) {
+      setTimeout(() => {
+        setNoDrawCardDelay(true);
+      }, DEFAULT_CARD_COUNT * 100);
     }
-    clientRoom.send(MathFormulaCardMessage.UseCards);
-  };
+  }, [state.yourCards]);
+
+  useEffect(() => {
+    if (noDrawCardDelay && isYourTurn) {
+      drawCard();
+    }
+  }, [isYourTurn, noDrawCardDelay]);
 
   const drawCard = () => {
-    // 代表已經載入完成，改無延遲時間
-    setNoDrawCardDelay(true);
     clientRoom.send(MathFormulaCardMessage.DrawCard);
   };
 
@@ -302,7 +304,6 @@ const MathFormulaCard = () => {
       enqueueSnackbar('還沒輪到你', { variant: 'warning' });
       return;
     }
-    setNoDrawCardDelay(true);
     clientRoom.send(MathFormulaCardMessage.DropCard, {
       id,
       targetId,
@@ -313,6 +314,22 @@ const MathFormulaCard = () => {
   // 檢查答案
   const handleCheckAnswer = () => {
     clientRoom.send(MathFormulaCardMessage.UseCards);
+  };
+
+  // 結束回合
+  const handleEndPhase = () => {
+    clientRoom.send(MathFormulaCardMessage.EndPhase);
+  };
+
+  // 排序
+  const handleSort = () => {
+    localDispatch({ type: ActionType.SortCard });
+  };
+
+  // 重選
+  const handleReselect = () => {
+    enqueueSnackbar('已回到手牌', { variant: 'info' });
+    clientRoom.send(MathFormulaCardMessage.ClearSelectedCards);
   };
 
   return (
@@ -405,10 +422,11 @@ const MathFormulaCard = () => {
           }}
         >
           <MaoreFlex
-            verticalHorizonCenter
+            alignItems="flex-start"
             sx={{
               width: '15vw',
               flexDirection: 'column',
+              padding: '0 50px',
             }}
           >
             <Box
@@ -444,33 +462,75 @@ const MathFormulaCard = () => {
             ))}
           </MaoreFlex>
           <MaoreFlex
+            alignItems="flex-end"
             sx={{
               flexDirection: 'column',
               width: '15vw',
-              padding: '40px',
+              padding: '0 50px',
             }}
           >
+            {players.length === 1 ? (
+              <Button
+                sx={{
+                  maxWidth: '200px',
+                  minWidth: '150px',
+                  backgroundColor: '#E76F51',
+                  ':hover': {
+                    backgroundColor: '#c04d30',
+                  },
+                  marginBottom: '10px',
+                }}
+                variant="contained"
+                size="large"
+                disableElevation
+                disabled={!isYourTurn || state.winnerIndex !== -1}
+                onClick={() => drawCard()}
+              >
+                抽牌
+              </Button>
+            ) : (
+              <Button
+                sx={{
+                  maxWidth: '200px',
+                  minWidth: '150px',
+                  backgroundColor: '#E76F51',
+                  ':hover': {
+                    backgroundColor: '#c04d30',
+                  },
+                  marginBottom: '10px',
+                }}
+                variant="contained"
+                size="large"
+                disableElevation
+                disabled={!isYourTurn || state.winnerIndex !== -1}
+                onClick={() => handleEndPhase()}
+              >
+                結束回合
+              </Button>
+            )}
             <Button
               sx={{
                 maxWidth: '200px',
-                backgroundColor: '#E76F51',
+                minWidth: '150px',
+                backgroundColor: '#095858',
                 ':hover': {
-                  backgroundColor: '#c04d30',
+                  backgroundColor: '#044040',
                 },
-                marginBottom: '20px',
+                marginBottom: '10px',
               }}
               variant="contained"
               size="large"
               disableElevation
               color="secondary"
               disabled={!isYourTurn || state.winnerIndex !== -1}
-              onClick={() => drawCard()}
+              onClick={() => handleSort()}
             >
-              抽牌
+              排序
             </Button>
             <Button
               sx={{
                 maxWidth: '200px',
+                minWidth: '150px',
                 backgroundColor: '#415761',
                 ':hover': {
                   backgroundColor: '#385968',
@@ -480,10 +540,7 @@ const MathFormulaCard = () => {
               size="large"
               disableElevation
               disabled={!isYourTurn || state.winnerIndex !== -1}
-              onClick={() => {
-                enqueueSnackbar('已回到手牌', { variant: 'info' });
-                clientRoom.send(MathFormulaCardMessage.ClearSelectedCards);
-              }}
+              onClick={() => handleReselect()}
             >
               重選
             </Button>

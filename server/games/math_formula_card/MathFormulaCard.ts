@@ -13,7 +13,7 @@ import SelectCardCommand from './commands/SelectCardCommand';
 import ClearSelectedElementsCommand from './commands/ClearSelectedElementsCommand';
 import UpdateGameSettingsCommand from './commands/UpdateGameSettingsCommand';
 import { MathSymbol } from './state/SelectedElementsState';
-// import SelectSymbolCommand from './commands/SelectSymbolCommand';
+import NextTurnCommand from '../../room/commands/NextTurnCommand';
 
 export default class MathFormulaCard extends Room<RoomState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -25,10 +25,12 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
     this.baseRoom.setMaxClient(4);
     this.setState(new RoomState());
 
+    // 初始化遊戲
     this.onMessage(RoomMessage.CreateGame, () => {
       this.dispatcher.dispatch(new CreateGameCommand());
     });
 
+    // 更新遊戲設定
     this.onMessage(
       RoomMessage.UpdateGameSettings,
       (_c, message: { winnerPoint: number }) => {
@@ -38,6 +40,7 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
       }
     );
 
+    // 出牌
     this.onMessage(MathFormulaCardMessage.UseCards, (client) => {
       this.dispatcher.dispatch(new UseCardsCommand(), {
         client,
@@ -50,6 +53,7 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
       });
     });
 
+    // 拖曳卡到答案區
     this.onMessage(
       MathFormulaCardMessage.DropCard,
       (
@@ -64,6 +68,11 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
         });
       }
     );
+
+    // 結束回合
+    this.onMessage(MathFormulaCardMessage.EndPhase, () => {
+      this.dispatcher.dispatch(new NextTurnCommand());
+    });
 
     // 重選
     this.onMessage(MathFormulaCardMessage.ClearSelectedCards, (client) => {

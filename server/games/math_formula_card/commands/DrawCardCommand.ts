@@ -1,5 +1,4 @@
 import { Command } from '@colyseus/command';
-import NextTurnCommand from '../../../room/commands/NextTurnCommand';
 import { Client } from 'colyseus';
 import { PlayerCardState } from '../state/PlayerCardState';
 import short from 'short-uuid';
@@ -36,7 +35,6 @@ export default class DrawCardCommand extends Command<MathFormulaCard, Payload> {
         client,
         isDrawCard: true,
       }),
-      new NextTurnCommand(),
     ];
   }
 }
