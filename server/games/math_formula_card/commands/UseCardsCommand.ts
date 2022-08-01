@@ -7,6 +7,7 @@ import MathFormulaCard from '../MathFormulaCard';
 import CreateAnswerCommand from './CreateAnswerCommand';
 import ClearSelectedElementsCommand from './ClearSelectedElementsCommand';
 import NextTurnCommand from '../../../room/commands/NextTurnCommand';
+import { MathSymbol } from '../state/SelectedElementsState';
 
 type Payload = {
   client: Client;
@@ -69,13 +70,31 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
           throw new Error('playerInfo not found...');
         }
 
-        // TODO: 分數計算方式要改
-        // 算手牌數量計算分數
-        const cardNumbers = elements.filter(
-          (card) => card.cardNumber !== undefined
-        );
+        // 使用的手牌數量
+        const usedCards = elements.filter(
+          (element) =>
+            element.cardNumber !== undefined && element.cardNumber !== -1
+        ).length;
+
+        // 加減 得一分
+        const plusAndMinusCards = elements.filter(
+          (element) =>
+            element.mathSymbol === MathSymbol.Plus ||
+            element.mathSymbol === MathSymbol.Minus
+        ).length;
+        // 乘 得兩分
+        const timesCards = elements.filter(
+          (element) => element.mathSymbol === MathSymbol.Times
+        ).length;
+        //除 得三分
+        const divideCards = elements.filter(
+          (element) => element.mathSymbol === MathSymbol.Divide
+        ).length;
+
+        const totalPoint =
+          usedCards + plusAndMinusCards + timesCards * 2 + divideCards * 3;
         // 加分
-        playerInfo.point += cardNumbers.length;
+        playerInfo.point += totalPoint;
 
         // 判斷勝利
         if (

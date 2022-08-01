@@ -2,7 +2,12 @@ import { Avatar, Box } from '@mui/material';
 import { userInfoSelector } from '@selectors/appSelector';
 import { useSelector } from 'react-redux';
 
-const PlayerAvatar = () => {
+type PlayerAvatarProp = {
+  point: number;
+};
+
+const PlayerAvatar = (props: PlayerAvatarProp) => {
+  const { point } = props;
   const userInfo = useSelector(userInfoSelector);
   return (
     <Box
@@ -21,7 +26,7 @@ const PlayerAvatar = () => {
         <Box sx={{ fontSize: '26px', marginBottom: '5px' }}>
           {userInfo?.name}
         </Box>
-        <Box sx={{ fontSize: '24px' }}>123 分</Box>
+        <Box sx={{ fontSize: '24px' }}>{point} 分</Box>
       </Box>
     </Box>
   );

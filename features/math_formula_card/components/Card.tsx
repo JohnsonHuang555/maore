@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Card as MuiCard } from '@mui/material';
 import CatHand from './icons/CatHand';
+import MaoreFlex from '@components/shared/MaoreFlex';
 
 type CardProps = {
   id?: string;
@@ -37,6 +38,10 @@ const Card = (props: CardProps) => {
         aspectRatio: '2/3',
         pointerEvents: hideCard ? 'none' : 'auto',
         color: fontColor,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: hideCard ? '2px solid #E9C46A' : '',
       }}
       onClick={() => {
         if (id && onSelect) {
@@ -45,7 +50,9 @@ const Card = (props: CardProps) => {
       }}
     >
       {hideCard ? (
-        <Box />
+        <Box>
+          <CatHand fontSize={iconSize} pathcolor={iconColor} />
+        </Box>
       ) : (
         <Box
           sx={{

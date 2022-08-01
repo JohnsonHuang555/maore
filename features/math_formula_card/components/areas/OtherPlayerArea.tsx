@@ -5,16 +5,17 @@ import OtherPlayer from '../OtherPlayer';
 type OtherPlayerAreaProp = {
   playerId: string;
   playerInfo: OthersPlayerInfo;
+  playerCount: number;
 };
 
 const OtherPlayerArea = (props: OtherPlayerAreaProp) => {
-  const { playerId, playerInfo } = props;
+  const { playerId, playerInfo, playerCount } = props;
   const { remainCardCount, name, point, isNowTurn } = playerInfo;
 
   return (
     <Box sx={{ flex: 1 }} key={playerId}>
       <OtherPlayer
-        playerCount={1} // FIXME:
+        playerCount={playerCount} // FIXME:
         remainCardCount={remainCardCount}
         name={name}
         point={point}

@@ -9,6 +9,9 @@ import { MathSymbol } from '../state/SelectedElementsState';
 import { MathSymbolCardState } from '../state/MathSymbolCardState';
 import CreateAnswerCommand from './CreateAnswerCommand';
 
+// 每人起手八張牌
+export const DEFAULT_CARD_COUNT = 8;
+
 export default class CreateGameCommand extends Command<MathFormulaCard> {
   execute() {
     // 產生符號算式牌
@@ -29,7 +32,7 @@ export default class CreateGameCommand extends Command<MathFormulaCard> {
     // 發牌 隨機產八張數字牌
     const playerIds = this.room.state.players.map((p) => p.id);
     playerIds.forEach((id) => {
-      const fourNumbers = Random.getRangeNumbers(0, 9, 8);
+      const fourNumbers = Random.getRangeNumbers(0, 9, DEFAULT_CARD_COUNT);
       const cards = new ArraySchema<PlayerCardState>();
       fourNumbers.forEach((cardNumber) => {
         cards.push(

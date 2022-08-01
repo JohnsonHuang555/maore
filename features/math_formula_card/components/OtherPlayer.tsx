@@ -13,7 +13,16 @@ const OtherPlayer = (props: OtherPlayerProps) => {
   const renderCards = () => {
     const cards = [];
     for (let i = 0; i < remainCardCount; i++) {
-      cards.push(<Card key={i} hideCard={true} width="50px" />);
+      cards.push(
+        <Card
+          key={i}
+          hideCard={true}
+          iconSize="small"
+          iconColor="#E9C46A"
+          bgColor="#E76F51"
+          width="50px"
+        />
+      );
     }
     return cards;
   };

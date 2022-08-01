@@ -1,5 +1,5 @@
 import { RoomMessage } from '@domain/models/Message';
-import { Box, Button, Zoom } from '@mui/material';
+import { Backdrop, Box, Button, Zoom } from '@mui/material';
 import {
   isAllPlayersLoadedSelector,
   playerIdSelector,
@@ -11,7 +11,6 @@ import {
 import { clientRoomSelector } from '@selectors/serverSelector';
 import { useEffect, useReducer, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { IPlayerCard } from 'server/games/math_formula_card/state/PlayerCardState';
 import { MathFormulaCardMessage } from './models/MathFormulaCardMessage';
 import playerCardsReducer, {
   ActionType,
@@ -27,15 +26,12 @@ import ControlArea from './components/areas/ControllArea';
 import OtherPlayerArea from './components/areas/OtherPlayerArea';
 import PartArea from './components/areas/PartArea';
 import MaoreFlex from '@components/shared/MaoreFlex';
-import { motion } from 'framer-motion';
 import HandCard from './components/HandCard';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { selectedCardSymbolDict } from './components/SelectedCardDict';
 import MathSymbolCard from './components/MathSymbolCard';
-
-// 每人起手八張牌
-const DEFAULT_CARD_COUNT = 8;
+import { DEFAULT_CARD_COUNT } from 'server/games/math_formula_card/commands/CreateGameCommand';
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
@@ -51,6 +47,7 @@ const MathFormulaCard = () => {
   const [state, localDispatch] = useReducer(playerCardsReducer, initialState);
   // 為了做抽牌的動畫，只有第一載入完成時要延遲，用 state 控制
   const [noDrawCardDelay, setNoDrawCardDelay] = useState(false);
+  const [showYourTurnUI, setShowYourTurnUI] = useState(false);
 
   if (!clientRoom) {
     throw new Error('client room not found...');
@@ -282,6 +279,20 @@ const MathFormulaCard = () => {
     }
   }, [isYourTurn, noDrawCardDelay]);
 
+  useEffect(() => {
+    if (isYourTurn) {
+      setShowYourTurnUI(true);
+    }
+  }, [isYourTurn]);
+
+  useEffect(() => {
+    if (showYourTurnUI) {
+      setTimeout(() => {
+        setShowYourTurnUI(false);
+      }, 2000);
+    }
+  }, [showYourTurnUI]);
+
   const drawCard = () => {
     clientRoom.send(MathFormulaCardMessage.DrawCard);
   };
@@ -339,6 +350,14 @@ const MathFormulaCard = () => {
         isWinner={getIsWinner()}
         onConfirm={() => dispatch(setShowGameScreen(false))}
       />
+
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={showYourTurnUI}
+      >
+        <Box sx={{ fontSize: '40px' }}>輪到你了</Box>
+      </Backdrop>
+
       <MaoreFlex
         sx={{
           width: '100%',
@@ -362,6 +381,7 @@ const MathFormulaCard = () => {
             <OtherPlayerArea
               playerId={playerId}
               playerInfo={state.otherPlayerDict[playerId]}
+              playerCount={players.length}
             />
           ))}
         </MaoreFlex>
@@ -437,7 +457,7 @@ const MathFormulaCard = () => {
             >
               勝利條件: {gameSettings?.winnerPoint} 分
             </Box>
-            <PlayerAvatar />
+            <PlayerAvatar point={state.yourPoint} />
           </MaoreFlex>
           <MaoreFlex
             justifyContent="center"
@@ -452,7 +472,9 @@ const MathFormulaCard = () => {
                 key={card.id}
                 in={true}
                 style={{
-                  transitionDelay: noDrawCardDelay ? '0ms' : `${index * 100}ms`,
+                  transitionDelay: noDrawCardDelay
+                    ? '100ms'
+                    : `${index * 100}ms`,
                 }}
               >
                 <Box>

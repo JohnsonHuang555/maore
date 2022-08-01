@@ -20,6 +20,7 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { getAuth, signOut } from 'firebase/auth';
 import { useSnackbar } from 'notistack';
+import Logo from 'components/icons/logo';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -99,7 +100,7 @@ const Header = () => {
             }}
             onClick={() => (location.href = '/')}
           >
-            maore
+            <Logo />
           </Typography>
           <Box sx={{ flexGrow: 1 }}></Box>
           {/* TODO: 手機板 */}
