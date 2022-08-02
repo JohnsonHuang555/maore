@@ -23,9 +23,7 @@ const PlayerAvatar = (props: PlayerAvatarProp) => {
           margin: '0 30px',
         }}
       >
-        <Box sx={{ fontSize: '26px', marginBottom: '5px' }}>
-          {userInfo?.name}
-        </Box>
+        <Box sx={{ fontSize: '26px', marginBottom: '5px' }}>你</Box>
         <Box sx={{ fontSize: '24px' }}>{point} 分</Box>
       </Box>
     </Box>

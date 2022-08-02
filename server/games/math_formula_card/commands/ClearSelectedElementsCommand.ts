@@ -32,8 +32,8 @@ export default class ClearSelectedElementsCommand extends Command<MathFormulaCar
             cardNumber: element.cardNumber,
           })
         );
-        element.cardId = '';
       }
+      element.cardId = '';
       element.cardNumber = -1;
       element.mathSymbol = '';
     });

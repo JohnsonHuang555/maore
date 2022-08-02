@@ -192,6 +192,7 @@ const MathFormulaCard = () => {
               break;
             }
             case 'cardId': {
+              console.log('update id', value);
               localDispatch({
                 type: ActionType.SelectCard,
                 id: selectedElement.id,
@@ -274,12 +275,6 @@ const MathFormulaCard = () => {
   }, [state.yourCards]);
 
   useEffect(() => {
-    if (noDrawCardDelay && isYourTurn) {
-      drawCard();
-    }
-  }, [isYourTurn, noDrawCardDelay]);
-
-  useEffect(() => {
     if (isYourTurn) {
       setShowYourTurnUI(true);
     }
@@ -289,6 +284,7 @@ const MathFormulaCard = () => {
     if (showYourTurnUI) {
       setTimeout(() => {
         setShowYourTurnUI(false);
+        drawCard();
       }, 2000);
     }
   }, [showYourTurnUI]);
