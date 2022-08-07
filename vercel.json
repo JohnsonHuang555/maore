@@ -1,5 +1,4 @@
 {
-  "rewrites": [{ "source": "/api/(.*)", "destination": "/api/404.js" }],
   "build": {
     "env": {
       "FIREBASE_API_KEY": "@firebase-api-key",
