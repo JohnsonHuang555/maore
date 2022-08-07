@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Card as MuiCard } from '@mui/material';
 import CatHand from './icons/CatHand';
-import MaoreFlex from '@components/shared/MaoreFlex';
 
 type CardProps = {
   id?: string;

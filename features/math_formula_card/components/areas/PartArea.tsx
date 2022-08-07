@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { Box, Button } from '@mui/material';
-import MaoreFlex from '@components/shared/MaoreFlex';
 import CardDropZone from '../CardDropZone';
 import { SelectedCard } from 'features/math_formula_card/reducers/playerCardsReducer';
+import MaoreFlex from '@components/shared/MaoreFlex';
 
 type PartAreaProps = {
   answer?: number;
