@@ -1,6 +1,6 @@
+import { NextApiResponse, NextApiRequest } from 'next';
 import GameFactory from '@domain/factories/GameFactory';
 import { Game } from '@domain/models/Game';
-import { NextApiResponse, NextApiRequest } from 'next';
 import { Games } from 'server/data/Game';
 
 export default function handler(
