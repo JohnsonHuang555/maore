@@ -47,7 +47,7 @@ const Phaser = (props: PhaserProps) => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: '#1d1d1d',
+          backgroundColor: '#2a434f',
         }}
         ref={gameRef}
         initialize={initialize}

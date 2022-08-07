@@ -84,7 +84,7 @@ const Header = () => {
         onGuestLogin={onGuestLogin}
       />
       <AppBar position="static">
-        <Toolbar sx={{ backgroundColor: '#1d1d1d' }}>
+        <Toolbar sx={{ backgroundColor: '#2a434f' }}>
           <Typography
             variant="h6"
             noWrap

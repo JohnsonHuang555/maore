@@ -22,8 +22,6 @@ const Home = () => {
     fetchGames
   );
 
-  console.log(games);
-
   useEffect(() => {
     if (client) {
       return;
@@ -50,18 +48,27 @@ const Home = () => {
             marginBottom: '20px',
           }}
         >
-          <Image
+          <Box
+            sx={{
+              backgroundImage: `url('/intro-picture.jpg')`,
+              height: '100%',
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+            }}
+          />
+          {/* <Image
             src="/intro-picture.jpg"
             alt="Picture of the author"
             layout="fill"
             objectFit="cover"
-          />
+          /> */}
           <Box
             sx={{
               width: '100%',
               height: '100%',
               position: 'absolute',
               background: 'rgba(0, 0, 0, 0.5)',
+              top: 0,
             }}
           />
           <Box

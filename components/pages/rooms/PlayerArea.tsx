@@ -95,7 +95,7 @@ const PlayerArea = (props: PlayerAreaProps) => {
                   marginBottom: '6px',
                   backgroundColor: isNowPlayer(player.id)
                     ? '#342f29'
-                    : '#1d1d1d',
+                    : '#2a434f',
                 }}
               >
                 {player.name}

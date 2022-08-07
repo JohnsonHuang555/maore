@@ -15,7 +15,7 @@ const GameCard = (props: GameCardProp) => {
   const { game, onSelectGame } = props;
 
   return (
-    <Card sx={{ bgcolor: '#1d1d1d' }} variant="outlined">
+    <Card sx={{ bgcolor: '#2a434f' }} variant="outlined">
       <CardMedia
         component="img"
         height="194"

@@ -24,7 +24,7 @@ const WithoutFramework = (props: WithoutFrameworkProps) => {
         width: '100%',
         height: '100%',
         top: '0',
-        background: '#1d1d1d',
+        background: '#2a434f',
         zIndex: '999',
       }}
     >

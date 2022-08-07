@@ -13,10 +13,10 @@ const Logo = () => {
     >
       <style type="text/css">
         {`.st0{display:none;}
-	.st1{display:none;fill:#B04327;}
-	.st2{fill:#B04327;stroke:#B04327;stroke-width:3;stroke-miterlimit:10;}
-	.st3{fill:#B04327;}
-	.st4{fill:#B04327;stroke:#B04327;stroke-miterlimit:10;}`}
+	.st1{display:none;fill:#FFF;}
+	.st2{fill:#FFF;stroke:#FFF;stroke-width:3;stroke-miterlimit:10;}
+	.st3{fill:#FFF;}
+	.st4{fill:#FFF;stroke:#FFF;stroke-miterlimit:10;}`}
       </style>
       <g id="圖層_1" className="st0">
         <image
