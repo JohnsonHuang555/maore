@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Box, Button } from '@mui/material';
 import CardDropZone from '../CardDropZone';
 import { SelectedCard } from 'features/math_formula_card/reducers/playerCardsReducer';
-import MaoreFlex from '@components/shared/MaoreFlex';
+import MaoreFlex from '@components/maore/MaoreFlex';
 
 type PartAreaProps = {
   answer?: number;

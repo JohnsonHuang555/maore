@@ -37,7 +37,7 @@ const Games = () => {
 
   // get current game
   const { data: game, error } = useSWR<Game, Error>(
-    gamePack ? `/api/game/${gamePack}` : null,
+    gamePack ? `/api/games/${gamePack}` : null,
     fetchGame
   );
 

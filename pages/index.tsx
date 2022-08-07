@@ -22,6 +22,8 @@ const Home = () => {
     fetchGames
   );
 
+  console.log(games);
+
   useEffect(() => {
     if (client) {
       return;

@@ -25,7 +25,7 @@ import PlayerAvatar from './components/PlayerAvatar';
 import ControlArea from './components/areas/ControllArea';
 import OtherPlayerArea from './components/areas/OtherPlayerArea';
 import PartArea from './components/areas/PartArea';
-import MaoreFlex from '@components/shared/MaoreFlex';
+import MaoreFlex from '@components/maore/MaoreFlex';
 import HandCard from './components/HandCard';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
