@@ -4,12 +4,12 @@ import http from 'http';
 import { Server } from '@colyseus/core';
 import { WebSocketTransport } from '@colyseus/ws-transport';
 import { monitor } from '@colyseus/monitor';
-import ChineseChess from './games/chinese_chess/ChineseChess';
+// import ChineseChess from './games/chinese_chess/ChineseChess';
 import MathFormulaCard from './games/math_formula_card/MathFormulaCard';
-import GameRepository from './services/game/repository/GemeRepository';
-import { Games } from './data/Game';
-import GameUseCase from './services/game/usecase/GameUseCase';
-import GameDelivery from './services/game/delivery/GameDelivery';
+// import GameRepository from './services/game/repository/GemeRepository';
+// import { Games } from './data/Game';
+// import GameUseCase from './services/game/usecase/GameUseCase';
+// import GameDelivery from './services/game/delivery/GameDelivery';
 import { GameList } from './domain/Game';
 
 const port = parseInt(process.env.PORT || '3000', 10);
@@ -30,9 +30,9 @@ nextApp.prepare().then(() => {
   });
 
   // 遊戲相關 Service
-  const gameRepo = new GameRepository(Games);
-  const gameUseCase = new GameUseCase(gameRepo);
-  new GameDelivery(app, gameUseCase);
+  // const gameRepo = new GameRepository(Games);
+  // const gameUseCase = new GameUseCase(gameRepo);
+  // new GameDelivery(app, gameUseCase);
 
   // 載入所有遊戲 instance
   // gameServer
