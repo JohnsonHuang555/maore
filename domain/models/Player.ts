@@ -7,4 +7,5 @@ export type Player = {
   playerOrder: number;
   gameLoaded: boolean;
   group: string;
+  photoURL: string;
 };

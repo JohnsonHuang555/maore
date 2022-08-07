@@ -10,10 +10,10 @@ import UseCardsCommand from './commands/UseCardsCommand';
 import DrawCardCommand from './commands/DrawCardCommand';
 import RoomState from '../../room/state/RoomState';
 import SelectCardCommand from './commands/SelectCardCommand';
-import ClearSelectedCardsCommand from './commands/ClearSelectedCardsCommand';
+import ClearSelectedElementsCommand from './commands/ClearSelectedElementsCommand';
 import UpdateGameSettingsCommand from './commands/UpdateGameSettingsCommand';
 import { MathSymbol } from './state/SelectedElementsState';
-import SelectSymbolCommand from './commands/SelectSymbolCommand';
+import NextTurnCommand from '../../room/commands/NextTurnCommand';
 
 export default class MathFormulaCard extends Room<RoomState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -25,10 +25,12 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
     this.baseRoom.setMaxClient(4);
     this.setState(new RoomState());
 
+    // 初始化遊戲
     this.onMessage(RoomMessage.CreateGame, () => {
       this.dispatcher.dispatch(new CreateGameCommand());
     });
 
+    // 更新遊戲設定
     this.onMessage(
       RoomMessage.UpdateGameSettings,
       (_c, message: { winnerPoint: number }) => {
@@ -38,6 +40,7 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
       }
     );
 
+    // 出牌
     this.onMessage(MathFormulaCardMessage.UseCards, (client) => {
       this.dispatcher.dispatch(new UseCardsCommand(), {
         client,
@@ -50,27 +53,33 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
       });
     });
 
+    // 拖曳卡到答案區
     this.onMessage(
-      MathFormulaCardMessage.SelectCardNumber,
-      (client, message: { id: string }) => {
+      MathFormulaCardMessage.DropCard,
+      (
+        client,
+        message: { id: string; targetId: string; mathSymbol?: MathSymbol }
+      ) => {
         this.dispatcher.dispatch(new SelectCardCommand(), {
           playerId: client.id,
           cardId: message.id,
-        });
-      }
-    );
-
-    this.onMessage(
-      MathFormulaCardMessage.SelectMathSymbol,
-      (_c, message: { mathSymbol: MathSymbol }) => {
-        this.dispatcher.dispatch(new SelectSymbolCommand(), {
+          targetId: message.targetId,
           mathSymbol: message.mathSymbol,
         });
       }
     );
 
-    this.onMessage(MathFormulaCardMessage.ClearSelectedCards, () => {
-      this.dispatcher.dispatch(new ClearSelectedCardsCommand());
+    // 結束回合
+    this.onMessage(MathFormulaCardMessage.EndPhase, () => {
+      this.dispatcher.dispatch(new NextTurnCommand());
+    });
+
+    // 重選
+    this.onMessage(MathFormulaCardMessage.ClearSelectedCards, (client) => {
+      this.dispatcher.dispatch(new ClearSelectedElementsCommand(), {
+        client,
+        isDrawCard: true,
+      });
     });
 
     // 結束遊戲

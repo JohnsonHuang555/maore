@@ -65,7 +65,7 @@ const Rooms = () => {
   useEffect(() => {
     if (!loading && !createdRoomId) {
       if (userInfo && isLogin) {
-        dispatch(joinRoom(String(roomId), userInfo.name));
+        dispatch(joinRoom(String(roomId), userInfo.name, userInfo.photoURL));
       } else {
         dispatch(setShowLoginModal(true));
       }
@@ -115,7 +115,10 @@ const Rooms = () => {
         <Grid container spacing={2} sx={{ marginTop: '0', height: '100%' }}>
           <Grid
             item
+            xl={9}
             lg={9}
+            md={8}
+            sm={6}
             xs={12}
             sx={{ display: 'flex', flexDirection: 'column' }}
           >
@@ -126,7 +129,7 @@ const Rooms = () => {
             />
             <ChatArea messages={messages} />
           </Grid>
-          <Grid item lg={3} xs={12}>
+          <Grid item xl={3} lg={3} md={4} sm={6} xs={12}>
             <SettingArea
               gamePack={roomInfo.gamePack as GameList}
               // gameModes={game?.modes || []}

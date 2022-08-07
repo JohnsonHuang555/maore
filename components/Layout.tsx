@@ -7,7 +7,7 @@ type LayoutProps = {
 };
 
 const Layout = (props: LayoutProps) => {
-  const { children, title = 'moare' } = props;
+  const { children, title = 'maore' } = props;
 
   return (
     <>

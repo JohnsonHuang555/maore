@@ -76,6 +76,7 @@ const Games = () => {
           roomTitle,
           playerName: userInfo.name,
           gamePack: gamePack as GameList,
+          photoURL: userInfo.photoURL,
         })
       );
     } catch (err: any) {

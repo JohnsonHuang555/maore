@@ -20,6 +20,7 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { getAuth, signOut } from 'firebase/auth';
 import { useSnackbar } from 'notistack';
+import Logo from 'components/icons/logo';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -37,7 +38,7 @@ const Header = () => {
       const { displayName, photoURL } = user;
       const userInfo: User = {
         name: displayName || '',
-        photo: photoURL || '',
+        photoURL: photoURL || '',
       };
       dispatch(login(userInfo));
     }
@@ -99,7 +100,7 @@ const Header = () => {
             }}
             onClick={() => (location.href = '/')}
           >
-            maore
+            <Logo />
           </Typography>
           <Box sx={{ flexGrow: 1 }}></Box>
           {/* TODO: 手機板 */}
@@ -163,7 +164,7 @@ const Header = () => {
                 onClick={handleOpenUserMenu}
               >
                 <IconButton sx={{ p: 0, mr: 2 }}>
-                  <Avatar alt={userInfo.name} src={userInfo.photo}></Avatar>
+                  <Avatar alt={userInfo.name} src={userInfo.photoURL}></Avatar>
                 </IconButton>
                 <Box sx={{ fontSize: '22px' }}>{userInfo.name}</Box>
               </Box>

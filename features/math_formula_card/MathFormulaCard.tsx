@@ -1,15 +1,5 @@
 import { RoomMessage } from '@domain/models/Message';
-import {
-  Box,
-  Button,
-  CardActionArea,
-  Grid,
-  IconButton,
-  Stack,
-  Tooltip,
-  Zoom,
-  Card as MuiCard,
-} from '@mui/material';
+import { Backdrop, Box, Button, Zoom } from '@mui/material';
 import {
   isAllPlayersLoadedSelector,
   playerIdSelector,
@@ -21,26 +11,27 @@ import {
 import { clientRoomSelector } from '@selectors/serverSelector';
 import { useEffect, useReducer, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { IPlayerCard } from 'server/games/math_formula_card/state/PlayerCardState';
-import Card from './components/Card';
-import OtherPlayer from './components/OtherPlayer';
 import { MathFormulaCardMessage } from './models/MathFormulaCardMessage';
 import playerCardsReducer, {
   ActionType,
   initialState,
 } from './reducers/playerCardsReducer';
-import {
-  selectedCardSymbolDict,
-  selectedCardLabelDict,
-  getSelectedCardLabel,
-} from './components/SelectedCardDict';
 import GameOverModal from './components/GameOverModal';
 import { setShowGameScreen } from '@actions/roomAction';
 import { gameSettingsSelector } from '@selectors/game_settings/mathFormulaSelector';
 import { useSnackbar } from 'notistack';
-import LogoutIcon from '@mui/icons-material/Logout';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
+import PlayerAvatar from './components/PlayerAvatar';
+import ControlArea from './components/areas/ControllArea';
+import OtherPlayerArea from './components/areas/OtherPlayerArea';
+import PartArea from './components/areas/PartArea';
+import MaoreFlex from '@components/shared/MaoreFlex';
+import HandCard from './components/HandCard';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { selectedCardSymbolDict } from './components/SelectedCardDict';
+import MathSymbolCard from './components/MathSymbolCard';
+import { DEFAULT_CARD_COUNT } from 'server/games/math_formula_card/commands/CreateGameCommand';
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
@@ -56,6 +47,7 @@ const MathFormulaCard = () => {
   const [state, localDispatch] = useReducer(playerCardsReducer, initialState);
   // 為了做抽牌的動畫，只有第一載入完成時要延遲，用 state 控制
   const [noDrawCardDelay, setNoDrawCardDelay] = useState(false);
+  const [showYourTurnUI, setShowYourTurnUI] = useState(false);
 
   if (!clientRoom) {
     throw new Error('client room not found...');
@@ -162,24 +154,83 @@ const MathFormulaCard = () => {
       }
     };
 
+    clientRoom.state.mathFormulaCard.canUseMathSymbols.onAdd = (card) => {
+      localDispatch({
+        type: ActionType.UpdateCanUseSymbol,
+        id: card.id,
+        symbol: card.mathSymbol,
+        field: 'create',
+      });
+      card.onChange = (changes) => {
+        changes.forEach((change) => {
+          const { field, value } = change;
+          if (field === 'id') {
+            localDispatch({
+              type: ActionType.UpdateCanUseSymbol,
+              id: value,
+              symbol: card.mathSymbol,
+              field: 'update',
+            });
+          }
+        });
+      };
+    };
+
     clientRoom.state.mathFormulaCard.selectedElements.onAdd = (
       selectedElement
     ) => {
-      const { id, cardNumber, mathSymbol } = selectedElement;
-      const value = mathSymbol || cardNumber;
-      if (value !== undefined) {
-        localDispatch({ type: ActionType.SelectCard, id, value });
-      }
+      selectedElement.onChange = (changes) => {
+        changes.forEach((change) => {
+          const { field, value } = change;
+          switch (field) {
+            case 'id': {
+              localDispatch({
+                type: ActionType.SelectCard,
+                id: selectedElement.id,
+                field: 'create',
+              });
+              break;
+            }
+            case 'cardId': {
+              console.log('update id', value);
+              localDispatch({
+                type: ActionType.SelectCard,
+                id: selectedElement.id,
+                field: 'update',
+                cardId: value,
+              });
+              break;
+            }
+            case 'cardNumber': {
+              localDispatch({
+                type: ActionType.SelectCard,
+                id: selectedElement.id,
+                field: 'update',
+                cardNumber: value,
+              });
+              break;
+            }
+            case 'mathSymbol': {
+              localDispatch({
+                type: ActionType.SelectCard,
+                id: selectedElement.id,
+                field: 'update',
+                mathSymbol: value,
+              });
+              break;
+            }
+          }
+        });
+      };
     };
-
     clientRoom.state.mathFormulaCard.selectedElements.onRemove = (
       selectedElement
     ) => {
-      const { id, cardNumber, mathSymbol } = selectedElement;
-      const value = mathSymbol || cardNumber;
-      if (value !== undefined) {
-        localDispatch({ type: ActionType.SelectCard, id, value });
-      }
+      localDispatch({
+        type: ActionType.SelectCard,
+        id: selectedElement.id,
+        field: 'remove',
+      });
     };
 
     clientRoom.send(RoomMessage.LoadedGame);
@@ -214,86 +265,31 @@ const MathFormulaCard = () => {
     }
   }, [winnerIndex]);
 
-  const renderOtherPlayer = (other: string) => {
-    const { remainCardCount, name, point, isNowTurn } =
-      state.otherPlayerDict[other];
-    return (
-      <Box sx={{ flex: 1 }} key={other}>
-        <OtherPlayer
-          playerCount={players.length}
-          remainCardCount={remainCardCount}
-          name={name}
-          point={point}
-          isNowTurn={isNowTurn}
-        />
-      </Box>
-    );
-  };
-
-  const renderYourCard = (card: IPlayerCard, index: number) => {
-    const isSelected = state.selectedCards.findIndex((s) => s.id === card.id);
-    return (
-      <Zoom
-        key={card.id}
-        in={true}
-        style={{
-          transitionDelay: noDrawCardDelay ? '0ms' : `${index * 100}ms`,
-        }}
-      >
-        <Box
-          sx={{
-            '.MuiPaper-elevation': {
-              border:
-                isSelected !== -1 ? '5px solid #b95e47' : '5px solid #525252',
-            },
-          }}
-        >
-          <Card
-            key={card.id}
-            id={card.id}
-            value={card.cardNumber}
-            width="6rem"
-            height="100%"
-            onSelect={handleSelectCard}
-          />
-        </Box>
-      </Zoom>
-    );
-  };
-
-  // 選擇手牌
-  const handleSelectCard = (id: string) => {
-    // 還沒輪到你
-    if (!isYourTurn) {
-      enqueueSnackbar('還沒輪到你', { variant: 'warning' });
-      return;
+  useEffect(() => {
+    // 初始化後取消動畫延遲
+    if (state.yourCards.length === DEFAULT_CARD_COUNT && !noDrawCardDelay) {
+      setTimeout(() => {
+        setNoDrawCardDelay(true);
+      }, DEFAULT_CARD_COUNT * 100);
     }
-    clientRoom.send(MathFormulaCardMessage.SelectCardNumber, { id });
-  };
+  }, [state.yourCards]);
 
-  // 選擇符號
-  const handleSelectSymbol = (mathSymbol: MathSymbol) => {
-    // 還沒輪到你
-    if (!isYourTurn) {
-      enqueueSnackbar('還沒輪到你', { variant: 'warning' });
-      return;
+  useEffect(() => {
+    if (isYourTurn) {
+      setShowYourTurnUI(true);
     }
-    clientRoom.send(MathFormulaCardMessage.SelectMathSymbol, { mathSymbol });
-  };
+  }, [isYourTurn]);
 
-  const useCards = () => {
-    // 代表已經載入完成，改無延遲時間
-    setNoDrawCardDelay(true);
-    if (!state.selectedCards.length) {
-      enqueueSnackbar('請選牌', { variant: 'warning' });
-      return;
+  useEffect(() => {
+    if (showYourTurnUI) {
+      setTimeout(() => {
+        setShowYourTurnUI(false);
+        drawCard();
+      }, 2000);
     }
-    clientRoom.send(MathFormulaCardMessage.UseCards);
-  };
+  }, [showYourTurnUI]);
 
   const drawCard = () => {
-    // 代表已經載入完成，改無延遲時間
-    setNoDrawCardDelay(true);
     clientRoom.send(MathFormulaCardMessage.DrawCard);
   };
 
@@ -305,262 +301,271 @@ const MathFormulaCard = () => {
     return false;
   };
 
+  // 拖曳到區塊
+  const handleDropCard = (
+    id: string,
+    targetId: string,
+    mathSymbol?: MathSymbol
+  ) => {
+    if (!isYourTurn) {
+      enqueueSnackbar('還沒輪到你', { variant: 'warning' });
+      return;
+    }
+    clientRoom.send(MathFormulaCardMessage.DropCard, {
+      id,
+      targetId,
+      mathSymbol,
+    });
+  };
+
+  // 檢查答案
+  const handleCheckAnswer = () => {
+    clientRoom.send(MathFormulaCardMessage.UseCards);
+  };
+
+  // 結束回合
+  const handleEndPhase = () => {
+    clientRoom.send(MathFormulaCardMessage.EndPhase);
+  };
+
+  // 排序
+  const handleSort = () => {
+    localDispatch({ type: ActionType.SortCard });
+  };
+
+  // 重選
+  const handleReselect = () => {
+    enqueueSnackbar('已回到手牌', { variant: 'info' });
+    clientRoom.send(MathFormulaCardMessage.ClearSelectedCards);
+  };
+
   return (
-    <>
+    <DndProvider backend={HTML5Backend}>
       <GameOverModal
         show={state.winnerIndex !== -1}
         isWinner={getIsWinner()}
         onConfirm={() => dispatch(setShowGameScreen(false))}
       />
-      <Box
+
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={showYourTurnUI}
+      >
+        <Box sx={{ fontSize: '40px' }}>輪到你了</Box>
+      </Backdrop>
+
+      <MaoreFlex
         sx={{
           width: '100%',
           height: '100%',
-          display: 'flex',
           flexDirection: 'column',
           position: 'relative',
+          background: '#264653',
         }}
       >
-        <Box sx={{ position: 'absolute', top: '25px', right: '50px' }}>
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <Tooltip title="規則說明">
-              <IconButton size="large" aria-label="leave_room">
-                <DescriptionOutlinedIcon fontSize="inherit" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="離開遊戲">
-              <IconButton
-                size="large"
-                aria-label="leave_room"
-                onClick={() => (location.href = '/games/math-formula-card')}
-              >
-                <LogoutIcon fontSize="inherit" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        </Box>
+        {/* 操作區塊 */}
+        <ControlArea onRuleClick={() => {}} />
         {/* 其他玩家區塊 */}
-        <Box
+        <MaoreFlex
+          alignItems="center"
           sx={{
             flexBasis: '15%',
-            display: 'flex',
-            alignItems: 'center',
             gap: '20px',
           }}
         >
-          {Object.keys(state.otherPlayerDict).map((other) =>
-            renderOtherPlayer(other)
-          )}
-        </Box>
+          {Object.keys(state.otherPlayerDict).map((playerId) => (
+            <OtherPlayerArea
+              playerId={playerId}
+              playerInfo={state.otherPlayerDict[playerId]}
+              playerCount={players.length}
+            />
+          ))}
+        </MaoreFlex>
         {/* 答案區塊 */}
-        <Box
+        <MaoreFlex
+          verticalHorizonCenter
           sx={{
             flex: 1,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            position: 'relative',
+            flexDirection: 'column',
           }}
         >
-          <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
-            {state.selectedCards.length > 0 && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  fontSize: '80px',
-                  background: 'rgba(0,0,0,0.2)',
-                  padding: '10px 20px',
-                  marginTop: '50px',
-                  marginRight: '20px',
-                  gap: '10px',
-                }}
-              >
-                {state.selectedCards.map((selectedCard, index) => (
-                  <Box
-                    key={index}
-                    sx={{ display: 'flex', alignItems: 'center' }}
-                  >
-                    {getSelectedCardLabel(selectedCard.value)}
-                  </Box>
-                ))}
-              </Box>
-            )}
-          </Box>
-          <Box
-            sx={{
-              flex: 1,
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ fontSize: '26px' }}>題目</Box>
-              <Box sx={{ fontSize: '120px' }}>={state.answer}</Box>
-            </Box>
-            <Box sx={{ marginTop: '150px', marginRight: '50px' }}>
-              <Box
-                sx={{
-                  textAlign: 'center',
-                  marginBottom: '10px',
-                  fontSize: '26px',
-                }}
-              >
-                數學符號
-              </Box>
-              <Grid container spacing={1} sx={{ width: '176px' }}>
-                {Object.keys(selectedCardSymbolDict).map((symbol) => (
-                  <Grid key={symbol} item xs={6}>
-                    <Zoom
-                      in={true}
-                      style={{
-                        transitionDelay: '500ms',
-                      }}
-                    >
-                      <Tooltip title={selectedCardLabelDict[symbol]} arrow>
-                        <MuiCard
-                          sx={{
-                            height: '80px',
-                            border: '5px solid #525252',
-                            backgroundColor: '#1d1d1d',
-                          }}
-                          onClick={() =>
-                            handleSelectSymbol(symbol as MathSymbol)
-                          }
-                        >
-                          <CardActionArea
-                            sx={{
-                              height: '100%',
-                              width: '100%',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              fontSize: '36px',
-                            }}
-                          >
-                            {selectedCardSymbolDict[symbol]}
-                          </CardActionArea>
-                        </MuiCard>
-                      </Tooltip>
-                    </Zoom>
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
-          </Box>
-        </Box>
-        <Box
-          sx={{ textAlign: 'center', marginBottom: '20px', fontSize: '30px' }}
+          <PartArea
+            answer={state.answer}
+            selectedCards={state.selectedCards}
+            isYourTurn={isYourTurn}
+            onDropCard={handleDropCard}
+            onCheckAnswer={handleCheckAnswer}
+          />
+        </MaoreFlex>
+        <MaoreFlex
+          verticalHorizonCenter
+          sx={{
+            flexDirection: 'column',
+            marginBottom: '20px',
+          }}
         >
+          <Box sx={{ marginBottom: '10px', fontSize: '24px' }}>算式牌</Box>
+          <MaoreFlex justifyContent="center" sx={{ gap: '15px' }}>
+            {state.canUseMathSymbols.map((card) => (
+              <Zoom
+                key={card.id}
+                in={true}
+                style={{
+                  transitionDelay: '100ms',
+                }}
+              >
+                <Box>
+                  <MathSymbolCard
+                    id={card.id}
+                    symbolKey={card.mathSymbol}
+                    symbolValue={selectedCardSymbolDict[card.mathSymbol]}
+                    onDropCard={handleDropCard}
+                  />
+                </Box>
+              </Zoom>
+            ))}
+          </MaoreFlex>
+        </MaoreFlex>
+        <Box sx={{ textAlign: 'center', fontSize: '30px' }}>
           {isYourTurn ? '你的回合' : '其他玩家回合'}
         </Box>
         {/* 自己手牌 */}
-        <Box
+        <MaoreFlex
+          verticalHorizonCenter
           sx={{
             flexBasis: '14%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
             marginBottom: '20px',
           }}
         >
-          <Box
+          <MaoreFlex
+            alignItems="flex-start"
             sx={{
-              display: 'flex',
-              justifyContent: 'center',
+              width: '15vw',
+              flexDirection: 'column',
+              padding: '0 50px',
+            }}
+          >
+            <Box
+              sx={{
+                marginBottom: '20px',
+                fontSize: '26px',
+              }}
+            >
+              勝利條件: {gameSettings?.winnerPoint} 分
+            </Box>
+            <PlayerAvatar point={state.yourPoint} />
+          </MaoreFlex>
+          <MaoreFlex
+            justifyContent="center"
+            sx={{
               gap: '15px',
-              height: '100%',
               flexWrap: 'wrap',
-              width: '90vw',
+              width: '70vw',
             }}
           >
-            {state.yourCards.map((card, index) => renderYourCard(card, index))}
-          </Box>
-        </Box>
-        {/* 操作 */}
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: '20px',
-            gap: '15px',
-          }}
-        >
-          <Box sx={{ marginRight: '20px', fontSize: '26px' }}>
-            勝利條件: {gameSettings?.winnerPoint} 分
-          </Box>
-          <Box sx={{ marginRight: '20px', fontSize: '26px' }}>
-            分數:{' '}
-            <Box component="span" sx={{ color: 'secondary.light' }}>
-              {state.yourPoint}
-            </Box>{' '}
-            分
-          </Box>
-          <Button
+            {state.yourCards.map((card, index) => (
+              <Zoom
+                key={card.id}
+                in={true}
+                style={{
+                  transitionDelay: noDrawCardDelay
+                    ? '100ms'
+                    : `${index * 100}ms`,
+                }}
+              >
+                <Box>
+                  <HandCard card={card} onDropCard={handleDropCard} />
+                </Box>
+              </Zoom>
+            ))}
+          </MaoreFlex>
+          <MaoreFlex
+            alignItems="flex-end"
             sx={{
-              minWidth: '100px',
-              backgroundColor: '#555454',
-              ':hover': { backgroundColor: '#454444' },
-            }}
-            variant="contained"
-            size="large"
-            disableElevation
-            disabled={state.winnerIndex !== -1}
-            onClick={() => localDispatch({ type: ActionType.SortCard })}
-          >
-            排序
-          </Button>
-          <Button
-            sx={{
-              minWidth: '100px',
-              backgroundColor: '#555454',
-              ':hover': { backgroundColor: '#454444' },
-            }}
-            variant="contained"
-            size="large"
-            disableElevation
-            disabled={!isYourTurn || state.winnerIndex !== -1}
-            onClick={() => {
-              if (state.selectedCards.length !== 0) {
-                clientRoom.send(MathFormulaCardMessage.ClearSelectedCards);
-              }
+              flexDirection: 'column',
+              width: '15vw',
+              padding: '0 50px',
             }}
           >
-            重選
-          </Button>
-          <Button
-            sx={{
-              minWidth: '150px',
-              backgroundColor: '#095858',
-              ':hover': {
-                backgroundColor: '#044040',
-              },
-            }}
-            variant="contained"
-            size="large"
-            disableElevation
-            color="secondary"
-            disabled={!isYourTurn || state.winnerIndex !== -1}
-            onClick={() => drawCard()}
-          >
-            抽牌並結束回合
-          </Button>
-          <Button
-            sx={{ minWidth: '150px' }}
-            variant="contained"
-            size="large"
-            disableElevation
-            color="secondary"
-            disabled={!isYourTurn || state.winnerIndex !== -1}
-            onClick={() => useCards()}
-          >
-            出牌
-          </Button>
-        </Box>
-      </Box>
-    </>
+            {players.length === 1 ? (
+              <Button
+                sx={{
+                  maxWidth: '200px',
+                  minWidth: '150px',
+                  backgroundColor: '#E76F51',
+                  ':hover': {
+                    backgroundColor: '#c04d30',
+                  },
+                  marginBottom: '10px',
+                }}
+                variant="contained"
+                size="large"
+                disableElevation
+                disabled={!isYourTurn || state.winnerIndex !== -1}
+                onClick={() => drawCard()}
+              >
+                抽牌
+              </Button>
+            ) : (
+              <Button
+                sx={{
+                  maxWidth: '200px',
+                  minWidth: '150px',
+                  backgroundColor: '#E76F51',
+                  ':hover': {
+                    backgroundColor: '#c04d30',
+                  },
+                  marginBottom: '10px',
+                }}
+                variant="contained"
+                size="large"
+                disableElevation
+                disabled={!isYourTurn || state.winnerIndex !== -1}
+                onClick={() => handleEndPhase()}
+              >
+                結束回合
+              </Button>
+            )}
+            <Button
+              sx={{
+                maxWidth: '200px',
+                minWidth: '150px',
+                backgroundColor: '#095858',
+                ':hover': {
+                  backgroundColor: '#044040',
+                },
+                marginBottom: '10px',
+              }}
+              variant="contained"
+              size="large"
+              disableElevation
+              color="secondary"
+              disabled={!isYourTurn || state.winnerIndex !== -1}
+              onClick={() => handleSort()}
+            >
+              排序
+            </Button>
+            <Button
+              sx={{
+                maxWidth: '200px',
+                minWidth: '150px',
+                backgroundColor: '#415761',
+                ':hover': {
+                  backgroundColor: '#385968',
+                },
+              }}
+              variant="contained"
+              size="large"
+              disableElevation
+              disabled={!isYourTurn || state.winnerIndex !== -1}
+              onClick={() => handleReselect()}
+            >
+              重選
+            </Button>
+          </MaoreFlex>
+        </MaoreFlex>
+      </MaoreFlex>
+    </DndProvider>
   );
 };
 

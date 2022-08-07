@@ -1,39 +1,47 @@
 import React from 'react';
-import { Box, Card as MuiCard, CardActionArea } from '@mui/material';
-
-// TODO: 之後要做多國
-const labelDict: { [key: string]: string } = {
-  '0': '零',
-  '1': '一',
-  '2': '二',
-  '3': '三',
-  '4': '四',
-  '5': '五',
-  '6': '六',
-  '7': '七',
-  '8': '八',
-  '9': '九',
-};
+import { Box, Card as MuiCard } from '@mui/material';
+import CatHand from './icons/CatHand';
+import MaoreFlex from '@components/shared/MaoreFlex';
 
 type CardProps = {
   id?: string;
-  value?: number;
+  value?: number | React.ReactNode;
   hideCard?: boolean;
   width: string;
-  height: string;
+  bgColor?: string;
+  fontColor?: string;
+  symbolSize?: string;
+  iconColor?: string;
+  iconSize?: 'small' | 'inherit' | 'large' | 'medium' | undefined;
   onSelect?: (id: string) => void;
 };
 
 const Card = (props: CardProps) => {
-  const { id, value, hideCard = false, width, height, onSelect } = props;
+  const {
+    id,
+    value,
+    hideCard = false,
+    width,
+    bgColor = '#F0F0F0',
+    fontColor = '#232220',
+    symbolSize = '48px',
+    iconColor,
+    iconSize = 'medium',
+    onSelect,
+  } = props;
 
   return (
     <MuiCard
       sx={{
         width,
-        height,
-        backgroundColor: '#1d1d1d',
+        backgroundColor: bgColor,
+        aspectRatio: '2/3',
         pointerEvents: hideCard ? 'none' : 'auto',
+        color: fontColor,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: hideCard ? '2px solid #E9C46A' : '',
       }}
       onClick={() => {
         if (id && onSelect) {
@@ -42,9 +50,11 @@ const Card = (props: CardProps) => {
       }}
     >
       {hideCard ? (
-        <Box />
+        <Box>
+          <CatHand fontSize={iconSize} pathcolor={iconColor} />
+        </Box>
       ) : (
-        <CardActionArea
+        <Box
           sx={{
             width: '100%',
             height: '100%',
@@ -55,9 +65,9 @@ const Card = (props: CardProps) => {
             padding: '35px 0',
           }}
         >
-          <Box sx={{ fontSize: '50px', marginBottom: '10px' }}>{value}</Box>
-          <Box>{labelDict[value as number]}</Box>
-        </CardActionArea>
+          <Box sx={{ fontSize: symbolSize, marginBottom: '10px' }}>{value}</Box>
+          <CatHand fontSize={iconSize} pathcolor={iconColor} />
+        </Box>
       )}
     </MuiCard>
   );

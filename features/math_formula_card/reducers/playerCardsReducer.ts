@@ -1,3 +1,4 @@
+import { IMahSymbolCard } from 'server/games/math_formula_card/state/MathSymbolCardState';
 import { IPlayerCard } from 'server/games/math_formula_card/state/PlayerCardState';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 import { OtherPlayerDict, OthersPlayerInfo } from '../models/OtherPlayerCard';
@@ -16,15 +17,20 @@ export enum ActionType {
   CreateAnswer = 'CreateAnswer',
   SortCard = 'SortCard',
   SetWinnerIndex = 'SetWinnerIndex',
+  UpdateCanUseSymbol = 'UpdateCanUseSymbol',
 }
 
-type SelectedCard = {
+export type SelectedCard = {
   id: string;
-  value: number | MathSymbol;
+  cardId?: string;
+  cardNumber?: number;
+  mathSymbol?: MathSymbol | '';
 };
 
 export type State = {
+  // 題目
   answer?: number;
+  canUseMathSymbols: IMahSymbolCard[];
   // 你的手牌
   yourCards: IPlayerCard[];
   yourPoint: number;
@@ -37,6 +43,7 @@ export type State = {
 };
 
 export const initialState: State = {
+  canUseMathSymbols: [],
   yourCards: [],
   yourPoint: 0,
   selectedCards: [],
@@ -80,7 +87,10 @@ type UpdateOthersInfoAction = {
 type SelectCardAction = {
   type: ActionType.SelectCard;
   id: string;
-  value: number | MathSymbol;
+  cardId?: string;
+  cardNumber?: number;
+  mathSymbol?: MathSymbol;
+  field: 'create' | 'update' | 'remove';
 };
 
 type ClearErrorMsgAction = {
@@ -106,6 +116,13 @@ type SetWinnerIndexAction = {
   winnerIndex: number;
 };
 
+type UpdateCanUseSymbolAction = {
+  type: ActionType.UpdateCanUseSymbol;
+  id?: string;
+  symbol?: MathSymbol;
+  field: 'create' | 'update';
+};
+
 type Action =
   | DrawCardAction
   | UseCardAction
@@ -118,7 +135,8 @@ type Action =
   | UpdateYourPointAction
   | CreateAnswersAction
   | SortCardAction
-  | SetWinnerIndexAction;
+  | SetWinnerIndexAction
+  | UpdateCanUseSymbolAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -186,11 +204,29 @@ const reducer = (state = initialState, action: Action): State => {
     }
     case ActionType.SelectCard: {
       let newCards = [...state.selectedCards];
-      const cardIndex = newCards.findIndex((card) => card.id === action.id);
-      if (cardIndex !== -1) {
-        newCards.splice(cardIndex, 1);
-      } else {
-        newCards = [...newCards, { id: action.id, value: action.value }];
+      switch (action.field) {
+        case 'create': {
+          newCards = [...newCards, { id: action.id }];
+          break;
+        }
+        case 'update': {
+          const cardIndex = newCards.findIndex((card) => card.id === action.id);
+          if (action.cardId !== undefined) {
+            newCards[cardIndex].cardId = action.cardId;
+          }
+          if (action.cardNumber !== undefined) {
+            newCards[cardIndex].cardNumber = action.cardNumber;
+          }
+          if (action.mathSymbol !== undefined) {
+            newCards[cardIndex].mathSymbol = action.mathSymbol;
+          }
+          break;
+        }
+        case 'remove': {
+          const cardIndex = newCards.findIndex((card) => card.id === action.id);
+          newCards.splice(cardIndex, 1);
+          break;
+        }
       }
 
       return {
@@ -240,6 +276,34 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         winnerIndex: action.winnerIndex,
+      };
+    }
+    case ActionType.UpdateCanUseSymbol: {
+      let newCards = [...state.canUseMathSymbols];
+      switch (action.field) {
+        case 'create': {
+          newCards = [
+            ...newCards,
+            {
+              id: action.id as string,
+              mathSymbol: action.symbol as MathSymbol,
+            },
+          ];
+          break;
+        }
+        case 'update': {
+          const cardIndex = newCards.findIndex(
+            (card) => card.mathSymbol === action.symbol
+          );
+          if (cardIndex !== -1) {
+            newCards[cardIndex].id = action.id as string;
+          }
+          break;
+        }
+      }
+      return {
+        ...state,
+        canUseMathSymbols: newCards,
       };
     }
     default: {
