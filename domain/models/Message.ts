@@ -15,4 +15,8 @@ export enum RoomMessage {
   GetMessages = 'get-messages',
   // game settings
   UpdateGameSettings = 'update-game-settings',
+  // timer
+  SetTimer = 'SetTimer',
+  GetTimer = 'GetTimer',
+  ClearTimer = 'ClearTimer',
 }

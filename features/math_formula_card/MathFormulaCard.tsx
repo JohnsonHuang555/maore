@@ -70,6 +70,10 @@ const MathFormulaCard = () => {
       enqueueSnackbar('你答錯了!!', { variant: 'error' });
     });
 
+    clientRoom.onMessage(RoomMessage.GetTimer, (data) => {
+      console.log('yoyo', data);
+    });
+
     clientRoom.state.mathFormulaCard.listen('answer', (currentValue) => {
       localDispatch({
         type: ActionType.CreateAnswer,
@@ -192,7 +196,6 @@ const MathFormulaCard = () => {
               break;
             }
             case 'cardId': {
-              console.log('update id', value);
               localDispatch({
                 type: ActionType.SelectCard,
                 id: selectedElement.id,
@@ -285,6 +288,7 @@ const MathFormulaCard = () => {
       setTimeout(() => {
         setShowYourTurnUI(false);
         drawCard();
+        clientRoom.send(RoomMessage.SetTimer);
       }, 2000);
     }
   }, [showYourTurnUI]);
@@ -326,6 +330,7 @@ const MathFormulaCard = () => {
   // 結束回合
   const handleEndPhase = () => {
     clientRoom.send(MathFormulaCardMessage.EndPhase);
+    clientRoom.send(RoomMessage.ClearTimer);
   };
 
   // 排序

@@ -1,5 +1,5 @@
 import { Dispatcher } from '@colyseus/command';
-import { Client, Room } from 'colyseus';
+import { Client, Room, Delayed } from 'colyseus';
 import RoomState from './state/RoomState';
 import { RoomMessage } from '../../domain/models/Message';
 import { Metadata, RoomInfo } from '../../domain/models/Room';
@@ -14,6 +14,8 @@ import LoadedGameCommand from './commands/LoadedGameCommand';
 export default class BaseRoom {
   private dispatcher: Dispatcher<Room<RoomState, Metadata>>;
   private room: Room<RoomState, Metadata>;
+  public delayedInterval!: Delayed;
+
   constructor(room: Room<RoomState, Metadata>) {
     this.room = room;
     this.dispatcher = new Dispatcher(room);

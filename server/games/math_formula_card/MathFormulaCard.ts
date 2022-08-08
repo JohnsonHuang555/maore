@@ -1,4 +1,4 @@
-import { Client, Room } from 'colyseus';
+import { Client, Room, Delayed } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
 import BaseRoom from '../../room';
 import { Metadata } from '../../../domain/models/Room';
@@ -18,6 +18,7 @@ import NextTurnCommand from '../../room/commands/NextTurnCommand';
 export default class MathFormulaCard extends Room<RoomState, Metadata> {
   private dispatcher = new Dispatcher(this);
   private baseRoom = new BaseRoom(this);
+  public delayedInterval!: Delayed;
 
   onCreate(option: Metadata) {
     this.baseRoom.onCreate(option);
@@ -28,6 +29,25 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
     // 初始化遊戲
     this.onMessage(RoomMessage.CreateGame, () => {
       this.dispatcher.dispatch(new CreateGameCommand());
+    });
+
+    this.onMessage(RoomMessage.SetTimer, () => {
+      // 計時開始
+      this.clock.start();
+
+      // 設置間隔計時並保存其引用
+      // 以便後續清理工作
+      this.delayedInterval = this.clock.setInterval(() => {
+        this.broadcast(RoomMessage.GetTimer, this.clock.elapsedTime);
+      }, 1000);
+    });
+
+    this.onMessage(RoomMessage.ClearTimer, () => {
+      // 60 秒過後清理計時器;
+      // 這會讓計時器 *停止並銷毀*
+      this.clock.setTimeout(() => {
+        this.delayedInterval.clear();
+      }, 60_000);
     });
 
     // 更新遊戲設定
@@ -47,6 +67,7 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
       });
     });
 
+    // 抽牌
     this.onMessage(MathFormulaCardMessage.DrawCard, (client) => {
       this.dispatcher.dispatch(new DrawCardCommand(), {
         client,
