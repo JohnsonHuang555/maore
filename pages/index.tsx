@@ -10,7 +10,6 @@ import { Game } from '@domain/models/Game';
 import { initialClient } from '@actions/serverAction';
 import { clientSelector } from '@selectors/serverSelector';
 import { fetchGames } from '@actions/fetchAction';
-import Image from 'next/image';
 import { Box } from '@mui/material';
 
 const Home = () => {
@@ -39,7 +38,7 @@ const Home = () => {
 
   return (
     <Layout>
-      <Container maxWidth={false} style={{ marginTop: '20px' }}>
+      <Container maxWidth={false} style={{ margin: '20px 0' }}>
         <Box
           sx={{
             width: '100%',
@@ -56,12 +55,6 @@ const Home = () => {
               backgroundSize: 'cover',
             }}
           />
-          {/* <Image
-            src="/intro-picture.jpg"
-            alt="Picture of the author"
-            layout="fill"
-            objectFit="cover"
-          /> */}
           <Box
             sx={{
               width: '100%',
@@ -77,7 +70,7 @@ const Home = () => {
               top: '50%',
               left: '50%',
               transform: 'translateX(-50%) translateY(-50%)',
-              fontSize: '40px',
+              fontSize: '30px',
               width: '100%',
               textAlign: 'center',
             }}

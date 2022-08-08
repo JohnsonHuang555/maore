@@ -111,7 +111,7 @@ const Rooms = () => {
 
   return (
     <Layout>
-      <Container maxWidth={false} sx={{ height: '100%' }}>
+      <Container maxWidth={false} sx={{ height: '100%', overflow: 'hidden' }}>
         <Grid container spacing={2} sx={{ marginTop: '0', height: '100%' }}>
           <Grid
             item

@@ -38,7 +38,7 @@ const SettingArea = (props: SettingAreaProps) => {
       sx={{
         height: 'calc(100% - 15px)',
         backgroundColor: 'primary.dark',
-        padding: '10px',
+        padding: '15px',
         borderRadius: '10px',
         display: 'flex',
         flexDirection: 'column',

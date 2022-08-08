@@ -14,7 +14,7 @@ const Logo = () => {
       <style type="text/css">
         {`.st0{display:none;}
 	.st1{display:none;fill:#FFF;}
-	.st2{fill:#FFF;stroke:#FFF;stroke-width:3;stroke-miterlimit:10;}
+	.st2{fill:#b3543c;stroke:#FFF;stroke-width:3;stroke-miterlimit:10;}
 	.st3{fill:#FFF;}
 	.st4{fill:#FFF;stroke:#FFF;stroke-miterlimit:10;}`}
       </style>
