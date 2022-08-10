@@ -38,16 +38,15 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
       // 設置間隔計時並保存其引用
       // 以便後續清理工作
       this.delayedInterval = this.clock.setInterval(() => {
-        this.broadcast(RoomMessage.GetTimer, this.clock.elapsedTime);
+        this.broadcast(RoomMessage.GetTimer);
       }, 1000);
-    });
 
-    this.onMessage(RoomMessage.ClearTimer, () => {
       // 60 秒過後清理計時器;
       // 這會讓計時器 *停止並銷毀*
       this.clock.setTimeout(() => {
         this.delayedInterval.clear();
-      }, 60_000);
+        this.dispatcher.dispatch(new NextTurnCommand());
+      }, 10_000);
     });
 
     // 更新遊戲設定
@@ -93,6 +92,8 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
     // 結束回合
     this.onMessage(MathFormulaCardMessage.EndPhase, () => {
       this.dispatcher.dispatch(new NextTurnCommand());
+      // 停止計時
+      this.delayedInterval.clear();
     });
 
     // 重選

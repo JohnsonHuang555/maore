@@ -16,7 +16,7 @@ export default class DrawCardCommand extends Command<MathFormulaCard, Payload> {
       client.id
     );
     if (!playerInfo) {
-      throw new Error('playerInfo not found...');
+      return;
     }
     const card = Random.getRandomValuesByArray(
       [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],

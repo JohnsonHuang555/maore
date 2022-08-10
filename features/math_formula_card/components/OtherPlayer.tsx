@@ -59,7 +59,13 @@ const OtherPlayer = (props: OtherPlayerProps) => {
           renderCards()
         ) : (
           <>
-            <Card hideCard={true} width="50px" />
+            <Card
+              hideCard={true}
+              iconSize="small"
+              iconColor="#E9C46A"
+              bgColor="#E76F51"
+              width="50px"
+            />
             <CloseIcon />
             <Box sx={{ fontSize: '40px', marginLeft: '10px' }}>
               {remainCardCount}

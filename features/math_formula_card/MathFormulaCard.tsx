@@ -48,6 +48,7 @@ const MathFormulaCard = () => {
   // 為了做抽牌的動畫，只有第一載入完成時要延遲，用 state 控制
   const [noDrawCardDelay, setNoDrawCardDelay] = useState(false);
   const [showYourTurnUI, setShowYourTurnUI] = useState(false);
+  const [timer, setTimer] = useState(0); // TODO: gameSetting
 
   if (!clientRoom) {
     throw new Error('client room not found...');
@@ -70,8 +71,8 @@ const MathFormulaCard = () => {
       enqueueSnackbar('你答錯了!!', { variant: 'error' });
     });
 
-    clientRoom.onMessage(RoomMessage.GetTimer, (data) => {
-      console.log('yoyo', data);
+    clientRoom.onMessage(RoomMessage.GetTimer, () => {
+      setTimer((time) => time - 1);
     });
 
     clientRoom.state.mathFormulaCard.listen('answer', (currentValue) => {
@@ -281,6 +282,7 @@ const MathFormulaCard = () => {
     if (isYourTurn) {
       setShowYourTurnUI(true);
     }
+    setTimer(10);
   }, [isYourTurn]);
 
   useEffect(() => {
@@ -288,7 +290,10 @@ const MathFormulaCard = () => {
       setTimeout(() => {
         setShowYourTurnUI(false);
         drawCard();
-        clientRoom.send(RoomMessage.SetTimer);
+        // 多人才開啟計時
+        if (players.length > 1) {
+          clientRoom.send(RoomMessage.SetTimer);
+        }
       }, 2000);
     }
   }, [showYourTurnUI]);
@@ -330,7 +335,6 @@ const MathFormulaCard = () => {
   // 結束回合
   const handleEndPhase = () => {
     clientRoom.send(MathFormulaCardMessage.EndPhase);
-    clientRoom.send(RoomMessage.ClearTimer);
   };
 
   // 排序
@@ -369,7 +373,11 @@ const MathFormulaCard = () => {
         }}
       >
         {/* 操作區塊 */}
-        <ControlArea onRuleClick={() => {}} />
+        <ControlArea
+          showTimer={players.length > 1}
+          onRuleClick={() => {}}
+          timer={timer}
+        />
         {/* 其他玩家區塊 */}
         <MaoreFlex
           alignItems="center"

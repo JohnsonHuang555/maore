@@ -18,5 +18,4 @@ export enum RoomMessage {
   // timer
   SetTimer = 'SetTimer',
   GetTimer = 'GetTimer',
-  ClearTimer = 'ClearTimer',
 }
