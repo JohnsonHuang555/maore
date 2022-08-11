@@ -46,16 +46,14 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
       this.clock.setTimeout(() => {
         this.delayedInterval.clear();
         this.dispatcher.dispatch(new NextTurnCommand());
-      }, 10_000);
+      }, this.state.mathFormulaCard.gameSettings.remainedSecond * 1000);
     });
 
     // 更新遊戲設定
     this.onMessage(
       RoomMessage.UpdateGameSettings,
-      (_c, message: { winnerPoint: number }) => {
-        this.dispatcher.dispatch(new UpdateGameSettingsCommand(), {
-          winnerPoint: message.winnerPoint,
-        });
+      (_c, message: { winnerPoint?: number; remainedSecond?: number }) => {
+        this.dispatcher.dispatch(new UpdateGameSettingsCommand(), message);
       }
     );
 

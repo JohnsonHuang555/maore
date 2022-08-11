@@ -12,7 +12,7 @@ const WithoutFramework = (props: WithoutFrameworkProps) => {
   const renderGame = () => {
     switch (gamePack) {
       case GameList.MathFormulaCard: {
-        return <MathFormulaCard />;
+        return <MathFormulaCard key={gamePack} />;
       }
     }
   };

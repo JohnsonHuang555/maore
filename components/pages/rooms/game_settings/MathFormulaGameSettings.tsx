@@ -27,6 +27,12 @@ const MathFormulaGameSettings = () => {
     });
   };
 
+  const onRemainedSecondChange = (event: SelectChangeEvent<number>) => {
+    clientRoom?.send(RoomMessage.UpdateGameSettings, {
+      remainedSecond: Number(event.target.value),
+    });
+  };
+
   return (
     <Box sx={{ marginTop: '20px', marginBottom: '20px' }}>
       <FormControl fullWidth>
@@ -38,10 +44,24 @@ const MathFormulaGameSettings = () => {
           disabled={!isMaster}
           onChange={onWinnerPointChange}
         >
-          {/* <MenuItem value={1}>1分</MenuItem> */}
           <MenuItem value={10}>10分</MenuItem>
           <MenuItem value={20}>20分</MenuItem>
           <MenuItem value={30}>30分</MenuItem>
+        </Select>
+      </FormControl>
+      <FormControl fullWidth>
+        <InputLabel id="remained-second-label">回合秒數</InputLabel>
+        <Select
+          labelId="remained-second-label"
+          value={gameSettings.remainedSecond || 60}
+          label="回合秒數"
+          disabled={!isMaster}
+          onChange={onRemainedSecondChange}
+        >
+          <MenuItem value={15}>15秒</MenuItem>
+          <MenuItem value={30}>30秒</MenuItem>
+          <MenuItem value={60}>60秒</MenuItem>
+          <MenuItem value={90}>90秒</MenuItem>
         </Select>
       </FormControl>
     </Box>

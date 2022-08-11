@@ -48,7 +48,7 @@ const MathFormulaCard = () => {
   // 為了做抽牌的動畫，只有第一載入完成時要延遲，用 state 控制
   const [noDrawCardDelay, setNoDrawCardDelay] = useState(false);
   const [showYourTurnUI, setShowYourTurnUI] = useState(false);
-  const [timer, setTimer] = useState(0); // TODO: gameSetting
+  const [timer, setTimer] = useState(0);
 
   if (!clientRoom) {
     throw new Error('client room not found...');
@@ -282,7 +282,9 @@ const MathFormulaCard = () => {
     if (isYourTurn) {
       setShowYourTurnUI(true);
     }
-    setTimer(10);
+    if (gameSettings?.remainedSecond) {
+      setTimer(gameSettings.remainedSecond);
+    }
   }, [isYourTurn]);
 
   useEffect(() => {

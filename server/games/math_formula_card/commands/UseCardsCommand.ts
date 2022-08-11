@@ -22,8 +22,6 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
 
     // 第一張是 0、符號，最後一張是符號，連續兩張是符號
     elements.forEach((card) => {
-      console.log(card.cardNumber, 'number');
-      console.log(card.mathSymbol, 'symbol');
       if (isPreviousNumberZero && card.cardNumber !== undefined) {
         isIllegalFormula = true;
       }
