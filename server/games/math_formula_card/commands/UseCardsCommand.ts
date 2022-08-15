@@ -33,8 +33,14 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
     });
 
     // 算式裡沒有用到符號為不合法
-    const notIncludeSymbols = elements.filter((card) => card.mathSymbol);
+    const notIncludeSymbols = elements.filter(
+      (card) =>
+        card.mathSymbol ||
+        card.mathSymbol !== '' ||
+        card.mathSymbol !== undefined
+    );
 
+    console.log(notIncludeSymbols);
     if (isIllegalFormula || notIncludeSymbols.length === 0) {
       client.send(MathFormulaCardMessage.UseCardsFailed, {
         message: '算式不合法',
@@ -52,8 +58,6 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
         }
       })
       .join('');
-
-    console.log(combinedFormula);
 
     try {
       const answer: number = evaluate(combinedFormula);

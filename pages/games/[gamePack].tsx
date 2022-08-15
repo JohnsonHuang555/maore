@@ -19,6 +19,7 @@ import Container from '@mui/material/Container';
 import { fetchGame } from '@actions/fetchAction';
 import { GameList } from 'server/domain/Game';
 import { useSnackbar } from 'notistack';
+import MaoreFlex from '@components/maore/MaoreFlex';
 
 const Games = () => {
   const router = useRouter();
@@ -158,6 +159,18 @@ const Games = () => {
         </Container>
       </Box>
       <Container maxWidth={false}>
+        <MaoreFlex justifyContent="center">
+          <Button
+            size="large"
+            variant="contained"
+            sx={{ marginBottom: '20px' }}
+            color="secondary"
+            disableElevation
+            onClick={() => dispatch(getAllRooms(gamePack as GameList))}
+          >
+            刷新房間
+          </Button>
+        </MaoreFlex>
         <Grid container spacing={3}>
           {rooms.length ? (
             <Grid item lg={4} md={6} xs={2}>

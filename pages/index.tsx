@@ -75,7 +75,8 @@ const Home = () => {
               textAlign: 'center',
             }}
           >
-            🎲 這是一款真正的線上多人桌遊網站
+            <Box>🎲 這是一款真正的線上多人桌遊網站</Box>
+            <Box sx={{ fontSize: '24px' }}>超ㄅㄧㄤˋ遊戲等你來玩</Box>
           </Box>
         </Box>
         <Grid container spacing={2}>

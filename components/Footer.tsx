@@ -4,10 +4,14 @@ const Footer = () => {
   return (
     <div className={styles.footer}>
       <div className={styles.slogan}>
-        Game makes us happy and crazy. Keep your curiosity forever.
+        目前為 beta 版本，若遇到 bug 請等待修復，沒有一個 bug 是重新整理修不好的
       </div>
       <div className={styles.copyright}>
-        The website is created at 2020 by Johnson Huang. beta v0.0.1
+        The website is created at 2022 by{' '}
+        <a href="https://github.com/JohnsonHuang555/maore" target="_blank">
+          Johnson Huang
+        </a>
+        {/* TODO: 版號自動化 */}. beta v0.0.2
       </div>
     </div>
   );

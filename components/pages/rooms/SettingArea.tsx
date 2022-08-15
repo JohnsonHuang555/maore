@@ -1,7 +1,7 @@
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import { GameList } from 'server/domain/Game';
-import MathFormulaGameSettings from './game_settings/MathFormulaGameSettings';
+import MathFormulaGameSettings from '../../../features/math_formula_card/components/MathFormulaGameSettings';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { isMasterSelector } from '@selectors/roomSelector';
@@ -51,6 +51,7 @@ const SettingArea = (props: SettingAreaProps) => {
           variant="contained"
           color="secondary"
           size="large"
+          disableElevation
           disabled={disabledStartGame}
           onClick={onStartGame}
         >

@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import type { AppProps } from 'next/app';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
@@ -7,8 +8,9 @@ import rootReducer from 'reducers/rootReducer';
 import ServerMiddleware from 'middleware/ServerMiddleware';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
+import { SnackbarKey, SnackbarProvider } from 'notistack';
+import SnackbarCloseButton from '@components/SnackbarCloseButton';
 import '@styles/globals.scss';
-import { SnackbarProvider } from 'notistack';
 
 export const store = createStore(
   rootReducer,
@@ -16,6 +18,11 @@ export const store = createStore(
 );
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const SnackbarCloseButtonAction = useCallback(
+    (key: SnackbarKey) => <SnackbarCloseButton snackbarKey={key} />,
+    []
+  );
+
   return (
     <Provider store={store}>
       <CssBaseline />
@@ -23,6 +30,8 @@ function MyApp({ Component, pageProps }: AppProps) {
         <SnackbarProvider
           maxSnack={3}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          action={(key) => SnackbarCloseButtonAction(key)}
+          autoHideDuration={4000}
         >
           <Component {...pageProps} />
         </SnackbarProvider>

@@ -9,7 +9,7 @@
   .slogan {
     padding: 10px;
     text-align: center;
-    background-color: $grey-5;
+    background-color: #27363d;
     width: 100%;
     color: $grey-1;
     font-size: 16px;
@@ -20,6 +20,10 @@
     font-size: 13px;
     padding: 5px;
     width: 100%;
-    background-color: $grey-6;
+    a {
+      text-decoration: none;
+      color: white;
+    }
+    // background-color: $grey-6;
   }
 }

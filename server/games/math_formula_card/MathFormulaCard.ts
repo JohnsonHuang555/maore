@@ -42,7 +42,7 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
       }, 1000);
 
       // 60 秒過後清理計時器;
-      // 這會讓計時器 *停止並銷毀*
+      // 這會讓計時器 *停止*
       this.clock.setTimeout(() => {
         this.delayedInterval.clear();
         this.dispatcher.dispatch(new NextTurnCommand());
@@ -88,10 +88,16 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
     );
 
     // 結束回合
-    this.onMessage(MathFormulaCardMessage.EndPhase, () => {
-      this.dispatcher.dispatch(new NextTurnCommand());
+    this.onMessage(MathFormulaCardMessage.EndPhase, (client) => {
       // 停止計時
+      this.clock.delayed = [];
       this.delayedInterval.clear();
+
+      this.dispatcher.dispatch(new NextTurnCommand());
+      this.dispatcher.dispatch(new ClearSelectedElementsCommand(), {
+        client,
+        isDrawCard: true,
+      });
     });
 
     // 重選

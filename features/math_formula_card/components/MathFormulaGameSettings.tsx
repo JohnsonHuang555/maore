@@ -35,11 +35,11 @@ const MathFormulaGameSettings = () => {
 
   return (
     <Box sx={{ marginTop: '20px', marginBottom: '20px' }}>
-      <FormControl fullWidth>
+      <FormControl fullWidth sx={{ marginBottom: '20px' }}>
         <InputLabel id="winner-point-label">勝利條件</InputLabel>
         <Select
           labelId="winner-point-label"
-          value={gameSettings.winnerPoint}
+          value={gameSettings.winnerPoint || 20}
           label="勝利條件"
           disabled={!isMaster}
           onChange={onWinnerPointChange}

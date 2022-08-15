@@ -507,9 +507,9 @@ const MathFormulaCard = () => {
                 sx={{
                   maxWidth: '200px',
                   minWidth: '150px',
-                  backgroundColor: '#E76F51',
+                  backgroundColor: '#c04d30',
                   ':hover': {
-                    backgroundColor: '#c04d30',
+                    backgroundColor: '#E76F51',
                   },
                   marginBottom: '10px',
                 }}
@@ -526,9 +526,9 @@ const MathFormulaCard = () => {
                 sx={{
                   maxWidth: '200px',
                   minWidth: '150px',
-                  backgroundColor: '#E76F51',
+                  backgroundColor: '#c04d30',
                   ':hover': {
-                    backgroundColor: '#c04d30',
+                    backgroundColor: '#E76F51',
                   },
                   marginBottom: '10px',
                 }}
