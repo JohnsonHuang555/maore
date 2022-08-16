@@ -23,6 +23,7 @@
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
+    "express-basic-auth": "^1.2.1",
     "firebase": "^9.8.1",
     "framer-motion": "4.1.17",
     "kaboom": "^2000.2.8",

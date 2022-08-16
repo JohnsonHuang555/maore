@@ -6,16 +6,23 @@ import { WebSocketTransport } from '@colyseus/ws-transport';
 import { monitor } from '@colyseus/monitor';
 // import ChineseChess from './games/chinese_chess/ChineseChess';
 import MathFormulaCard from './games/math_formula_card/MathFormulaCard';
-// import GameRepository from './services/game/repository/GemeRepository';
-// import { Games } from './data/Game';
-// import GameUseCase from './services/game/usecase/GameUseCase';
-// import GameDelivery from './services/game/delivery/GameDelivery';
 import { GameList } from './domain/Game';
+import basicAuth from 'express-basic-auth';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev = process.env.NODE_ENV !== 'production';
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
+
+const basicAuthMiddleware = basicAuth({
+  // 用戶名/密碼列表
+  users: {
+    admin: 'admin',
+  },
+  // 發送 WWW-Authenticate 響應頭部, 提示用戶
+  // 填寫用戶名和密碼
+  challenge: true,
+});
 
 /** 初始化伺服器 */
 nextApp.prepare().then(() => {
@@ -29,11 +36,6 @@ nextApp.prepare().then(() => {
     }),
   });
 
-  // 遊戲相關 Service
-  // const gameRepo = new GameRepository(Games);
-  // const gameUseCase = new GameUseCase(gameRepo);
-  // new GameDelivery(app, gameUseCase);
-
   // 載入所有遊戲 instance
   // gameServer
   //   .define(GameList.ChineseChess, ChineseChess)
@@ -43,7 +45,7 @@ nextApp.prepare().then(() => {
     .define(GameList.MathFormulaCard, MathFormulaCard)
     .enableRealtimeListing();
 
-  app.use('/colyseus', monitor());
+  app.use('/colyseus', basicAuthMiddleware, monitor());
 
   app.all('*', (req, res) => {
     return handle(req, res);

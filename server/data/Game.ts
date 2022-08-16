@@ -36,6 +36,7 @@ export const Games: Game[] = [
     image_url: '/math_formula/home.jpg',
     estimate_time: 30,
     create_at: 'September 14, 2022',
+    min_players: 1,
     max_players: 4,
     game_pack: GameList.MathFormulaCard,
   },
