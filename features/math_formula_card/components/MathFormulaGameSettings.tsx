@@ -2,6 +2,7 @@ import { RoomMessage } from '@domain/models/Message';
 import {
   Box,
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -63,6 +64,7 @@ const MathFormulaGameSettings = () => {
           <MenuItem value={60}>60秒</MenuItem>
           <MenuItem value={90}>90秒</MenuItem>
         </Select>
+        <FormHelperText>此設定對單人遊戲無效</FormHelperText>
       </FormControl>
     </Box>
   );

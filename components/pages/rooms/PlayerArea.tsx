@@ -3,15 +3,17 @@ import { Player } from '@domain/models/Player';
 import { Stars } from '@mui/icons-material';
 import { Avatar, IconButton, Stack, Tooltip } from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 type PlayerAreaProps = {
   roomTitle: string;
   players: Player[];
   yourPlayerId: string;
+  onEditRoom: () => void;
 };
 
 const PlayerArea = (props: PlayerAreaProps) => {
-  const { roomTitle, players, yourPlayerId } = props;
+  const { roomTitle, players, yourPlayerId, onEditRoom } = props;
 
   const isNowPlayer = (id: string) => {
     return id === yourPlayerId ? true : false;
@@ -36,12 +38,19 @@ const PlayerArea = (props: PlayerAreaProps) => {
           spacing={1}
         >
           <Box>房名: {roomTitle}</Box>
-          <Tooltip title="編輯房間資訊">
-            {/* TODO: 跳 modal */}
-            <IconButton aria-label="edit_room" onClick={() => {}}>
-              <EditOutlinedIcon fontSize="inherit" />
-            </IconButton>
-          </Tooltip>
+          <Box>
+            <Tooltip title="當房間只剩一人時重整頁面會關閉此房間，需重新建立房間">
+              <IconButton>
+                <InfoOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="編輯房間資訊">
+              {/* TODO: 跳 modal */}
+              <IconButton onClick={onEditRoom}>
+                <EditOutlinedIcon fontSize="inherit" />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Stack>
       </Box>
       <Box
@@ -67,7 +76,7 @@ const PlayerArea = (props: PlayerAreaProps) => {
               ':nth-of-type(even)': {
                 width: 'calc(100% / 2 - 10px)',
               },
-              backgroundColor: isNowPlayer(player.id) ? '#64584b' : '#3b3b3b',
+              backgroundColor: isNowPlayer(player.id) ? '#64584b' : '#535353',
             }}
           >
             {player.photoURL ? (
@@ -94,8 +103,8 @@ const PlayerArea = (props: PlayerAreaProps) => {
                   borderRadius: '5px',
                   marginBottom: '6px',
                   backgroundColor: isNowPlayer(player.id)
-                    ? '#342f29'
-                    : '#2a434f',
+                    ? '#3d3834'
+                    : '#343a3d',
                 }}
               >
                 {player.name}

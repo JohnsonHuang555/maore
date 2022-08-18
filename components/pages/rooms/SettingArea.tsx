@@ -69,11 +69,16 @@ const SettingArea = (props: SettingAreaProps) => {
         </Button>
       )}
       <Button
-        color="primary"
+        sx={{
+          backgroundColor: 'primary',
+          ':hover': {
+            backgroundColor: '#1f4558',
+          },
+          marginTop: '10px',
+        }}
         variant="contained"
         size="large"
         disableElevation
-        sx={{ marginTop: '10px' }}
         onClick={onLeaveRoom}
       >
         離開房間

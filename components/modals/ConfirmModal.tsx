@@ -6,7 +6,6 @@ import {
   Button,
   DialogContentText,
 } from '@mui/material';
-import React from 'react';
 
 type ConfirmModalProps = {
   show: boolean;

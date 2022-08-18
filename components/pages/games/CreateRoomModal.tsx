@@ -7,34 +7,33 @@ import {
   DialogActions,
   Button,
 } from '@mui/material';
-import { useDispatch } from 'react-redux';
 import { Game } from '@domain/models/Game';
-import Grid from '@mui/material/Grid';
-import styles from '@styles/components/createRoom.module.scss';
-import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
+// import Grid from '@mui/material/Grid';
+// import styles from '@styles/components/createRoom.module.scss';
+// import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
 import { useSnackbar } from 'notistack';
 
 type CreateRoomProps = {
   show: boolean;
   selectedGame: Game;
-  onCreateRoom: (roomTitle: string, gameMode?: string) => void;
+  onCreateRoom: (roomTitle: string) => void;
   onClose: () => void;
 };
 
 const CreateRoomModal = (props: CreateRoomProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { show, selectedGame, onCreateRoom, onClose } = props;
+  const { show, onCreateRoom, onClose } = props;
   const [roomTitle, setRoomTitle] = useState('');
   // 預設選第一個
-  const [selectedMode, setSelectedMode] = useState('');
+  // const [selectedMode, setSelectedMode] = useState('');
   // lock create button
   const [isCreating, setIsCreating] = useState(false);
 
-  useEffect(() => {
-    if (selectedGame.modes) {
-      setSelectedMode(selectedGame.modes[0].value);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (selectedGame.modes) {
+  //     setSelectedMode(selectedGame.modes[0].value);
+  //   }
+  // }, []);
 
   const onConfirm = () => {
     if (!roomTitle) {
@@ -42,7 +41,7 @@ const CreateRoomModal = (props: CreateRoomProps) => {
       return;
     }
     setIsCreating(true);
-    onCreateRoom(roomTitle, selectedMode);
+    onCreateRoom(roomTitle);
   };
 
   return (
@@ -65,7 +64,7 @@ const CreateRoomModal = (props: CreateRoomProps) => {
           onChange={(e) => setRoomTitle(e.target.value)}
           style={{ marginBottom: '20px' }}
         />
-        {selectedGame.modes && (
+        {/* {selectedGame.modes && (
           <>
             <div className={styles.gameModeText}>遊戲模式</div>
             <Grid
@@ -101,7 +100,7 @@ const CreateRoomModal = (props: CreateRoomProps) => {
               ))}
             </Grid>
           </>
-        )}
+        )} */}
       </DialogContent>
       <DialogActions>
         <Button variant="contained" color="primary" onClick={onClose}>

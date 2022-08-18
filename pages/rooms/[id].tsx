@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '@components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -34,6 +34,7 @@ import { firebaseApp } from 'firebase/clientApp';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { RoomMessage } from '@domain/models/Message';
 import { useSnackbar } from 'notistack';
+import EditRoomModal from '@components/pages/rooms/EditRoomModal';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('@components/pages/rooms/GameScreen'),
@@ -45,6 +46,7 @@ const Rooms = () => {
   const router = useRouter();
   const roomId = router.query.id;
   const { enqueueSnackbar } = useSnackbar();
+  const [showEditModal, setEditModal] = useState(false);
 
   // selectors
   const createdRoomId = useSelector(createdRoomIdSelector);
@@ -109,8 +111,19 @@ const Rooms = () => {
     return false;
   };
 
+  const handleEditRoom = (roomTitle: string) => {
+    enqueueSnackbar('此功能未完成', { variant: 'info' });
+    setEditModal(false);
+  };
+
   return (
     <Layout>
+      <EditRoomModal
+        currentRoomTitle={roomInfo.roomTitle}
+        show={showEditModal}
+        onClose={() => setEditModal(false)}
+        onConfirm={handleEditRoom}
+      />
       <Container maxWidth={false} sx={{ height: '100%', overflow: 'hidden' }}>
         <Grid container spacing={2} sx={{ marginTop: '0', height: '100%' }}>
           <Grid
@@ -126,13 +139,13 @@ const Rooms = () => {
               roomTitle={roomInfo.roomTitle}
               players={players}
               yourPlayerId={yourPlayerId}
+              onEditRoom={() => setEditModal(true)}
             />
             <ChatArea messages={messages} />
           </Grid>
           <Grid item xl={3} lg={3} md={4} sm={6} xs={12}>
             <SettingArea
               gamePack={roomInfo.gamePack as GameList}
-              // gameModes={game?.modes || []}
               disabledStartGame={checkDisabledStartGame()}
               isReadyGame={getIsReadyGameText()}
               onLeaveRoom={() =>
