@@ -8,6 +8,7 @@ export type State = {
   };
   userInfo?: User;
   showLoginModal: boolean;
+  loading: boolean;
 };
 
 const initialState: State = {
@@ -16,6 +17,7 @@ const initialState: State = {
     message: '',
   },
   showLoginModal: false,
+  loading: false,
 };
 
 type LoginAction = {
@@ -32,7 +34,16 @@ type ShowLoginModalAction = {
   show: boolean;
 };
 
-type Action = LoginAction | LogoutAction | ShowLoginModalAction;
+type SetLoadingAction = {
+  type: ActionType.SetLoading;
+  loading: boolean;
+};
+
+type Action =
+  | LoginAction
+  | LogoutAction
+  | ShowLoginModalAction
+  | SetLoadingAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -52,6 +63,12 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         showLoginModal: action.show,
+      };
+    }
+    case ActionType.SetLoading: {
+      return {
+        ...state,
+        loading: action.loading,
       };
     }
     default: {

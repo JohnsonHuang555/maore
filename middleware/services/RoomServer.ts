@@ -20,6 +20,7 @@ import { setClient, setRoom } from '@actions/serverAction';
 import { Room } from 'server/room/state/RoomState';
 import { updateGameSettings as updateMathFormulaSettings } from '@actions/game_settings/mathFormulaAction';
 import { GameList } from 'server/domain/Game';
+import { setLoading } from '@actions/appAction';
 
 enum RoomStateChangeList {
   RoomInfo = 'roomInfo',
@@ -43,6 +44,7 @@ export default class RoomServer {
   async getAllRooms(client: Client, gamePack: GameList) {
     const rooms = await client.getAvailableRooms(gamePack);
     this.dispatch(loadedRooms(rooms));
+    this.dispatch(setLoading(false));
   }
 
   // 房主觸發 createOrJoinRoom 只會觸發一次

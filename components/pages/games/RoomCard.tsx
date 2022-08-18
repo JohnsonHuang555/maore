@@ -17,14 +17,15 @@ const RoomCard = (props: RoomCardProps) => {
       sx={{
         padding: '15px',
         borderRadius: '10px',
-        backgroundColor: 'primary.light',
+        backgroundColor: 'primary.dark',
+        border: '1px solid rgba(255, 255, 255, 0.12)',
       }}
     >
       <Box
         sx={{
           fontSize: '24px',
           marginBottom: '15px',
-          backgroundColor: 'primary.dark',
+          backgroundColor: 'primary.light',
           borderRadius: '5px',
           padding: '2px 15px',
         }}
@@ -38,8 +39,23 @@ const RoomCard = (props: RoomCardProps) => {
             alignItems: 'center',
             justifyContent: 'center',
             marginRight: '10px',
+            backgroundColor: 'primary.light',
+            borderRadius: '5px',
+            padding: '0 5px',
             flex: 1,
-            backgroundColor: 'primary.dark',
+            letterSpacing: '1px',
+          }}
+        >
+          Waiting
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '10px',
+            flex: 0.5,
+            backgroundColor: 'primary.light',
             borderRadius: '5px',
             padding: '0 5px',
           }}
@@ -49,7 +65,7 @@ const RoomCard = (props: RoomCardProps) => {
             sx={{ fontSize: '16px', marginLeft: '5px' }}
           >{`${nowPlayers} / ${maxPlayers}`}</Box>
         </Box>
-        <Box
+        {/* <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -61,12 +77,10 @@ const RoomCard = (props: RoomCardProps) => {
           }}
         >
           <VideogameAsset />
-          {/* TODO: 模式 */}
           <Box sx={{ fontSize: '16px', marginLeft: '5px' }}>標準</Box>
-        </Box>
-        <Box sx={{ flex: 0.5 }}></Box>
+        </Box> */}
         <Button
-          sx={{ flex: 1 }}
+          sx={{ flex: 0.5 }}
           color="secondary"
           variant="contained"
           onClick={joinRoom}

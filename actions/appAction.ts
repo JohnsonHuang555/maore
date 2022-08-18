@@ -4,6 +4,7 @@ export enum ActionType {
   ShowLoginModal = 'showLoginModal',
   Login = 'login',
   Logout = 'logout',
+  SetLoading = 'setLoading',
 }
 
 export const setShowLoginModal = (show: boolean) => {
@@ -23,5 +24,12 @@ export const login = (userInfo: User) => {
 export const logout = () => {
   return {
     type: ActionType.Logout,
+  };
+};
+
+export const setLoading = (loading: boolean) => {
+  return {
+    type: ActionType.SetLoading,
+    loading,
   };
 };

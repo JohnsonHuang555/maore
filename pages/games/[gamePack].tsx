@@ -8,11 +8,11 @@ import useSWR from 'swr';
 import { useDispatch, useSelector } from 'react-redux';
 import { createdRoomIdSelector, roomsSelector } from '@selectors/roomSelector';
 import CreateRoom from '@components/pages/games/CreateRoomModal';
-import { setShowLoginModal } from '@actions/appAction';
+import { setLoading, setShowLoginModal } from '@actions/appAction';
 import { initialClient, createRoom, getAllRooms } from '@actions/serverAction';
 import RoomCard from '@components/pages/games/RoomCard';
 import { clientSelector } from '@selectors/serverSelector';
-import { userInfoSelector } from '@selectors/appSelector';
+import { loadingSelector, userInfoSelector } from '@selectors/appSelector';
 import Info from '@mui/icons-material/Info';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -20,6 +20,8 @@ import { fetchGame } from '@actions/fetchAction';
 import { GameList } from 'server/domain/Game';
 import { useSnackbar } from 'notistack';
 import MaoreFlex from '@components/maore/MaoreFlex';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Games = () => {
   const router = useRouter();
@@ -32,6 +34,7 @@ const Games = () => {
   const rooms = useSelector(roomsSelector);
   const client = useSelector(clientSelector);
   const userInfo = useSelector(userInfoSelector);
+  const loading = useSelector(loadingSelector);
 
   // useState
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
@@ -104,6 +107,11 @@ const Games = () => {
     setShowCreateRoomModal(true);
   };
 
+  const handleRefresh = () => {
+    dispatch(setLoading(true));
+    dispatch(getAllRooms(gamePack as GameList));
+  };
+
   return (
     <Layout>
       <CreateRoom
@@ -158,48 +166,57 @@ const Games = () => {
           </Box>
         </Container>
       </Box>
-      <Container maxWidth={false}>
-        <MaoreFlex justifyContent="center">
-          <Button
-            size="large"
-            variant="contained"
-            sx={{ marginBottom: '20px' }}
-            color="secondary"
-            disableElevation
-            onClick={() => dispatch(getAllRooms(gamePack as GameList))}
-          >
-            刷新房間
-          </Button>
-        </MaoreFlex>
-        <Grid container spacing={3}>
-          {rooms.length ? (
-            <Grid item lg={4} md={6} xs={2}>
-              {rooms.map(({ roomId, metadata, maxClients, clients }) => (
-                <RoomCard
-                  key={roomId}
-                  title={metadata?.roomTitle as string}
-                  maxPlayers={maxClients}
-                  nowPlayers={clients}
-                  joinRoom={() => onJoinRoom(roomId)}
-                />
-              ))}
-            </Grid>
-          ) : (
-            <Grid item xs={12}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '0 5px',
-                }}
+      <Container maxWidth={false} sx={{ marginBottom: '40px' }}>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <>
+            <MaoreFlex alignItems="center" sx={{ marginBottom: '20px' }}>
+              <Box sx={{ fontSize: '28px', flex: 1 }}>房間列表</Box>
+              <Button
+                size="large"
+                variant="contained"
+                color="info"
+                disableElevation
+                onClick={handleRefresh}
+                startIcon={<RefreshIcon />}
               >
-                <Info />
-                <Box sx={{ fontSize: '30px', marginLeft: '5px' }}>查無房間</Box>
-              </Box>
+                刷新房間
+              </Button>
+            </MaoreFlex>
+            <Grid container spacing={3}>
+              {rooms.length ? (
+                <Grid item xl={3} lg={4} md={6} sm={6} xs={12}>
+                  {rooms.map(({ roomId, metadata, maxClients, clients }) => (
+                    <RoomCard
+                      key={roomId}
+                      title={metadata?.roomTitle as string}
+                      maxPlayers={maxClients}
+                      nowPlayers={clients}
+                      joinRoom={() => onJoinRoom(roomId)}
+                    />
+                  ))}
+                </Grid>
+              ) : (
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '0 5px',
+                    }}
+                  >
+                    <Info />
+                    <Box sx={{ fontSize: '30px', marginLeft: '5px' }}>
+                      查無房間
+                    </Box>
+                  </Box>
+                </Grid>
+              )}
             </Grid>
-          )}
-        </Grid>
+          </>
+        )}
       </Container>
     </Layout>
   );
