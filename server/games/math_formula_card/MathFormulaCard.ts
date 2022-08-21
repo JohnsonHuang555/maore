@@ -22,8 +22,8 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
 
   onCreate(option: Metadata) {
     this.baseRoom.onCreate(option);
-    // 最多四人 TODO: 先開放兩人 時間會有 bug
-    this.baseRoom.setMaxClient(2);
+    // 最多四人
+    this.baseRoom.setMaxClient(4);
     this.setState(new RoomState());
 
     // 初始化遊戲
@@ -32,8 +32,6 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
     });
 
     this.onMessage(RoomMessage.SetTimer, () => {
-      this.clock.delayed = [];
-
       // 計時開始
       this.clock.start();
 
@@ -112,8 +110,6 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
 
     // 結束遊戲
     this.onMessage(RoomMessage.FinishGame, () => {
-      this.clock.delayed = [];
-      this.delayedInterval.clear();
       this.dispatcher.dispatch(new ResetCommand());
     });
   }
@@ -123,8 +119,6 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
   }
 
   onLeave(client: Client) {
-    this.clock.delayed = [];
-    this.delayedInterval.clear();
     this.baseRoom.onLeave(client);
     this.dispatcher.dispatch(new ResetCommand());
   }
