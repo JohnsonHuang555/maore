@@ -14,6 +14,7 @@ export default class CreatePlayerOrderCommand extends Command<
     let firstPlayerIndex = -1;
     for (let i = 0; i < playerCount; i++) {
       this.state.players[i].playerOrder = playOrders[i];
+      this.state.players[i].isPlaying = true;
       if (playOrders[i] === FIRST_PLAYER_ORDER) {
         firstPlayerIndex = this.state.players[i].playerIndex;
       }

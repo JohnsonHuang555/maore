@@ -182,7 +182,6 @@ const reducer = (state = initialState, action: Action): State => {
         remainCardCount: 0,
         name: action.name,
         point: 0,
-        isNowTurn: false,
       };
       return {
         ...state,

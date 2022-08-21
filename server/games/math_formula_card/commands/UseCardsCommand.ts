@@ -42,9 +42,7 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
 
     console.log(notIncludeSymbols);
     if (isIllegalFormula || notIncludeSymbols.length === 0) {
-      client.send(MathFormulaCardMessage.UseCardsFailed, {
-        message: '算式不合法',
-      });
+      client.send(MathFormulaCardMessage.UseCardsFailed, '算式不合法');
       return;
     }
 
@@ -64,19 +62,18 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
 
       // 判斷是否為正解
       if (answer === this.room.state.mathFormulaCard.answer) {
-        this.room.broadcast(MathFormulaCardMessage.AnswerCorrectly);
+        client.send(MathFormulaCardMessage.AnswerCorrectly, '你答對了!!');
+        this.room.broadcast(
+          MathFormulaCardMessage.OtherPlayerAnswerCorrectly,
+          '其他玩家答對了',
+          { except: client }
+        );
         const playerInfo = this.room.state.mathFormulaCard.playerInfos.get(
           client.id
         );
         if (!playerInfo) {
           throw new Error('playerInfo not found...');
         }
-
-        // 使用的手牌數量
-        const usedCards = elements.filter(
-          (element) =>
-            element.cardNumber !== undefined && element.cardNumber !== -1
-        ).length;
 
         // 加減 得一分
         const plusAndMinusCards = elements.filter(
@@ -88,13 +85,12 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
         const timesCards = elements.filter(
           (element) => element.mathSymbol === MathSymbol.Times
         ).length;
-        //除 得三分
+        // 除 得三分
         const divideCards = elements.filter(
           (element) => element.mathSymbol === MathSymbol.Divide
         ).length;
 
-        const totalPoint =
-          usedCards + plusAndMinusCards + timesCards * 2 + divideCards * 3;
+        const totalPoint = plusAndMinusCards + timesCards * 2 + divideCards * 3;
         // 加分
         playerInfo.point += totalPoint;
 
@@ -117,12 +113,10 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
           new NextTurnCommand(),
         ];
       } else {
-        client.send(MathFormulaCardMessage.AnsweredWrong);
+        client.send(MathFormulaCardMessage.AnsweredWrong, '你答錯了!!');
       }
     } catch (e) {
-      client.send(MathFormulaCardMessage.UseCardsFailed, {
-        message: '算式不合法',
-      });
+      client.send(MathFormulaCardMessage.UseCardsFailed, '算式不合法');
     }
   }
 }

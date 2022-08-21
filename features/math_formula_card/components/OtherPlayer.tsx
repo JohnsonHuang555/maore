@@ -1,14 +1,17 @@
-import { Avatar, Box } from '@mui/material';
+import { Avatar, Box, Tooltip } from '@mui/material';
 import { OthersPlayerInfo } from '../models/OtherPlayerCard';
 import Card from './Card';
 import CloseIcon from '@mui/icons-material/Close';
+import MaoreFlex from '@components/maore/MaoreFlex';
+import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
 
 type OtherPlayerProps = OthersPlayerInfo & {
+  isNowTurn: boolean;
   playerCount: number;
 };
 
 const OtherPlayer = (props: OtherPlayerProps) => {
-  const { remainCardCount, name, point, isNowTurn, playerCount } = props;
+  const { remainCardCount, name, point, playerCount, isNowTurn } = props;
 
   const renderCards = () => {
     const cards = [];
@@ -43,7 +46,18 @@ const OtherPlayer = (props: OtherPlayerProps) => {
           }}
         >
           <Box sx={{ fontSize: '26px', marginBottom: '5px' }}>{name}</Box>
-          <Box sx={{ fontSize: '24px' }}>{point} 分</Box>
+          <MaoreFlex
+            sx={{ width: '100%' }}
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Box sx={{ fontSize: '24px' }}>{point} 分</Box>
+            {isNowTurn && (
+              <Tooltip title="該玩家回合">
+                <VideogameAssetIcon fontSize="medium" color="error" />
+              </Tooltip>
+            )}
+          </MaoreFlex>
         </Box>
       </Box>
       <Box

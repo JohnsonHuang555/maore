@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Box, Button } from '@mui/material';
 import CardDropZone from '../CardDropZone';
 import { SelectedCard } from 'features/math_formula_card/reducers/playerCardsReducer';
 import MaoreFlex from '@components/maore/MaoreFlex';
+import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 
 type PartAreaProps = {
   answer?: number;
@@ -32,6 +33,24 @@ const PartArea = (props: PartAreaProps) => {
     return false;
   }, [selectedCards]);
 
+  const getPointHint = useCallback((card: SelectedCard) => {
+    if (card.cardNumber !== undefined && card.cardNumber !== -1) {
+      return '1 分';
+    }
+
+    if (card.mathSymbol !== undefined && card.mathSymbol !== '') {
+      switch (card.mathSymbol) {
+        case MathSymbol.Plus:
+        case MathSymbol.Minus:
+          return '1 分';
+        case MathSymbol.Times:
+          return '2 分';
+        case MathSymbol.Divide:
+          return '3 分';
+      }
+    }
+  }, []);
+
   return (
     <MaoreFlex
       justifyContent="center"
@@ -49,6 +68,16 @@ const PartArea = (props: PartAreaProps) => {
       >
         {selectedCards.map((card) => (
           <Box key={card.id} sx={{ marginRight: '20px' }}>
+            <Box
+              sx={{
+                marginBottom: '10px',
+                marginTop: '-20px',
+                textAlign: 'center',
+                height: '30px',
+              }}
+            >
+              {getPointHint(card)}
+            </Box>
             <CardDropZone
               id={card.id}
               cardId={card.cardId}
@@ -72,7 +101,7 @@ const PartArea = (props: PartAreaProps) => {
               },
             }}
             variant="contained"
-            size="small"
+            size="medium"
             disableElevation
             color="secondary"
             disabled={

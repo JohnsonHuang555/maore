@@ -17,11 +17,7 @@ const ControlArea = (props: ControlAreaProps) => {
       <Stack direction="row" alignItems="center" spacing={1}>
         {showTimer && (
           <Tooltip title="剩餘時間">
-            <IconButton
-              size="large"
-              aria-label="game-rule"
-              onClick={onRuleClick}
-            >
+            <IconButton size="large" aria-label="game-rule">
               <AlarmIcon fontSize="inherit" sx={{ marginRight: '10px' }} />
               <Box>{timer}</Box>
             </IconButton>

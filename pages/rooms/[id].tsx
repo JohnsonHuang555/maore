@@ -90,11 +90,6 @@ const Rooms = () => {
   }, [clientRoom]);
   // use effect end
 
-  useWarningOnExit({
-    shouldWarn: true,
-    leaveRoom,
-  });
-
   const getIsReadyGameText = () => {
     const isReady = players.find((p) => p.isReady && p.id === yourPlayerId);
     if (isReady) {
@@ -115,6 +110,11 @@ const Rooms = () => {
     enqueueSnackbar('此功能未完成', { variant: 'info' });
     setEditModal(false);
   };
+
+  useWarningOnExit({
+    shouldWarn: true,
+    leaveRoom,
+  });
 
   return (
     <Layout>

@@ -32,6 +32,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { selectedCardSymbolDict } from './components/SelectedCardDict';
 import MathSymbolCard from './components/MathSymbolCard';
 import { DEFAULT_CARD_COUNT } from 'server/games/math_formula_card/commands/CreateGameCommand';
+import RuleModal from './components/RuleModal';
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
@@ -49,6 +50,7 @@ const MathFormulaCard = () => {
   const [noDrawCardDelay, setNoDrawCardDelay] = useState(false);
   const [showYourTurnUI, setShowYourTurnUI] = useState(false);
   const [timer, setTimer] = useState(0);
+  const [showRuleModal, setShowRuleModal] = useState(false);
 
   if (!clientRoom) {
     throw new Error('client room not found...');
@@ -56,19 +58,23 @@ const MathFormulaCard = () => {
 
   useEffect(() => {
     // listening message from server
+    clientRoom.onMessage(MathFormulaCardMessage.UseCardsFailed, (message) => {
+      enqueueSnackbar(message, { variant: 'warning' });
+    });
+
+    clientRoom.onMessage(MathFormulaCardMessage.AnswerCorrectly, (message) => {
+      enqueueSnackbar(message, { variant: 'success' });
+    });
+
     clientRoom.onMessage(
-      MathFormulaCardMessage.UseCardsFailed,
-      ({ message }) => {
-        enqueueSnackbar(message, { variant: 'warning' });
+      MathFormulaCardMessage.OtherPlayerAnswerCorrectly,
+      (message) => {
+        enqueueSnackbar(message, { variant: 'info' });
       }
     );
 
-    clientRoom.onMessage(MathFormulaCardMessage.AnswerCorrectly, () => {
-      enqueueSnackbar('你答對了', { variant: 'success' });
-    });
-
-    clientRoom.onMessage(MathFormulaCardMessage.AnsweredWrong, () => {
-      enqueueSnackbar('你答錯了!!', { variant: 'error' });
+    clientRoom.onMessage(MathFormulaCardMessage.AnsweredWrong, (message) => {
+      enqueueSnackbar(message, { variant: 'error' });
     });
 
     clientRoom.onMessage(RoomMessage.GetTimer, () => {
@@ -357,14 +363,13 @@ const MathFormulaCard = () => {
         isWinner={getIsWinner()}
         onConfirm={() => dispatch(setShowGameScreen(false))}
       />
-
+      <RuleModal show={showRuleModal} onClose={() => setShowRuleModal(false)} />
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={showYourTurnUI}
       >
         <Box sx={{ fontSize: '40px' }}>輪到你了</Box>
       </Backdrop>
-
       <MaoreFlex
         sx={{
           width: '100%',
@@ -377,7 +382,7 @@ const MathFormulaCard = () => {
         {/* 操作區塊 */}
         <ControlArea
           showTimer={players.length > 1}
-          onRuleClick={() => {}}
+          onRuleClick={() => setShowRuleModal(true)}
           timer={timer}
         />
         {/* 其他玩家區塊 */}
@@ -390,6 +395,7 @@ const MathFormulaCard = () => {
         >
           {Object.keys(state.otherPlayerDict).map((playerId) => (
             <OtherPlayerArea
+              key={playerId}
               playerId={playerId}
               playerInfo={state.otherPlayerDict[playerId]}
               playerCount={players.length}
@@ -419,7 +425,7 @@ const MathFormulaCard = () => {
             marginBottom: '20px',
           }}
         >
-          <Box sx={{ marginBottom: '10px', fontSize: '24px' }}>算式牌</Box>
+          <Box sx={{ marginBottom: '10px', fontSize: '24px' }}>符號牌</Box>
           <MaoreFlex justifyContent="center" sx={{ gap: '15px' }}>
             {state.canUseMathSymbols.map((card) => (
               <Zoom

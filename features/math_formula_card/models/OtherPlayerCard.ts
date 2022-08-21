@@ -7,5 +7,4 @@ export type OthersPlayerInfo = {
   remainCardCount: number;
   name: string;
   point: number;
-  isNowTurn: boolean;
 };

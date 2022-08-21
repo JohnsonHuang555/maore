@@ -59,12 +59,11 @@ const MathFormulaGameSettings = () => {
           disabled={!isMaster}
           onChange={onRemainedSecondChange}
         >
-          <MenuItem value={15}>15秒</MenuItem>
           <MenuItem value={30}>30秒</MenuItem>
           <MenuItem value={60}>60秒</MenuItem>
           <MenuItem value={90}>90秒</MenuItem>
         </Select>
-        <FormHelperText>此設定對單人遊戲無效</FormHelperText>
+        <FormHelperText>此設定適用於多人遊玩</FormHelperText>
       </FormControl>
     </Box>
   );

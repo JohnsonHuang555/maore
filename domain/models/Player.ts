@@ -3,6 +3,7 @@ export type Player = {
   name: string;
   isMaster: boolean;
   isReady: boolean;
+  isPlaying: boolean;
   playerIndex: number;
   playerOrder: number;
   gameLoaded: boolean;

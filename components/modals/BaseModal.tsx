@@ -55,7 +55,7 @@ const BaseModal = (props: BaseModalProps) => {
           disableElevation
           onClick={handleClose}
         >
-          好
+          OK
         </Button>
       </DialogActions>
     </Dialog>

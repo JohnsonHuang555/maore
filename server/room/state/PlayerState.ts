@@ -34,6 +34,10 @@ export class PlayerState extends Schema {
   @type('string')
   group: string = '';
 
+  // 玩家遊戲中
+  @type('boolean')
+  isPlaying: boolean = false;
+
   constructor(data: Payload) {
     super();
     const { id, name, isMaster, playerIndex } = data;

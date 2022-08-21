@@ -3,6 +3,7 @@ export enum MathFormulaCardMessage {
   UseCardsFailed = 'UseCardsFailed',
   AnswerCorrectly = 'AnswerCorrectly',
   AnsweredWrong = 'AnsweredWrong',
+  OtherPlayerAnswerCorrectly = 'OtherPlayerAnswerCorrectly',
   DrawCard = 'DrawCard',
   DropCard = 'DropCard',
   EndPhase = 'EndPhase',

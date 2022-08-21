@@ -11,6 +11,7 @@ export default class ResetGameCommand extends Command<
     const playerCount = this.state.players.length;
     for (let i = 0; i < playerCount; i++) {
       this.state.players[i].playerOrder = -1;
+      this.state.players[i].isPlaying = false;
       this.state.players[i].gameLoaded = false;
       this.state.players[i].group = '';
       // 除了房主其餘玩家接重設準備狀態
