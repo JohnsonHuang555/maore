@@ -61,78 +61,82 @@ const PlayerArea = (props: PlayerAreaProps) => {
           width: '100%',
         }}
       >
-        {players.map((player) => (
-          <Box
-            key={player.id}
-            sx={{
-              display: 'flex',
-              borderRadius: '5px',
-              padding: '10px',
-              marginBottom: '10px',
-              ':nth-of-type(odd)': {
-                marginRight: '10px',
-                width: 'calc(100% / 2)',
-              },
-              ':nth-of-type(even)': {
-                width: 'calc(100% / 2 - 10px)',
-              },
-              backgroundColor: isNowPlayer(player.id) ? '#64584b' : '#535353',
-            }}
-          >
-            {player.photoURL ? (
-              <Avatar sx={{ width: 56, height: 56 }} src={player.photoURL} />
-            ) : (
-              <Avatar sx={{ width: 56, height: 56, color: '#fff' }}>
-                {player.name.substring(0, 1)}
-              </Avatar>
-            )}
+        {!!players.length ? (
+          players.map((player) => (
             <Box
+              key={player.id}
               sx={{
                 display: 'flex',
-                flexDirection: 'column',
-                width: '100%',
-                flex: 1,
-                justifyContent: 'space-between',
-                marginLeft: '10px',
+                borderRadius: '5px',
+                padding: '10px',
+                marginBottom: '10px',
+                ':nth-of-type(odd)': {
+                  marginRight: '10px',
+                  width: 'calc(100% / 2)',
+                },
+                ':nth-of-type(even)': {
+                  width: 'calc(100% / 2 - 10px)',
+                },
+                backgroundColor: isNowPlayer(player.id) ? '#64584b' : '#535353',
               }}
             >
+              {player.photoURL ? (
+                <Avatar sx={{ width: 56, height: 56 }} src={player.photoURL} />
+              ) : (
+                <Avatar sx={{ width: 56, height: 56, color: '#fff' }}>
+                  {player.name.substring(0, 1)}
+                </Avatar>
+              )}
               <Box
                 sx={{
-                  fontSize: '24px',
-                  padding: '8px 10px',
-                  borderRadius: '5px',
-                  marginBottom: '6px',
-                  backgroundColor: isNowPlayer(player.id)
-                    ? '#3d3834'
-                    : '#343a3d',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: '100%',
+                  flex: 1,
+                  justifyContent: 'space-between',
+                  marginLeft: '10px',
                 }}
               >
-                {player.name}
-              </Box>
-              {!player.isMaster ? (
                 <Box
                   sx={{
                     fontSize: '24px',
-                    color: player.isReady ? 'warning.light' : '#342f29',
+                    padding: '8px 10px',
+                    borderRadius: '5px',
+                    marginBottom: '6px',
+                    backgroundColor: isNowPlayer(player.id)
+                      ? '#3d3834'
+                      : '#343a3d',
                   }}
                 >
-                  Ready
+                  {player.name}
                 </Box>
-              ) : (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '0 5px',
-                  }}
-                >
-                  <Stars sx={{ color: 'warning.light' }} />
-                  <Box sx={{ fontSize: '24px', marginLeft: '5px' }}>房主</Box>
-                </Box>
-              )}
+                {!player.isMaster ? (
+                  <Box
+                    sx={{
+                      fontSize: '24px',
+                      color: player.isReady ? 'warning.light' : '#342f29',
+                    }}
+                  >
+                    Ready
+                  </Box>
+                ) : (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '0 5px',
+                    }}
+                  >
+                    <Stars sx={{ color: 'warning.light' }} />
+                    <Box sx={{ fontSize: '24px', marginLeft: '5px' }}>房主</Box>
+                  </Box>
+                )}
+              </Box>
             </Box>
-          </Box>
-        ))}
+          ))
+        ) : (
+          <Box>房間不存在</Box>
+        )}
       </Box>
     </Box>
   );

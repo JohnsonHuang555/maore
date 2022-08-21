@@ -2,10 +2,16 @@ import React, { MouseEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   showLoginModalSelector,
+  showBaseModalSelector,
   userInfoSelector,
 } from '@selectors/appSelector';
 import { User } from '@domain/models/User';
-import { login, logout, setShowLoginModal } from '@actions/appAction';
+import {
+  login,
+  logout,
+  setShowBaseModal,
+  setShowLoginModal,
+} from '@actions/appAction';
 import LoginModal from '@components/modals/LoginModal';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { firebaseApp } from 'firebase/clientApp';
@@ -21,11 +27,13 @@ import MenuItem from '@mui/material/MenuItem';
 import { getAuth, signOut } from 'firebase/auth';
 import { useSnackbar } from 'notistack';
 import Logo from 'components/icons/logo';
+import BaseModal from './modals/BaseModal';
 
 const Header = () => {
   const dispatch = useDispatch();
   const userInfo = useSelector(userInfoSelector);
   const showLoginModal = useSelector(showLoginModalSelector);
+  const showBaseModal = useSelector(showBaseModalSelector);
 
   const auth = getAuth(firebaseApp);
   const [user, loading, _error] = useAuthState(auth);
@@ -78,6 +86,12 @@ const Header = () => {
 
   return (
     <>
+      <BaseModal
+        modalType={showBaseModal.modalType}
+        show={showBaseModal.show}
+        text={showBaseModal.message}
+        onClose={() => dispatch(setShowBaseModal({ show: false }))}
+      />
       <LoginModal
         show={showLoginModal}
         onClose={() => dispatch(setShowLoginModal(false))}

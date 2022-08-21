@@ -1,6 +1,11 @@
 import { ActionType } from '@actions/appAction';
 import { User } from '@domain/models/User';
 
+export enum ModalType {
+  Info = 'info',
+  Error = 'error',
+}
+
 export type State = {
   snackbar: {
     show: boolean;
@@ -8,6 +13,11 @@ export type State = {
   };
   userInfo?: User;
   showLoginModal: boolean;
+  showBaseModal: {
+    modalType: ModalType | '';
+    show: boolean;
+    message: string;
+  };
   loading: boolean;
 };
 
@@ -18,6 +28,11 @@ const initialState: State = {
   },
   showLoginModal: false,
   loading: false,
+  showBaseModal: {
+    modalType: '',
+    show: false,
+    message: '',
+  },
 };
 
 type LoginAction = {
@@ -39,11 +54,19 @@ type SetLoadingAction = {
   loading: boolean;
 };
 
+type SetShowModalAction = {
+  type: ActionType.ShowBaseModal;
+  message: string;
+  modalType: ModalType;
+  show: boolean;
+};
+
 type Action =
   | LoginAction
   | LogoutAction
   | ShowLoginModalAction
-  | SetLoadingAction;
+  | SetLoadingAction
+  | SetShowModalAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -69,6 +92,16 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         loading: action.loading,
+      };
+    }
+    case ActionType.ShowBaseModal: {
+      return {
+        ...state,
+        showBaseModal: {
+          show: action.show,
+          message: action.message,
+          modalType: action.modalType,
+        },
       };
     }
     default: {

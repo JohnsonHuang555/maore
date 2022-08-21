@@ -20,7 +20,8 @@ import { setClient, setRoom } from '@actions/serverAction';
 import { Room } from 'server/room/state/RoomState';
 import { updateGameSettings as updateMathFormulaSettings } from '@actions/game_settings/mathFormulaAction';
 import { GameList } from 'server/domain/Game';
-import { setLoading } from '@actions/appAction';
+import { setLoading, setShowBaseModal } from '@actions/appAction';
+import { ModalType } from 'reducers/appReducer';
 
 enum RoomStateChangeList {
   RoomInfo = 'roomInfo',
@@ -69,9 +70,19 @@ export default class RoomServer {
     metaData: Metadata
   ) {
     this.photoURL = photoURL;
-    const room = await client.joinById<Room>(roomId, metaData);
-    this.dispatch(setRoom(room));
-    this.handleRoomChange(room);
+    try {
+      const room = await client.joinById<Room>(roomId, metaData);
+      this.dispatch(setRoom(room));
+      this.handleRoomChange(room);
+    } catch (_e) {
+      this.dispatch(
+        setShowBaseModal({
+          modalType: ModalType.Error,
+          message: '房間已經被關閉或是不存在',
+          show: true,
+        })
+      );
+    }
   }
 
   async leaveRoom(room: ClientRoom<Room>) {

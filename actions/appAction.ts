@@ -1,10 +1,12 @@
 import { User } from '@domain/models/User';
+import { ModalType } from 'reducers/appReducer';
 
 export enum ActionType {
   ShowLoginModal = 'showLoginModal',
   Login = 'login',
   Logout = 'logout',
   SetLoading = 'setLoading',
+  ShowBaseModal = 'showBaseModal',
 }
 
 export const setShowLoginModal = (show: boolean) => {
@@ -31,5 +33,24 @@ export const setLoading = (loading: boolean) => {
   return {
     type: ActionType.SetLoading,
     loading,
+  };
+};
+
+type SetShowModalParams = {
+  show: boolean;
+  modalType?: ModalType;
+  message?: string;
+};
+
+export const setShowBaseModal = ({
+  modalType,
+  show,
+  message,
+}: SetShowModalParams) => {
+  return {
+    type: ActionType.ShowBaseModal,
+    modalType,
+    show,
+    message,
   };
 };
