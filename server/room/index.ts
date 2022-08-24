@@ -14,7 +14,8 @@ import LoadedGameCommand from './commands/LoadedGameCommand';
 export default class BaseRoom {
   private dispatcher: Dispatcher<Room<RoomState, Metadata>>;
   private room: Room<RoomState, Metadata>;
-  public delayedInterval!: Delayed;
+  public delayedInterval?: Delayed;
+  public countDown: number = 5;
 
   constructor(room: Room<RoomState, Metadata>) {
     this.room = room;
@@ -28,13 +29,31 @@ export default class BaseRoom {
   onCreate(option: Metadata) {
     this.room.setMetadata(option);
     this.room.onMessage(RoomMessage.ReadyGame, (client) => {
+      this.delayedInterval?.clear();
+      this.room.clock.stop();
+      this.room.clock.clear();
+      this.countDown = 5;
+
       this.dispatcher.dispatch(new ReadyGameCommand(), {
         client,
       });
     });
 
     this.room.onMessage(RoomMessage.StartGame, () => {
-      this.dispatcher.dispatch(new StartGameCommand());
+      this.room.clock.start();
+      this.delayedInterval = this.room.clock.setInterval(() => {
+        this.room.broadcast(
+          RoomMessage.GetMessages,
+          `遊戲開始倒數: ${this.countDown}`
+        );
+        this.countDown--;
+      }, 1000);
+
+      this.room.clock.setTimeout(() => {
+        this.dispatcher.dispatch(new StartGameCommand());
+        this.countDown = 5;
+        this.delayedInterval?.clear();
+      }, 6000);
     });
 
     this.room.onMessage(RoomMessage.CreatePlayerOrder, () => {

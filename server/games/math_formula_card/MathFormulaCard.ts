@@ -32,21 +32,19 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
     });
 
     this.onMessage(RoomMessage.SetTimer, () => {
-      // 計時開始
-      this.clock.start();
-
-      // 設置間隔計時並保存其引用
-      // 以便後續清理工作
-      this.delayedInterval = this.clock.setInterval(() => {
-        this.broadcast(RoomMessage.GetTimer);
-      }, 1000);
-
-      // 60 秒過後清理計時器;
-      // 這會讓計時器 *停止*
-      this.clock.setTimeout(() => {
-        this.delayedInterval.clear();
-        this.dispatcher.dispatch(new NextTurnCommand());
-      }, this.state.mathFormulaCard.gameSettings.remainedSecond * 1000);
+      // // 計時開始
+      // this.clock.start();
+      // // 設置間隔計時並保存其引用
+      // // 以便後續清理工作
+      // this.delayedInterval = this.clock.setInterval(() => {
+      //   this.broadcast(RoomMessage.GetTimer);
+      // }, 1000);
+      // // 60 秒過後清理計時器;
+      // // 這會讓計時器 *停止*
+      // this.clock.setTimeout(() => {
+      //   this.delayedInterval.clear();
+      //   this.dispatcher.dispatch(new NextTurnCommand());
+      // }, this.state.mathFormulaCard.gameSettings.remainedSecond * 1000);
     });
 
     // 更新遊戲設定
@@ -90,8 +88,9 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
     // 結束回合
     this.onMessage(MathFormulaCardMessage.EndPhase, (client) => {
       // 停止計時
-      this.clock.delayed = [];
-      this.delayedInterval.clear();
+      // this.clock.clear();
+      // this.clock.delayed = [];
+      // this.delayedInterval.clear();
 
       this.dispatcher.dispatch(new NextTurnCommand());
       this.dispatcher.dispatch(new ClearSelectedElementsCommand(), {

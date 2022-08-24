@@ -246,9 +246,9 @@ const MathFormulaCard = () => {
 
     clientRoom.send(RoomMessage.LoadedGame);
 
-    return () => {
-      clientRoom.removeAllListeners();
-    };
+    // return () => {
+    //   clientRoom.removeAllListeners();
+    // };
   }, []);
 
   useEffect(() => {
