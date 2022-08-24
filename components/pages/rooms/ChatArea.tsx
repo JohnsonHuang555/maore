@@ -14,7 +14,7 @@ type ChatAreaProps = {
 const ChatArea = (props: ChatAreaProps) => {
   const { messages } = props;
   const messageRef = useRef<any>(null);
-  const [currentMessage, setCurrentMessage] = useState('');
+  const [currentMessages, setCurrentMessages] = useState('');
   const dispatch = useDispatch();
 
   // use effects start
@@ -29,11 +29,11 @@ const ChatArea = (props: ChatAreaProps) => {
   }, []);
 
   const onSendMessage = () => {
-    if (!currentMessage) {
+    if (!currentMessages) {
       return;
     }
-    dispatch(sendMessage(currentMessage));
-    setCurrentMessage('');
+    dispatch(sendMessage(currentMessages));
+    setCurrentMessages('');
   };
 
   return (
@@ -74,7 +74,7 @@ const ChatArea = (props: ChatAreaProps) => {
         variant="outlined"
         size="small"
         fullWidth
-        value={currentMessage}
+        value={currentMessages}
         InputProps={{
           onKeyDown: (e) => {
             if (e.key === 'Enter') {
@@ -82,7 +82,7 @@ const ChatArea = (props: ChatAreaProps) => {
             }
           },
           onChange: (e) => {
-            setCurrentMessage(e.target.value);
+            setCurrentMessages(e.target.value);
           },
           endAdornment: (
             <InputAdornment position="start">

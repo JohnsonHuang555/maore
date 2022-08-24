@@ -9,7 +9,7 @@ import {
   isMasterSelector,
 } from '@selectors/roomSelector';
 import { clientRoomSelector } from '@selectors/serverSelector';
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MathFormulaCardMessage } from './models/MathFormulaCardMessage';
 import playerCardsReducer, {
@@ -29,6 +29,7 @@ import MaoreFlex from '@components/maore/MaoreFlex';
 import HandCard from './components/HandCard';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { TouchBackend } from 'react-dnd-touch-backend';
 import { selectedCardSymbolDict } from './components/SelectedCardDict';
 import MathSymbolCard from './components/MathSymbolCard';
 import { DEFAULT_CARD_COUNT } from 'server/games/math_formula_card/commands/CreateGameCommand';
@@ -245,9 +246,9 @@ const MathFormulaCard = () => {
 
     clientRoom.send(RoomMessage.LoadedGame);
 
-    return () => {
-      clientRoom.removeAllListeners();
-    };
+    // return () => {
+    //   clientRoom.removeAllListeners();
+    // };
   }, []);
 
   useEffect(() => {
@@ -356,8 +357,12 @@ const MathFormulaCard = () => {
     clientRoom.send(MathFormulaCardMessage.ClearSelectedCards);
   };
 
+  const isPadOrPhone = useMemo(() => {
+    return window.matchMedia('(max-width: 1200px)').matches;
+  }, []);
+
   return (
-    <DndProvider backend={HTML5Backend}>
+    <DndProvider backend={isPadOrPhone ? TouchBackend : HTML5Backend}>
       <GameOverModal
         show={state.winnerIndex !== -1}
         isWinner={getIsWinner()}

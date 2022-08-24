@@ -38,6 +38,7 @@ const Games = () => {
 
   // useState
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
+  const [showRuleModal, setShowRuleModal] = useState(false);
 
   // get current game
   const { data: game, error } = useSWR<Game, Error>(
@@ -159,7 +160,12 @@ const Games = () => {
               >
                 建立房間
               </Button>
-              <Button size="large" variant="contained" disableElevation>
+              <Button
+                size="large"
+                variant="contained"
+                disableElevation
+                onClick={() => setShowRuleModal(true)}
+              >
                 遊戲規則
               </Button>
             </Box>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Layout from '@components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -47,6 +47,7 @@ const Rooms = () => {
   const roomId = router.query.id;
   const { enqueueSnackbar } = useSnackbar();
   const [showEditModal, setEditModal] = useState(false);
+  const [isClickStartGame, setIsClickStartGame] = useState(false);
 
   // selectors
   const createdRoomId = useSelector(createdRoomIdSelector);
@@ -62,6 +63,11 @@ const Rooms = () => {
 
   const auth = getAuth(firebaseApp);
   const [_user, loading, _error] = useAuthState(auth);
+
+  const isAnyPlayerNotReady = useMemo(
+    () => players.filter((p) => !p.isReady),
+    [players]
+  );
 
   // use effects start
   useEffect(() => {
@@ -88,6 +94,12 @@ const Rooms = () => {
       });
     }
   }, [clientRoom]);
+
+  useEffect(() => {
+    if (isAnyPlayerNotReady) {
+      setIsClickStartGame(false);
+    }
+  }, [isAnyPlayerNotReady]);
   // use effect end
 
   const getIsReadyGameText = () => {
@@ -99,7 +111,9 @@ const Rooms = () => {
   };
 
   const checkDisabledStartGame = () => {
-    const isAnyPlayerNotReady = players.filter((p) => !p.isReady);
+    if (isClickStartGame) {
+      return true;
+    }
     if (isAnyPlayerNotReady.length) {
       return true;
     }
@@ -151,7 +165,10 @@ const Rooms = () => {
               onLeaveRoom={() =>
                 (location.href = `/games/${roomInfo.gamePack}`)
               }
-              onStartGame={() => dispatch(startGame())}
+              onStartGame={() => {
+                setIsClickStartGame(true);
+                dispatch(startGame());
+              }}
               onReadyGame={() => dispatch(readyGame())}
             />
           </Grid>
