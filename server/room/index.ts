@@ -29,6 +29,9 @@ export default class BaseRoom {
   onCreate(option: Metadata) {
     this.room.setMetadata(option);
     this.room.onMessage(RoomMessage.ReadyGame, (client) => {
+      // 房間解除鎖定
+      this.room.unlock();
+
       this.delayedInterval?.clear();
       this.room.clock.stop();
       this.room.clock.clear();
@@ -40,6 +43,9 @@ export default class BaseRoom {
     });
 
     this.room.onMessage(RoomMessage.StartGame, () => {
+      // 房間鎖定，搜到不此房間
+      this.room.lock();
+
       this.room.clock.start();
       this.delayedInterval = this.room.clock.setInterval(() => {
         this.room.broadcast(

@@ -17,7 +17,7 @@ const handle = nextApp.getRequestHandler();
 const basicAuthMiddleware = basicAuth({
   // 用戶名/密碼列表
   users: {
-    admin: 'admin',
+    admin: 'yoyoyo',
   },
   // 發送 WWW-Authenticate 響應頭部, 提示用戶
   // 填寫用戶名和密碼

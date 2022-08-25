@@ -110,6 +110,7 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
     // 結束遊戲
     this.onMessage(RoomMessage.FinishGame, () => {
       this.dispatcher.dispatch(new ResetCommand());
+      this.unlock();
     });
   }
 
