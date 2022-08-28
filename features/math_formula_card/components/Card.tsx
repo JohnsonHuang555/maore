@@ -6,7 +6,7 @@ type CardProps = {
   id?: string;
   value?: number | React.ReactNode;
   hideCard?: boolean;
-  width: string;
+  width: number;
   bgColor?: string;
   fontColor?: string;
   symbolSize?: string;
@@ -32,7 +32,11 @@ const Card = (props: CardProps) => {
   return (
     <MuiCard
       sx={{
-        width,
+        minWidth: {
+          xs: `${width * 0.7}px`,
+          sm: `${width * 0.8}px`,
+          lg: `${width}px`,
+        },
         backgroundColor: bgColor,
         aspectRatio: '2/3',
         pointerEvents: hideCard ? 'none' : 'auto',
@@ -64,7 +68,19 @@ const Card = (props: CardProps) => {
             padding: '35px 0',
           }}
         >
-          <Box sx={{ fontSize: symbolSize, marginBottom: '10px' }}>{value}</Box>
+          <Box
+            sx={{
+              fontSize: {
+                xs: '30px',
+                sm: '32px',
+                md: '40px',
+                lg: symbolSize,
+              },
+              marginBottom: '10px',
+            }}
+          >
+            {value}
+          </Box>
           <CatHand fontSize={iconSize} pathcolor={iconColor} />
         </Box>
       )}

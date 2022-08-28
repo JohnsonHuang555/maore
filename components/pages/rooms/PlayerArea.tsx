@@ -27,10 +27,19 @@ const PlayerArea = (props: PlayerAreaProps) => {
         backgroundColor: 'primary.dark',
         padding: '15px',
         borderRadius: '10px',
-        overflowY: 'auto',
+        // overflowY: 'auto',
       }}
     >
-      <Box sx={{ fontSize: '26px', marginBottom: '10px' }}>
+      <Box
+        sx={{
+          fontSize: {
+            xs: '18px',
+            sm: '22px',
+            lg: '26px',
+          },
+          marginBottom: '10px',
+        }}
+      >
         <Stack
           direction="row"
           alignItems="center"
@@ -41,13 +50,28 @@ const PlayerArea = (props: PlayerAreaProps) => {
           <Box>
             <Tooltip title="當房間只剩一人時重整頁面會關閉此房間，需重新建立房間">
               <IconButton>
-                <InfoOutlinedIcon />
+                <InfoOutlinedIcon
+                  sx={{
+                    fontSize: {
+                      xs: '18px',
+                      sm: '22px',
+                      lg: '26px',
+                    },
+                  }}
+                />
               </IconButton>
             </Tooltip>
             <Tooltip title="編輯房間資訊">
-              {/* TODO: 跳 modal */}
               <IconButton onClick={onEditRoom}>
-                <EditOutlinedIcon fontSize="inherit" />
+                <EditOutlinedIcon
+                  sx={{
+                    fontSize: {
+                      xs: '18px',
+                      sm: '22px',
+                      lg: '26px',
+                    },
+                  }}
+                />
               </IconButton>
             </Tooltip>
           </Box>
@@ -70,11 +94,21 @@ const PlayerArea = (props: PlayerAreaProps) => {
               padding: '10px',
               marginBottom: '10px',
               ':nth-of-type(odd)': {
-                marginRight: '10px',
-                width: 'calc(100% / 2)',
+                xs: {
+                  width: '100%',
+                },
+                md: {
+                  marginRight: '10px',
+                  width: 'calc(100% / 2)',
+                },
               },
               ':nth-of-type(even)': {
-                width: 'calc(100% / 2 - 10px)',
+                xs: {
+                  width: '100%',
+                },
+                md: {
+                  width: 'calc(100% / 2 - 10px)',
+                },
               },
               backgroundColor: isNowPlayer(player.id) ? '#64584b' : '#535353',
             }}

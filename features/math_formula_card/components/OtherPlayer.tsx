@@ -23,7 +23,7 @@ const OtherPlayer = (props: OtherPlayerProps) => {
           iconSize="small"
           iconColor="#E9C46A"
           bgColor="#E76F51"
-          width="50px"
+          width={50}
         />
       );
     }
@@ -78,7 +78,7 @@ const OtherPlayer = (props: OtherPlayerProps) => {
               iconSize="small"
               iconColor="#E9C46A"
               bgColor="#E76F51"
-              width="50px"
+              width={50}
             />
             <CloseIcon />
             <Box sx={{ fontSize: '40px', marginLeft: '10px' }}>

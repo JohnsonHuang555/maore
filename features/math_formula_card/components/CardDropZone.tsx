@@ -33,7 +33,11 @@ const CardDropZone = (props: CardDropZoneProps) => {
       ref={drop}
       sx={{
         aspectRatio: '2/3',
-        width: '100px',
+        width: {
+          xs: '70px',
+          sm: '80px',
+          lg: '100px',
+        },
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -60,7 +64,17 @@ const CardDropZone = (props: CardDropZoneProps) => {
       )}
       {(cardNumber === undefined || cardNumber === -1) &&
         (mathSymbol === undefined || mathSymbol === '') && (
-          <Box sx={{ color: '#ccc', fontSize: '16px', margin: '10px' }}>
+          <Box
+            sx={{
+              color: '#ccc',
+              fontSize: {
+                xs: '12px',
+                sm: '14px',
+                lg: '16px',
+              },
+              margin: '10px',
+            }}
+          >
             將牌拖曳到這裡
           </Box>
         )}

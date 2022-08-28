@@ -6,7 +6,7 @@ import { WebSocketTransport } from '@colyseus/ws-transport';
 import { monitor } from '@colyseus/monitor';
 // import ChineseChess from './games/chinese_chess/ChineseChess';
 import MathFormulaCard from './games/math_formula_card/MathFormulaCard';
-import { GameList } from './domain/Game';
+import { GamePack } from './domain/Game';
 import basicAuth from 'express-basic-auth';
 
 const port = parseInt(process.env.PORT || '3000', 10);
@@ -38,11 +38,11 @@ nextApp.prepare().then(() => {
 
   // 載入所有遊戲 instance
   // gameServer
-  //   .define(GameList.ChineseChess, ChineseChess)
+  //   .define(GamePack.ChineseChess, ChineseChess)
   //   .enableRealtimeListing();
 
   gameServer
-    .define(GameList.MathFormulaCard, MathFormulaCard)
+    .define(GamePack.MathFormulaCard, MathFormulaCard)
     .enableRealtimeListing();
 
   app.use('/colyseus', basicAuthMiddleware, monitor());

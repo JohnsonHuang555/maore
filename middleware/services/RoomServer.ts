@@ -19,7 +19,7 @@ import { AnyAction, Dispatch } from 'redux';
 import { setClient, setRoom } from '@actions/serverAction';
 import { Room } from 'server/room/state/RoomState';
 import { updateGameSettings as updateMathFormulaSettings } from '@actions/game_settings/mathFormulaAction';
-import { GameList } from 'server/domain/Game';
+import { GamePack } from 'server/domain/Game';
 import { setLoading, setShowBaseModal } from '@actions/appAction';
 import { ModalType } from 'reducers/appReducer';
 
@@ -42,7 +42,7 @@ export default class RoomServer {
     this.dispatch = dispatch;
   }
 
-  async getAllRooms(client: Client, gamePack: GameList) {
+  async getAllRooms(client: Client, gamePack: GamePack) {
     const rooms = await client.getAvailableRooms(gamePack);
     this.dispatch(loadedRooms(rooms));
     this.dispatch(setLoading(false));
@@ -51,7 +51,7 @@ export default class RoomServer {
   // 房主觸發 createOrJoinRoom 只會觸發一次
   async createRoom(
     client: Client,
-    gamePack: GameList,
+    gamePack: GamePack,
     photoURL: string,
     metaData: Metadata
   ) {

@@ -2,14 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { IonPhaser, GameInstance } from '@ion-phaser/react';
 import { ChineseChessConfig } from 'features/chinese_chess/ChineseChessConfig';
 import { Box } from '@mui/material';
-import { GameList } from 'server/domain/Game';
+import { GamePack } from 'server/domain/Game';
 
 const playingGame: { [key: string]: GameInstance } = {
-  [GameList.ChineseChess]: ChineseChessConfig,
+  [GamePack.ChineseChess]: ChineseChessConfig,
 };
 
 type PhaserProps = {
-  gamePack: GameList;
+  gamePack: GamePack;
 };
 
 const Phaser = (props: PhaserProps) => {

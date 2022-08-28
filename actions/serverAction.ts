@@ -1,7 +1,7 @@
 import { Client, Room as ClientRoom } from 'colyseus.js';
 import { RoomInfo } from '@domain/models/Room';
 import { Room } from 'server/room/state/RoomState';
-import { GameList } from 'server/domain/Game';
+import { GamePack } from 'server/domain/Game';
 
 export enum ActionType {
   INITIAL_CLIENT = 'INITIAL_CLIENT',
@@ -37,7 +37,7 @@ export const setRoom = (room: ClientRoom<Room>) => {
   };
 };
 
-export const getAllRooms = (gamePack: GameList) => {
+export const getAllRooms = (gamePack: GamePack) => {
   return {
     type: ActionType.GET_ALL_ROOMS,
     gamePack,
@@ -45,7 +45,7 @@ export const getAllRooms = (gamePack: GameList) => {
 };
 
 export type createRoomParams = {
-  gamePack: GameList;
+  gamePack: GamePack;
   roomTitle: string;
   playerName: string;
   gameMode?: string;

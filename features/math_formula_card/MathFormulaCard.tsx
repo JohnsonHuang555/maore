@@ -362,7 +362,16 @@ const MathFormulaCard = () => {
   }, []);
 
   return (
-    <DndProvider backend={isPadOrPhone ? TouchBackend : HTML5Backend}>
+    <DndProvider
+      backend={isPadOrPhone ? TouchBackend : HTML5Backend}
+      options={{
+        scrollAngleRanges: [
+          { start: 300 },
+          { end: 60 },
+          { start: 120, end: 240 },
+        ],
+      }}
+    >
       <GameOverModal
         show={state.winnerIndex !== -1}
         isWinner={getIsWinner()}
@@ -430,7 +439,18 @@ const MathFormulaCard = () => {
             marginBottom: '20px',
           }}
         >
-          <Box sx={{ marginBottom: '10px', fontSize: '24px' }}>符號牌</Box>
+          <Box
+            sx={{
+              marginBottom: '10px',
+              fontSize: {
+                xs: '18px',
+                sm: '20px',
+                lg: '22px',
+              },
+            }}
+          >
+            符號牌
+          </Box>
           <MaoreFlex justifyContent="center" sx={{ gap: '15px' }}>
             {state.canUseMathSymbols.map((card) => (
               <Zoom
@@ -452,7 +472,16 @@ const MathFormulaCard = () => {
             ))}
           </MaoreFlex>
         </MaoreFlex>
-        <Box sx={{ textAlign: 'center', fontSize: '30px' }}>
+        <Box
+          sx={{
+            textAlign: 'center',
+            fontSize: {
+              xs: '18px',
+              sm: '24px',
+              lg: '30px',
+            },
+          }}
+        >
           {isYourTurn ? '你的回合' : '其他玩家回合'}
         </Box>
         {/* 自己手牌 */}
@@ -468,56 +497,82 @@ const MathFormulaCard = () => {
             sx={{
               width: '15vw',
               flexDirection: 'column',
-              padding: '0 50px',
+              padding: {
+                md: '0 10px',
+                lg: '0 50px',
+              },
+              display: {
+                xs: 'none',
+                md: 'block',
+              },
             }}
           >
             <Box
               sx={{
                 marginBottom: '20px',
-                fontSize: '26px',
+                fontSize: {
+                  md: '16px',
+                  lg: '26px',
+                },
               }}
             >
               勝利條件: {gameSettings?.winnerPoint} 分
             </Box>
             <PlayerAvatar point={state.yourPoint} />
           </MaoreFlex>
-          <MaoreFlex
-            justifyContent="center"
+          <Box
             sx={{
-              gap: '15px',
-              flexWrap: 'wrap',
-              width: '70vw',
+              overflowX: 'auto',
+              width: {
+                xs: '100vw',
+                sm: '80vw',
+                lg: '70vw',
+              },
             }}
           >
-            {state.yourCards.map((card, index) => (
-              <Zoom
-                key={card.id}
-                in={true}
-                style={{
-                  transitionDelay: noDrawCardDelay
-                    ? '100ms'
-                    : `${index * 100}ms`,
-                }}
-              >
-                <Box>
-                  <HandCard card={card} onDropCard={handleDropCard} />
-                </Box>
-              </Zoom>
-            ))}
-          </MaoreFlex>
+            <MaoreFlex
+              justifyContent="flex-start"
+              sx={{
+                gap: '15px',
+              }}
+            >
+              {state.yourCards.map((card, index) => (
+                <Zoom
+                  key={card.id}
+                  in={true}
+                  style={{
+                    transitionDelay: noDrawCardDelay
+                      ? '100ms'
+                      : `${index * 100}ms`,
+                  }}
+                >
+                  <Box>
+                    <HandCard card={card} onDropCard={handleDropCard} />
+                  </Box>
+                </Zoom>
+              ))}
+            </MaoreFlex>
+          </Box>
           <MaoreFlex
             alignItems="flex-end"
             sx={{
               flexDirection: 'column',
               width: '15vw',
               padding: '0 50px',
+              display: {
+                xs: 'none',
+                md: 'block',
+              },
             }}
           >
             {players.length === 1 ? (
               <Button
                 sx={{
                   maxWidth: '200px',
-                  minWidth: '150px',
+                  minWidth: {
+                    xs: '100px',
+                    lg: '150px',
+                  },
                   backgroundColor: '#c04d30',
                   ':hover': {
                     backgroundColor: '#E76F51',
@@ -536,7 +591,10 @@ const MathFormulaCard = () => {
               <Button
                 sx={{
                   maxWidth: '200px',
-                  minWidth: '150px',
+                  minWidth: {
+                    xs: '100px',
+                    lg: '150px',
+                  },
                   backgroundColor: '#c04d30',
                   ':hover': {
                     backgroundColor: '#E76F51',
@@ -555,7 +613,10 @@ const MathFormulaCard = () => {
             <Button
               sx={{
                 maxWidth: '200px',
-                minWidth: '150px',
+                minWidth: {
+                  xs: '100px',
+                  lg: '150px',
+                },
                 backgroundColor: '#095858',
                 ':hover': {
                   backgroundColor: '#044040',
@@ -574,7 +635,10 @@ const MathFormulaCard = () => {
             <Button
               sx={{
                 maxWidth: '200px',
-                minWidth: '150px',
+                minWidth: {
+                  xs: '100px',
+                  lg: '150px',
+                },
                 backgroundColor: '#415761',
                 ':hover': {
                   backgroundColor: '#385968',

@@ -28,7 +28,7 @@ import { setShowLoginModal } from '@actions/appAction';
 import PlayerArea from '@components/pages/rooms/PlayerArea';
 import ChatArea from '@components/pages/rooms/ChatArea';
 import SettingArea from '@components/pages/rooms/SettingArea';
-import { GameList } from 'server/domain/Game';
+import { GamePack } from 'server/domain/Game';
 import { getAuth } from 'firebase/auth';
 import { firebaseApp } from 'firebase/clientApp';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -159,7 +159,7 @@ const Rooms = () => {
           </Grid>
           <Grid item xl={3} lg={3} md={4} sm={6} xs={12}>
             <SettingArea
-              gamePack={roomInfo.gamePack as GameList}
+              gamePack={roomInfo.gamePack as GamePack}
               disabledStartGame={checkDisabledStartGame()}
               isReadyGame={getIsReadyGameText()}
               onLeaveRoom={() =>

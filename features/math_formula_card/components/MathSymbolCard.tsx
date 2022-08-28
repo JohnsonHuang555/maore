@@ -37,7 +37,7 @@ const MathSymbolCard = (props: MathSymbolCardProps) => {
 
   return (
     <Box ref={dragRef} sx={{ opacity }}>
-      <Card value={symbolValue} width="100px" />
+      <Card value={symbolValue} width={100} />
     </Box>
   );
 };

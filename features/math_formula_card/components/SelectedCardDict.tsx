@@ -2,7 +2,6 @@ import AddIcon from 'features/math_formula_card/components/icons/PlusIcon';
 import RemoveIcon from 'features/math_formula_card/components/icons/MinusIcon';
 import ClearIcon from 'features/math_formula_card/components/icons/TimesIcon';
 import DivideIcon from 'features/math_formula_card/components/icons/DivideIcon';
-import React from 'react';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 
 export const selectedCardSymbolDict: { [key: string]: React.ReactNode } = {

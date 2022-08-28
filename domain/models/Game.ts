@@ -1,4 +1,4 @@
-import { GameList } from 'server/domain/Game';
+import { GamePack } from 'server/domain/Game';
 
 export type Game = {
   id: number;
@@ -11,7 +11,7 @@ export type Game = {
   estimateTime: number;
   modes?: GameMode[];
   createAt: string;
-  gamePack: GameList;
+  gamePack: GamePack;
 };
 
 export type GameMode = {

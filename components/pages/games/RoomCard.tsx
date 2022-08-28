@@ -1,7 +1,6 @@
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import People from '@mui/icons-material/People';
-import VideogameAsset from '@mui/icons-material/VideogameAsset';
 
 type RoomCardProps = {
   title: string;
@@ -42,7 +41,10 @@ const RoomCard = (props: RoomCardProps) => {
             backgroundColor: 'primary.light',
             borderRadius: '5px',
             padding: '0 5px',
-            flex: 1,
+            flex: {
+              xs: 0.5,
+              sm: 1,
+            },
             letterSpacing: '1px',
           }}
         >

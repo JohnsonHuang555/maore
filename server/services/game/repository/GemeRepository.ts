@@ -1,4 +1,4 @@
-import { Game, GameList, IGameRepository } from "../../../domain/Game";
+import { Game, GamePack, IGameRepository } from '../../../domain/Game';
 
 export default class GameRepository implements IGameRepository {
   private db: Game[];
@@ -13,7 +13,7 @@ export default class GameRepository implements IGameRepository {
     return this.db;
   }
 
-  public FindByGamePack(gamePack: GameList): Game {
+  public FindByGamePack(gamePack: GamePack): Game {
     const game = this.db.find((g) => g.game_pack === gamePack);
     if (!game) {
       throw new Error('game not found...');

@@ -25,7 +25,7 @@ const RuleModal = (props: RuleModalProps) => {
     >
       <DialogTitle id="rule-dialog-slide-title">規則說明</DialogTitle>
       <DialogContent>
-        <DialogContentText id="rule-dialog-slide-description">
+        <DialogContentText component="div" id="rule-dialog-slide-description">
           <p>1. 每人起手 8 張隨機數字牌</p>
           <p>2. 將手牌或符號牌拖曳到格子內組合出合法的算式</p>
           <p>3. 每個格子都必須填入，任何一格都不可為空</p>
