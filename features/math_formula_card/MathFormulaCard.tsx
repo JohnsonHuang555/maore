@@ -9,7 +9,7 @@ import {
   isMasterSelector,
 } from '@selectors/roomSelector';
 import { clientRoomSelector } from '@selectors/serverSelector';
-import { useEffect, useMemo, useReducer, useState } from 'react';
+import { Ref, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MathFormulaCardMessage } from './models/MathFormulaCardMessage';
 import playerCardsReducer, {
@@ -52,6 +52,8 @@ const MathFormulaCard = () => {
   const [showYourTurnUI, setShowYourTurnUI] = useState(false);
   const [timer, setTimer] = useState(0);
   const [showRuleModal, setShowRuleModal] = useState(false);
+
+  const cardAreaRef = useRef<any>(null);
 
   if (!clientRoom) {
     throw new Error('client room not found...');
@@ -283,6 +285,7 @@ const MathFormulaCard = () => {
         setNoDrawCardDelay(true);
       }, DEFAULT_CARD_COUNT * 100);
     }
+    cardAreaRef.current.scrollLeft += 400;
   }, [state.yourCards]);
 
   useEffect(() => {
@@ -480,6 +483,7 @@ const MathFormulaCard = () => {
               sm: '24px',
               lg: '30px',
             },
+            marginBottom: '10px',
           }}
         >
           {isYourTurn ? '你的回合' : '其他玩家回合'}
@@ -522,36 +526,52 @@ const MathFormulaCard = () => {
           </MaoreFlex>
           <Box
             sx={{
-              overflowX: 'auto',
+              overflowX: {
+                xs: 'auto',
+                sm: 'auto',
+                md: 'auto',
+                lg: 'hidden',
+              },
+              '::-webkit-scrollbar': {
+                backgroundColor: 'transparent',
+                width: '0px',
+              },
+              ':hover': {
+                overflowX: 'auto',
+                '::-webkit-scrollbar': {
+                  width: '8px',
+                },
+                '::-webkit-scrollbar-thumb': {
+                  backgroundColor: '#415761',
+                },
+              },
               width: {
                 xs: '100vw',
                 sm: '80vw',
                 lg: '70vw',
               },
+              display: 'flex',
+              gap: '15px',
+              justifyContent: 'flex-start',
+              height: '100%',
             }}
+            ref={cardAreaRef}
           >
-            <MaoreFlex
-              justifyContent="flex-start"
-              sx={{
-                gap: '15px',
-              }}
-            >
-              {state.yourCards.map((card, index) => (
-                <Zoom
-                  key={card.id}
-                  in={true}
-                  style={{
-                    transitionDelay: noDrawCardDelay
-                      ? '100ms'
-                      : `${index * 100}ms`,
-                  }}
-                >
-                  <Box>
-                    <HandCard card={card} onDropCard={handleDropCard} />
-                  </Box>
-                </Zoom>
-              ))}
-            </MaoreFlex>
+            {state.yourCards.map((card, index) => (
+              <Zoom
+                key={card.id}
+                in={true}
+                style={{
+                  transitionDelay: noDrawCardDelay
+                    ? '100ms'
+                    : `${index * 100}ms`,
+                }}
+              >
+                <Box>
+                  <HandCard card={card} onDropCard={handleDropCard} />
+                </Box>
+              </Zoom>
+            ))}
           </Box>
           <MaoreFlex
             alignItems="flex-end"

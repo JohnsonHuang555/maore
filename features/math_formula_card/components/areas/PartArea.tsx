@@ -54,72 +54,69 @@ const PartArea = (props: PartAreaProps) => {
   return (
     <>
       <MaoreFlex
-        justifyContent="flex-start"
+        alignItems="center"
         sx={{
           marginBottom: '20px',
-          overflowX: 'auto',
+          ':hover': {
+            overflowX: 'auto',
+          },
           width: '100%',
           padding: '20px',
+          justifyContent: {
+            xs: 'flex-start',
+            md: 'center',
+          },
         }}
       >
-        <MaoreFlex
-          justifyContent="flex-end"
-          sx={{
-            flex: '0.5',
-            marginRight: '20px',
-          }}
-        >
-          {selectedCards.map((card) => (
-            <Box key={card.id} sx={{ marginRight: '20px' }}>
-              <Box
-                sx={{
-                  marginBottom: '10px',
-                  marginTop: '-20px',
-                  textAlign: 'center',
-                  height: '30px',
-                }}
-              >
-                {getPointHint(card)}
-              </Box>
-              <CardDropZone
-                id={card.id}
-                cardId={card.cardId}
-                cardNumber={card.cardNumber}
-                mathSymbol={card.mathSymbol}
-                onDropCard={onDropCard}
-              />
-            </Box>
-          ))}
-        </MaoreFlex>
-        <MaoreFlex alignItems="center" sx={{ fontSize: '80px', flex: '0.3' }}>
-          <Box>={answer}</Box>
-          {isYourTurn && (
-            <Button
+        {selectedCards.map((card) => (
+          <Box key={card.id} sx={{ marginRight: '20px' }}>
+            <Box
               sx={{
-                maxWidth: '200px',
-                marginLeft: '50px',
-                backgroundColor: '#E76F51',
-                ':hover': {
-                  backgroundColor: '#c04d30',
-                },
-                display: {
-                  xs: 'none',
-                  sm: 'block',
-                },
+                marginBottom: '10px',
+                marginTop: '-20px',
+                textAlign: 'center',
+                height: '30px',
               }}
-              variant="contained"
-              size="medium"
-              disableElevation
-              color="secondary"
-              disabled={
-                showCheckAnswerBtn === undefined ? true : !showCheckAnswerBtn
-              }
-              onClick={onCheckAnswer}
             >
-              送出
-            </Button>
-          )}
-        </MaoreFlex>
+              {getPointHint(card)}
+            </Box>
+            <CardDropZone
+              id={card.id}
+              cardId={card.cardId}
+              cardNumber={card.cardNumber}
+              mathSymbol={card.mathSymbol}
+              onDropCard={onDropCard}
+            />
+          </Box>
+        ))}
+        <Box sx={{ fontSize: '80px' }}>={answer}</Box>
+        {isYourTurn && (
+          <Button
+            sx={{
+              maxWidth: '200px',
+              marginLeft: '50px',
+              backgroundColor: '#E76F51',
+              ':hover': {
+                backgroundColor: '#c04d30',
+              },
+              display: {
+                xs: 'none',
+                sm: 'block',
+              },
+            }}
+            variant="contained"
+            size="medium"
+            disableElevation
+            color="secondary"
+            disabled={
+              showCheckAnswerBtn === undefined ? true : !showCheckAnswerBtn
+            }
+            onClick={onCheckAnswer}
+          >
+            送出
+          </Button>
+        )}
+        {/* </MaoreFlex> */}
       </MaoreFlex>
       {isYourTurn && (
         <MaoreFlex verticalHorizonCenter>

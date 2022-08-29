@@ -1,6 +1,7 @@
 import useSWR from 'swr';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 import GameCard from '@components/pages/home/GameCard';
 import Layout from 'components/Layout';
@@ -10,7 +11,7 @@ import { Game } from '@domain/models/Game';
 import { initialClient } from '@actions/serverAction';
 import { clientSelector } from '@selectors/serverSelector';
 import { fetchGames } from '@actions/fetchAction';
-import { Box, useMediaQuery, useTheme } from '@mui/material';
+import { Box } from '@mui/material';
 
 const Home = () => {
   const router = useRouter();
@@ -20,9 +21,6 @@ const Home = () => {
     '/api/games',
     fetchGames
   );
-
-  // const theme = useTheme();
-  // const matches = useMediaQuery(theme.breakpoints.up('md'));
 
   useEffect(() => {
     if (client) {
@@ -54,13 +52,19 @@ const Home = () => {
             marginBottom: '20px',
           }}
         >
-          <Box
+          {/* <Box
             sx={{
               backgroundImage: `url('/intro-picture.jpg')`,
               height: '100%',
               backgroundPosition: 'center',
               backgroundSize: 'cover',
             }}
+          /> */}
+          <Image
+            src="/intro-picture.jpg"
+            alt="intro-image"
+            layout="fill"
+            objectFit="cover"
           />
           <Box
             sx={{
