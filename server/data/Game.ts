@@ -37,7 +37,7 @@ export const Games: Game[] = [
     estimate_time: 30,
     create_at: 'September 14, 2022',
     min_players: 1,
-    max_players: 4,
+    max_players: 2,
     game_pack: GamePack.MathFormulaCard,
   },
 ];

@@ -1,4 +1,4 @@
-import { Avatar, Box, Tooltip } from '@mui/material';
+import { Avatar, Box, Tooltip, useMediaQuery, useTheme } from '@mui/material';
 import { OthersPlayerInfo } from '../models/OtherPlayerCard';
 import Card from './Card';
 import CloseIcon from '@mui/icons-material/Close';
@@ -12,6 +12,9 @@ type OtherPlayerProps = OthersPlayerInfo & {
 
 const OtherPlayer = (props: OtherPlayerProps) => {
   const { remainCardCount, name, point, playerCount, isNowTurn } = props;
+
+  const theme = useTheme();
+  const isPhone = useMediaQuery(theme.breakpoints.up('xs'));
 
   const renderCards = () => {
     const cards = [];
@@ -35,7 +38,14 @@ const OtherPlayer = (props: OtherPlayerProps) => {
       <Box
         sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
-        <Avatar sx={{ width: 70, height: 70 }}>{name.substring(0, 1)}</Avatar>
+        <Avatar
+          sx={{
+            width: { xs: 40, sm: 50, md: 70 },
+            height: { xs: 40, sm: 50, md: 70 },
+          }}
+        >
+          {name.substring(0, 1)}
+        </Avatar>
         <Box
           sx={{
             display: 'flex',
@@ -45,13 +55,22 @@ const OtherPlayer = (props: OtherPlayerProps) => {
             margin: '0 30px',
           }}
         >
-          <Box sx={{ fontSize: '26px', marginBottom: '5px' }}>{name}</Box>
+          <Box
+            sx={{
+              fontSize: { xs: '20px', sm: '22px', md: '26px' },
+              marginBottom: '5px',
+            }}
+          >
+            {name}
+          </Box>
           <MaoreFlex
             sx={{ width: '100%' }}
             alignItems="center"
             justifyContent="space-between"
           >
-            <Box sx={{ fontSize: '24px' }}>{point} 分</Box>
+            <Box sx={{ fontSize: { xs: '18px', sm: '20px', md: '24px' } }}>
+              {point} 分
+            </Box>
             {isNowTurn && (
               <Tooltip title="該玩家回合">
                 <VideogameAssetIcon fontSize="medium" color="error" />
@@ -69,7 +88,7 @@ const OtherPlayer = (props: OtherPlayerProps) => {
         }}
       >
         {/* 兩位玩家才全秀 */}
-        {playerCount === 2 && remainCardCount <= 10 ? (
+        {!isPhone && playerCount === 2 && remainCardCount <= 10 ? (
           renderCards()
         ) : (
           <>

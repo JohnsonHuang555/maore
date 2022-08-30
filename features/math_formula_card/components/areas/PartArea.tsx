@@ -56,6 +56,9 @@ const PartArea = (props: PartAreaProps) => {
       <MaoreFlex
         alignItems="center"
         sx={{
+          overflow: {
+            xs: 'auto',
+          },
           marginBottom: '20px',
           ':hover': {
             overflowX: 'auto',
@@ -89,7 +92,18 @@ const PartArea = (props: PartAreaProps) => {
             />
           </Box>
         ))}
-        <Box sx={{ fontSize: '80px' }}>={answer}</Box>
+        <Box
+          sx={{
+            fontSize: {
+              xs: '50px',
+              sm: '60px',
+              md: '70px',
+              lg: '80px',
+            },
+          }}
+        >
+          ={answer}
+        </Box>
         {isYourTurn && (
           <Button
             sx={{
@@ -100,8 +114,8 @@ const PartArea = (props: PartAreaProps) => {
                 backgroundColor: '#c04d30',
               },
               display: {
-                xs: 'none',
-                sm: 'block',
+                sm: 'none',
+                md: 'block',
               },
             }}
             variant="contained"
@@ -128,8 +142,8 @@ const PartArea = (props: PartAreaProps) => {
                 backgroundColor: '#c04d30',
               },
               display: {
-                xs: 'block',
-                sm: 'none',
+                sm: 'block',
+                md: 'none',
               },
             }}
             variant="contained"

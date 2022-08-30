@@ -1,5 +1,5 @@
 import { RoomMessage } from '@domain/models/Message';
-import { Backdrop, Box, Button, Zoom } from '@mui/material';
+import { Backdrop, Box, Button, Drawer, IconButton, Zoom } from '@mui/material';
 import {
   isAllPlayersLoadedSelector,
   playerIdSelector,
@@ -9,7 +9,7 @@ import {
   isMasterSelector,
 } from '@selectors/roomSelector';
 import { clientRoomSelector } from '@selectors/serverSelector';
-import { Ref, useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MathFormulaCardMessage } from './models/MathFormulaCardMessage';
 import playerCardsReducer, {
@@ -34,10 +34,13 @@ import { selectedCardSymbolDict } from './components/SelectedCardDict';
 import MathSymbolCard from './components/MathSymbolCard';
 import { DEFAULT_CARD_COUNT } from 'server/games/math_formula_card/commands/CreateGameCommand';
 import RuleModal from './components/RuleModal';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
+
+  // selectors
   const gameSettings = useSelector(gameSettingsSelector);
   const clientRoom = useSelector(clientRoomSelector);
   const yourPlayerId = useSelector(playerIdSelector);
@@ -47,11 +50,14 @@ const MathFormulaCard = () => {
   const winnerIndex = useSelector(winnerIndexSelector);
   const isMaster = useSelector(isMasterSelector);
   const [state, localDispatch] = useReducer(playerCardsReducer, initialState);
+
+  // states
   // 為了做抽牌的動畫，只有第一載入完成時要延遲，用 state 控制
   const [noDrawCardDelay, setNoDrawCardDelay] = useState(false);
   const [showYourTurnUI, setShowYourTurnUI] = useState(false);
   const [timer, setTimer] = useState(0);
   const [showRuleModal, setShowRuleModal] = useState(false);
+  const [showDrawer, setShowDrawer] = useState(false);
 
   const cardAreaRef = useRef<any>(null);
 
@@ -360,6 +366,11 @@ const MathFormulaCard = () => {
     clientRoom.send(MathFormulaCardMessage.ClearSelectedCards);
   };
 
+  // 手機板抽屜
+  const toggleDrawer = () => () => {
+    setShowDrawer((state) => !state);
+  };
+
   const isPadOrPhone = useMemo(() => {
     return window.matchMedia('(max-width: 1200px)').matches;
   }, []);
@@ -375,6 +386,95 @@ const MathFormulaCard = () => {
         ],
       }}
     >
+      <Drawer anchor="bottom" open={showDrawer} onClose={toggleDrawer()}>
+        <MaoreFlex sx={{ padding: '10px' }}>
+          <MaoreFlex
+            sx={{
+              flexDirection: 'column',
+              flex: 1,
+            }}
+          >
+            <Box sx={{ marginBottom: '20px', fontSize: '20px' }}>
+              勝利條件: {gameSettings?.winnerPoint} 分
+            </Box>
+            <PlayerAvatar point={state.yourPoint} />
+          </MaoreFlex>
+          <MaoreFlex
+            sx={{
+              flexDirection: 'column',
+              flex: 1,
+            }}
+          >
+            {players.length === 1 ? (
+              <Button
+                sx={{
+                  backgroundColor: '#c04d30',
+                  ':hover': {
+                    backgroundColor: '#E76F51',
+                  },
+                  marginBottom: '10px',
+                }}
+                variant="contained"
+                size="large"
+                disableElevation
+                disabled={!isYourTurn || state.winnerIndex !== -1}
+                onClick={() => drawCard()}
+              >
+                抽牌
+              </Button>
+            ) : (
+              <Button
+                sx={{
+                  backgroundColor: '#c04d30',
+                  ':hover': {
+                    backgroundColor: '#E76F51',
+                  },
+                  marginBottom: '10px',
+                }}
+                variant="contained"
+                size="large"
+                disableElevation
+                disabled={!isYourTurn || state.winnerIndex !== -1}
+                onClick={() => handleEndPhase()}
+              >
+                結束回合
+              </Button>
+            )}
+            <Button
+              sx={{
+                backgroundColor: '#095858',
+                ':hover': {
+                  backgroundColor: '#044040',
+                },
+                marginBottom: '10px',
+              }}
+              variant="contained"
+              size="large"
+              disableElevation
+              color="secondary"
+              disabled={!isYourTurn || state.winnerIndex !== -1}
+              onClick={() => handleSort()}
+            >
+              排序
+            </Button>
+            <Button
+              sx={{
+                backgroundColor: '#415761',
+                ':hover': {
+                  backgroundColor: '#385968',
+                },
+              }}
+              variant="contained"
+              size="large"
+              disableElevation
+              disabled={!isYourTurn || state.winnerIndex !== -1}
+              onClick={() => handleReselect()}
+            >
+              重選
+            </Button>
+          </MaoreFlex>
+        </MaoreFlex>
+      </Drawer>
       <GameOverModal
         show={state.winnerIndex !== -1}
         isWinner={getIsWinner()}
@@ -488,7 +588,6 @@ const MathFormulaCard = () => {
         >
           {isYourTurn ? '你的回合' : '其他玩家回合'}
         </Box>
-        {/* 自己手牌 */}
         <MaoreFlex
           verticalHorizonCenter
           sx={{
@@ -496,15 +595,13 @@ const MathFormulaCard = () => {
             marginBottom: '20px',
           }}
         >
+          {/* Player detail */}
           <MaoreFlex
             alignItems="flex-start"
             sx={{
               width: '15vw',
               flexDirection: 'column',
-              padding: {
-                md: '0 10px',
-                lg: '0 50px',
-              },
+              margin: '0 30px',
               display: {
                 xs: 'none',
                 md: 'block',
@@ -524,11 +621,10 @@ const MathFormulaCard = () => {
             </Box>
             <PlayerAvatar point={state.yourPoint} />
           </MaoreFlex>
+          {/* 自己手牌 */}
           <Box
             sx={{
               overflowX: {
-                xs: 'auto',
-                sm: 'auto',
                 md: 'auto',
                 lg: 'hidden',
               },
@@ -573,12 +669,13 @@ const MathFormulaCard = () => {
               </Zoom>
             ))}
           </Box>
+          {/* Actions */}
           <MaoreFlex
             alignItems="flex-end"
             sx={{
               flexDirection: 'column',
               width: '15vw',
-              padding: '0 50px',
+              margin: '0 30px',
               display: {
                 xs: 'none',
                 md: 'block',
@@ -587,11 +684,10 @@ const MathFormulaCard = () => {
           >
             {players.length === 1 ? (
               <Button
+                fullWidth
                 sx={{
-                  maxWidth: '200px',
-                  minWidth: {
-                    xs: '100px',
-                    lg: '150px',
+                  width: {
+                    lg: '200px',
                   },
                   backgroundColor: '#c04d30',
                   ':hover': {
@@ -609,11 +705,10 @@ const MathFormulaCard = () => {
               </Button>
             ) : (
               <Button
+                fullWidth
                 sx={{
-                  maxWidth: '200px',
-                  minWidth: {
-                    xs: '100px',
-                    lg: '150px',
+                  width: {
+                    lg: '250px',
                   },
                   backgroundColor: '#c04d30',
                   ':hover': {
@@ -631,11 +726,10 @@ const MathFormulaCard = () => {
               </Button>
             )}
             <Button
+              fullWidth
               sx={{
-                maxWidth: '200px',
-                minWidth: {
-                  xs: '100px',
-                  lg: '150px',
+                width: {
+                  lg: '250px',
                 },
                 backgroundColor: '#095858',
                 ':hover': {
@@ -653,11 +747,10 @@ const MathFormulaCard = () => {
               排序
             </Button>
             <Button
+              fullWidth
               sx={{
-                maxWidth: '200px',
-                minWidth: {
-                  xs: '100px',
-                  lg: '150px',
+                width: {
+                  lg: '250px',
                 },
                 backgroundColor: '#415761',
                 ':hover': {
@@ -674,6 +767,21 @@ const MathFormulaCard = () => {
             </Button>
           </MaoreFlex>
         </MaoreFlex>
+        <IconButton
+          sx={{
+            position: 'fixed',
+            bottom: '-10px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            display: {
+              sm: 'block',
+              md: 'none',
+            },
+          }}
+          onClick={() => setShowDrawer(true)}
+        >
+          <KeyboardArrowUpIcon fontSize="large" />
+        </IconButton>
       </MaoreFlex>
     </DndProvider>
   );

@@ -29,8 +29,10 @@ export default class BaseRoom {
   onCreate(option: Metadata) {
     this.room.setMetadata(option);
     this.room.onMessage(RoomMessage.ReadyGame, (client) => {
-      // 房間解除鎖定
-      this.room.unlock();
+      if (this.room.clients.length !== this.room.maxClients) {
+        // 房間解除鎖定
+        this.room.unlock();
+      }
 
       this.delayedInterval?.clear();
       this.room.clock.stop();
