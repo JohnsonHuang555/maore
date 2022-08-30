@@ -52,18 +52,23 @@ const PartArea = (props: PartAreaProps) => {
   }, []);
 
   return (
-    <MaoreFlex
-      justifyContent="center"
-      sx={{
-        marginBottom: '20px',
-        width: '100%',
-      }}
-    >
+    <>
       <MaoreFlex
-        justifyContent="flex-end"
+        alignItems="center"
         sx={{
-          flex: '0.5',
-          marginRight: '30px',
+          overflow: {
+            xs: 'auto',
+          },
+          marginBottom: '20px',
+          ':hover': {
+            overflowX: 'auto',
+          },
+          width: '100%',
+          padding: '20px',
+          justifyContent: {
+            xs: 'flex-start',
+            md: 'center',
+          },
         }}
       >
         {selectedCards.map((card) => (
@@ -87,9 +92,18 @@ const PartArea = (props: PartAreaProps) => {
             />
           </Box>
         ))}
-      </MaoreFlex>
-      <MaoreFlex alignItems="center" sx={{ fontSize: '80px', flex: '0.3' }}>
-        <Box>={answer}</Box>
+        <Box
+          sx={{
+            fontSize: {
+              xs: '50px',
+              sm: '60px',
+              md: '70px',
+              lg: '80px',
+            },
+          }}
+        >
+          ={answer}
+        </Box>
         {isYourTurn && (
           <Button
             sx={{
@@ -98,6 +112,10 @@ const PartArea = (props: PartAreaProps) => {
               backgroundColor: '#E76F51',
               ':hover': {
                 backgroundColor: '#c04d30',
+              },
+              display: {
+                sm: 'none',
+                md: 'block',
               },
             }}
             variant="contained"
@@ -112,8 +130,36 @@ const PartArea = (props: PartAreaProps) => {
             送出
           </Button>
         )}
+        {/* </MaoreFlex> */}
       </MaoreFlex>
-    </MaoreFlex>
+      {isYourTurn && (
+        <MaoreFlex verticalHorizonCenter>
+          <Button
+            sx={{
+              maxWidth: '200px',
+              backgroundColor: '#E76F51',
+              ':hover': {
+                backgroundColor: '#c04d30',
+              },
+              display: {
+                sm: 'block',
+                md: 'none',
+              },
+            }}
+            variant="contained"
+            size="medium"
+            disableElevation
+            color="secondary"
+            disabled={
+              showCheckAnswerBtn === undefined ? true : !showCheckAnswerBtn
+            }
+            onClick={onCheckAnswer}
+          >
+            送出
+          </Button>
+        </MaoreFlex>
+      )}
+    </>
   );
 };
 

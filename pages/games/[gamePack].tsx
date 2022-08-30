@@ -17,11 +17,12 @@ import Info from '@mui/icons-material/Info';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { fetchGame } from '@actions/fetchAction';
-import { GameList } from 'server/domain/Game';
+import { GamePack } from 'server/domain/Game';
 import { useSnackbar } from 'notistack';
 import MaoreFlex from '@components/maore/MaoreFlex';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import CircularProgress from '@mui/material/CircularProgress';
+import GameRule from '@components/pages/home/GameRule';
 
 const Games = () => {
   const router = useRouter();
@@ -55,7 +56,7 @@ const Games = () => {
 
   useEffect(() => {
     if (client && gamePack) {
-      dispatch(getAllRooms(gamePack as GameList));
+      dispatch(getAllRooms(gamePack as GamePack));
     }
   }, [client, gamePack]);
 
@@ -80,7 +81,7 @@ const Games = () => {
           gameMode,
           roomTitle,
           playerName: userInfo.name,
-          gamePack: gamePack as GameList,
+          gamePack: gamePack as GamePack,
           photoURL: userInfo.photoURL,
         })
       );
@@ -110,7 +111,7 @@ const Games = () => {
 
   const handleRefresh = () => {
     dispatch(setLoading(true));
-    dispatch(getAllRooms(gamePack as GameList));
+    dispatch(getAllRooms(gamePack as GamePack));
   };
 
   return (
@@ -121,11 +122,20 @@ const Games = () => {
         onClose={() => setShowCreateRoomModal(false)}
         onCreateRoom={onCreateRoom}
       />
+      <GameRule
+        showModal={showRuleModal}
+        gamePack={game.gamePack}
+        onClose={() => setShowRuleModal(false)}
+      />
       <Box sx={{ position: 'relative', marginBottom: '24px' }}>
         <Box
           sx={{
-            backgroundImage: `url(${game.imageUrl})`,
-            height: '350px',
+            backgroundImage: `url(${game.imageUrl}/game-pack.jpeg)`,
+            height: {
+              xs: '200px',
+              sm: '300px',
+              lg: '350px',
+            },
             backgroundPosition: 'center',
             backgroundSize: 'cover',
           }}
@@ -140,20 +150,47 @@ const Games = () => {
           }}
         />
         <Container maxWidth={false} sx={{ position: 'absolute', top: '20px' }}>
-          <Box component="label" color="white" sx={{ fontSize: '36px' }}>
+          <Box
+            component="label"
+            color="white"
+            sx={{
+              fontSize: {
+                xs: '20px',
+                sm: '24px',
+                lg: '32px',
+              },
+            }}
+          >
             {game.name}
           </Box>
-          <Box component="p" color="white" sx={{ fontSize: '22px' }}>
+          <Box
+            component="p"
+            color="white"
+            sx={{
+              fontSize: {
+                xs: '16px',
+                sm: '22px',
+                lg: '26px',
+              },
+            }}
+          >
             {game.description}
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Box
+            sx={{
+              display: {
+                xs: 'none',
+                sm: 'flex',
+              },
+              justifyContent: 'flex-end',
+            }}
+          >
             <Box
               sx={{ display: 'flex', flexDirection: 'column', width: '200px' }}
             >
               <Button
-                size="large"
-                variant="contained"
                 sx={{ marginBottom: '20px' }}
+                variant="contained"
                 color="secondary"
                 disableElevation
                 onClick={handleCreateRoom}
@@ -161,7 +198,6 @@ const Games = () => {
                 建立房間
               </Button>
               <Button
-                size="large"
                 variant="contained"
                 disableElevation
                 onClick={() => setShowRuleModal(true)}
@@ -172,15 +208,49 @@ const Games = () => {
           </Box>
         </Container>
       </Box>
+      <Container
+        sx={{ display: { xs: 'flex', sm: 'none' }, marginBottom: '20px' }}
+      >
+        <MaoreFlex sx={{ flexDirection: 'column', width: '100%' }}>
+          <Button
+            sx={{ marginBottom: '10px' }}
+            fullWidth
+            variant="contained"
+            color="secondary"
+            disableElevation
+            onClick={handleCreateRoom}
+          >
+            建立房間
+          </Button>
+          <Button
+            fullWidth
+            variant="contained"
+            disableElevation
+            onClick={() => setShowRuleModal(true)}
+          >
+            遊戲規則
+          </Button>
+        </MaoreFlex>
+      </Container>
       <Container maxWidth={false} sx={{ marginBottom: '40px' }}>
         {loading ? (
           <CircularProgress />
         ) : (
           <>
             <MaoreFlex alignItems="center" sx={{ marginBottom: '20px' }}>
-              <Box sx={{ fontSize: '28px', flex: 1 }}>房間列表</Box>
+              <Box
+                sx={{
+                  fontSize: {
+                    xs: '20px',
+                    sm: '24px',
+                    lg: '28px',
+                  },
+                  flex: 1,
+                }}
+              >
+                房間列表
+              </Box>
               <Button
-                size="large"
                 variant="contained"
                 color="info"
                 disableElevation
@@ -211,10 +281,31 @@ const Games = () => {
                       alignItems: 'center',
                       justifyContent: 'center',
                       padding: '0 5px',
+                      marginBottom: {
+                        xs: '30vh',
+                        sm: '0',
+                      },
                     }}
                   >
-                    <Info />
-                    <Box sx={{ fontSize: '30px', marginLeft: '5px' }}>
+                    <Info
+                      sx={{
+                        fontSize: {
+                          xs: '20px',
+                          sm: '24px',
+                          lg: '30px',
+                        },
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        fontSize: {
+                          xs: '18px',
+                          sm: '24px',
+                          lg: '30px',
+                        },
+                        marginLeft: '5px',
+                      }}
+                    >
                       查無房間
                     </Box>
                   </Box>

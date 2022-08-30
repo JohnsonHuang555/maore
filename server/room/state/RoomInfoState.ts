@@ -1,5 +1,5 @@
 import { Schema, type } from '@colyseus/schema';
-import { GameList } from 'server/domain/Game';
+import { GamePack } from 'server/domain/Game';
 
 // An abstract roomInfo object
 export class RoomInfoState extends Schema {
@@ -10,7 +10,7 @@ export class RoomInfoState extends Schema {
   maxPlayers: number = 0;
 
   @type('string')
-  gamePack: GameList | string = '';
+  gamePack: GamePack | string = '';
 
   @type('string')
   gameMode?: string;

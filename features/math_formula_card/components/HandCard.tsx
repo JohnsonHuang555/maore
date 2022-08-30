@@ -33,7 +33,7 @@ const HandCard = (props: HandCardProps) => {
 
   return (
     <Box ref={dragRef} sx={{ opacity }}>
-      <Card value={card.cardNumber} width="100px" />
+      <Card value={card.cardNumber} width={100} />
     </Box>
   );
 };

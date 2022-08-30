@@ -17,15 +17,20 @@ const ChatArea = (props: ChatAreaProps) => {
   const [currentMessages, setCurrentMessages] = useState('');
   const dispatch = useDispatch();
 
+  const scrollDown = () => {
+    const scroll =
+      messageRef.current.scrollHeight - messageRef.current.clientHeight;
+    messageRef.current.scrollTo(0, scroll);
+  };
+
   // use effects start
   useEffect(() => {
     if (messageRef && messageRef.current) {
-      messageRef.current.addEventListener('DOMNodeInserted', () => {
-        const scroll =
-          messageRef.current.scrollHeight - messageRef.current.clientHeight;
-        messageRef.current.scrollTo(0, scroll);
-      });
+      messageRef.current.addEventListener('DOMNodeInserted', scrollDown);
     }
+    return () => {
+      messageRef.current.removeEventListener('DOMNodeInserted', scrollDown);
+    };
   }, []);
 
   const onSendMessage = () => {

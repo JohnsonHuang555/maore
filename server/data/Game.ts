@@ -1,4 +1,4 @@
-import { Game, GameList } from '../domain/Game';
+import { Game, GamePack } from '../domain/Game';
 
 // TODO: 假資料之後寫入資料庫
 export const Games: Game[] = [
@@ -25,7 +25,7 @@ export const Games: Game[] = [
   //       max_players: 2,
   //     },
   //   ],
-  //   game_pack: GameList.ChineseChess,
+  //   game_pack: GamePack.ChineseChess,
   // },
   {
     id: 3,
@@ -33,11 +33,11 @@ export const Games: Game[] = [
     brief:
       '原創遊戲，考驗你的邏輯能力，組合出符合答案的算式，與對手一較高下吧！',
     description: '考驗你的邏輯能力，組合出符合答案的算式，與對手一較高下吧！',
-    image_url: '/math_formula/home.jpg',
+    image_url: '/math_formula',
     estimate_time: 30,
     create_at: 'September 14, 2022',
     min_players: 1,
-    max_players: 4,
-    game_pack: GameList.MathFormulaCard,
+    max_players: 2,
+    game_pack: GamePack.MathFormulaCard,
   },
 ];

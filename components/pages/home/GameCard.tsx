@@ -18,15 +18,40 @@ const GameCard = (props: GameCardProp) => {
     <Card sx={{ bgcolor: '#2a434f' }} variant="outlined">
       <CardMedia
         component="img"
-        height="194"
-        image={game.imageUrl}
+        sx={{
+          height: {
+            xs: '150px',
+            sm: 'auto',
+            lg: '194px',
+          },
+        }}
+        image={`${game.imageUrl}/home.jpg`}
         alt={game.name}
       />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
+        <Typography
+          gutterBottom
+          sx={{
+            fontSize: {
+              xs: '22px',
+              sm: '24px',
+              lg: '26px',
+            },
+          }}
+          component="div"
+        >
           {game.name}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          sx={{
+            fontSize: {
+              xs: '16px',
+              sm: '18px',
+              lg: '20px',
+            },
+          }}
+          color="text.secondary"
+        >
           {game.brief}
         </Typography>
       </CardContent>

@@ -1,4 +1,4 @@
-import { GameList } from 'server/domain/Game';
+import { GamePack } from 'server/domain/Game';
 
 export enum GameStatus {
   WaitingForPlayers,
@@ -10,7 +10,7 @@ export enum GameStatus {
 export type Metadata = {
   roomTitle?: string;
   playerName: string;
-  gamePack?: GameList;
+  gamePack?: GamePack;
   gameMode?: string;
 };
 
@@ -18,7 +18,7 @@ export type Metadata = {
 export type RoomInfo = {
   roomTitle: string;
   maxPlayers: number;
-  gamePack: GameList | '';
+  gamePack: GamePack | '';
   gameMode?: string;
 };
 

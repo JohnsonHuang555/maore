@@ -38,7 +38,9 @@ const PlayerAvatar = (props: PlayerAvatarProp) => {
           margin: '0 30px',
         }}
       >
-        <Box sx={{ fontSize: '26px', marginBottom: '5px' }}>你</Box>
+        <Box sx={{ fontSize: { xs: '20px', sm: '26px' }, marginBottom: '5px' }}>
+          你
+        </Box>
         <MaoreFlex verticalHorizonCenter>
           <Box
             sx={{ fontSize: '24px', marginRight: '10px' }}

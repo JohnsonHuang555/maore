@@ -16,32 +16,36 @@ type Payload = {
 export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
   execute(data: Payload) {
     const { client } = data;
-    let isIllegalFormula = false;
-    let isPreviousNumberZero = false;
     const elements = this.room.state.mathFormulaCard.selectedElements;
-
-    // 第一張是 0、符號，最後一張是符號，連續兩張是符號
-    elements.forEach((card) => {
-      if (isPreviousNumberZero && card.cardNumber !== undefined) {
-        isIllegalFormula = true;
-      }
-      if (card.cardNumber === 0) {
-        isPreviousNumberZero = true;
-      } else {
-        isPreviousNumberZero = false;
-      }
-    });
 
     // 算式裡沒有用到符號為不合法
     const notIncludeSymbols = elements.filter(
       (card) =>
-        card.mathSymbol ||
-        card.mathSymbol !== '' ||
-        card.mathSymbol !== undefined
+        card.mathSymbol !== undefined &&
+        [
+          MathSymbol.Plus,
+          MathSymbol.Minus,
+          MathSymbol.Times,
+          MathSymbol.Divide,
+        ].includes(card.mathSymbol as MathSymbol)
     );
 
-    console.log(notIncludeSymbols);
-    if (isIllegalFormula || notIncludeSymbols.length === 0) {
+    // 第一個不能是符號
+    if (elements[0].mathSymbol !== undefined || elements[0].mathSymbol !== '') {
+      client.send(MathFormulaCardMessage.UseCardsFailed, '算式不合法');
+      return;
+    }
+
+    // 最後一個不能是符號
+    if (
+      elements[elements.length - 1].mathSymbol !== undefined ||
+      elements[elements.length - 1].mathSymbol !== ''
+    ) {
+      client.send(MathFormulaCardMessage.UseCardsFailed, '算式不合法');
+      return;
+    }
+
+    if (notIncludeSymbols.length === 0) {
       client.send(MathFormulaCardMessage.UseCardsFailed, '算式不合法');
       return;
     }

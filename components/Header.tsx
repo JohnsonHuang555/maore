@@ -105,8 +105,6 @@ const Header = () => {
             component="div"
             sx={{
               display: {
-                xs: 'none',
-                md: 'block',
                 cursor: 'pointer',
               },
               color: 'secondary.main',
@@ -119,40 +117,7 @@ const Header = () => {
           <Box sx={{ flexGrow: 1 }}></Box>
           {/* TODO: 手機板 */}
           {/* <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+          <Logo />
           </Box> */}
           {/* TODO: 關於我們 */}
           {/* <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
@@ -180,7 +145,14 @@ const Header = () => {
                 <IconButton sx={{ p: 0, mr: 2 }}>
                   <Avatar alt={userInfo.name} src={userInfo.photoURL}></Avatar>
                 </IconButton>
-                <Box sx={{ fontSize: '22px' }}>{userInfo.name}</Box>
+                <Box
+                  sx={{
+                    display: { xs: 'none', sm: 'block' },
+                    fontSize: '22px',
+                  }}
+                >
+                  {userInfo.name}
+                </Box>
               </Box>
               <Menu
                 sx={{ mt: '45px' }}

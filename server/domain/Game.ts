@@ -1,5 +1,5 @@
 // FIXME: 從 DB 來 => 遊戲列表
-export enum GameList {
+export enum GamePack {
   ChineseChess = 'chinese-chess',
   MathFormulaCard = 'math-formula-card',
 }
@@ -15,7 +15,7 @@ export type Game = {
   estimate_time: number;
   modes?: GameMode[];
   create_at: string;
-  game_pack: GameList;
+  game_pack: GamePack;
 };
 
 export type GameMode = {
@@ -27,10 +27,10 @@ export type GameMode = {
 
 export interface IGameRepository {
   FindAll: () => Game[];
-  FindByGamePack: (gamePack: GameList) => Game;
+  FindByGamePack: (gamePack: GamePack) => Game;
 }
 
 export interface IGameUseCase {
   GetGames: () => Game[];
-  GetGameInfo: (gamePack: GameList) => Game;
+  GetGameInfo: (gamePack: GamePack) => Game;
 }

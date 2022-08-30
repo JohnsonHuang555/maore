@@ -1,9 +1,9 @@
 import { Box } from '@mui/system';
 import MathFormulaCard from 'features/math_formula_card/MathFormulaCard';
-import { GameList } from 'server/domain/Game';
+import { GamePack } from 'server/domain/Game';
 
 type WithoutFrameworkProps = {
-  gamePack: GameList;
+  gamePack: GamePack;
 };
 
 const WithoutFramework = (props: WithoutFrameworkProps) => {
@@ -11,7 +11,7 @@ const WithoutFramework = (props: WithoutFrameworkProps) => {
 
   const renderGame = () => {
     switch (gamePack) {
-      case GameList.MathFormulaCard: {
+      case GamePack.MathFormulaCard: {
         return <MathFormulaCard key={gamePack} />;
       }
     }
