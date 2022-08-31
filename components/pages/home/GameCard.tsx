@@ -1,10 +1,9 @@
-import React from 'react';
+import Image from 'next/image';
 import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
 import { Game } from '@domain/models/Game';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import { Button, CardActions } from '@mui/material';
+import { Box, Button, CardActions } from '@mui/material';
 
 type GameCardProp = {
   game: Game;
@@ -16,7 +15,7 @@ const GameCard = (props: GameCardProp) => {
 
   return (
     <Card sx={{ bgcolor: '#2a434f' }} variant="outlined">
-      <CardMedia
+      {/* <CardMedia
         component="img"
         sx={{
           height: {
@@ -27,7 +26,25 @@ const GameCard = (props: GameCardProp) => {
         }}
         image={`${game.imageUrl}/home.jpg`}
         alt={game.name}
-      />
+      /> */}
+      <Box
+        sx={{
+          height: {
+            xs: '150px',
+            sm: 'auto',
+            lg: '194px',
+          },
+          width: '100%',
+          position: 'relative',
+        }}
+      >
+        <Image
+          alt={game.name}
+          src={`${game.imageUrl}/home.jpg`}
+          layout="fill"
+          objectFit="cover"
+        />
+      </Box>
       <CardContent>
         <Typography
           gutterBottom

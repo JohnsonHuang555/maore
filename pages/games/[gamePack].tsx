@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Layout from 'components/Layout';
 import { Game } from '@domain/models/Game';
@@ -130,16 +131,20 @@ const Games = () => {
       <Box sx={{ position: 'relative', marginBottom: '24px' }}>
         <Box
           sx={{
-            backgroundImage: `url(${game.imageUrl}/game-pack.jpeg)`,
             height: {
               xs: '200px',
               sm: '300px',
               lg: '350px',
             },
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
           }}
-        />
+        >
+          <Image
+            alt={game.name}
+            src={`${game.imageUrl}/game-pack.jpeg`} // 要統一圖檔格式
+            layout="fill"
+            objectFit="cover"
+          />
+        </Box>
         <Box
           sx={{
             position: 'absolute',

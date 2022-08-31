@@ -52,14 +52,6 @@ const Home = () => {
             marginBottom: '20px',
           }}
         >
-          {/* <Box
-            sx={{
-              backgroundImage: `url('/intro-picture.jpg')`,
-              height: '100%',
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
-            }}
-          /> */}
           <Image
             src="/intro-picture.jpg"
             alt="intro-image"
