@@ -63,7 +63,17 @@ const ControlArea = (props: ControlAreaProps) => {
           </Tooltip>
         )}
         <Tooltip title="規則說明">
-          <IconButton size="large" onClick={onRuleClick}>
+          <IconButton
+            size="large"
+            onClick={onRuleClick}
+            sx={{
+              margin: {
+                xs: '0',
+                sm: '0 5px',
+                md: '0 10px',
+              },
+            }}
+          >
             <DescriptionOutlinedIcon
               sx={{
                 fontSize: {
@@ -71,11 +81,6 @@ const ControlArea = (props: ControlAreaProps) => {
                   sm: '28px',
                   md: '32px',
                   lg: '36px',
-                },
-                margin: {
-                  xs: '0',
-                  sm: '0 5px',
-                  md: '0 10px',
                 },
               }}
             />

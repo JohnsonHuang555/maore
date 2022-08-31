@@ -56,7 +56,7 @@ const PartArea = (props: PartAreaProps) => {
       <MaoreFlex
         alignItems="center"
         sx={{
-          overflow: {
+          overflowX: {
             xs: 'auto',
           },
           marginBottom: '20px',
@@ -114,7 +114,7 @@ const PartArea = (props: PartAreaProps) => {
                 backgroundColor: '#c04d30',
               },
               display: {
-                sm: 'none',
+                xs: 'none',
                 md: 'block',
               },
             }}
@@ -142,7 +142,7 @@ const PartArea = (props: PartAreaProps) => {
                 backgroundColor: '#c04d30',
               },
               display: {
-                sm: 'block',
+                xs: 'block',
                 md: 'none',
               },
             }}

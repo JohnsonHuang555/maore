@@ -37,8 +37,12 @@ const Card = (props: CardProps) => {
           sm: `${width * 0.8}px`,
           lg: `${width}px`,
         },
+        height: {
+          xs: `${(width * 0.7 * 3) / 2}px`,
+          sm: `${(width * 0.8 * 3) / 2}px`,
+          lg: `${(width * 3) / 2}px`,
+        },
         backgroundColor: bgColor,
-        aspectRatio: '2/3',
         pointerEvents: hideCard ? 'none' : 'auto',
         color: fontColor,
         display: 'flex',

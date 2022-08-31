@@ -625,6 +625,8 @@ const MathFormulaCard = () => {
           <Box
             sx={{
               overflowX: {
+                xs: 'auto',
+                sm: 'auto',
                 md: 'auto',
                 lg: 'hidden',
               },
@@ -687,7 +689,7 @@ const MathFormulaCard = () => {
                 fullWidth
                 sx={{
                   width: {
-                    lg: '200px',
+                    lg: '250px',
                   },
                   backgroundColor: '#c04d30',
                   ':hover': {

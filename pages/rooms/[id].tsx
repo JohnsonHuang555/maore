@@ -100,6 +100,19 @@ const Rooms = () => {
       setIsClickStartGame(false);
     }
   }, [isAnyPlayerNotReady]);
+
+  useEffect(() => {
+    const root = document.getElementById('__next');
+    if (showGameScreen) {
+      if (root) {
+        root.style.overflow = 'hidden';
+      }
+    } else {
+      if (root) {
+        root.style.overflow = 'auto';
+      }
+    }
+  }, [showGameScreen]);
   // use effect end
 
   const getIsReadyGameText = () => {
