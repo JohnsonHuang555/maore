@@ -30,21 +30,6 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
         ].includes(card.mathSymbol as MathSymbol)
     );
 
-    // 第一個不能是符號
-    if (elements[0].mathSymbol !== undefined || elements[0].mathSymbol !== '') {
-      client.send(MathFormulaCardMessage.UseCardsFailed, '算式不合法');
-      return;
-    }
-
-    // 最後一個不能是符號
-    if (
-      elements[elements.length - 1].mathSymbol !== undefined ||
-      elements[elements.length - 1].mathSymbol !== ''
-    ) {
-      client.send(MathFormulaCardMessage.UseCardsFailed, '算式不合法');
-      return;
-    }
-
     if (notIncludeSymbols.length === 0) {
       client.send(MathFormulaCardMessage.UseCardsFailed, '算式不合法');
       return;

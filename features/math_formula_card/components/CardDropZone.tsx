@@ -32,11 +32,15 @@ const CardDropZone = (props: CardDropZoneProps) => {
     <Box
       ref={drop}
       sx={{
-        aspectRatio: '2/3',
         width: {
           xs: '70px',
           sm: '80px',
           lg: '100px',
+        },
+        height: {
+          xs: `${(100 * 0.7 * 3) / 2}px`,
+          sm: `${(100 * 0.8 * 3) / 2}px`,
+          lg: `${(100 * 3) / 2}px`,
         },
         display: 'flex',
         justifyContent: 'center',
