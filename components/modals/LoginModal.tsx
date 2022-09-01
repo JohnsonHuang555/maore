@@ -57,7 +57,12 @@ const LoginModal = (props: LoginModalProps) => {
     <Dialog maxWidth="md" open={show} onClose={handleClose} fullWidth>
       <DialogTitle>Log in</DialogTitle>
       <DialogContent
-        sx={{ display: 'flex', overflow: 'hidden', minHeight: '300px' }}
+        sx={{
+          display: 'flex',
+          overflow: 'hidden',
+          minHeight: '300px',
+          flexDirection: { xs: 'column', sm: 'row' },
+        }}
       >
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ marginBottom: '20px' }}>訪客</Box>

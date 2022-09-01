@@ -25,7 +25,7 @@ const OtherPlayerArea = (props: OtherPlayerAreaProp) => {
   };
 
   return (
-    <Box sx={{ flex: 1 }}>
+    <Box sx={{ flex: 1, marginTop: { xs: '50px', sm: '10px' } }}>
       <OtherPlayer
         playerCount={playerCount} // FIXME:
         remainCardCount={remainCardCount}

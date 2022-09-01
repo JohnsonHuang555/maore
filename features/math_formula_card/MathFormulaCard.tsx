@@ -649,7 +649,6 @@ const MathFormulaCard = () => {
                 lg: '70vw',
               },
               display: 'flex',
-              gap: '15px',
               justifyContent: 'flex-start',
               height: '100%',
             }}
@@ -665,7 +664,12 @@ const MathFormulaCard = () => {
                     : `${index * 100}ms`,
                 }}
               >
-                <Box>
+                <Box
+                  sx={{
+                    marginRight: '15px',
+                    ':last-child': { marginRight: '0px' },
+                  }}
+                >
                   <HandCard card={card} onDropCard={handleDropCard} />
                 </Box>
               </Zoom>

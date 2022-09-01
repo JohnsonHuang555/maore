@@ -17,13 +17,13 @@ const ControlArea = (props: ControlAreaProps) => {
       sx={{
         position: 'absolute',
         top: {
-          xs: '0px',
+          xs: '10px',
           sm: '10px',
           md: '15px',
           lg: '25px',
         },
         right: {
-          xs: '5px',
+          xs: '10px',
           sm: '10px',
           md: '30px',
           lg: '50px',
@@ -38,7 +38,7 @@ const ControlArea = (props: ControlAreaProps) => {
                 <AlarmIcon
                   sx={{
                     fontSize: {
-                      xs: '20px',
+                      xs: '24px',
                       sm: '28px',
                       md: '32px',
                       lg: '36px',
@@ -49,7 +49,7 @@ const ControlArea = (props: ControlAreaProps) => {
               <Box
                 sx={{
                   fontSize: {
-                    xs: '20px',
+                    xs: '24px',
                     sm: '22px',
                     md: '26px',
                     lg: '30px',
@@ -77,7 +77,7 @@ const ControlArea = (props: ControlAreaProps) => {
             <DescriptionOutlinedIcon
               sx={{
                 fontSize: {
-                  xs: '20px',
+                  xs: '24px',
                   sm: '28px',
                   md: '32px',
                   lg: '36px',
@@ -94,7 +94,7 @@ const ControlArea = (props: ControlAreaProps) => {
             <LogoutIcon
               sx={{
                 fontSize: {
-                  xs: '20px',
+                  xs: '24px',
                   sm: '28px',
                   md: '32px',
                   lg: '36px',
