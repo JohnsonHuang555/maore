@@ -140,7 +140,7 @@ const Games = () => {
         >
           <Image
             alt={game.name}
-            src={`${game.imageUrl}/game-pack.jpeg`} // 要統一圖檔格式
+            src={`${game.imageUrl}/game-pack.jpg`}
             layout="fill"
             objectFit="cover"
           />

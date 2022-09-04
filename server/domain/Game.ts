@@ -1,6 +1,6 @@
 // FIXME: 從 DB 來 => 遊戲列表
 export enum GamePack {
-  ChineseChess = 'chinese-chess',
+  ChineseChessHidden = 'chinese-chess-hidden',
   MathFormulaCard = 'math-formula-card',
 }
 
@@ -13,7 +13,6 @@ export type Game = {
   description: string;
   image_url: string;
   estimate_time: number;
-  modes?: GameMode[];
   create_at: string;
   game_pack: GamePack;
 };

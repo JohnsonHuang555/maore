@@ -22,7 +22,8 @@ export default class MathFormulaCard extends Room<RoomState, Metadata> {
 
   onCreate(option: Metadata) {
     this.baseRoom.onCreate(option);
-    // 最多四人
+
+    // max two players
     this.baseRoom.setMaxClient(2);
     this.setState(new RoomState());
 

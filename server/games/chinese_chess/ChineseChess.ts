@@ -24,13 +24,12 @@ export default class ChineseChess extends Room<RoomState, Metadata> {
 
   onCreate(option: Metadata) {
     this.baseRoom.onCreate(option);
-    if (!option.gameMode) {
-      throw new Error('game mode not found');
-    }
 
+    // max two players
     this.baseRoom.setMaxClient(2);
     this.setState(new RoomState());
 
+    // 初始化遊戲
     this.onMessage(RoomMessage.CreateGame, () => {
       this.dispatcher.dispatch(new CreateGameCommand(), {
         mode: option.gameMode as GameMode,

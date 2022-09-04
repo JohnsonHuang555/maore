@@ -4,11 +4,10 @@ import { useSelector } from 'react-redux';
 import { clientRoomSelector } from '@selectors/serverSelector';
 import WithoutFramework from './render_methods/WithoutFramework';
 import { GamePack } from 'server/domain/Game';
-// import Phaser from './render_methods/Phaser';
 
 const gameRenderFunction: { [key: string]: RenderMethod } = {
-  [GamePack.ChineseChess]: RenderMethod.Phaser,
   [GamePack.MathFormulaCard]: RenderMethod.WithoutFramework,
+  [GamePack.ChineseChessHidden]: RenderMethod.WithoutFramework,
 };
 
 /** 決定要使用的遊戲 */
@@ -21,9 +20,6 @@ const GameScreen = () => {
   const renderGameScreen = () => {
     const renderMethod = gameRenderFunction[clientRoom.name];
     switch (renderMethod) {
-      // case RenderMethod.Phaser: {
-      //   return <Phaser gamePack={clientRoom.name as GamePack} />;
-      // }
       case RenderMethod.WithoutFramework: {
         return <WithoutFramework gamePack={clientRoom.name as GamePack} />;
       }
