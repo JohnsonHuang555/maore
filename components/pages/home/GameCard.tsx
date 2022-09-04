@@ -15,18 +15,6 @@ const GameCard = (props: GameCardProp) => {
 
   return (
     <Card sx={{ bgcolor: '#2a434f' }} variant="outlined">
-      {/* <CardMedia
-        component="img"
-        sx={{
-          height: {
-            xs: '150px',
-            sm: 'auto',
-            lg: '194px',
-          },
-        }}
-        image={`${game.imageUrl}/home.jpg`}
-        alt={game.name}
-      /> */}
       <Box
         sx={{
           height: {

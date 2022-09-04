@@ -1,13 +1,13 @@
 import express from 'express';
 import next from 'next';
 import http from 'http';
+import basicAuth from 'express-basic-auth';
 import { Server } from '@colyseus/core';
 import { WebSocketTransport } from '@colyseus/ws-transport';
 import { monitor } from '@colyseus/monitor';
-// import ChineseChess from './games/chinese_chess/ChineseChess';
-import MathFormulaCard from './games/math_formula_card/MathFormulaCard';
 import { GamePack } from './domain/Game';
-import basicAuth from 'express-basic-auth';
+import MathFormulaCard from './games/math_formula_card/MathFormulaCard';
+import ChineseChessHidden from './games/chinese_chess_hidden/ChineseChessHidden';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev = process.env.NODE_ENV !== 'production';
@@ -37,9 +37,9 @@ nextApp.prepare().then(() => {
   });
 
   // 載入所有遊戲 instance
-  // gameServer
-  //   .define(GamePack.ChineseChess, ChineseChess)
-  //   .enableRealtimeListing();
+  gameServer
+    .define(GamePack.ChineseChessHidden, ChineseChessHidden)
+    .enableRealtimeListing();
 
   gameServer
     .define(GamePack.MathFormulaCard, MathFormulaCard)

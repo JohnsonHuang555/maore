@@ -11,7 +11,6 @@ const gameSettings: { [key: string]: React.ReactNode } = {
 };
 
 type SettingAreaProps = {
-  // gameModes: GameMode[];
   gamePack: GamePack;
   disabledStartGame: boolean;
   isReadyGame: string;
@@ -24,7 +23,6 @@ const SettingArea = (props: SettingAreaProps) => {
   const isMaster = useSelector(isMasterSelector);
 
   const {
-    // gameModes,
     gamePack,
     disabledStartGame,
     isReadyGame,
@@ -55,7 +53,9 @@ const SettingArea = (props: SettingAreaProps) => {
       >
         遊戲設定
       </Box>
-      <Box sx={{ flex: '1', overflowX: 'auto' }}>{gameSettings[gamePack]}</Box>
+      <Box sx={{ flex: '1', overflowX: 'auto' }}>
+        {gameSettings[gamePack] || '此遊戲沒有設定'}
+      </Box>
       {isMaster ? (
         <Button
           variant="contained"

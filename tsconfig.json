@@ -26,6 +26,8 @@
       "@actions/*": ["actions/*"],
       "@domain/*": ["domain/*"],
       "@styles/*": ["styles/*"],
+      "@server/*": ["server/*"],
+      "@features/*": ["features/*"],
     }
   },
   "exclude": [

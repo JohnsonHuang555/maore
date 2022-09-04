@@ -1,6 +1,7 @@
 import { Box } from '@mui/system';
-import MathFormulaCard from 'features/math_formula_card/MathFormulaCard';
 import { GamePack } from 'server/domain/Game';
+import MathFormulaCard from 'features/math_formula_card/MathFormulaCard';
+import ChineseChessHidden from '@features/chinese_chess_hidden/ChineseChessHidden';
 
 type WithoutFrameworkProps = {
   gamePack: GamePack;
@@ -13,6 +14,9 @@ const WithoutFramework = (props: WithoutFrameworkProps) => {
     switch (gamePack) {
       case GamePack.MathFormulaCard: {
         return <MathFormulaCard key={gamePack} />;
+      }
+      case GamePack.ChineseChessHidden: {
+        return <ChineseChessHidden key={gamePack} />;
       }
     }
   };
