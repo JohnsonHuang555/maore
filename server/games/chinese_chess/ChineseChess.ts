@@ -36,24 +36,24 @@ export default class ChineseChess extends Room<RoomState, Metadata> {
       });
     });
 
-    this.onMessage(
-      ChineseChessMessage.FlipChess,
-      (client, message: { id: number }) => {
-        const chessIndex = this.state.chineseChess.chineseChesses.findIndex(
-          (c) => c.id === message.id
-        );
-        this.dispatcher.dispatch(new FlipChessCommand(), {
-          chessIndex,
-        });
-        const side =
-          this.state.chineseChess.chineseChesses[chessIndex].chessSide;
-        this.dispatcher.dispatch(new UpdatePlayerGroupCommand(), {
-          allGroups: [ChineseChessGroup.Black, ChineseChessGroup.Red],
-          needSetGroup: ChineseChessGroupMap[side],
-          playerId: client.id,
-        });
-      }
-    );
+    // this.onMessage(
+    // ChineseChessMessage.FlipChess,
+    // (client, message: { id: number }) => {
+    //   const chessIndex = this.state.chineseChess.chineseChesses.findIndex(
+    //     (c) => c.id === message.id
+    //   );
+    //   this.dispatcher.dispatch(new FlipChessCommand(), {
+    //     chessIndex,
+    //   });
+    //   const side =
+    //     this.state.chineseChess.chineseChesses[chessIndex].chessSide;
+    //   this.dispatcher.dispatch(new UpdatePlayerGroupCommand(), {
+    //     allGroups: [ChineseChessGroup.Black, ChineseChessGroup.Red],
+    //     needSetGroup: ChineseChessGroupMap[side],
+    //     playerId: client.id,
+    //   });
+    // }
+    // );
 
     this.onMessage(
       ChineseChessMessage.EatChess,

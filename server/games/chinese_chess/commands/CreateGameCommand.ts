@@ -20,22 +20,22 @@ export default class CreateGameCommand extends Command<ChineseChess> {
   execute(data: Payload) {
     const { mode } = data;
     // 避免重複創建
-    if (this.room.state.chineseChess.chineseChesses.length) {
-      return;
-    }
-    switch (mode) {
-      case GameMode.Standard: {
-        // TODO: 決定組別
-        const chineseChesses = this.createStandard();
-        this.room.state.chineseChess.chineseChesses = chineseChesses;
-        break;
-      }
-      case GameMode.Hidden: {
-        const chineseChesses = this.createHidden();
-        this.room.state.chineseChess.chineseChesses = chineseChesses;
-        break;
-      }
-    }
+    // if (this.room.state.chineseChess.chineseChesses.length) {
+    //   return;
+    // }
+    // switch (mode) {
+    //   case GameMode.Standard: {
+    //     // TODO: 決定組別
+    //     const chineseChesses = this.createStandard();
+    //     this.room.state.chineseChess.chineseChesses = chineseChesses;
+    //     break;
+    //   }
+    //   case GameMode.Hidden: {
+    //     const chineseChesses = this.createHidden();
+    //     this.room.state.chineseChess.chineseChesses = chineseChesses;
+    //     break;
+    //   }
+    // }
   }
 
   private createStandard(): ArraySchema<ChessInfoState> {

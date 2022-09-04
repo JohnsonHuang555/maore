@@ -7,8 +7,8 @@ import ChineseChess from '../ChineseChess';
 export default class ResetCommand extends Command<ChineseChess> {
   execute() {
     // reset
-    this.room.state.chineseChess.chineseChesses =
-      new ArraySchema<ChessInfoState>();
+    // this.room.state.chineseChess.chineseChesses =
+    //   new ArraySchema<ChessInfoState>();
     return [new ResetGameCommand()];
   }
 }

@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 import { GamePack } from 'server/domain/Game';
 
 const playingGame: { [key: string]: GameInstance } = {
-  [GamePack.ChineseChess]: ChineseChessConfig,
+  [GamePack.ChineseChessHidden]: ChineseChessConfig,
 };
 
 type PhaserProps = {

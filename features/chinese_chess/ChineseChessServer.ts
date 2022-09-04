@@ -558,57 +558,56 @@ export default class ChineseChessServer extends BaseServer {
   };
 
   private handleStateChange() {
-    this.room.state.chineseChess.chineseChesses.onAdd = (chessInfo, idx) => {
-      this.chineseChesses.push({
-        id: chessInfo.id,
-        chessSide: chessInfo.chessSide,
-        name: chessInfo.name,
-        isFlipped: chessInfo.isFlipped,
-        locationX: chessInfo.locationX,
-        locationY: chessInfo.locationY,
-        rank: chessInfo.rank,
-        alive: chessInfo.alive,
-      });
-
-      if (this.chineseChesses.length === TOTAL_CHESS_COUNT) {
-        console.log('game-data-loaded');
-        events.emit('game-data-loaded', this.chineseChesses);
-      }
-      chessInfo.onChange = (changes) => {
-        changes.forEach((change) => {
-          const { field, value } = change;
-          switch (field) {
-            case ChessInfoChangeList.IsFlipped:
-              this.setChangedChessInfo({
-                id: chessInfo.id,
-                isFlipped: value,
-              });
-              this.chineseChesses[idx].isFlipped = value;
-              break;
-            case ChessInfoChangeList.LocationX:
-              this.setChangedChessInfo({
-                id: chessInfo.id,
-                locationX: value,
-              });
-              this.chineseChesses[idx].locationX = value;
-              break;
-            case ChessInfoChangeList.LocationY:
-              this.setChangedChessInfo({
-                id: chessInfo.id,
-                locationY: value,
-              });
-              this.chineseChesses[idx].locationY = value;
-              break;
-            case ChessInfoChangeList.Alive:
-              this.setChangedChessInfo({
-                id: chessInfo.id,
-                alive: value,
-              });
-              this.chineseChesses[idx].alive = value;
-              break;
-          }
-        });
-      };
-    };
+    // this.room.state.chineseChess.chineseChesses.onAdd = (chessInfo, idx) => {
+    //   this.chineseChesses.push({
+    //     id: chessInfo.id,
+    //     chessSide: chessInfo.chessSide,
+    //     name: chessInfo.name,
+    //     isFlipped: chessInfo.isFlipped,
+    //     locationX: chessInfo.locationX,
+    //     locationY: chessInfo.locationY,
+    //     rank: chessInfo.rank,
+    //     alive: chessInfo.alive,
+    //   });
+    //   if (this.chineseChesses.length === TOTAL_CHESS_COUNT) {
+    //     console.log('game-data-loaded');
+    //     events.emit('game-data-loaded', this.chineseChesses);
+    //   }
+    //   chessInfo.onChange = (changes) => {
+    //     changes.forEach((change) => {
+    //       const { field, value } = change;
+    //       switch (field) {
+    //         case ChessInfoChangeList.IsFlipped:
+    //           this.setChangedChessInfo({
+    //             id: chessInfo.id,
+    //             isFlipped: value,
+    //           });
+    //           this.chineseChesses[idx].isFlipped = value;
+    //           break;
+    //         case ChessInfoChangeList.LocationX:
+    //           this.setChangedChessInfo({
+    //             id: chessInfo.id,
+    //             locationX: value,
+    //           });
+    //           this.chineseChesses[idx].locationX = value;
+    //           break;
+    //         case ChessInfoChangeList.LocationY:
+    //           this.setChangedChessInfo({
+    //             id: chessInfo.id,
+    //             locationY: value,
+    //           });
+    //           this.chineseChesses[idx].locationY = value;
+    //           break;
+    //         case ChessInfoChangeList.Alive:
+    //           this.setChangedChessInfo({
+    //             id: chessInfo.id,
+    //             alive: value,
+    //           });
+    //           this.chineseChesses[idx].alive = value;
+    //           break;
+    //       }
+    //     });
+    //   };
+    // };
   }
 }

@@ -9,7 +9,7 @@ type Payload = {
 export default class FlipChessCommand extends Command<ChineseChess> {
   execute(data: Payload) {
     const { chessIndex } = data;
-    this.room.state.chineseChess.chineseChesses[chessIndex].isFlipped = true;
+    // this.room.state.chineseChess.chineseChesses[chessIndex].isFlipped = true;
     return [new NextTurnCommand()];
   }
 }
