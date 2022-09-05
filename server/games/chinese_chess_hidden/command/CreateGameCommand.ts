@@ -7,6 +7,10 @@ import { ChessInfoState } from '../state/ChessInfoState';
 
 export default class CreateGameCommand extends Command<ChineseChessHidden> {
   execute() {
+    // 避免重複創建
+    if (this.room.state.chineseChessHidden.chesses.length) {
+      return;
+    }
     const chineseChesses = this.createHidden();
     this.room.state.chineseChessHidden.chesses = chineseChesses;
   }

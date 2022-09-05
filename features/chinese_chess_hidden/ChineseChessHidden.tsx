@@ -73,11 +73,11 @@ const ChineseChessHidden = () => {
         background: '#264653',
       }}
     >
-      <MaoreFlex>123456</MaoreFlex>
+      <MaoreFlex sx={{ flex: 1 }}>123456</MaoreFlex>
       <MaoreFlex verticalHorizonCenter>
         <Board chesses={state.chesses} />
       </MaoreFlex>
-      <MaoreFlex>Me</MaoreFlex>
+      <MaoreFlex sx={{ flex: 1 }}>Me</MaoreFlex>
     </MaoreFlex>
   );
 };
