@@ -1,9 +1,11 @@
 import { Command } from '@colyseus/command';
 import { ArraySchema } from '@colyseus/schema';
+import short from 'short-uuid';
 import Random from '../../../utils/Random';
 import ChineseChessHidden from '../ChineseChessHidden';
 import { ChessHiddenMap } from '../datas/ChessHiddenMap';
 import { ChessInfoState } from '../state/ChessInfoState';
+import { PlayerInfoState } from '../state/PlayerInfoState';
 
 export default class CreateGameCommand extends Command<ChineseChessHidden> {
   execute() {
@@ -13,6 +15,15 @@ export default class CreateGameCommand extends Command<ChineseChessHidden> {
     }
     const chineseChesses = this.createHidden();
     this.room.state.chineseChessHidden.chesses = chineseChesses;
+
+    const playerIds = this.room.state.players.map((p) => p.id);
+    playerIds.forEach((id) => {
+      const eatenChesses = new ArraySchema<ChessInfoState>();
+      this.room.state.chineseChessHidden.playerInfos.set(
+        id,
+        new PlayerInfoState({ chessSide: '', eatenChesses: eatenChesses })
+      );
+    });
   }
 
   private createHidden(): ArraySchema<ChessInfoState> {
@@ -23,7 +34,7 @@ export default class CreateGameCommand extends Command<ChineseChessHidden> {
       const y = Math.floor(randomLocation[i] / 8);
       chesses.push(
         new ChessInfoState({
-          id: ChessHiddenMap[i].id,
+          id: short.generate(),
           chessSide: ChessHiddenMap[i].side,
           name: ChessHiddenMap[i].name,
           rank: ChessHiddenMap[i].rank,

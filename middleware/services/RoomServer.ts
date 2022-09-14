@@ -152,7 +152,6 @@ export default class RoomServer {
                 roomTitle: value.roomTitle,
                 maxPlayers: value.maxPlayers,
                 gamePack: value.gamePack,
-                gameMode: value.gameMode,
               })
             );
             break;

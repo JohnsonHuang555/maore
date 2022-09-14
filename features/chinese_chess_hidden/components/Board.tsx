@@ -1,25 +1,65 @@
 import { useMemo } from 'react';
 import { Box } from '@mui/material';
-import { ChessInfo } from '../models/ChineseChessState';
-import MaoreFlex from '@components/maore/MaoreFlex';
+import { IChessInfo } from '@server/games/chinese_chess_hidden/state/ChessInfoState';
 import { motion } from 'framer-motion';
+import { ChessSide } from '../models/ChineseChessSide';
 
 type BoardProps = {
-  chesses: ChessInfo[];
+  chesses: IChessInfo[];
+  flipChess: (id: string) => void;
 };
 
+const chessVariant = {
+  selected: {
+    rotateY: 180,
+    transition: { duration: 0.35 },
+    // zIndex: 10,
+    // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px'
+  },
+};
+
+const diagonalLinesLeftToRight = [
+  {
+    x: 3,
+    y: 2,
+  },
+  {
+    x: 4,
+    y: 3,
+  },
+];
+
+const diagonalLinesRightToLeft = [
+  {
+    x: 4,
+    y: 2,
+  },
+  {
+    x: 3,
+    y: 3,
+  },
+];
+
 const Board = (props: BoardProps) => {
-  const { chesses } = props;
+  const { chesses, flipChess } = props;
 
   // 為了避免作弊所以要亂數排序
   const shuffledChesses = useMemo(() => {
     return [...chesses].sort(() => Math.random() - 0.5);
   }, [chesses]);
 
+  const handleClickChess = (chessInfo: IChessInfo) => {
+    if (!chessInfo.isFlipped) {
+      flipChess(chessInfo.id);
+    }
+  };
+
+  if (!chesses.length) return null;
+
   return (
     <Box
       sx={{
-        width: '80vw',
+        width: '70vw',
         height: 'calc(80vw / 2.5)',
         border: '2px solid #161515',
         backgroundColor: '#B07736',
@@ -35,33 +75,82 @@ const Board = (props: BoardProps) => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            position: 'relative',
           }}
           key={chessInfo.id}
           gridColumn={chessInfo.locationX + 1}
           gridRow={chessInfo.locationY + 1}
         >
+          {!!diagonalLinesLeftToRight.find(
+            ({ x, y }) => x === chessInfo.locationX && y === chessInfo.locationY
+          ) && (
+            <Box
+              sx={{
+                position: 'absolute',
+                width: '135%',
+                border: '1px solid #565353',
+                transform: 'rotate(42deg)',
+                zIndex: 0,
+              }}
+            />
+          )}
+          {!!diagonalLinesRightToLeft.find(
+            ({ x, y }) => x === chessInfo.locationX && y === chessInfo.locationY
+          ) && (
+            <Box
+              sx={{
+                position: 'absolute',
+                width: '135%',
+                border: '1px solid #565353',
+                transform: 'rotate(-42deg)',
+                zIndex: 0,
+              }}
+            />
+          )}
           <motion.div
             style={{
-              width: '60%',
-              height: '75%',
-              border: '1px solid',
-              borderRadius: '50%',
+              width: '64%',
+              height: '70%',
               fontFamily: 'cursive',
-              backgroundColor: '#619159',
+              zIndex: 1,
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
+              borderRadius: '50%',
+              border: chessInfo.isFlipped ? 'none' : '2px solid',
+              position: 'absolute',
+              backgroundColor: chessInfo.isFlipped ? 'white' : '#619159',
+              cursor: 'pointer',
             }}
-            drag
-            whileHover={{ scale: 1.1 }}
+            initial={{ opacity: 1 }}
+            onClick={() => handleClickChess(chessInfo)}
+            // animate={{ opacity: 1, scale: 1 }}
+            // transition={{
+            //   duration: 0.8,
+            //   delay: 0.5,
+            //   ease: [0, 0.71, 0.2, 1.01],
+            // }}
           >
-            <Box
-              sx={{
-                fontSize: { md: '44px' },
-              }}
-            >
-              {chessInfo.name}
-            </Box>
+            {chessInfo.isFlipped ? (
+              <Box
+                sx={{
+                  fontSize: { md: '44px' },
+                  width: '90%',
+                  height: '90%',
+                  border: `2px solid ${
+                    chessInfo.chessSide === ChessSide.Black ? 'black' : 'red'
+                  }`,
+                  borderRadius: '50%',
+                  display: 'inline-flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  color:
+                    chessInfo.chessSide === ChessSide.Black ? 'black' : 'red',
+                }}
+              >
+                {chessInfo.name}
+              </Box>
+            ) : null}
           </motion.div>
         </Box>
       ))}

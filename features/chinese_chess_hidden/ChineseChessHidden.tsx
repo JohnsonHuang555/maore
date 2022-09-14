@@ -4,6 +4,7 @@ import {
   isAllPlayersLoadedSelector,
   isMasterSelector,
   isYourTurnSelector,
+  playerIdSelector,
   winnerIndexSelector,
 } from '@selectors/roomSelector';
 import { useSnackbar } from 'notistack';
@@ -16,6 +17,7 @@ import chessReducer, {
 import { Box } from '@mui/material';
 import Board from './components/Board';
 import MaoreFlex from '@components/maore/MaoreFlex';
+import { ChineseChessMessage } from './models/ChineseChessMessage';
 
 const ChineseChessHidden = () => {
   const dispatch = useDispatch();
@@ -25,6 +27,8 @@ const ChineseChessHidden = () => {
   const winnerIndex = useSelector(winnerIndexSelector);
   const isMaster = useSelector(isMasterSelector);
   const clientRoom = useSelector(clientRoomSelector);
+  const yourPlayerId = useSelector(playerIdSelector);
+
   const [state, localDispatch] = useReducer(chessReducer, initialState);
 
   if (!clientRoom) {
@@ -32,12 +36,39 @@ const ChineseChessHidden = () => {
   }
 
   useEffect(() => {
-    clientRoom.state.chineseChessHidden.chesses.onAdd = (chessInfo, idx) => {
+    clientRoom.state.chineseChessHidden.chesses.onAdd = (chessInfo) => {
       localDispatch({ type: ActionType.SetChess, chess: chessInfo });
       chessInfo.onChange = (changes) => {
         changes.forEach((change) => {
           const { field, value } = change;
+          localDispatch({
+            type: ActionType.UpdateChess,
+            id: chessInfo.id,
+            chessInfo: { [field]: value },
+          });
+        });
+      };
+    };
+
+    // 監聽玩家資訊更新
+    clientRoom.state.chineseChessHidden.playerInfos.onAdd = (
+      playerInfo,
+      playerId
+    ) => {
+      playerInfo.onChange = (changes) => {
+        changes.forEach((change) => {
+          const { field, value } = change;
           console.log(field, value);
+          switch (field) {
+            case 'chessSide': {
+              localDispatch({
+                type: ActionType.UpdateChessSide,
+                isYou: playerId === yourPlayerId ? true : false,
+                chessSide: value,
+              });
+              break;
+            }
+          }
         });
       };
     };
@@ -63,6 +94,10 @@ const ChineseChessHidden = () => {
     }
   }, [winnerIndex]);
 
+  const flipChess = (id: string) => {
+    clientRoom.send(ChineseChessMessage.FlipChess, id);
+  };
+
   return (
     <MaoreFlex
       sx={{
@@ -75,7 +110,7 @@ const ChineseChessHidden = () => {
     >
       <MaoreFlex sx={{ flex: 1 }}>123456</MaoreFlex>
       <MaoreFlex verticalHorizonCenter>
-        <Board chesses={state.chesses} />
+        <Board chesses={state.chesses} flipChess={flipChess} />
       </MaoreFlex>
       <MaoreFlex sx={{ flex: 1 }}>Me</MaoreFlex>
     </MaoreFlex>

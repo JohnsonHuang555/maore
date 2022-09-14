@@ -27,7 +27,6 @@ const ServerMiddleware: Middleware<Dispatch> =
               roomTitle: action.roomTitle,
               playerName: action.playerName,
               gamePack: action.gamePack,
-              gameMode: action.gameMode,
             }
           );
           break;

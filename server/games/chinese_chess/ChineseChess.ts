@@ -31,9 +31,7 @@ export default class ChineseChess extends Room<RoomState, Metadata> {
 
     // 初始化遊戲
     this.onMessage(RoomMessage.CreateGame, () => {
-      this.dispatcher.dispatch(new CreateGameCommand(), {
-        mode: option.gameMode as GameMode,
-      });
+      this.dispatcher.dispatch(new CreateGameCommand());
     });
 
     // this.onMessage(
@@ -65,7 +63,6 @@ export default class ChineseChess extends Room<RoomState, Metadata> {
         const clientIndex = this.clients.findIndex((c) => c.id === client.id);
         const group = this.state.players[clientIndex].group;
         this.dispatcher.dispatch(new CheckWinnerCommand(), {
-          gameMode: this.metadata.gameMode as GameMode,
           group,
         });
       }

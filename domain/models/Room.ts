@@ -11,7 +11,6 @@ export type Metadata = {
   roomTitle?: string;
   playerName: string;
   gamePack?: GamePack;
-  gameMode?: string;
 };
 
 // 房間頁使用
@@ -19,7 +18,6 @@ export type RoomInfo = {
   roomTitle: string;
   maxPlayers: number;
   gamePack: GamePack | '';
-  gameMode?: string;
 };
 
 // 渲染畫面方式

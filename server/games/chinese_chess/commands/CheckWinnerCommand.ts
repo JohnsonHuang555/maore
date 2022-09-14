@@ -11,13 +11,12 @@ import { ChessSide } from '../../../../features/chinese_chess/models/ChineseChes
 import ChineseChess from '../ChineseChess';
 
 type Payload = {
-  gameMode: GameMode;
   group: ChineseChessGroup;
 };
 
 export default class CheckWinnerCommand extends Command<ChineseChess> {
   execute(data: Payload) {
-    const { gameMode, group } = data;
+    const { group } = data;
 
     //   switch (gameMode) {
     //     case GameMode.Standard: {

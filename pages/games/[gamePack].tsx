@@ -71,7 +71,7 @@ const Games = () => {
   if (error) return <div>{error.message}</div>;
   if (!game) return <div>Loading...</div>;
 
-  const onCreateRoom = async (roomTitle: string, gameMode?: string) => {
+  const onCreateRoom = async (roomTitle: string) => {
     if (!userInfo) {
       enqueueSnackbar('請先登入', { variant: 'warning' });
       return;
@@ -79,7 +79,6 @@ const Games = () => {
     try {
       dispatch(
         createRoom({
-          gameMode,
           roomTitle,
           playerName: userInfo.name,
           gamePack: gamePack as GamePack,

@@ -11,7 +11,4 @@ export class RoomInfoState extends Schema {
 
   @type('string')
   gamePack: GamePack | string = '';
-
-  @type('string')
-  gameMode?: string;
 }

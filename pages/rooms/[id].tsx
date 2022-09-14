@@ -35,6 +35,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { RoomMessage } from '@domain/models/Message';
 import { useSnackbar } from 'notistack';
 import EditRoomModal from '@components/pages/rooms/EditRoomModal';
+import { minPlayerMaps } from '@domain/models/Game';
 
 const DynamicGameScreenWithNoSSR = dynamic(
   () => import('@components/pages/rooms/GameScreen'),
@@ -48,6 +49,7 @@ const Rooms = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [showEditModal, setEditModal] = useState(false);
   const [isClickStartGame, setIsClickStartGame] = useState(false);
+  const [minPlayers, setMinPlayers] = useState<number>();
 
   // selectors
   const createdRoomId = useSelector(createdRoomIdSelector);
@@ -128,6 +130,9 @@ const Rooms = () => {
       return true;
     }
     if (isAnyPlayerNotReady.length) {
+      return true;
+    }
+    if (players.length < minPlayerMaps[roomInfo.gamePack]) {
       return true;
     }
     return false;

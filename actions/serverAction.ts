@@ -48,7 +48,6 @@ export type createRoomParams = {
   gamePack: GamePack;
   roomTitle: string;
   playerName: string;
-  gameMode?: string;
   photoURL?: string;
 };
 
@@ -56,7 +55,6 @@ export const createRoom = ({
   gamePack,
   roomTitle,
   playerName,
-  gameMode,
   photoURL,
 }: createRoomParams) => {
   return {
@@ -64,7 +62,6 @@ export const createRoom = ({
     gamePack,
     roomTitle,
     playerName,
-    gameMode,
     photoURL,
   };
 };

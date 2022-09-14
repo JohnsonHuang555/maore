@@ -115,7 +115,7 @@ export class ChessComponent implements IComponent {
     }
 
     const { id, chessSide } = this.chessInfo;
-    if (!this.isFlipped && this.server.roomInfo.gameMode === GameMode.Hidden) {
+    if (!this.isFlipped) {
       this.server.flipChess(id);
     } else {
       if (

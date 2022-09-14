@@ -24,7 +24,7 @@ export default class Bootstrap extends Phaser.Scene {
   }
 
   private handleGameDataLoaded(chineseChesses: ChessInfo[]) {
-    const mode = this.server.roomInfo.gameMode;
+    const mode = '' as any;
     console.log('---handleGameDataLoaded---');
     // 遊戲資料載入完成才起場景
     switch (mode) {

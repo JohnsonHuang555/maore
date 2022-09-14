@@ -6,7 +6,7 @@ import {
 import { ChessSide } from '@features/chinese_chess_hidden/models/ChineseChessSide';
 
 export interface IChessInfo {
-  id: number;
+  id: string;
   chessSide: ChessSide;
   name: ChessNameBlack | ChessNameRed;
   isFlipped: boolean;
@@ -17,8 +17,8 @@ export interface IChessInfo {
 }
 
 export class ChessInfoState extends Schema implements IChessInfo {
-  @type('number')
-  id: number;
+  @type('string')
+  id: string;
 
   @type('string')
   chessSide: ChessSide;
