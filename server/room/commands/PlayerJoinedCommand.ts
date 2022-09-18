@@ -9,6 +9,7 @@ export type Payload = {
   name: string;
   playerIndex: number;
   isMaster: boolean;
+  photoURL: string;
 };
 
 export default class PlayerJoinedCommand extends Command<

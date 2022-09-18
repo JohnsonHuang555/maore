@@ -82,7 +82,7 @@ const Games = () => {
           roomTitle,
           playerName: userInfo.name,
           gamePack: gamePack as GamePack,
-          photoURL: userInfo.photoURL,
+          photoURL: userInfo.photoURL || '',
         })
       );
     } catch (err: any) {

@@ -27,7 +27,6 @@ const PlayerArea = (props: PlayerAreaProps) => {
         backgroundColor: 'primary.dark',
         padding: '15px',
         borderRadius: '10px',
-        // overflowY: 'auto',
       }}
     >
       <Box

@@ -109,6 +109,7 @@ export default class BaseRoom {
     this.dispatcher.dispatch(new PlayerJoinedCommand(), {
       id: client.id,
       name: option.playerName,
+      photoURL: option.photoURL,
       isMaster,
       playerIndex: idx,
     });

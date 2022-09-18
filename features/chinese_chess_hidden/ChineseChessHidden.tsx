@@ -5,6 +5,7 @@ import {
   isMasterSelector,
   isYourTurnSelector,
   playerIdSelector,
+  playersSelector,
   winnerIndexSelector,
 } from '@selectors/roomSelector';
 import { useSnackbar } from 'notistack';
@@ -18,6 +19,8 @@ import { Box } from '@mui/material';
 import Board from './components/Board';
 import MaoreFlex from '@components/maore/MaoreFlex';
 import { ChineseChessMessage } from './models/ChineseChessMessage';
+import PlayerCard from '@components/pages/rooms/PlayerCard';
+import { Player } from '@domain/models/Player';
 
 const ChineseChessHidden = () => {
   const dispatch = useDispatch();
@@ -28,6 +31,7 @@ const ChineseChessHidden = () => {
   const isMaster = useSelector(isMasterSelector);
   const clientRoom = useSelector(clientRoomSelector);
   const yourPlayerId = useSelector(playerIdSelector);
+  const players = useSelector(playersSelector);
 
   const [state, localDispatch] = useReducer(chessReducer, initialState);
 
@@ -108,11 +112,26 @@ const ChineseChessHidden = () => {
         background: '#264653',
       }}
     >
-      <MaoreFlex sx={{ flex: 1 }}>123456</MaoreFlex>
+      <MaoreFlex sx={{ flex: 1 }} verticalHorizonCenter>
+        <MaoreFlex sx={{ width: '90vw' }} justifyContent="flex-end">
+          <PlayerCard
+            player={players.find((p) => p.id !== yourPlayerId) as Player}
+            isNowTurn={true}
+          />
+        </MaoreFlex>
+      </MaoreFlex>
       <MaoreFlex verticalHorizonCenter>
         <Board chesses={state.chesses} flipChess={flipChess} />
       </MaoreFlex>
-      <MaoreFlex sx={{ flex: 1 }}>Me</MaoreFlex>
+      <MaoreFlex sx={{ flex: 1 }} verticalHorizonCenter>
+        <MaoreFlex sx={{ width: '90vw' }}>
+          <PlayerCard
+            player={players.find((p) => p.id === yourPlayerId) as Player}
+            isYou={true}
+            isNowTurn={true}
+          />
+        </MaoreFlex>
+      </MaoreFlex>
     </MaoreFlex>
   );
 };

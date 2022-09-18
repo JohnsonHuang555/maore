@@ -75,7 +75,9 @@ const Rooms = () => {
   useEffect(() => {
     if (!loading && !createdRoomId) {
       if (userInfo && isLogin) {
-        dispatch(joinRoom(String(roomId), userInfo.name, userInfo.photoURL));
+        dispatch(
+          joinRoom(String(roomId), userInfo.name, userInfo.photoURL || '')
+        );
       } else {
         dispatch(setShowLoginModal(true));
       }

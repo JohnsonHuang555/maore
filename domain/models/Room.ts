@@ -10,6 +10,7 @@ export enum GameStatus {
 export type Metadata = {
   roomTitle?: string;
   playerName: string;
+  photoURL: string;
   gamePack?: GamePack;
 };
 

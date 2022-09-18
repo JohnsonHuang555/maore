@@ -8,7 +8,7 @@ const ServerMiddleware: Middleware<Dispatch> =
   (next) =>
   (action: any) => {
     if (action && action.type) {
-      const { server, app } = getState();
+      const { server } = getState();
       switch (action.type) {
         case ActionType.INITIAL_CLIENT: {
           roomServer = new Server(dispatch);
@@ -19,27 +19,19 @@ const ServerMiddleware: Middleware<Dispatch> =
           break;
         }
         case ActionType.CREATE_ROOM: {
-          roomServer.createRoom(
-            server.client,
-            action.gamePack,
-            app.userInfo.photoURL,
-            {
-              roomTitle: action.roomTitle,
-              playerName: action.playerName,
-              gamePack: action.gamePack,
-            }
-          );
+          roomServer.createRoom(server.client, action.gamePack, {
+            roomTitle: action.roomTitle,
+            playerName: action.playerName,
+            photoURL: action.photoURL,
+            gamePack: action.gamePack,
+          });
           break;
         }
         case ActionType.JOIN_ROOM: {
-          roomServer.joinRoom(
-            server.client,
-            action.roomId,
-            app.userInfo.photoURL,
-            {
-              playerName: action.playerName,
-            }
-          );
+          roomServer.joinRoom(server.client, action.roomId, {
+            playerName: action.playerName,
+            photoURL: action.photoURL,
+          });
           break;
         }
         case ActionType.LEAVE_ROOM: {
