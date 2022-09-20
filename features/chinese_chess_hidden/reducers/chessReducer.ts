@@ -5,6 +5,7 @@ export enum ActionType {
   SetChess = 'setChess',
   UpdateChess = 'updateChess',
   UpdateChessSide = 'updateChessSide',
+  SelectChess = 'selectChess',
 }
 
 type State = {
@@ -13,6 +14,7 @@ type State = {
   yourEatenChess: IChessInfo[];
   otherSide: ChessSide | '';
   otherEatenChess: IChessInfo[];
+  selectedChessId?: string;
 };
 
 export const initialState: State = {
@@ -40,7 +42,16 @@ type UpdateChessSideAction = {
   chessSide: ChessSide;
 };
 
-type Action = SetChessAction | UpdateChessAction | UpdateChessSideAction;
+type SelectChessAction = {
+  type: ActionType.SelectChess;
+  id: string;
+};
+
+type Action =
+  | SetChessAction
+  | UpdateChessAction
+  | UpdateChessSideAction
+  | SelectChessAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -75,6 +86,12 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         otherSide: action.chessSide,
+      };
+    }
+    case ActionType.SelectChess: {
+      return {
+        ...state,
+        selectedChessId: action.id ? action.id : undefined,
       };
     }
     default: {

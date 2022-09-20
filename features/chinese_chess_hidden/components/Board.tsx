@@ -1,12 +1,17 @@
 import { useMemo } from 'react';
-import { Backdrop, Box } from '@mui/material';
+import { Box } from '@mui/material';
 import { IChessInfo } from '@server/games/chinese_chess_hidden/state/ChessInfoState';
 import { motion } from 'framer-motion';
 import { ChessSide } from '../models/ChineseChessSide';
 
 type BoardProps = {
   chesses: IChessInfo[];
+  hasSelectedChess: boolean;
+  isYourTurn: boolean;
   flipChess: (id: string) => void;
+  selectChess: (id: string) => void;
+  moveChess: (targetX: number, targetY: number) => void;
+  eatChess: (id: string) => void;
 };
 
 const chessVariant = {
@@ -41,7 +46,15 @@ const diagonalLinesRightToLeft = [
 ];
 
 const Board = (props: BoardProps) => {
-  const { chesses, flipChess } = props;
+  const {
+    chesses,
+    hasSelectedChess,
+    isYourTurn,
+    flipChess,
+    selectChess,
+    moveChess,
+    eatChess,
+  } = props;
 
   // 為了避免作弊所以要亂數排序
   const shuffledChesses = useMemo(() => {
@@ -49,122 +62,134 @@ const Board = (props: BoardProps) => {
   }, [chesses]);
 
   const handleClickChess = (chessInfo: IChessInfo) => {
+    if (!isYourTurn) {
+      return;
+    }
+
+    if (hasSelectedChess) {
+      eatChess(chessInfo.id);
+      return;
+    }
+
     if (!chessInfo.isFlipped) {
       flipChess(chessInfo.id);
+    } else {
+      selectChess(chessInfo.id);
     }
+  };
+
+  const handleMoveChess = (locationX: number, locationY: number) => {
+    if (!isYourTurn || !hasSelectedChess) {
+      return;
+    }
+
+    moveChess(locationX, locationY);
   };
 
   if (!chesses.length) return <div>建立棋盤中...</div>;
 
   return (
-    <>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={false}
-      >
-        <Box sx={{ fontSize: '40px' }}>輪到你了</Box>
-      </Backdrop>
-      <Box
-        sx={{
-          width: '70vw',
-          height: 'calc(80vw / 2.5)',
-          border: '2px solid #161515',
-          backgroundColor: '#B07736',
-        }}
-        display="grid"
-        gridTemplateColumns="repeat(8, 1fr)"
-      >
-        {shuffledChesses.map((chessInfo) => (
-          <Box
-            sx={{
-              border: '1px solid #161515',
-              margin: '0 -1px -1px 0',
+    <Box
+      sx={{
+        width: '70vw',
+        height: 'calc(80vw / 2.5)',
+        border: '2px solid #161515',
+        backgroundColor: '#B07736',
+      }}
+      display="grid"
+      gridTemplateColumns="repeat(8, 1fr)"
+    >
+      {shuffledChesses.map((chessInfo) => (
+        <Box
+          sx={{
+            border: '1px solid #161515',
+            margin: '0 -1px -1px 0',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'relative',
+          }}
+          key={chessInfo.id}
+          gridColumn={chessInfo.locationX + 1}
+          gridRow={chessInfo.locationY + 1}
+          onClick={() =>
+            handleMoveChess(chessInfo.locationX, chessInfo.locationY)
+          }
+        >
+          {!!diagonalLinesLeftToRight.find(
+            ({ x, y }) => x === chessInfo.locationX && y === chessInfo.locationY
+          ) && (
+            <Box
+              sx={{
+                position: 'absolute',
+                width: '135%',
+                border: '1px solid #565353',
+                transform: 'rotate(42deg)',
+                zIndex: 0,
+              }}
+            />
+          )}
+          {!!diagonalLinesRightToLeft.find(
+            ({ x, y }) => x === chessInfo.locationX && y === chessInfo.locationY
+          ) && (
+            <Box
+              sx={{
+                position: 'absolute',
+                width: '135%',
+                border: '1px solid #565353',
+                transform: 'rotate(-42deg)',
+                zIndex: 0,
+              }}
+            />
+          )}
+          <motion.div
+            style={{
+              width: '64%',
+              height: '70%',
+              fontFamily: 'cursive',
+              zIndex: 1,
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              position: 'relative',
+              borderRadius: '50%',
+              border: chessInfo.isFlipped ? 'none' : '2px solid',
+              position: 'absolute',
+              backgroundColor: chessInfo.isFlipped ? 'white' : '#619159',
+              cursor: 'pointer',
             }}
-            key={chessInfo.id}
-            gridColumn={chessInfo.locationX + 1}
-            gridRow={chessInfo.locationY + 1}
+            initial={{ opacity: 1 }}
+            onClick={() => handleClickChess(chessInfo)}
+            // animate={{ opacity: 1, scale: 1 }}
+            // transition={{
+            //   duration: 0.8,
+            //   delay: 0.5,
+            //   ease: [0, 0.71, 0.2, 1.01],
+            // }}
           >
-            {!!diagonalLinesLeftToRight.find(
-              ({ x, y }) =>
-                x === chessInfo.locationX && y === chessInfo.locationY
-            ) && (
+            {chessInfo.isFlipped ? (
               <Box
                 sx={{
-                  position: 'absolute',
-                  width: '135%',
-                  border: '1px solid #565353',
-                  transform: 'rotate(42deg)',
-                  zIndex: 0,
+                  fontSize: { md: '44px', lg: '56px' },
+                  width: '90%',
+                  height: '90%',
+                  border: `2px solid ${
+                    chessInfo.chessSide === ChessSide.Black ? 'black' : 'red'
+                  }`,
+                  borderRadius: '50%',
+                  display: 'inline-flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  color:
+                    chessInfo.chessSide === ChessSide.Black ? 'black' : 'red',
                 }}
-              />
-            )}
-            {!!diagonalLinesRightToLeft.find(
-              ({ x, y }) =>
-                x === chessInfo.locationX && y === chessInfo.locationY
-            ) && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  width: '135%',
-                  border: '1px solid #565353',
-                  transform: 'rotate(-42deg)',
-                  zIndex: 0,
-                }}
-              />
-            )}
-            <motion.div
-              style={{
-                width: '64%',
-                height: '70%',
-                fontFamily: 'cursive',
-                zIndex: 1,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: '50%',
-                border: chessInfo.isFlipped ? 'none' : '2px solid',
-                position: 'absolute',
-                backgroundColor: chessInfo.isFlipped ? 'white' : '#619159',
-                cursor: 'pointer',
-              }}
-              initial={{ opacity: 1 }}
-              onClick={() => handleClickChess(chessInfo)}
-              // animate={{ opacity: 1, scale: 1 }}
-              // transition={{
-              //   duration: 0.8,
-              //   delay: 0.5,
-              //   ease: [0, 0.71, 0.2, 1.01],
-              // }}
-            >
-              {chessInfo.isFlipped ? (
-                <Box
-                  sx={{
-                    fontSize: { md: '44px' },
-                    width: '90%',
-                    height: '90%',
-                    border: `2px solid ${
-                      chessInfo.chessSide === ChessSide.Black ? 'black' : 'red'
-                    }`,
-                    borderRadius: '50%',
-                    display: 'inline-flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    color:
-                      chessInfo.chessSide === ChessSide.Black ? 'black' : 'red',
-                  }}
-                >
-                  {chessInfo.name}
-                </Box>
-              ) : null}
-            </motion.div>
-          </Box>
-        ))}
-      </Box>
-    </>
+              >
+                {chessInfo.name}
+              </Box>
+            ) : null}
+          </motion.div>
+        </Box>
+      ))}
+    </Box>
   );
 };
 

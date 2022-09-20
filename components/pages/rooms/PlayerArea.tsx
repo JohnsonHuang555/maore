@@ -113,9 +113,21 @@ const PlayerArea = (props: PlayerAreaProps) => {
             }}
           >
             {player.photoURL ? (
-              <Avatar sx={{ width: 56, height: 56 }} src={player.photoURL} />
+              <Avatar
+                sx={{
+                  width: { xs: 40, sm: 50, md: 70 },
+                  height: { xs: 40, sm: 50, md: 70 },
+                }}
+                src={player.photoURL}
+              />
             ) : (
-              <Avatar sx={{ width: 56, height: 56, color: '#fff' }}>
+              <Avatar
+                sx={{
+                  width: { xs: 40, sm: 50, md: 70 },
+                  height: { xs: 40, sm: 50, md: 70 },
+                  color: '#fff',
+                }}
+              >
                 {player.name.substring(0, 1)}
               </Avatar>
             )}

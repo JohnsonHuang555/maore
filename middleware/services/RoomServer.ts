@@ -106,7 +106,6 @@ export default class RoomServer {
 
     // room players changes...
     room.state.players.onAdd = (player) => {
-      console.log(player);
       // 為了做頭像
       this.dispatch(addPlayer({ ...player }));
       player.onChange = (changes) => {

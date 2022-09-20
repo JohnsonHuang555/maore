@@ -8,6 +8,8 @@ import { RoomMessage } from '../../../domain/models/Message';
 import CreateGameCommand from './command/CreateGameCommand';
 import { ChineseChessMessage } from '../../../features/chinese_chess_hidden/models/ChineseChessMessage';
 import FlipChessCommand from './command/FlipChessCommand';
+import EatChessCommand from './command/EatChessCommand';
+import MoveChessCommand from './command/MoveChessCommand';
 
 export default class ChineseChessHiddenState extends Room<RoomState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -34,6 +36,32 @@ export default class ChineseChessHiddenState extends Room<RoomState, Metadata> {
         chessIndex,
       });
     });
+
+    this.onMessage(
+      ChineseChessMessage.EatChess,
+      (client, message: { selectedChessId: number; targetId: number }) => {
+        this.dispatcher.dispatch(new EatChessCommand(), {
+          client,
+          selectedChessId: message.selectedChessId,
+          targetId: message.targetId,
+        });
+      }
+    );
+
+    this.onMessage(
+      ChineseChessMessage.MoveChess,
+      (
+        client,
+        message: { selectedChessId: number; targetX: number; targetY: number }
+      ) => {
+        this.dispatcher.dispatch(new MoveChessCommand(), {
+          client,
+          selectedChessId: message.selectedChessId,
+          targetX: message.targetX,
+          targetY: message.targetY,
+        });
+      }
+    );
 
     // 結束遊戲
     this.onMessage(RoomMessage.FinishGame, () => {

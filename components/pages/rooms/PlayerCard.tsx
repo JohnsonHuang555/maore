@@ -4,13 +4,17 @@ import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
 import { Player } from '@domain/models/Player';
 
 type PlayerCardProps = {
-  player: Player;
+  player?: Player;
   isNowTurn: boolean;
   isYou?: boolean;
 };
 
 const PlayerCard = (props: PlayerCardProps) => {
   const { player, isYou = false, isNowTurn } = props;
+
+  if (!player) {
+    return null;
+  }
 
   return (
     <MaoreFlex>
