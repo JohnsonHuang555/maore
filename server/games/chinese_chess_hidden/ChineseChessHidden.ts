@@ -3,13 +3,13 @@ import { Dispatcher } from '@colyseus/command';
 import { Metadata } from '@domain/models/Room';
 import BaseRoom from '../../room';
 import RoomState from '../../room/state/RoomState';
-import ResetCommand from '../math_formula_card/commands/ResetCommand';
 import { RoomMessage } from '../../../domain/models/Message';
 import CreateGameCommand from './command/CreateGameCommand';
 import { ChineseChessMessage } from '../../../features/chinese_chess_hidden/models/ChineseChessMessage';
 import FlipChessCommand from './command/FlipChessCommand';
 import EatChessCommand from './command/EatChessCommand';
 import MoveChessCommand from './command/MoveChessCommand';
+import ResetCommand from './command/ResetCommand';
 
 export default class ChineseChessHiddenState extends Room<RoomState, Metadata> {
   private dispatcher = new Dispatcher(this);

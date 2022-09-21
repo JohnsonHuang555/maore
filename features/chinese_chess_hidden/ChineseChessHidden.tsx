@@ -20,8 +20,9 @@ import MaoreFlex from '@components/maore/MaoreFlex';
 import { ChineseChessMessage } from './models/ChineseChessMessage';
 import PlayerCard from '@components/pages/rooms/PlayerCard';
 import { Player } from '@domain/models/Player';
-import { IChessInfo } from '@server/games/chinese_chess_hidden/state/ChessInfoState';
 import { Backdrop, Box } from '@mui/material';
+import { ChessSide } from './models/ChineseChessSide';
+import { IChessInfo } from '@server/games/chinese_chess_hidden/state/ChessInfoState';
 
 const ChineseChessHidden = () => {
   const dispatch = useDispatch();
@@ -79,14 +80,6 @@ const ChineseChessHidden = () => {
               });
               break;
             }
-            case 'locationX': {
-              console.log(field, value);
-              break;
-            }
-            case 'locationY': {
-              console.log(field, value);
-              break;
-            }
           }
         });
       };
@@ -115,7 +108,6 @@ const ChineseChessHidden = () => {
 
   useEffect(() => {
     if (isYourTurn) {
-      console.log('???');
       setShowYourTurnUI(true);
     }
     // if (gameSettings?.remainedSecond) {
@@ -139,16 +131,16 @@ const ChineseChessHidden = () => {
     clientRoom.send(ChineseChessMessage.FlipChess, id);
   };
 
-  const selectChess = (id: string) => {
+  const selectChess = (chess: IChessInfo) => {
     localDispatch({
       type: ActionType.SelectChess,
-      id,
+      chess,
     });
   };
 
   const moveChess = (targetX: number, targetY: number) => {
     clientRoom.send(ChineseChessMessage.MoveChess, {
-      selectedChessId: state.selectedChessId,
+      selectedChessId: state.selectedChess?.id as string,
       targetX,
       targetY,
     });
@@ -156,19 +148,78 @@ const ChineseChessHidden = () => {
 
   const eatChess = (targetId: string) => {
     clientRoom.send(ChineseChessMessage.EatChess, {
-      selectedChessId: state.selectedChessId,
+      selectedChessId: state.selectedChess?.id as string,
       targetId,
     });
   };
 
+  console.log(state.selectedChess);
+
+  const getChessSide = (side: ChessSide | '') => {
+    switch (side) {
+      case ChessSide.Black:
+        return (
+          <MaoreFlex
+            verticalHorizonCenter
+            sx={{
+              backgroundColor: 'white',
+              borderRadius: '50%',
+              minWidth: '40px',
+              height: '40px',
+              color: 'black',
+              fontSize: '22px',
+              marginRight: '20px',
+              fontFamily: 'cursive',
+            }}
+          >
+            <MaoreFlex
+              verticalHorizonCenter
+              sx={{
+                border: '1px solid black',
+                borderRadius: '50%',
+                width: '34px',
+                height: '34px',
+              }}
+            >
+              將
+            </MaoreFlex>
+          </MaoreFlex>
+        );
+      case ChessSide.Red:
+        return (
+          <MaoreFlex
+            verticalHorizonCenter
+            sx={{
+              backgroundColor: 'white',
+              borderRadius: '50%',
+              minWidth: '40px',
+              height: '40px',
+              color: 'red',
+              fontSize: '22px',
+              marginRight: '20px',
+              fontFamily: 'cursive',
+            }}
+          >
+            <MaoreFlex
+              verticalHorizonCenter
+              sx={{
+                border: '1px solid red',
+                borderRadius: '50%',
+                width: '34px',
+                height: '34px',
+              }}
+            >
+              帥
+            </MaoreFlex>
+          </MaoreFlex>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={showYourTurnUI}
-      >
-        <Box sx={{ fontSize: '40px' }}>輪到你了</Box>
-      </Backdrop>
       <MaoreFlex
         sx={{
           width: '100%',
@@ -178,19 +229,27 @@ const ChineseChessHidden = () => {
           background: '#264653',
         }}
       >
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={showYourTurnUI}
+        >
+          <Box sx={{ fontSize: '40px' }}>輪到你了</Box>
+        </Backdrop>
         <MaoreFlex sx={{ flex: 0.5 }} verticalHorizonCenter>
           <MaoreFlex sx={{ width: '90vw' }} justifyContent="flex-end">
             <PlayerCard
               player={players.find((p) => p.id !== yourPlayerId) as Player}
               isNowTurn={!isYourTurn}
+              children={getChessSide(state.otherSide)}
             />
           </MaoreFlex>
         </MaoreFlex>
         <MaoreFlex sx={{ flex: 2 }} verticalHorizonCenter>
           <Board
             chesses={state.chesses}
-            hasSelectedChess={!!state.selectedChessId}
+            selectedChess={state.selectedChess}
             isYourTurn={isYourTurn}
+            yourSide={state.yourSide}
             flipChess={flipChess}
             selectChess={selectChess}
             moveChess={moveChess}
@@ -203,6 +262,7 @@ const ChineseChessHidden = () => {
               player={players.find((p) => p.id === yourPlayerId) as Player}
               isYou={true}
               isNowTurn={isYourTurn}
+              children={getChessSide(state.yourSide)}
             />
           </MaoreFlex>
         </MaoreFlex>

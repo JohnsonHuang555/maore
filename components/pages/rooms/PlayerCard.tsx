@@ -7,10 +7,11 @@ type PlayerCardProps = {
   player?: Player;
   isNowTurn: boolean;
   isYou?: boolean;
+  children?: React.ReactNode;
 };
 
 const PlayerCard = (props: PlayerCardProps) => {
-  const { player, isYou = false, isNowTurn } = props;
+  const { player, isYou = false, isNowTurn, children } = props;
 
   if (!player) {
     return null;
@@ -18,7 +19,7 @@ const PlayerCard = (props: PlayerCardProps) => {
 
   return (
     <MaoreFlex>
-      <MaoreFlex verticalHorizonCenter sx={{ marginRight: '10px' }}>
+      <MaoreFlex verticalHorizonCenter sx={{ marginRight: '20px' }}>
         {player.photoURL ? (
           <Avatar
             sx={{
@@ -40,7 +41,7 @@ const PlayerCard = (props: PlayerCardProps) => {
           </Avatar>
         )}
       </MaoreFlex>
-      <MaoreFlex verticalHorizonCenter sx={{ flexDirection: 'column' }}>
+      <MaoreFlex justifyContent="flex-start" sx={{ flexDirection: 'column' }}>
         <Box
           sx={{
             fontSize: { xs: '20px', sm: '22px', md: '26px' },
@@ -49,12 +50,19 @@ const PlayerCard = (props: PlayerCardProps) => {
         >
           {isYou ? '你' : player.name}
         </Box>
-        <MaoreFlex justifyContent="flex-start" sx={{ width: '100%' }}>
-          {isNowTurn && (
-            <Tooltip title="該玩家回合">
-              <VideogameAssetIcon fontSize="medium" color="error" />
-            </Tooltip>
-          )}
+        <MaoreFlex>
+          {children}
+          <MaoreFlex
+            justifyContent="flex-start"
+            alignItems="center"
+            sx={{ width: '100%' }}
+          >
+            {isNowTurn && (
+              <Tooltip title="該玩家回合">
+                <VideogameAssetIcon fontSize="medium" color="error" />
+              </Tooltip>
+            )}
+          </MaoreFlex>
         </MaoreFlex>
       </MaoreFlex>
     </MaoreFlex>

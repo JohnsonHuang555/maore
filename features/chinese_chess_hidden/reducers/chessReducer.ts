@@ -14,7 +14,7 @@ type State = {
   yourEatenChess: IChessInfo[];
   otherSide: ChessSide | '';
   otherEatenChess: IChessInfo[];
-  selectedChessId?: string;
+  selectedChess?: IChessInfo;
 };
 
 export const initialState: State = {
@@ -44,7 +44,7 @@ type UpdateChessSideAction = {
 
 type SelectChessAction = {
   type: ActionType.SelectChess;
-  id: string;
+  chess: IChessInfo;
 };
 
 type Action =
@@ -74,6 +74,7 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         chesses: newChesses,
+        selectedChess: undefined,
       };
     }
     case ActionType.UpdateChessSide: {
@@ -91,7 +92,7 @@ const reducer = (state = initialState, action: Action): State => {
     case ActionType.SelectChess: {
       return {
         ...state,
-        selectedChessId: action.id ? action.id : undefined,
+        selectedChess: action.chess ? action.chess : undefined,
       };
     }
     default: {
