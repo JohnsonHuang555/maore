@@ -19,6 +19,9 @@ type Payload = {
 export default class EatChessCommand extends Command<ChineseChessHidden> {
   execute(data: Payload) {
     const { client, selectedChessId, targetId } = data;
+
+    console.log(selectedChessId, targetId);
+
     const selectedChessIndex =
       this.room.state.chineseChessHidden.chesses.findIndex(
         (c) => c.id === selectedChessId

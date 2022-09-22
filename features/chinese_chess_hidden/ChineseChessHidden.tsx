@@ -9,7 +9,7 @@ import {
   winnerIndexSelector,
 } from '@selectors/roomSelector';
 import { useSnackbar } from 'notistack';
-import { useEffect, useReducer, useState } from 'react';
+import { useCallback, useEffect, useReducer, useState } from 'react';
 import { clientRoomSelector } from '@selectors/serverSelector';
 import chessReducer, {
   ActionType,
@@ -54,6 +54,8 @@ const ChineseChessHidden = () => {
       chessInfo.onChange = (changes) => {
         changes.forEach((change) => {
           const { field, value } = change;
+
+          console.log(field, value);
           localDispatch({
             type: ActionType.UpdateChess,
             id: chessInfo.id,
@@ -153,9 +155,7 @@ const ChineseChessHidden = () => {
     });
   };
 
-  console.log(state.selectedChess);
-
-  const getChessSide = (side: ChessSide | '') => {
+  const getChessSide = useCallback((side: ChessSide | '') => {
     switch (side) {
       case ChessSide.Black:
         return (
@@ -216,7 +216,7 @@ const ChineseChessHidden = () => {
       default:
         return null;
     }
-  };
+  }, []);
 
   return (
     <>
