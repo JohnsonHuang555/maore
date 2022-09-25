@@ -3,8 +3,8 @@ import { GamePack } from 'server/domain/Game';
 export type Game = {
   id: number;
   name: string;
-  maxPlayers?: number; // 該遊戲沒有模式時有值
-  minPlayers?: number; // 該遊戲沒有模式時有值
+  maxPlayers?: number;
+  minPlayers?: number;
   brief: string;
   description: string;
   imageUrl: string;
@@ -20,4 +20,10 @@ export type GameMode = {
   maxPlayers: number;
   minPlayers: number;
   imageUrl: string;
+};
+
+// FIXME: 未來需要修正，目前先寫死
+export const minPlayerMaps: { [key: string]: number } = {
+  [GamePack.MathFormulaCard]: 2,
+  [GamePack.ChineseChessHidden]: 2,
 };

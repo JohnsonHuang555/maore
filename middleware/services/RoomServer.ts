@@ -34,8 +34,6 @@ enum RoomStateChangeList {
 export default class RoomServer {
   private dispatch: Dispatch<AnyAction>;
 
-  private photoURL?: string;
-
   constructor(dispatch: Dispatch<AnyAction>) {
     const client = new Client();
     dispatch(setClient(client));
@@ -49,13 +47,7 @@ export default class RoomServer {
   }
 
   // 房主觸發 createOrJoinRoom 只會觸發一次
-  async createRoom(
-    client: Client,
-    gamePack: GamePack,
-    photoURL: string,
-    metaData: Metadata
-  ) {
-    this.photoURL = photoURL;
+  async createRoom(client: Client, gamePack: GamePack, metaData: Metadata) {
     const room = await client.create<Room>(gamePack, metaData);
     this.dispatch(createdRoom(room.id));
     this.dispatch(setRoom(room));
@@ -63,13 +55,7 @@ export default class RoomServer {
   }
 
   // 加入房間玩家觸發
-  async joinRoom(
-    client: Client,
-    roomId: string,
-    photoURL: string,
-    metaData: Metadata
-  ) {
-    this.photoURL = photoURL;
+  async joinRoom(client: Client, roomId: string, metaData: Metadata) {
     try {
       const room = await client.joinById<Room>(roomId, metaData);
       this.dispatch(setRoom(room));
@@ -121,9 +107,7 @@ export default class RoomServer {
     // room players changes...
     room.state.players.onAdd = (player) => {
       // 為了做頭像
-      this.dispatch(
-        addPlayer({ ...player, photoURL: this.photoURL as string })
-      );
+      this.dispatch(addPlayer({ ...player }));
       player.onChange = (changes) => {
         changes.forEach((change) => {
           const { field, value } = change;
@@ -152,7 +136,6 @@ export default class RoomServer {
                 roomTitle: value.roomTitle,
                 maxPlayers: value.maxPlayers,
                 gamePack: value.gamePack,
-                gameMode: value.gameMode,
               })
             );
             break;

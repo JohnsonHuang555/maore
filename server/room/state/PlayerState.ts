@@ -10,6 +10,9 @@ export class PlayerState extends Schema {
   @type('string')
   name: string;
 
+  @type('string')
+  photoURL: string;
+
   // 是否為房主
   @type('boolean')
   isMaster: boolean;
@@ -40,9 +43,10 @@ export class PlayerState extends Schema {
 
   constructor(data: Payload) {
     super();
-    const { id, name, isMaster, playerIndex } = data;
+    const { id, name, isMaster, playerIndex, photoURL } = data;
     this.id = id;
     this.name = name;
+    this.photoURL = photoURL;
     this.isMaster = isMaster;
     this.playerIndex = playerIndex;
     this.isReady = isMaster ? true : false;

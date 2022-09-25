@@ -56,12 +56,12 @@ export default class ChineseChessServer extends BaseServer {
   }
 
   setChangedChessInfo(chessInfo: Partial<ChessInfo>) {
-    const isHiddenMode = this.roomInfo.gameMode === GameMode.Hidden;
-    this.changedChessInfo = ChangedChessInfoFactory.getChangedChessInfo(
-      chessInfo,
-      this.chineseChesses,
-      isHiddenMode
-    );
+    // const isHiddenMode = this.roomInfo.gameMode === GameMode.Hidden;
+    // this.changedChessInfo = ChangedChessInfoFactory.getChangedChessInfo(
+    //   chessInfo,
+    //   this.chineseChesses,
+    //   isHiddenMode
+    // );
   }
 
   clearChangedChessInfo() {
@@ -70,10 +70,10 @@ export default class ChineseChessServer extends BaseServer {
   }
 
   getGameData() {
-    const mode = this.roomInfo.gameMode as GameMode;
-    this.room.send(RoomMessage.CreateGame, {
-      mode,
-    });
+    // const mode = this.roomInfo.gameMode as GameMode;
+    // this.room.send(RoomMessage.CreateGame, {
+    //   mode,
+    // });
   }
 
   updatePlayerGroup() {
@@ -186,7 +186,7 @@ export default class ChineseChessServer extends BaseServer {
     ) {
       return true;
     }
-    switch (this.roomInfo.gameMode) {
+    switch ('' as any) {
       case GameMode.Standard: {
         switch (chessName) {
           case ChessNameBlack.King: {
@@ -447,7 +447,7 @@ export default class ChineseChessServer extends BaseServer {
     ) {
       return this.canonEatLogic(locationX, locationY, targetX, targetY);
     }
-    switch (this.roomInfo.gameMode) {
+    switch ('' as any) {
       case GameMode.Standard: {
         return true;
       }

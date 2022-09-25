@@ -102,7 +102,6 @@ export default class BaseRoom {
       maxPlayers: this.room.maxClients,
       roomTitle: this.room.metadata.roomTitle,
       gamePack: this.room.metadata.gamePack,
-      gameMode: this.room.metadata.gameMode,
     });
 
     const isMaster = this.room.clients.length === 1;
@@ -110,6 +109,7 @@ export default class BaseRoom {
     this.dispatcher.dispatch(new PlayerJoinedCommand(), {
       id: client.id,
       name: option.playerName,
+      photoURL: option.photoURL,
       isMaster,
       playerIndex: idx,
     });

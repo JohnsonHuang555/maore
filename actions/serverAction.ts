@@ -48,15 +48,13 @@ export type createRoomParams = {
   gamePack: GamePack;
   roomTitle: string;
   playerName: string;
-  gameMode?: string;
-  photoURL?: string;
+  photoURL: string;
 };
 
 export const createRoom = ({
   gamePack,
   roomTitle,
   playerName,
-  gameMode,
   photoURL,
 }: createRoomParams) => {
   return {
@@ -64,7 +62,6 @@ export const createRoom = ({
     gamePack,
     roomTitle,
     playerName,
-    gameMode,
     photoURL,
   };
 };
@@ -72,7 +69,7 @@ export const createRoom = ({
 export const joinRoom = (
   roomId: string,
   playerName: string,
-  photoURL?: string
+  photoURL: string
 ) => {
   return {
     type: ActionType.JOIN_ROOM,

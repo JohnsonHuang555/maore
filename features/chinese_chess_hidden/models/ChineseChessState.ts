@@ -4,7 +4,7 @@ import { ChessInfoState } from 'server/games/chinese_chess/state/ChessInfoState'
 import { ChessSide } from './ChineseChessSide';
 
 export interface ChessInfo {
-  id: number;
+  id: string;
   chessSide: ChessSide;
   name: ChessNameBlack | ChessNameRed;
   isFlipped: boolean;
