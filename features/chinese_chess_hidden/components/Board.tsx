@@ -73,7 +73,11 @@ const Board = (props: BoardProps) => {
       return;
     }
 
-    if (selectedChess !== undefined && chessInfo.chessSide !== yourSide) {
+    if (
+      chessInfo.isFlipped &&
+      selectedChess !== undefined &&
+      chessInfo.chessSide !== yourSide
+    ) {
       console.log('eat??');
       eatChess(chessInfo.id);
       return;
@@ -107,59 +111,57 @@ const Board = (props: BoardProps) => {
   const getChess = (index: number) => {
     const x = index % 8;
     const y = Math.floor(index / 8);
-    const chess = chesses.find((c) => c.locationX === x && c.locationY === y);
+    const chess = chesses.find(
+      (c) => c.alive && c.locationX === x && c.locationY === y
+    );
 
     if (!chess) return null;
 
     return (
-      <>
-        {chess.alive ? (
-          <motion.div
-            style={{
-              width: '64%',
-              height: '70%',
-              fontFamily: 'cursive',
-              zIndex: 1,
-              display: 'flex',
+      <motion.div
+        style={{
+          width: '64%',
+          height: '70%',
+          fontFamily: 'cursive',
+          zIndex: 1,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: '50%',
+          border: chess.isFlipped ? 'none' : '2px solid',
+          position: 'absolute',
+          backgroundColor: chess.isFlipped ? 'white' : '#619159',
+          cursor: 'pointer',
+        }}
+        initial={{ opacity: 1 }}
+        onClick={(e) => handleClickChess(e, chess)}
+        // animate={{ opacity: 1, scale: 1 }}
+        // transition={{
+        //   duration: 0.8,
+        //   delay: 0.5,
+        //   ease: [0, 0.71, 0.2, 1.01],
+        // }}
+      >
+        {chess.isFlipped ? (
+          <Box
+            sx={{
+              fontSize: { sm: '24px', md: '40px', lg: '80px' },
+              width: '90%',
+              height: '90%',
+              border: `2px solid ${
+                chess.chessSide === ChessSide.Black ? 'black' : 'red'
+              }`,
+              borderRadius: '50%',
+              display: 'inline-flex',
               justifyContent: 'center',
               alignItems: 'center',
-              borderRadius: '50%',
-              border: chess.isFlipped ? 'none' : '2px solid',
-              position: 'absolute',
-              backgroundColor: chess.isFlipped ? 'white' : '#619159',
-              cursor: 'pointer',
+              color: chess.chessSide === ChessSide.Black ? 'black' : 'red',
             }}
-            initial={{ opacity: 1 }}
-            onClick={(e) => handleClickChess(e, chess)}
-            // animate={{ opacity: 1, scale: 1 }}
-            // transition={{
-            //   duration: 0.8,
-            //   delay: 0.5,
-            //   ease: [0, 0.71, 0.2, 1.01],
-            // }}
           >
-            {chess.isFlipped ? (
-              <Box
-                sx={{
-                  fontSize: { sm: '24px', md: '40px', lg: '80px' },
-                  width: '90%',
-                  height: '90%',
-                  border: `2px solid ${
-                    chess.chessSide === ChessSide.Black ? 'black' : 'red'
-                  }`,
-                  borderRadius: '50%',
-                  display: 'inline-flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  color: chess.chessSide === ChessSide.Black ? 'black' : 'red',
-                }}
-              >
-                {chess.name}
-              </Box>
-            ) : null}
-          </motion.div>
+            {chess.name}
+          </Box>
         ) : null}
-      </>
+      </motion.div>
     );
   };
 

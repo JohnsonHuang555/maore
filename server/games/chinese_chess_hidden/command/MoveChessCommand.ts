@@ -33,11 +33,7 @@ export default class MoveChessCommand extends Command<ChineseChessHidden> {
     );
     const isInRange = CheckMoveRange.isInRange(range, targetX, targetY);
 
-    if (
-      !isInRange &&
-      (selectedChess.name === ChessNameBlack.Cannon ||
-        selectedChess.name === ChessNameRed.Cannon)
-    ) {
+    if (!isInRange) {
       client.send(ChineseChessMessage.ErrorMsg, '超出範圍!!');
       return;
     }

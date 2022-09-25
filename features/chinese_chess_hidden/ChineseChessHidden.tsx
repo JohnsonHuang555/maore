@@ -23,6 +23,8 @@ import { Player } from '@domain/models/Player';
 import { Backdrop, Box } from '@mui/material';
 import { ChessSide } from './models/ChineseChessSide';
 import { IChessInfo } from '@server/games/chinese_chess_hidden/state/ChessInfoState';
+import GameOverModal from './components/GameOverModal';
+import { setShowGameScreen } from '@actions/roomAction';
 
 const ChineseChessHidden = () => {
   const dispatch = useDispatch();
@@ -54,8 +56,6 @@ const ChineseChessHidden = () => {
       chessInfo.onChange = (changes) => {
         changes.forEach((change) => {
           const { field, value } = change;
-
-          console.log(field, value);
           localDispatch({
             type: ActionType.UpdateChess,
             id: chessInfo.id,
@@ -102,6 +102,8 @@ const ChineseChessHidden = () => {
   useEffect(() => {
     if (winnerIndex !== -1) {
       // 由 master 結束遊戲
+      localDispatch({ type: ActionType.SetWinnerIndex, winnerIndex });
+
       if (isMaster) {
         clientRoom.send(RoomMessage.FinishGame);
       }
@@ -218,6 +220,14 @@ const ChineseChessHidden = () => {
     }
   }, []);
 
+  const getIsWinner = () => {
+    const player = players.find((p) => p.id === yourPlayerId);
+    if (player?.playerIndex === state.winnerIndex) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <>
       <MaoreFlex
@@ -229,6 +239,11 @@ const ChineseChessHidden = () => {
           background: '#264653',
         }}
       >
+        <GameOverModal
+          show={state.winnerIndex !== -1}
+          isWinner={getIsWinner()}
+          onConfirm={() => dispatch(setShowGameScreen(false))}
+        />
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={showYourTurnUI}

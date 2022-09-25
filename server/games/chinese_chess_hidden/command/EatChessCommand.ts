@@ -8,6 +8,7 @@ import {
   ChessNameBlack,
 } from '../../../../features/chinese_chess_hidden/models/ChineseChessName';
 import { ChineseChessMessage } from '../../../../features/chinese_chess_hidden/models/ChineseChessMessage';
+import { ChessSide } from '../../../../features/chinese_chess_hidden/models/ChineseChessSide';
 import NextTurnCommand from '../../../room/commands/NextTurnCommand';
 
 type Payload = {
@@ -19,8 +20,6 @@ type Payload = {
 export default class EatChessCommand extends Command<ChineseChessHidden> {
   execute(data: Payload) {
     const { client, selectedChessId, targetId } = data;
-
-    console.log(selectedChessId, targetId);
 
     const selectedChessIndex =
       this.room.state.chineseChessHidden.chesses.findIndex(
@@ -47,8 +46,10 @@ export default class EatChessCommand extends Command<ChineseChessHidden> {
     );
     if (
       !isInRange &&
-      (selectedChess.name === ChessNameBlack.Cannon ||
-        selectedChess.name === ChessNameRed.Cannon)
+      !(
+        selectedChess.name == ChessNameBlack.Cannon ||
+        selectedChess.name === ChessNameRed.Cannon
+      )
     ) {
       client.send(ChineseChessMessage.ErrorMsg, '超出範圍!!');
       return;
@@ -63,6 +64,20 @@ export default class EatChessCommand extends Command<ChineseChessHidden> {
     targetChess.alive = false;
     selectedChess.locationX = targetChess.locationX;
     selectedChess.locationY = targetChess.locationY;
+
+    const isNoRemainedRedChesses = this.state.chineseChessHidden.chesses.filter(
+      (c) => c.alive && c.chessSide === ChessSide.Red
+    ).length;
+    const isNoRemainedBlackChesses =
+      this.state.chineseChessHidden.chesses.filter(
+        (c) => c.alive && c.chessSide === ChessSide.Black
+      ).length;
+
+    // 判斷勝利
+    if (isNoRemainedRedChesses === 0 || isNoRemainedBlackChesses === 0) {
+      this.state.winningPlayer = this.state.activePlayer;
+      return;
+    }
 
     return [new NextTurnCommand()];
   }

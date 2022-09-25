@@ -6,6 +6,7 @@ export enum ActionType {
   UpdateChess = 'updateChess',
   UpdateChessSide = 'updateChessSide',
   SelectChess = 'selectChess',
+  SetWinnerIndex = 'SetWinnerIndex',
 }
 
 type State = {
@@ -15,6 +16,7 @@ type State = {
   otherSide: ChessSide | '';
   otherEatenChess: IChessInfo[];
   selectedChess?: IChessInfo;
+  winnerIndex: number;
 };
 
 export const initialState: State = {
@@ -23,6 +25,7 @@ export const initialState: State = {
   yourEatenChess: [],
   otherSide: '',
   otherEatenChess: [],
+  winnerIndex: -1,
 };
 
 type SetChessAction = {
@@ -47,11 +50,17 @@ type SelectChessAction = {
   chess: IChessInfo;
 };
 
+type SetWinnerIndexAction = {
+  type: ActionType.SetWinnerIndex;
+  winnerIndex: number;
+};
+
 type Action =
   | SetChessAction
   | UpdateChessAction
   | UpdateChessSideAction
-  | SelectChessAction;
+  | SelectChessAction
+  | SetWinnerIndexAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -64,7 +73,7 @@ const reducer = (state = initialState, action: Action): State => {
     case ActionType.UpdateChess: {
       const newChesses = state.chesses.map((chess) => {
         if (chess.id === action.id) {
-          return {
+          chess = {
             ...chess,
             ...action.chessInfo,
           };
@@ -93,6 +102,12 @@ const reducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         selectedChess: action.chess ? action.chess : undefined,
+      };
+    }
+    case ActionType.SetWinnerIndex: {
+      return {
+        ...state,
+        winnerIndex: action.winnerIndex,
       };
     }
     default: {

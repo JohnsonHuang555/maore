@@ -89,6 +89,7 @@ export default class UseCardsCommand extends Command<MathFormulaCard, Payload> {
           this.state.mathFormulaCard.gameSettings.winnerPoint
         ) {
           this.state.winningPlayer = this.state.activePlayer;
+          return;
         }
 
         // 產新題目清空答案區抽牌並換下一位玩家
