@@ -1,6 +1,11 @@
 module.exports = {
   images: {
-    loader: 'imgix',
-    path: 'https://maore.io/',
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'maore.io',
+        port: '',
+      },
+    ],
   },
 }

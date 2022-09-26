@@ -3,7 +3,6 @@ import { GamePack } from 'server/domain/Game';
 export enum GameStatus {
   WaitingForPlayers,
   Playing,
-  // Finished
 }
 
 // RoomAvailable 使用存放到 RoomInfo

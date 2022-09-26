@@ -19,7 +19,7 @@ const GameCard = (props: GameCardProp) => {
         sx={{
           height: {
             xs: '150px',
-            sm: 'auto',
+            sm: '180px',
             lg: '194px',
           },
           width: '100%',
@@ -31,6 +31,9 @@ const GameCard = (props: GameCardProp) => {
           src={`${game.imageUrl}/home.jpg`}
           layout="fill"
           objectFit="cover"
+          sizes="(max-width: 768px) 100vw,
+              (max-width: 1200px) 50vw,
+              33vw"
         />
       </Box>
       <CardContent>

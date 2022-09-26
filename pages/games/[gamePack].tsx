@@ -142,6 +142,9 @@ const Games = () => {
             src={`${game.imageUrl}/game-pack.jpg`}
             layout="fill"
             objectFit="cover"
+            sizes="(max-width: 768px) 100vw,
+              (max-width: 1200px) 50vw,
+              33vw"
           />
         </Box>
         <Box

@@ -53,10 +53,14 @@ const Home = () => {
           }}
         >
           <Image
+            priority={true}
             src="/intro-picture.jpg"
             alt="intro-image"
             layout="fill"
             objectFit="cover"
+            sizes="(max-width: 768px) 100vw,
+              (max-width: 1200px) 50vw,
+              33vw"
           />
           <Box
             sx={{
