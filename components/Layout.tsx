@@ -9,7 +9,11 @@ type LayoutProps = {
 };
 
 const Layout = (props: LayoutProps) => {
-  const { children, title = 'maore', disableSeo = false } = props;
+  const {
+    children,
+    title = 'maore.io - board game online',
+    disableSeo = false,
+  } = props;
 
   return (
     <>
