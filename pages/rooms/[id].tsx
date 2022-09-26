@@ -151,7 +151,7 @@ const Rooms = () => {
   });
 
   return (
-    <Layout>
+    <Layout disableSeo={true}>
       <EditRoomModal
         currentRoomTitle={roomInfo.roomTitle}
         show={showEditModal}
