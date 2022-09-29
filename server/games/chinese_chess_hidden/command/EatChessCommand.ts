@@ -57,6 +57,14 @@ export default class EatChessCommand extends Command<ChineseChessHidden> {
 
     const canEat = this.checkEatChess(selectedChess, targetChess);
     if (!canEat) {
+      if (
+        selectedChess.name == ChessNameBlack.Cannon ||
+        selectedChess.name === ChessNameRed.Cannon
+      ) {
+        client.send(ChineseChessMessage.ErrorMsg, '必須隔著一個棋子');
+        return;
+      }
+
       client.send(ChineseChessMessage.ErrorMsg, '這個棋子很大，你不能吃它!!');
       return;
     }

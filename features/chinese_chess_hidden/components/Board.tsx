@@ -1,9 +1,9 @@
-import { useCallback, useMemo } from 'react';
 import { Box } from '@mui/material';
 import { IChessInfo } from '@server/games/chinese_chess_hidden/state/ChessInfoState';
 import { motion } from 'framer-motion';
 import { ChessSide } from '../models/ChineseChessSide';
 import { useSnackbar } from 'notistack';
+import { useState } from 'react';
 
 type BoardProps = {
   chesses: IChessInfo[];
@@ -25,28 +25,6 @@ const chessVariant = {
   },
 };
 
-const diagonalLinesLeftToRight = [
-  {
-    x: 3,
-    y: 2,
-  },
-  {
-    x: 4,
-    y: 3,
-  },
-];
-
-const diagonalLinesRightToLeft = [
-  {
-    x: 4,
-    y: 2,
-  },
-  {
-    x: 3,
-    y: 3,
-  },
-];
-
 const Board = (props: BoardProps) => {
   const {
     chesses,
@@ -60,6 +38,7 @@ const Board = (props: BoardProps) => {
   } = props;
 
   const { enqueueSnackbar } = useSnackbar();
+  const [hoverCell, setHoverCell] = useState<number>();
 
   // 為了避免作弊所以要亂數排序
   // const shuffledChesses = useMemo(() => {
@@ -106,6 +85,14 @@ const Board = (props: BoardProps) => {
     moveChess(x, y);
   };
 
+  const handleHoverCell = (index: number) => {
+    setHoverCell(index);
+  };
+
+  const handleNotHoverCell = () => {
+    setHoverCell(undefined);
+  };
+
   if (!chesses.length) return <div>建立棋盤中...</div>;
 
   const getChess = (index: number) => {
@@ -133,19 +120,16 @@ const Board = (props: BoardProps) => {
           backgroundColor: chess.isFlipped ? 'white' : '#619159',
           cursor: 'pointer',
         }}
-        initial={{ opacity: 1 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, rotateX: chess.isFlipped ? 180 : 0 }}
+        whileHover={{
+          scale: 1.05,
+        }}
         onClick={(e) => handleClickChess(e, chess)}
-        // animate={{ opacity: 1, scale: 1 }}
-        // transition={{
-        //   duration: 0.8,
-        //   delay: 0.5,
-        //   ease: [0, 0.71, 0.2, 1.01],
-        // }}
       >
         {chess.isFlipped ? (
-          <Box
-            sx={{
-              fontSize: { sm: '24px', md: '40px', lg: '80px' },
+          <motion.div
+            style={{
               width: '90%',
               height: '90%',
               border: `2px solid ${
@@ -157,9 +141,10 @@ const Board = (props: BoardProps) => {
               alignItems: 'center',
               color: chess.chessSide === ChessSide.Black ? 'black' : 'red',
             }}
+            initial={{ rotateX: 180 }}
           >
             {chess.name}
-          </Box>
+          </motion.div>
         ) : null}
       </motion.div>
     );
@@ -186,9 +171,67 @@ const Board = (props: BoardProps) => {
             justifyContent: 'center',
             alignItems: 'center',
             position: 'relative',
+            fontSize: { sm: '24px', md: '40px', lg: '80px' },
           }}
           onClick={() => handleMoveChess(i)}
+          onMouseEnter={() => handleHoverCell(i)}
+          onMouseLeave={() => handleNotHoverCell()}
         >
+          <motion.div
+            style={{ position: 'absolute', width: '100%', height: '100%' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: hoverCell === i ? 1 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Box
+              sx={{
+                width: '30px',
+                height: '30px',
+                left: '5px',
+                top: '5px',
+                border: '5px solid',
+                borderRight: 'none',
+                borderBottom: 'none',
+                position: 'absolute',
+              }}
+            />
+            <Box
+              sx={{
+                width: '30px',
+                height: '30px',
+                right: '5px',
+                top: '5px',
+                border: '5px solid',
+                borderLeft: 'none',
+                borderBottom: 'none',
+                position: 'absolute',
+              }}
+            />
+            <Box
+              sx={{
+                width: '30px',
+                height: '30px',
+                left: '5px',
+                bottom: '5px',
+                border: '5px solid',
+                borderRight: 'none',
+                borderTop: 'none',
+                position: 'absolute',
+              }}
+            />
+            <Box
+              sx={{
+                width: '30px',
+                height: '30px',
+                right: '5px',
+                bottom: '5px',
+                border: '5px solid',
+                borderTop: 'none',
+                borderLeft: 'none',
+                position: 'absolute',
+              }}
+            />
+          </motion.div>
           {(i === 19 || i === 28) && (
             <Box
               sx={{

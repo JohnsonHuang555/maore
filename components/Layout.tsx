@@ -11,7 +11,7 @@ type LayoutProps = {
 const Layout = (props: LayoutProps) => {
   const {
     children,
-    title = 'maore.io - board game online',
+    title = 'maore.io - Board Game Online',
     disableSeo = false,
   } = props;
 
