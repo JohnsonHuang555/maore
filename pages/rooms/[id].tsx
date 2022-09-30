@@ -25,16 +25,16 @@ import { clientRoomSelector, clientSelector } from '@selectors/serverSelector';
 import dynamic from 'next/dynamic';
 import { userInfoSelector } from '@selectors/appSelector';
 import { setShowLoginModal } from '@actions/appAction';
-import PlayerArea from '@components/pages/rooms/PlayerArea';
-import ChatArea from '@components/pages/rooms/ChatArea';
-import SettingArea from '@components/pages/rooms/SettingArea';
+import PlayerArea from '@components/pages/rooms/areas/PlayerArea';
+import ChatArea from '@components/pages/rooms/areas/ChatArea';
+import SettingArea from '@components/pages/rooms/areas/SettingArea';
 import { GamePack } from 'server/domain/Game';
 import { getAuth } from 'firebase/auth';
 import { firebaseApp } from 'firebase/clientApp';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { RoomMessage } from '@domain/models/Message';
 import { useSnackbar } from 'notistack';
-import EditRoomModal from '@components/pages/rooms/EditRoomModal';
+import EditRoomModal from '@components/pages/rooms/modals/EditRoomModal';
 import { minPlayerMaps } from '@domain/models/Game';
 
 const DynamicGameScreenWithNoSSR = dynamic(

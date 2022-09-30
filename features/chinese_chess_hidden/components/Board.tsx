@@ -1,9 +1,9 @@
+import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { IChessInfo } from '@server/games/chinese_chess_hidden/state/ChessInfoState';
 import { motion } from 'framer-motion';
 import { ChessSide } from '../models/ChineseChessSide';
 import { useSnackbar } from 'notistack';
-import { useState } from 'react';
 
 type BoardProps = {
   chesses: IChessInfo[];
@@ -14,15 +14,6 @@ type BoardProps = {
   selectChess: (chess: IChessInfo) => void;
   moveChess: (targetX: number, targetY: number) => void;
   eatChess: (id: string) => void;
-};
-
-const chessVariant = {
-  selected: {
-    rotateY: 180,
-    transition: { duration: 0.35 },
-    // zIndex: 10,
-    // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px'
-  },
 };
 
 const Board = (props: BoardProps) => {
@@ -39,13 +30,14 @@ const Board = (props: BoardProps) => {
 
   const { enqueueSnackbar } = useSnackbar();
   const [hoverCell, setHoverCell] = useState<number>();
+  const [nowSelectedIndex, setNowSelectedIndex] = useState<number>();
 
   // 為了避免作弊所以要亂數排序
   // const shuffledChesses = useMemo(() => {
   //   return [...chesses].sort(() => Math.random() - 0.5);
   // }, [chesses]);
 
-  const handleClickChess = (e: any, chessInfo: IChessInfo) => {
+  const handleClickChess = (e: any, chessInfo: IChessInfo, index: number) => {
     e.stopPropagation();
     if (!isYourTurn) {
       enqueueSnackbar('還沒輪到你', { variant: 'warning' });
@@ -59,11 +51,13 @@ const Board = (props: BoardProps) => {
     ) {
       console.log('eat??');
       eatChess(chessInfo.id);
+      setNowSelectedIndex(undefined);
       return;
     }
 
     if (!chessInfo.isFlipped) {
       flipChess(chessInfo.id);
+      setNowSelectedIndex(undefined);
     } else {
       if (chessInfo.chessSide !== yourSide) {
         enqueueSnackbar('請選擇自己陣營的棋子', { variant: 'warning' });
@@ -72,6 +66,7 @@ const Board = (props: BoardProps) => {
 
       console.log('select');
       selectChess(chessInfo);
+      setNowSelectedIndex(index);
     }
   };
 
@@ -83,6 +78,7 @@ const Board = (props: BoardProps) => {
     }
 
     moveChess(x, y);
+    setNowSelectedIndex(undefined);
   };
 
   const handleHoverCell = (index: number) => {
@@ -120,12 +116,16 @@ const Board = (props: BoardProps) => {
           backgroundColor: chess.isFlipped ? 'white' : '#619159',
           cursor: 'pointer',
         }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, rotateX: chess.isFlipped ? 180 : 0 }}
-        whileHover={{
-          scale: 1.05,
+        initial={{ opacity: 0, rotateX: chess.isFlipped ? 180 : 0 }}
+        animate={{
+          opacity: 1,
+          rotateX: chess.isFlipped ? 180 : 0,
         }}
-        onClick={(e) => handleClickChess(e, chess)}
+        whileHover={{
+          scale: !chess.isFlipped ? 1.05 : 1,
+        }}
+        transition={{ duration: 0.3 }}
+        onClick={(e) => handleClickChess(e, chess, index)}
       >
         {chess.isFlipped ? (
           <motion.div
@@ -142,6 +142,7 @@ const Board = (props: BoardProps) => {
               color: chess.chessSide === ChessSide.Black ? 'black' : 'red',
             }}
             initial={{ rotateX: 180 }}
+            transition={{ delay: 1 }}
           >
             {chess.name}
           </motion.div>
@@ -180,7 +181,9 @@ const Board = (props: BoardProps) => {
           <motion.div
             style={{ position: 'absolute', width: '100%', height: '100%' }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: hoverCell === i ? 1 : 0 }}
+            animate={{
+              opacity: hoverCell === i || nowSelectedIndex === i ? 1 : 0,
+            }}
             transition={{ duration: 0.2 }}
           >
             <Box
@@ -189,7 +192,7 @@ const Board = (props: BoardProps) => {
                 height: '30px',
                 left: '5px',
                 top: '5px',
-                border: '5px solid',
+                border: `5px solid ${nowSelectedIndex === i ? '#c93434' : ''}`,
                 borderRight: 'none',
                 borderBottom: 'none',
                 position: 'absolute',
@@ -201,7 +204,7 @@ const Board = (props: BoardProps) => {
                 height: '30px',
                 right: '5px',
                 top: '5px',
-                border: '5px solid',
+                border: `5px solid ${nowSelectedIndex === i ? '#c93434' : ''}`,
                 borderLeft: 'none',
                 borderBottom: 'none',
                 position: 'absolute',
@@ -213,7 +216,7 @@ const Board = (props: BoardProps) => {
                 height: '30px',
                 left: '5px',
                 bottom: '5px',
-                border: '5px solid',
+                border: `5px solid ${nowSelectedIndex === i ? '#c93434' : ''}`,
                 borderRight: 'none',
                 borderTop: 'none',
                 position: 'absolute',
@@ -225,7 +228,7 @@ const Board = (props: BoardProps) => {
                 height: '30px',
                 right: '5px',
                 bottom: '5px',
-                border: '5px solid',
+                border: `5px solid ${nowSelectedIndex === i ? '#c93434' : ''}`,
                 borderTop: 'none',
                 borderLeft: 'none',
                 position: 'absolute',

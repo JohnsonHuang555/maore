@@ -22,7 +22,7 @@ import { gameSettingsSelector } from '@selectors/game_settings/mathFormulaSelect
 import { useSnackbar } from 'notistack';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 import PlayerAvatar from './components/PlayerAvatar';
-import ControlArea from './components/areas/ControllArea';
+import ControlArea from '../../components/pages/rooms/areas/ControllArea';
 import OtherPlayerArea from './components/areas/OtherPlayerArea';
 import PartArea from './components/areas/PartArea';
 import MaoreFlex from '@components/maore/MaoreFlex';
@@ -33,8 +33,9 @@ import { TouchBackend } from 'react-dnd-touch-backend';
 import { selectedCardSymbolDict } from './components/SelectedCardDict';
 import MathSymbolCard from './components/MathSymbolCard';
 import { DEFAULT_CARD_COUNT } from 'server/games/math_formula_card/commands/CreateGameCommand';
-import RuleModal from './components/RuleModal';
+import RuleModal from '../../components/pages/rooms/modals/RuleModal';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Rules from './components/Rules';
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
@@ -480,7 +481,11 @@ const MathFormulaCard = () => {
         isWinner={getIsWinner()}
         onConfirm={() => dispatch(setShowGameScreen(false))}
       />
-      <RuleModal show={showRuleModal} onClose={() => setShowRuleModal(false)} />
+      <RuleModal
+        show={showRuleModal}
+        onClose={() => setShowRuleModal(false)}
+        children={<Rules />}
+      />
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={showYourTurnUI}

@@ -20,11 +20,12 @@ import MaoreFlex from '@components/maore/MaoreFlex';
 import { ChineseChessMessage } from './models/ChineseChessMessage';
 import PlayerCard from '@components/pages/rooms/PlayerCard';
 import { Player } from '@domain/models/Player';
-import { Backdrop, Box } from '@mui/material';
+import { Backdrop, Box, Button } from '@mui/material';
 import { ChessSide } from './models/ChineseChessSide';
 import { IChessInfo } from '@server/games/chinese_chess_hidden/state/ChessInfoState';
 import GameOverModal from './components/GameOverModal';
 import { setShowGameScreen } from '@actions/roomAction';
+import BasicLayout from '@components/pages/rooms/game_layouts/BasicLayout';
 
 const ChineseChessHidden = () => {
   const dispatch = useDispatch();
@@ -120,7 +121,8 @@ const ChineseChessHidden = () => {
   }, [isYourTurn]);
 
   useEffect(() => {
-    if (showYourTurnUI) {
+    // 已產好棋盤才開始
+    if (showYourTurnUI && state.chesses.length > 0) {
       setTimeout(() => {
         setShowYourTurnUI(false);
         // 多人才開啟計時
@@ -129,7 +131,7 @@ const ChineseChessHidden = () => {
         // }
       }, 2000);
     }
-  }, [showYourTurnUI]);
+  }, [showYourTurnUI, state.chesses.length]);
 
   const flipChess = (id: string) => {
     clientRoom.send(ChineseChessMessage.FlipChess, id);
@@ -229,60 +231,80 @@ const ChineseChessHidden = () => {
   };
 
   return (
-    <>
-      <MaoreFlex
-        sx={{
-          width: '100%',
-          height: '100%',
-          flexDirection: 'column',
-          position: 'relative',
-          background: '#264653',
-        }}
-      >
-        <GameOverModal
-          show={state.winnerIndex !== -1}
-          isWinner={getIsWinner()}
-          onConfirm={() => dispatch(setShowGameScreen(false))}
-        />
-        <Backdrop
-          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={showYourTurnUI}
-        >
-          <Box sx={{ fontSize: '40px' }}>輪到你了</Box>
-        </Backdrop>
-        <MaoreFlex sx={{ flex: 0.5 }} verticalHorizonCenter>
-          <MaoreFlex sx={{ width: '90vw' }} justifyContent="flex-end">
-            <PlayerCard
-              player={players.find((p) => p.id !== yourPlayerId) as Player}
-              isNowTurn={!isYourTurn}
-              children={getChessSide(state.otherSide)}
-            />
-          </MaoreFlex>
-        </MaoreFlex>
-        <MaoreFlex sx={{ flex: 2 }} verticalHorizonCenter>
-          <Board
-            chesses={state.chesses}
-            selectedChess={state.selectedChess}
-            isYourTurn={isYourTurn}
-            yourSide={state.yourSide}
-            flipChess={flipChess}
-            selectChess={selectChess}
-            moveChess={moveChess}
-            eatChess={eatChess}
+    <BasicLayout
+      showTimer={false}
+      showYourTurnUI={showYourTurnUI}
+      rules={<div>test</div>}
+    >
+      <GameOverModal
+        show={state.winnerIndex !== -1}
+        isWinner={getIsWinner()}
+        onConfirm={() => dispatch(setShowGameScreen(false))}
+      />
+      <MaoreFlex sx={{ flex: 0.5 }} verticalHorizonCenter>
+        <MaoreFlex sx={{ width: '90vw' }} justifyContent="flex-end">
+          <PlayerCard
+            player={players.find((p) => p.id !== yourPlayerId) as Player}
+            isNowTurn={!isYourTurn}
+            children={getChessSide(state.otherSide)}
           />
         </MaoreFlex>
-        <MaoreFlex sx={{ flex: 0.5 }} verticalHorizonCenter>
-          <MaoreFlex sx={{ width: '90vw' }}>
-            <PlayerCard
-              player={players.find((p) => p.id === yourPlayerId) as Player}
-              isYou={true}
-              isNowTurn={isYourTurn}
-              children={getChessSide(state.yourSide)}
-            />
-          </MaoreFlex>
+      </MaoreFlex>
+      <MaoreFlex sx={{ flex: 2 }} verticalHorizonCenter>
+        <Board
+          chesses={state.chesses}
+          selectedChess={state.selectedChess}
+          isYourTurn={isYourTurn}
+          yourSide={state.yourSide}
+          flipChess={flipChess}
+          selectChess={selectChess}
+          moveChess={moveChess}
+          eatChess={eatChess}
+        />
+      </MaoreFlex>
+      <MaoreFlex sx={{ flex: 0.5 }} verticalHorizonCenter>
+        <MaoreFlex sx={{ width: '90vw' }}>
+          <PlayerCard
+            player={players.find((p) => p.id === yourPlayerId) as Player}
+            isYou={true}
+            isNowTurn={isYourTurn}
+            children={getChessSide(state.yourSide)}
+          />
         </MaoreFlex>
       </MaoreFlex>
-    </>
+      <Button
+        sx={{
+          width: {
+            sm: '100px',
+            md: '200px',
+            lg: '250px',
+          },
+          backgroundColor: '#c04d30',
+          ':hover': {
+            backgroundColor: '#E76F51',
+          },
+          position: 'absolute',
+          right: {
+            xs: '10px',
+            sm: '10px',
+            md: '30px',
+            lg: '50px',
+          },
+          bottom: {
+            xs: '10px',
+            sm: '10px',
+            md: '30px',
+            lg: '50px',
+          },
+        }}
+        variant="contained"
+        size="large"
+        disableElevation
+        onClick={() => enqueueSnackbar('功能未完成', { variant: 'info' })}
+      >
+        投降
+      </Button>
+    </BasicLayout>
   );
 };
 

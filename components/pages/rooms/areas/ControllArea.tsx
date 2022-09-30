@@ -5,7 +5,7 @@ import AlarmIcon from '@mui/icons-material/Alarm';
 
 type ControlAreaProps = {
   showTimer: boolean;
-  timer: number;
+  timer?: number;
   onRuleClick: () => void;
 };
 
