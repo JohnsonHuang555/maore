@@ -31,7 +31,7 @@ nextApp.prepare().then(() => {
   const gameServer = new Server({
     transport: new WebSocketTransport({
       server,
-      pingInterval: 1000,
+      pingInterval: 6000,
       pingMaxRetries: 5,
     }),
   });

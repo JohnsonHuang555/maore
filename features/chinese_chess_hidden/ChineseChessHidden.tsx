@@ -57,6 +57,7 @@ const ChineseChessHidden = () => {
       chessInfo.onChange = (changes) => {
         changes.forEach((change) => {
           const { field, value } = change;
+          console.log(field, value);
           localDispatch({
             type: ActionType.UpdateChess,
             id: chessInfo.id,
@@ -159,6 +160,10 @@ const ChineseChessHidden = () => {
     });
   };
 
+  const surrender = () => {
+    clientRoom.send(ChineseChessMessage.Surrender);
+  };
+
   const getChessSide = useCallback((side: ChessSide | '') => {
     switch (side) {
       case ChessSide.Black:
@@ -241,7 +246,7 @@ const ChineseChessHidden = () => {
         isWinner={getIsWinner()}
         onConfirm={() => dispatch(setShowGameScreen(false))}
       />
-      <MaoreFlex sx={{ flex: 0.5 }} verticalHorizonCenter>
+      <MaoreFlex sx={{ flex: 0.5, marginTop: '20px' }} verticalHorizonCenter>
         <MaoreFlex sx={{ width: '90vw' }} justifyContent="flex-end">
           <PlayerCard
             player={players.find((p) => p.id !== yourPlayerId) as Player}
@@ -300,7 +305,7 @@ const ChineseChessHidden = () => {
         variant="contained"
         size="large"
         disableElevation
-        onClick={() => enqueueSnackbar('功能未完成', { variant: 'info' })}
+        onClick={surrender}
       >
         投降
       </Button>

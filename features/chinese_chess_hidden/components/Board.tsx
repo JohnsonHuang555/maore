@@ -4,6 +4,7 @@ import { IChessInfo } from '@server/games/chinese_chess_hidden/state/ChessInfoSt
 import { motion } from 'framer-motion';
 import { ChessSide } from '../models/ChineseChessSide';
 import { useSnackbar } from 'notistack';
+import CatHand from '@components/icons/CatHand';
 
 type BoardProps = {
   chesses: IChessInfo[];
@@ -151,6 +152,93 @@ const Board = (props: BoardProps) => {
     );
   };
 
+  const renderBorder = (i: number) => {
+    return (
+      <>
+        {(i === 19 || i === 28) && (
+          <Box
+            sx={{
+              position: 'absolute',
+              width: '135%',
+              border: '1px solid #565353',
+              transform: 'rotate(42deg)',
+              zIndex: 0,
+            }}
+          />
+        )}
+        {(i === 20 || i === 27) && (
+          <Box
+            sx={{
+              position: 'absolute',
+              width: '135%',
+              border: '1px solid #565353',
+              transform: 'rotate(-42deg)',
+              zIndex: 0,
+            }}
+          />
+        )}
+        {[0, 2, 4, 6, 9, 15].includes(i) && (
+          <Box
+            sx={{
+              width: '20%',
+              height: '20%',
+              left: '5px',
+              bottom: '5px',
+              border: '2px solid #565353',
+              borderRight: 'none',
+              borderTop: 'none',
+              position: 'absolute',
+              zIndex: 0,
+            }}
+          />
+        )}
+        {[1, 3, 5, 7, 8, 14].includes(i) && (
+          <Box
+            sx={{
+              width: '20%',
+              height: '20%',
+              right: '5px',
+              bottom: '5px',
+              border: '2px solid #565353',
+              borderTop: 'none',
+              borderLeft: 'none',
+              position: 'absolute',
+            }}
+          />
+        )}
+        {[8, 10, 12, 14, 17, 23].includes(i) && (
+          <Box
+            sx={{
+              width: '20%',
+              height: '20%',
+              left: '5px',
+              top: '5px',
+              border: '2px solid #565353',
+              borderRight: 'none',
+              borderBottom: 'none',
+              position: 'absolute',
+              zIndex: 0,
+            }}
+          />
+        )}
+        {[9, 11, 13, 15, 16, 22].includes(i) && (
+          <Box
+            sx={{
+              width: '20%',
+              height: '20%',
+              right: '5px',
+              top: '5px',
+              border: '2px solid #565353',
+              borderLeft: 'none',
+              borderBottom: 'none',
+              position: 'absolute',
+            }}
+          />
+        )}
+      </>
+    );
+  };
+
   return (
     <Box
       sx={{
@@ -188,8 +276,8 @@ const Board = (props: BoardProps) => {
           >
             <Box
               sx={{
-                width: '30px',
-                height: '30px',
+                width: '20%',
+                height: '20%',
                 left: '5px',
                 top: '5px',
                 border: `5px solid ${nowSelectedIndex === i ? '#c93434' : ''}`,
@@ -200,8 +288,8 @@ const Board = (props: BoardProps) => {
             />
             <Box
               sx={{
-                width: '30px',
-                height: '30px',
+                width: '20%',
+                height: '20%',
                 right: '5px',
                 top: '5px',
                 border: `5px solid ${nowSelectedIndex === i ? '#c93434' : ''}`,
@@ -212,8 +300,8 @@ const Board = (props: BoardProps) => {
             />
             <Box
               sx={{
-                width: '30px',
-                height: '30px',
+                width: '20%',
+                height: '20%',
                 left: '5px',
                 bottom: '5px',
                 border: `5px solid ${nowSelectedIndex === i ? '#c93434' : ''}`,
@@ -224,8 +312,8 @@ const Board = (props: BoardProps) => {
             />
             <Box
               sx={{
-                width: '30px',
-                height: '30px',
+                width: '20%',
+                height: '20%',
                 right: '5px',
                 bottom: '5px',
                 border: `5px solid ${nowSelectedIndex === i ? '#c93434' : ''}`,
@@ -235,28 +323,7 @@ const Board = (props: BoardProps) => {
               }}
             />
           </motion.div>
-          {(i === 19 || i === 28) && (
-            <Box
-              sx={{
-                position: 'absolute',
-                width: '135%',
-                border: '1px solid #565353',
-                transform: 'rotate(42deg)',
-                zIndex: 0,
-              }}
-            />
-          )}
-          {(i === 20 || i === 27) && (
-            <Box
-              sx={{
-                position: 'absolute',
-                width: '135%',
-                border: '1px solid #565353',
-                transform: 'rotate(-42deg)',
-                zIndex: 0,
-              }}
-            />
-          )}
+          {renderBorder(i)}
           {getChess(i)}
         </Box>
       ))}

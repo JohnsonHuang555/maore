@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Card as MuiCard } from '@mui/material';
-import CatHand from './icons/CatHand';
+import CatHand from '../../../components/icons/CatHand';
 
 type CardProps = {
   id?: string;

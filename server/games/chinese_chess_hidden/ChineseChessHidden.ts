@@ -10,6 +10,7 @@ import FlipChessCommand from './command/FlipChessCommand';
 import EatChessCommand from './command/EatChessCommand';
 import MoveChessCommand from './command/MoveChessCommand';
 import ResetCommand from './command/ResetCommand';
+import SurrenderCommand from './command/SurrenderCommand';
 
 export default class ChineseChessHiddenState extends Room<RoomState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -62,6 +63,12 @@ export default class ChineseChessHiddenState extends Room<RoomState, Metadata> {
         });
       }
     );
+
+    this.onMessage(ChineseChessMessage.Surrender, (client) => {
+      this.dispatcher.dispatch(new SurrenderCommand(), {
+        client,
+      });
+    });
 
     // 結束遊戲
     this.onMessage(RoomMessage.FinishGame, () => {
