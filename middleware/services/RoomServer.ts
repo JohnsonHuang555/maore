@@ -93,6 +93,16 @@ export default class RoomServer {
   }
 
   private handleRoomChange(room: ClientRoom<Room>) {
+    room.onError((code, message) => {
+      this.dispatch(
+        setShowBaseModal({
+          modalType: ModalType.Error,
+          message: `發生錯誤(${code}: ${message})`,
+          show: true,
+        })
+      );
+    });
+
     room.onMessage(
       RoomMessage.GetYourPlayerId,
       (message: { yourPlayerId: string }) => {
