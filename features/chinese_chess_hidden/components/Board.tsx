@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { IChessInfo } from '@server/games/chinese_chess_hidden/state/ChessInfoState';
 import { motion } from 'framer-motion';

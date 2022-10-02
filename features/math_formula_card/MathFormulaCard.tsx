@@ -36,6 +36,7 @@ import { DEFAULT_CARD_COUNT } from 'server/games/math_formula_card/commands/Crea
 import RuleModal from '../../components/pages/rooms/modals/RuleModal';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Rules from './components/Rules';
+import { GamePack } from '@server/domain/Game';
 
 const MathFormulaCard = () => {
   const dispatch = useDispatch();
@@ -506,6 +507,7 @@ const MathFormulaCard = () => {
           showTimer={players.length > 1}
           onRuleClick={() => setShowRuleModal(true)}
           timer={timer}
+          gamePack={GamePack.MathFormulaCard}
         />
         {/* 其他玩家區塊 */}
         <MaoreFlex

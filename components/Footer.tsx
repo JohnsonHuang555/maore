@@ -20,7 +20,9 @@ const Footer = () => {
         <a href="https://github.com/JohnsonHuang555/maore" target="_blank">
           Johnson Huang
         </a>
-        {/* TODO: 版號自動化 */}. beta v0.3.6
+        {'.'} <span>請用 chrome 瀏覽器遊玩，電腦、平板支援度較佳</span>
+        {/* TODO: 版號自動化 */}
+        {'.'} <b>beta v0.3.7</b>
       </div>
     </div>
   );

@@ -20,12 +20,14 @@ import MaoreFlex from '@components/maore/MaoreFlex';
 import { ChineseChessMessage } from './models/ChineseChessMessage';
 import PlayerCard from '@components/pages/rooms/PlayerCard';
 import { Player } from '@domain/models/Player';
-import { Backdrop, Box, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import { ChessSide } from './models/ChineseChessSide';
 import { IChessInfo } from '@server/games/chinese_chess_hidden/state/ChessInfoState';
 import GameOverModal from './components/GameOverModal';
 import { setShowGameScreen } from '@actions/roomAction';
 import BasicLayout from '@components/pages/rooms/game_layouts/BasicLayout';
+import Rules from './components/Rules';
+import { GamePack } from '@server/domain/Game';
 
 const ChineseChessHidden = () => {
   const dispatch = useDispatch();
@@ -52,7 +54,7 @@ const ChineseChessHidden = () => {
       enqueueSnackbar(message, { variant: 'warning' });
     });
 
-    clientRoom.state.chineseChessHidden.chesses.onAdd = (chessInfo) => {
+    clientRoom.state.chineseChessHidden.chesses.onAdd = (chessInfo, key) => {
       localDispatch({ type: ActionType.SetChess, chess: chessInfo });
       chessInfo.onChange = (changes) => {
         changes.forEach((change) => {
@@ -97,7 +99,6 @@ const ChineseChessHidden = () => {
     // 當所有玩家載入完成，即打建立遊戲事件並判斷只打一次
     if (isAllPlayerLoaded && isMaster) {
       clientRoom.send(RoomMessage.CreateGame);
-      clientRoom.send(RoomMessage.CreatePlayerOrder);
     }
   }, [isAllPlayerLoaded]);
 
@@ -113,26 +114,39 @@ const ChineseChessHidden = () => {
   }, [winnerIndex]);
 
   useEffect(() => {
+    if (state.chesses.length === 32 && isMaster) {
+      clientRoom.send(RoomMessage.CreatePlayerOrder);
+    }
+  }, [state.chesses.length]);
+
+  // useEffect(() => {
+  //   console.log(isYourTurn, state.chesses.length);
+  //   if (state.chesses.length === 32 && isYourTurn) {
+  //     setShowYourTurnUI(true);
+  //   }
+  //   // if (gameSettings?.remainedSecond) {
+  //   //   setTimer(gameSettings.remainedSecond);
+  //   // }
+  // }, [state.chesses.length, isYourTurn]);
+
+  useEffect(() => {
     if (isYourTurn) {
       setShowYourTurnUI(true);
     }
-    // if (gameSettings?.remainedSecond) {
-    //   setTimer(gameSettings.remainedSecond);
-    // }
   }, [isYourTurn]);
 
   useEffect(() => {
     // 已產好棋盤才開始
-    if (showYourTurnUI && state.chesses.length > 0) {
+    if (showYourTurnUI) {
       setTimeout(() => {
         setShowYourTurnUI(false);
         // 多人才開啟計時
         // if (players.length > 1) {
         //   clientRoom.send(RoomMessage.SetTimer);
         // }
-      }, 2000);
+      }, 1000);
     }
-  }, [showYourTurnUI, state.chesses.length]);
+  }, [showYourTurnUI]);
 
   const flipChess = (id: string) => {
     clientRoom.send(ChineseChessMessage.FlipChess, id);
@@ -239,7 +253,8 @@ const ChineseChessHidden = () => {
     <BasicLayout
       showTimer={false}
       showYourTurnUI={showYourTurnUI}
-      rules={<div>test</div>}
+      rules={<Rules />}
+      gamePack={GamePack.ChineseChessHidden}
     >
       <GameOverModal
         show={state.winnerIndex !== -1}

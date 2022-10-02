@@ -3,6 +3,7 @@ import { Backdrop, Box } from '@mui/material';
 import MaoreFlex from '@components/maore/MaoreFlex';
 import ControlArea from '../areas/ControllArea';
 import RuleModal from '../modals/RuleModal';
+import { GamePack } from '@server/domain/Game';
 
 type BasicLayoutProps = {
   showTimer: boolean;
@@ -10,10 +11,11 @@ type BasicLayoutProps = {
   rules: React.ReactNode;
   children: React.ReactNode;
   timer?: number;
+  gamePack: GamePack;
 };
 
 const BasicLayout = (props: BasicLayoutProps) => {
-  const { showTimer, showYourTurnUI, timer, rules, children } = props;
+  const { showTimer, showYourTurnUI, timer, rules, children, gamePack } = props;
   const [showRuleModal, setShowRuleModal] = useState(false);
 
   return (
@@ -40,8 +42,9 @@ const BasicLayout = (props: BasicLayoutProps) => {
       {/* 操作區塊 */}
       <ControlArea
         showTimer={showTimer}
-        onRuleClick={() => setShowRuleModal(true)}
         timer={timer}
+        gamePack={gamePack}
+        onRuleClick={() => setShowRuleModal(true)}
       />
       {children}
     </MaoreFlex>

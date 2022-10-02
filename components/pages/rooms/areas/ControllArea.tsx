@@ -2,16 +2,18 @@ import { Box, IconButton, Stack, Tooltip } from '@mui/material';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AlarmIcon from '@mui/icons-material/Alarm';
+import { GamePack } from '@server/domain/Game';
 
 type ControlAreaProps = {
   showTimer: boolean;
   timer?: number;
+  gamePack: GamePack;
   onRuleClick: () => void;
 };
 
 // 控制區塊
 const ControlArea = (props: ControlAreaProps) => {
-  const { showTimer, timer, onRuleClick } = props;
+  const { showTimer, timer, gamePack, onRuleClick } = props;
   return (
     <Box
       sx={{
@@ -89,7 +91,7 @@ const ControlArea = (props: ControlAreaProps) => {
         <Tooltip title="離開遊戲">
           <IconButton
             size="large"
-            onClick={() => (location.href = '/games/math-formula-card')}
+            onClick={() => (location.href = `/games/${gamePack}`)}
           >
             <LogoutIcon
               sx={{
