@@ -54,7 +54,7 @@ const ChineseChessHidden = () => {
       enqueueSnackbar(message, { variant: 'warning' });
     });
 
-    clientRoom.state.chineseChessHidden.chesses.onAdd = (chessInfo, key) => {
+    clientRoom.state.chineseChessHidden.chesses.onAdd = (chessInfo) => {
       localDispatch({ type: ActionType.SetChess, chess: chessInfo });
       chessInfo.onChange = (changes) => {
         changes.forEach((change) => {
@@ -263,6 +263,39 @@ const ChineseChessHidden = () => {
       />
       <MaoreFlex sx={{ flex: 0.5, marginTop: '20px' }} verticalHorizonCenter>
         <MaoreFlex sx={{ width: '90vw' }} justifyContent="flex-end">
+          <MaoreFlex
+            sx={{ marginRight: '40px', flexWrap: 'wrap', gap: '20px' }}
+          >
+            {state.otherEatenChess.map((chess) => (
+              <MaoreFlex
+                key={chess.id}
+                verticalHorizonCenter
+                sx={{
+                  backgroundColor: 'white',
+                  borderRadius: '50%',
+                  minWidth: '50px',
+                  height: '50px',
+                  color: chess.chessSide === ChessSide.Black ? 'black' : 'red',
+                  fontSize: '24px',
+                  fontFamily: 'cursive',
+                }}
+              >
+                <MaoreFlex
+                  verticalHorizonCenter
+                  sx={{
+                    border: `1px solid ${
+                      chess.chessSide === ChessSide.Black ? 'black' : 'red'
+                    }`,
+                    borderRadius: '50%',
+                    width: '42px',
+                    height: '42px',
+                  }}
+                >
+                  {chess.name}
+                </MaoreFlex>
+              </MaoreFlex>
+            ))}
+          </MaoreFlex>
           <PlayerCard
             player={players.find((p) => p.id !== yourPlayerId) as Player}
             isNowTurn={!isYourTurn}
@@ -290,6 +323,37 @@ const ChineseChessHidden = () => {
             isNowTurn={isYourTurn}
             children={getChessSide(state.yourSide)}
           />
+          <MaoreFlex sx={{ marginLeft: '20px', flexWrap: 'wrap', gap: '20px' }}>
+            {state.yourEatenChess.map((chess) => (
+              <MaoreFlex
+                key={chess.id}
+                verticalHorizonCenter
+                sx={{
+                  backgroundColor: 'white',
+                  borderRadius: '50%',
+                  minWidth: '50px',
+                  height: '50px',
+                  color: chess.chessSide === ChessSide.Black ? 'black' : 'red',
+                  fontSize: '24px',
+                  fontFamily: 'cursive',
+                }}
+              >
+                <MaoreFlex
+                  verticalHorizonCenter
+                  sx={{
+                    border: `1px solid ${
+                      chess.chessSide === ChessSide.Black ? 'black' : 'red'
+                    }`,
+                    borderRadius: '50%',
+                    width: '42px',
+                    height: '42px',
+                  }}
+                >
+                  {chess.name}
+                </MaoreFlex>
+              </MaoreFlex>
+            ))}
+          </MaoreFlex>
         </MaoreFlex>
       </MaoreFlex>
       <Button

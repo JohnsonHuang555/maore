@@ -71,19 +71,33 @@ const reducer = (state = initialState, action: Action): State => {
       };
     }
     case ActionType.UpdateChess: {
+      let targetChess: IChessInfo | undefined;
+
       const newChesses = state.chesses.map((chess) => {
         if (chess.id === action.id) {
           chess = {
             ...chess,
             ...action.chessInfo,
           };
+          targetChess = chess;
         }
         return chess;
       });
+
       return {
         ...state,
         chesses: newChesses,
         selectedChess: undefined,
+        yourEatenChess:
+          targetChess?.alive === false &&
+          targetChess.chessSide !== state.yourSide
+            ? [...state.yourEatenChess, targetChess]
+            : state.yourEatenChess,
+        otherEatenChess:
+          targetChess?.alive === false &&
+          targetChess.chessSide === state.yourSide
+            ? [...state.otherEatenChess, targetChess]
+            : state.otherEatenChess,
       };
     }
     case ActionType.UpdateChessSide: {

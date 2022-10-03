@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Box } from '@mui/material';
 import { IChessInfo } from '@server/games/chinese_chess_hidden/state/ChessInfoState';
 import { motion } from 'framer-motion';
 import { ChessSide } from '../models/ChineseChessSide';
 import { useSnackbar } from 'notistack';
-import CatHand from '@components/icons/CatHand';
 
 type BoardProps = {
   chesses: IChessInfo[];
