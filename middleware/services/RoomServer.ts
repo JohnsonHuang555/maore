@@ -19,6 +19,7 @@ import { AnyAction, Dispatch } from 'redux';
 import { setClient, setRoom } from '@actions/serverAction';
 import { Room } from 'server/room/state/RoomState';
 import { updateGameSettings as updateMathFormulaSettings } from '@actions/game_settings/mathFormulaAction';
+import { updateGameSettings as updateChineseChessHiddenSettings } from '@actions/game_settings/chineseChessHiddenAction';
 import { GamePack } from 'server/domain/Game';
 import { setLoading, setShowBaseModal } from '@actions/appAction';
 import { ModalType } from 'reducers/appReducer';
@@ -29,6 +30,7 @@ enum RoomStateChangeList {
   WinningPlayer = 'winningPlayer',
   ActivePlayer = 'activePlayer',
   MathFormulaCard = 'mathFormulaCard',
+  ChineseChessHidden = 'chineseChessHidden',
 }
 
 export default class RoomServer {
@@ -139,6 +141,7 @@ export default class RoomServer {
     room.state.onChange = (changes) => {
       changes.forEach((change) => {
         const { field, value } = change;
+        console.log(field, value);
         switch (field) {
           case RoomStateChangeList.RoomInfo: {
             this.dispatch(
@@ -171,6 +174,17 @@ export default class RoomServer {
               changes.forEach((c) => {
                 const { field, value } = c;
                 this.dispatch(updateMathFormulaSettings({ [field]: value }));
+              });
+            };
+            break;
+          }
+          case RoomStateChangeList.ChineseChessHidden: {
+            room.state.chineseChessHidden.gameSettings.onChange = (changes) => {
+              changes.forEach((c) => {
+                const { field, value } = c;
+                this.dispatch(
+                  updateChineseChessHiddenSettings({ [field]: value })
+                );
               });
             };
             break;

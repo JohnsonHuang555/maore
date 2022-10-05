@@ -18,7 +18,7 @@ import playerCardsReducer, {
 } from './reducers/playerCardsReducer';
 import GameOverModal from './components/GameOverModal';
 import { setShowGameScreen } from '@actions/roomAction';
-import { gameSettingsSelector } from '@selectors/game_settings/mathFormulaSelector';
+import { mathFormulaSettingsSelector } from '@selectors/gameSettingsSelector';
 import { useSnackbar } from 'notistack';
 import { MathSymbol } from 'server/games/math_formula_card/state/SelectedElementsState';
 import PlayerAvatar from './components/PlayerAvatar';
@@ -43,7 +43,7 @@ const MathFormulaCard = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   // selectors
-  const gameSettings = useSelector(gameSettingsSelector);
+  const gameSettings = useSelector(mathFormulaSettingsSelector);
   const clientRoom = useSelector(clientRoomSelector);
   const yourPlayerId = useSelector(playerIdSelector);
   const players = useSelector(playersSelector);

@@ -16,12 +16,12 @@ export default class UpdateGameSettingsCommand extends Command<MathFormulaCard> 
     }
     if (winnerPoint) {
       this.room.state.mathFormulaCard.gameSettings.winnerPoint =
-        data.winnerPoint as number;
+        winnerPoint as number;
     }
 
     if (remainedSecond) {
       this.room.state.mathFormulaCard.gameSettings.remainedSecond =
-        data.remainedSecond as number;
+        remainedSecond as number;
     }
   }
 }

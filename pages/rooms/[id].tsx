@@ -171,6 +171,7 @@ const Rooms = () => {
           >
             <PlayerArea
               roomTitle={roomInfo.roomTitle}
+              gamePack={roomInfo.gamePack as GamePack}
               players={players}
               yourPlayerId={yourPlayerId}
               onEditRoom={() => setEditModal(true)}

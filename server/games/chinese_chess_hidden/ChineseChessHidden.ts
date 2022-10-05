@@ -11,6 +11,7 @@ import EatChessCommand from './command/EatChessCommand';
 import MoveChessCommand from './command/MoveChessCommand';
 import ResetCommand from './command/ResetCommand';
 import SurrenderCommand from './command/SurrenderCommand';
+import UpdateGameSettingsCommand from './command/UpdateGameSettingsCommand';
 
 export default class ChineseChessHiddenState extends Room<RoomState, Metadata> {
   private dispatcher = new Dispatcher(this);
@@ -69,6 +70,14 @@ export default class ChineseChessHiddenState extends Room<RoomState, Metadata> {
         client,
       });
     });
+
+    // 更新遊戲設定
+    this.onMessage(
+      RoomMessage.UpdateGameSettings,
+      (_c, message: { remainedSecond?: number; mode?: string }) => {
+        this.dispatcher.dispatch(new UpdateGameSettingsCommand(), message);
+      }
+    );
 
     // 結束遊戲
     this.onMessage(RoomMessage.FinishGame, () => {

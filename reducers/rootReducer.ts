@@ -4,6 +4,9 @@ import serverReducer, { State as ServerState } from 'reducers/serverReducer';
 import mathFormulaReducer, {
   State as MathFormulaCardState,
 } from 'reducers/game_settings/mathFormulaReducer';
+import chineseChessHiddenReducer, {
+  State as ChineseChessHiddenState,
+} from 'reducers/game_settings/chineseChessHiddenReducer';
 import { combineReducers } from 'redux';
 
 export type StoreState = {
@@ -12,6 +15,7 @@ export type StoreState = {
   server: ServerState;
   // games settings
   mathFormula: MathFormulaCardState;
+  chineseChessHidden: ChineseChessHiddenState;
 };
 
 export default combineReducers({
@@ -19,4 +23,5 @@ export default combineReducers({
   room: roomReducer,
   server: serverReducer,
   mathFormula: mathFormulaReducer,
+  chineseChessHidden: chineseChessHiddenReducer,
 });

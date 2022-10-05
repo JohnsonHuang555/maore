@@ -1,5 +1,5 @@
-import { ActionType } from '@actions/game_settings/mathFormulaAction';
-import { IGameSettings } from 'server/games/math_formula_card/state/GameSettingsState';
+import { ActionType } from '@actions/game_settings/chineseChessHiddenAction';
+import { IGameSettings } from 'server/games/chinese_chess_hidden/state/GameSettingsState';
 
 export type State = {
   gameSettings?: IGameSettings;
@@ -8,7 +8,7 @@ export type State = {
 const initialState: State = {};
 
 type UpdateAction = {
-  type: ActionType.UpdateMathFormula;
+  type: ActionType.UpdateChineseChess;
   gameSettings: Partial<IGameSettings>;
 };
 
@@ -16,7 +16,8 @@ type Action = UpdateAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
-    case ActionType.UpdateMathFormula: {
+    case ActionType.UpdateChineseChess: {
+      console.log(state);
       return {
         ...state,
         gameSettings: {

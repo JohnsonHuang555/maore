@@ -8,13 +8,13 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material';
-import { gameSettingsSelector } from '@selectors/game_settings/mathFormulaSelector';
+import { mathFormulaSettingsSelector } from '@selectors/gameSettingsSelector';
 import { isMasterSelector } from '@selectors/roomSelector';
 import { clientRoomSelector } from '@selectors/serverSelector';
 import { useSelector } from 'react-redux';
 
-const MathFormulaGameSettings = () => {
-  const gameSettings = useSelector(gameSettingsSelector);
+const GameSettings = () => {
+  const gameSettings = useSelector(mathFormulaSettingsSelector);
   const clientRoom = useSelector(clientRoomSelector);
   const isMaster = useSelector(isMasterSelector);
 
@@ -69,4 +69,4 @@ const MathFormulaGameSettings = () => {
   );
 };
 
-export default MathFormulaGameSettings;
+export default GameSettings;

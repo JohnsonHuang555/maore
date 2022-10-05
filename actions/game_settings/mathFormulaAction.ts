@@ -1,12 +1,12 @@
 import { IGameSettings } from 'server/games/math_formula_card/state/GameSettingsState';
 
 export enum ActionType {
-  Update = 'Update',
+  UpdateMathFormula = 'UpdateMathFormula',
 }
 
 export const updateGameSettings = (gameSettings: Partial<IGameSettings>) => {
   return {
-    type: ActionType.Update,
+    type: ActionType.UpdateMathFormula,
     gameSettings,
   };
 };

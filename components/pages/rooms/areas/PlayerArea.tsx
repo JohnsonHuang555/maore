@@ -1,19 +1,25 @@
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import { Player } from '@domain/models/Player';
 import { Stars } from '@mui/icons-material';
 import { Avatar, IconButton, Stack, Tooltip } from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import { GamePack } from '@server/domain/Game';
+import GameRule from '@components/pages/home/GameRule';
 
 type PlayerAreaProps = {
   roomTitle: string;
+  gamePack: GamePack;
   players: Player[];
   yourPlayerId: string;
   onEditRoom: () => void;
 };
 
 const PlayerArea = (props: PlayerAreaProps) => {
-  const { roomTitle, players, yourPlayerId, onEditRoom } = props;
+  const { roomTitle, gamePack, players, yourPlayerId, onEditRoom } = props;
+  const [showRuleModal, setShowRuleModal] = useState(false);
 
   const isNowPlayer = (id: string) => {
     return id === yourPlayerId ? true : false;
@@ -29,6 +35,11 @@ const PlayerArea = (props: PlayerAreaProps) => {
         borderRadius: '10px',
       }}
     >
+      <GameRule
+        showModal={showRuleModal}
+        gamePack={gamePack}
+        onClose={() => setShowRuleModal(false)}
+      />
       <Box
         sx={{
           fontSize: {
@@ -47,6 +58,19 @@ const PlayerArea = (props: PlayerAreaProps) => {
         >
           <Box>房名: {roomTitle}</Box>
           <Box>
+            <Tooltip title="遊戲規則">
+              <IconButton onClick={() => setShowRuleModal(true)}>
+                <DescriptionOutlinedIcon
+                  sx={{
+                    fontSize: {
+                      xs: '18px',
+                      sm: '22px',
+                      lg: '26px',
+                    },
+                  }}
+                />
+              </IconButton>
+            </Tooltip>
             <Tooltip title="當房間只剩一人時重整頁面會關閉此房間，需重新建立房間">
               <IconButton>
                 <InfoOutlinedIcon
