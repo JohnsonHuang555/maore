@@ -7,7 +7,7 @@ const Footer = () => {
         Game makes us happy and crazy. Keep your curiosity forever.
       </div>
       <div className={styles.copyright}>
-        The website is created at 2020 by Johnson Huang. beta v0.0.1
+        The website is created at 2023 by Johnson Huang. beta v0.0.1
       </div>
     </div>
   );
