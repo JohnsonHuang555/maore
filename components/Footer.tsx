@@ -16,13 +16,13 @@ const Footer = () => {
         目前為 beta 版本，若遇到 bug 請等待修復，沒有一個 bug 是重新整理修不好的
       </Box>
       <div className={styles.copyright}>
-        The website is created at 2022 by{' '}
+        The website is created at 2023 by{' '}
         <a href="https://github.com/JohnsonHuang555/maore" target="_blank">
           Johnson Huang
         </a>
         {'.'} <span>請用 chrome 瀏覽器遊玩，電腦、平板支援度較佳</span>
         {/* TODO: 版號自動化 */}
-        {'.'} <b>beta v0.3.8</b>
+        {'.'} <b>beta v0.3.9</b>
       </div>
     </div>
   );
