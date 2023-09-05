@@ -141,7 +141,6 @@ export default class RoomServer {
     room.state.onChange = (changes) => {
       changes.forEach((change) => {
         const { field, value } = change;
-        console.log(field, value);
         switch (field) {
           case RoomStateChangeList.RoomInfo: {
             this.dispatch(

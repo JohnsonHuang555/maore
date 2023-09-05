@@ -17,7 +17,6 @@ type Action = UpdateAction;
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
     case ActionType.UpdateChineseChess: {
-      console.log(state);
       return {
         ...state,
         gameSettings: {

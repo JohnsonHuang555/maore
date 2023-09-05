@@ -18,7 +18,6 @@ const GameSettings = () => {
   const clientRoom = useSelector(clientRoomSelector);
   const isMaster = useSelector(isMasterSelector);
 
-  console.log(gameSettings);
   if (!gameSettings) {
     return null;
   }

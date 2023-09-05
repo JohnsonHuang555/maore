@@ -21,7 +21,6 @@ export default class UpdateGameSettingsCommand extends Command<ChineseChessHidde
     }
 
     if (mode) {
-      console.log(mode);
       this.room.state.chineseChessHidden.gameSettings.mode = mode;
     }
   }
