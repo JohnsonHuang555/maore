@@ -14,7 +14,7 @@ import {
 } from '@actions/appAction';
 import LoginModal from '@components/modals/LoginModal';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { firebaseApp } from 'firebase/clientApp';
+import { firebaseApp } from 'utils/firebase/clientApp';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';

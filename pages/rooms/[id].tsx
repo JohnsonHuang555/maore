@@ -30,7 +30,7 @@ import ChatArea from '@components/pages/rooms/areas/ChatArea';
 import SettingArea from '@components/pages/rooms/areas/SettingArea';
 import { GamePack } from 'server/domain/Game';
 import { getAuth } from 'firebase/auth';
-import { firebaseApp } from 'firebase/clientApp';
+import { firebaseApp } from 'utils/firebase/clientApp';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { RoomMessage } from '@domain/models/Message';
 import { useSnackbar } from 'notistack';
