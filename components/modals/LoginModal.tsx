@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import { Box } from '@mui/material';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { firebaseApp } from 'firebase/clientApp';
+import { firebaseApp } from 'utils/firebase/clientApp';
 import { setShowLoginModal } from '@actions/appAction';
 import { useDispatch } from 'react-redux';
 

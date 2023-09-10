@@ -27,3 +27,4 @@ const createFirebaseApp = () => {
 };
 
 export const firebaseApp = createFirebaseApp();
+export default {};
