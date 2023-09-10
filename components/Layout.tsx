@@ -24,18 +24,31 @@ const Layout = (props: LayoutProps) => {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
         />
-        <link rel="canonical" href="https://maore.io/" />
+        <link rel="canonical" href="https://maore.io" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta property="url" content="https://maore.io"></meta>
         <meta
           name="description"
           content="maore.io is a board game online website. Enjoy!!"
+          key="desc"
         />
-        <meta property="og:title" content="maore" />
+        <meta
+          name="keywords"
+          content="maore,線上桌遊網站,maore.io,桌遊,boardgame"
+        />
+        <meta property="og:title" content={title} key="title" />
         <meta
           property="og:description"
           content="maore.io is a board game online website. Enjoy!!"
         />
-        {!disableSeo && <meta name="robots" content="all" />}
+        <meta property="og:image" content="https://maore.io/maore_logo.png" />
+        <meta property="og:url" content="https://maore.io" />
+        {!disableSeo && (
+          <>
+            <meta name="robots" content="all" />
+            <meta name="googlebot" content="all" />
+          </>
+        )}
       </Head>
       <Header />
       <main style={{ flex: '1 0 auto' }}>{children}</main>

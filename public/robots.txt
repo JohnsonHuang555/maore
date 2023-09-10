@@ -1,4 +1,4 @@
-# Block all crawlers for /accounts
+# Block all crawlers for /rooms
 User-agent: *
 Disallow: /rooms
 

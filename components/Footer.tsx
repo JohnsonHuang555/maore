@@ -3,7 +3,7 @@ import styles from '@styles/components/footer.module.scss';
 
 const Footer = () => {
   return (
-    <div className={styles.footer}>
+    <footer className={styles.footer}>
       <Box
         className={styles.slogan}
         sx={{
@@ -22,9 +22,9 @@ const Footer = () => {
         </a>
         {'.'} <span>請用 chrome 瀏覽器遊玩，電腦、平板支援度較佳</span>
         {/* TODO: 版號自動化 */}
-        {'.'} <b>beta v0.3.9</b>
+        {'.'} <b>beta v0.3.10</b>
       </div>
-    </div>
+    </footer>
   );
 };
 
