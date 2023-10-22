@@ -3,15 +3,16 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import GameCard from '@components/pages/home/GameCard';
 import Layout from 'components/Layout';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
+import { Box } from '@mui/material';
 import { Game } from '@domain/models/Game';
 import { initialClient } from '@actions/serverAction';
 import { clientSelector } from '@selectors/serverSelector';
 import { fetchGames } from '@actions/fetchAction';
-import { Box } from '@mui/material';
 
 const Home = () => {
   const router = useRouter();
@@ -114,5 +115,17 @@ const Home = () => {
     </Layout>
   );
 };
+
+export async function getStaticProps(context: any) {
+  // extract the locale identifier from the URL
+  const { locale } = context;
+
+  return {
+    props: {
+      // pass the translation props to the page component
+      ...(await serverSideTranslations(locale)),
+    },
+  }
+}
 
 export default Home;

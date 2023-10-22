@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import type { AppProps } from 'next/app';
 import { createStore, applyMiddleware } from 'redux';
+import { appWithTranslation } from 'next-i18next';
 import { Provider } from 'react-redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import theme from 'theme';
@@ -40,4 +41,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp;
+export default appWithTranslation(MyApp);
