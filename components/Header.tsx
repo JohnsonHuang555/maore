@@ -14,6 +14,8 @@ import {
 } from '@actions/appAction';
 import LoginModal from '@components/modals/LoginModal';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import { firebaseApp } from 'utils/firebase/clientApp';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -28,8 +30,11 @@ import { getAuth, signOut } from 'firebase/auth';
 import { useSnackbar } from 'notistack';
 import Logo from 'components/icons/logo';
 import BaseModal from './modals/BaseModal';
+import { FormControl, InputLabel, Select } from '@mui/material';
 
 const Header = () => {
+  const { t, i18n } = useTranslation();
+  const router = useRouter();
   const dispatch = useDispatch();
   const userInfo = useSelector(userInfoSelector);
   const showLoginModal = useSelector(showLoginModalSelector);
@@ -171,7 +176,7 @@ const Header = () => {
                 onClose={handleCloseUserMenu}
               >
                 <MenuItem onClick={onLogout}>
-                  <Typography textAlign="center">登出</Typography>
+                  <Typography textAlign="center">{t('logout')}</Typography>
                 </MenuItem>
               </Menu>
             </Box>
@@ -184,9 +189,21 @@ const Header = () => {
               disableElevation
               onClick={() => dispatch(setShowLoginModal(true))}
             >
-              登入
+              {t('login')}
             </Button>
           )}
+          <FormControl sx={{ ml: '20px', minWidth: '120px' }}>
+            <InputLabel id="language-second-label">Language</InputLabel>
+            <Select
+              labelId="language-second-label"
+              label="Language"
+              value={i18n.language}
+              onChange={(e) => router.push('/', '/', { locale: e.target.value })}
+            >
+              <MenuItem value="zh-TW">繁體中文</MenuItem>
+              <MenuItem value="en-US">英文</MenuItem>
+            </Select>
+          </FormControl>
         </Toolbar>
       </AppBar>
     </>
